@@ -1,0 +1,437 @@
+<!-- {% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saref Academy — Centre de formation digitale en ligne</title>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+  <div class="nav wrap">
+    <a href="#" class="brand">
+      <img src="{% static 'images/logo-saref.jpeg' %}" alt="Logo Saref Academy">
+    </a>
+    <nav class="nav-links">
+      <a href="#formations">Formations</a>
+      <a href="#bourse">Bourse</a>
+      <a href="#parcours">Parcours</a>
+      <a href="#temoignages">Témoignages</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#inscription" class="btn btn-primary">S'inscrire</a>
+      <button class="burger" id="burgerBtn" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileMenu">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+ overlay + menu mobile -->
+<!-- <div class="menu-backdrop" id="menuBackdrop"></div>
+<aside class="mobile-menu" id="mobileMenu">
+  <div class="top-row">
+    <img src="{% static 'images/logo-saref.png' %}" alt="Saref Academy">
+    <button class="close-btn" id="closeMenuBtn" aria-label="Fermer le menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+    </button>
+  </div>
+  <nav>
+    <a href="#formations">Formations</a>
+    <a href="#bourse">Bourse</a>
+    <a href="#parcours">Parcours</a>
+    <a href="#temoignages">Témoignages</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <a href="#inscription" class="btn btn-primary">S'inscrire</a>
+</aside>
+
+ ============ HERO ============ -->
+<section class="hero">
+  <div class="wrap hero-content">
+    <div class="hero-copy">
+      <div class="eyebrow">Formation 100% en ligne</div>
+      <h1>Apprenez un métier du digital, <span>où que vous soyez.</span></h1>
+      <p class="lead">Saref Academy forme en ligne aux métiers du marketing digital les plus demandés : design, développement web, community management et media buying — avec des formateurs qui pratiquent le métier au quotidien.</p>
+      <div class="hero-ctas">
+        <a href="#inscription" class="btn btn-primary">Candidater à la bourse</a>
+        <a href="#formations" class="btn btn-hero-outline">Voir les formations</a>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><b>500+</b><span>Apprenants formés</span></div>
+        <div class="stat"><b>87%</b><span>Taux d'insertion</span></div>
+        <div class="stat"><b>6</b><span>Filières métiers</span></div>
+        <div class="stat"><b>4.8/5</b><span>Note moyenne</span></div>
+      </div>
+    </div>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 70" preserveAspectRatio="none"><path d="M0,40 C240,90 480,0 720,30 C960,60 1200,10 1440,40 L1440,70 L0,70 Z" fill="#EAF0FF"/></svg>
+</section>
+
+<!-- ============ BOURSE ============ -->
+<section class="bourse" id="bourse">
+  <div class="wrap bourse-grid">
+    <div>
+      <div class="eyebrow">Programme boursier</div>
+      <h2>50 bourses de formation en ligne offertes chaque session</h2>
+      <p>Vous cherchez à percer dans le digital mais l'accès à une formation de qualité vous semble hors de portée ? Saref Academy vous ouvre la porte : un programme 100% en ligne et pratique, encadré par des professionnels en activité, pensé pour vous rendre opérationnel où que vous soyez.</p>
+      <p>À l'issue de la formation, vous serez capable de construire et piloter une stratégie digitale complète — et nous vous accompagnons ensuite dans votre recherche d'emploi, y compris auprès de nos partenaires.</p>
+      <div class="chip-list">
+        <div class="chip"><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span> Formation 100% en ligne et pratique, dès la première semaine</div>
+        <div class="chip"><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span> Mentorat individuel tout au long du parcours</div>
+        <div class="chip"><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span> Accompagnement vers l'emploi après la formation</div>
+      </div>
+      <a href="#inscription" class="btn btn-primary">Postuler gratuitement</a>
+    </div>
+    <div class="bourse-visual">
+      <span class="badge">Places limitées</span>
+      <h3>Session en cours</h3>
+      <p class="muted">Candidatures ouvertes pour les prochaines promotions</p>
+      <div class="mini-stats">
+        <div><b>50</b><span>Bourses disponibles</span></div>
+        <div><b>0 F</b><span>Frais de candidature</span></div>
+        <div><b>3–6</b><span>Semaines de formation</span></div>
+        <div><b>100%</b><span>En ligne</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FORMATIONS ============ -->
+<section id="formations">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" style="justify-content:center;">Nos filières</div>
+      <h2>Des compétences concrètes, prêtes pour le marché</h2>
+      <p>Six filières encadrées par des praticiens, accessibles entièrement en ligne.</p>
+    </div>
+    <div class="formations-grid">
+
+      <div class="f-card">
+        <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 3l2.4 5.5 6 .6-4.5 4 1.3 5.9-5.2-3.1-5.2 3.1 1.3-5.9-4.5-4 6-.6z"/></svg></div>
+        <h3>Design Graphique</h3>
+        <p>Création de logos, affiches et supports visuels avec les outils utilisés en agence.</p>
+      </div>
+
+      <div class="f-card">
+        <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M8 4L2 12l6 8M16 4l6 8-6 8M13 3l-2 18"/></svg></div>
+        <h3>Développement Web</h3>
+        <p>Construction de sites et pages web modernes, de la maquette à la mise en ligne.</p>
+      </div>
+
+      <div class="f-card">
+        <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6 8-6s8 2 8 6"/></svg></div>
+        <h3>Community Management</h3>
+        <p>Animation de communautés et gestion de réseaux sociaux pour des marques réelles.</p>
+      </div>
+
+      <div class="f-card">
+        <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></div>
+        <h3>Media Buying</h3>
+        <p>Pilotage de campagnes publicitaires payantes et optimisation du retour sur investissement.</p>
+      </div>
+
+      <div class="f-card">
+        <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19"/></svg></div>
+        <h3>Funnel Building</h3>
+        <p>Conception de tunnels de vente qui convertissent, de la landing page à la relance client.</p>
+      </div>
+
+      <div class="f-card">
+        <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 3v18h18M7 15l4-5 3 3 5-7"/></svg></div>
+        <h3>Stratégie Digitale</h3>
+        <p>Élaboration d'une feuille de route marketing cohérente, du positionnement aux résultats.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ PARCOURS ============ -->
+<section class="parcours" id="parcours">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" style="justify-content:center;">Comment ça marche</div>
+      <h2>De la candidature à l'emploi</h2>
+      <p>Un parcours simple et accompagné, en trois étapes, entièrement à distance.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="num">ÉTAPE 1</div>
+        <h3>Vous postulez</h3>
+        <p>Remplissez le formulaire de candidature en ligne en quelques minutes, sans frais.</p>
+      </div>
+      <div class="step">
+        <div class="num">ÉTAPE 2</div>
+        <h3>Vous vous formez</h3>
+        <p>Cours pratiques en ligne, en direct avec des formateurs en activité.</p>
+      </div>
+      <div class="step">
+        <div class="num">ÉTAPE 3</div>
+        <h3>Vous décrochez un poste</h3>
+        <p>Accompagnement vers l'emploi, salarié ou indépendant, avec nos partenaires.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INSCRIPTION ============ -->
+<section class="inscription" id="inscription">
+  <div class="wrap">
+    <div class="insc-grid">
+      <div class="insc-left">
+        <div>
+          <h2>Postulez à la bourse de formation en ligne</h2>
+          <p>Places limitées à chaque session. Réponse sous 48h après réception de votre candidature.</p>
+
+          <div class="deadline-box deadline-left">
+            <span class="deadline-badge">Date limite</span>
+            <strong>Les candidatures se terminent le 30 septembre 2026</strong>
+
+            <div class="countdown" id="countdown" data-deadline="2026-09-30T23:59:59">
+              <div>
+                <b id="cd-days">00</b>
+                <span>Jours</span>
+              </div>
+              <div>
+                <b id="cd-hours">00</b>
+                <span>Heures</span>
+              </div>
+              <div>
+                <b id="cd-minutes">00</b>
+                <span>Minutes</span>
+              </div>
+              <div>
+                <b id="cd-seconds">00</b>
+                <span>Secondes</span>
+              </div>
+            </div>
+          </div>
+
+          <ul>
+            <li>✓ Candidature gratuite</li>
+            <li>✓ Réponse rapide sous 48h</li>
+            <li>✓ Formation 100% en ligne et pratique</li>
+            <li>✓ Accompagnement à l'emploi</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="insc-right">
+        <form method="post" action="">
+          {% csrf_token %}
+
+          <div class="field-row">
+            <div class="field">
+              <label for="nom">Nom et prénom *</label>
+              <input id="nom" name="nom" type="text" required placeholder="Votre nom complet">
+            </div>
+
+            <div class="field">
+              <label for="tel">Numéro WhatsApp *</label>
+              <input id="tel" name="whatsapp" type="tel" required placeholder="Votre numéro WhatsApp">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="email">Email *</label>
+            <input id="email" name="email" type="email" required placeholder="vous@email.com">
+          </div>
+
+          <div class="field">
+            <label for="formation">Filière souhaitée *</label>
+            <select id="formation" name="formation" required>
+              <option value="">Sélectionnez une filière</option>
+              <option>Design Graphique</option>
+              <option>Développement Web</option>
+              <option>Community Management</option>
+              <option>Media Buying</option>
+              <option>Funnel Building</option>
+              <option>Stratégie Digitale</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="motiv">Pourquoi souhaitez-vous suivre cette formation ? *</label>
+            <textarea id="motiv" name="motivation" rows="3" required placeholder="Parlez-nous de votre motivation"></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Envoyer ma candidature</button>
+
+          <p class="fine">
+            En soumettant, vous acceptez d'être contacté(e) par Saref Academy au sujet de votre candidature.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TEMOIGNAGES ============ -->
+<section id="temoignages">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" style="justify-content:center;">Ils sont passés par Saref Academy</div>
+      <h2>Ce qu'en disent nos anciens apprenants</h2>
+    </div>
+    <div class="temoignages-grid">
+      <div class="t-card">
+        <div class="quote-mark">"</div>
+        <p>Je ne maîtrisais rien en graphisme au départ. Le formateur nous a donné des méthodes concrètes, et en trois semaines je réalisais déjà mes propres logos.</p>
+        <div class="t-person">
+          <div class="avatar">AI</div>
+          <div><h4>Alice Imasson</h4><span>Design Graphique</span></div>
+        </div>
+      </div>
+      <div class="t-card">
+        <div class="quote-mark">"</div>
+        <p>Depuis le début de ma formation, j'ai réalisé plusieurs projets pour des clients et je suis rémunéré pour ça. Une expérience qui a changé ma trajectoire.</p>
+        <div class="t-person">
+          <div class="avatar">SS</div>
+          <div><h4>Segbo Stéphaël</h4><span>Community Management</span></div>
+        </div>
+      </div>
+      <div class="t-card">
+        <div class="quote-mark">"</div>
+        <p>Une formation purement pratique, avec des exercices à refaire à la maison. J'ai pu créer ma première affiche publicitaire dès les premières semaines.</p>
+        <div class="t-person">
+          <div class="avatar">PC</div>
+          <div><h4>Princessy Colombe</h4><span>Design Graphique</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA STRIP ============ -->
+<div class="cta-strip">
+  <h2>Prêt(e) à démarrer votre parcours digital ?</h2>
+  <p>Candidature gratuite — places limitées à chaque session, 100% en ligne.</p>
+  <a href="#inscription" class="btn btn-light">Je postule maintenant</a>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer id="contact">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand">
+          <img src="{% static 'images/logo-saref.png' %}" alt="Logo Saref Academy"> Saref Academy
+        </div>
+        <p style="font-size:14px; max-width:280px;">Centre de formation en ligne aux métiers du digital, pensé pour rendre la jeunesse africaine opérationnelle et employable, où qu'elle se trouve.</p>
+        <div class="social">
+          <a href="#" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M22 12a10 10 0 10-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0022 12z"/></svg></a>
+          <a href="#" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M12 2c2.7 0 3 0 4.1.1 1.1 0 1.8.2 2.3.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.5.4 1.2.4 2.3.1 1.1.1 1.4.1 4.1s0 3-.1 4.1c0 1.1-.2 1.8-.4 2.3-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.5.2-1.2.4-2.3.4-1.1.1-1.4.1-4.1.1s-3 0-4.1-.1c-1.1 0-1.8-.2-2.3-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.5-.4-1.2-.4-2.3C2 15 2 14.7 2 12s0-3 .1-4.1c0-1.1.2-1.8.4-2.3.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.5-.2 1.2-.4 2.3-.4C8 2 8.3 2 12 2zm0 5a5 5 0 100 10 5 5 0 000-10zm0 8.2a3.2 3.2 0 110-6.4 3.2 3.2 0 010 6.4zm5.2-8.4a1.2 1.2 0 100-2.4 1.2 1.2 0 000 2.4z"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.8V21h-4v-5.6c0-1.34-.02-3.07-1.9-3.07-1.9 0-2.2 1.44-2.2 2.97V21H9z"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h5>Navigation</h5>
+        <ul>
+          <li><a href="#formations">Formations</a></li>
+          <li><a href="#bourse">Bourse</a></li>
+          <li><a href="#parcours">Parcours</a></li>
+          <li><a href="#temoignages">Témoignages</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Filières</h5>
+        <ul>
+          <li><a href="#formations">Design Graphique</a></li>
+          <li><a href="#formations">Développement Web</a></li>
+          <li><a href="#formations">Community Management</a></li>
+          <li><a href="#formations">Media Buying</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Contact</h5>
+        <ul class="foot-contact">
+          <li>🌍 Formation 100% en ligne</li>
+          <li>✉️ contact@saref-academy.com</li>
+          <li>📞 WhatsApp : +229 00 00 00 00</li>
+        </ul>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <span>© 2026 Saref Academy. Tous droits réservés.</span>
+      <span>Formez-vous. Créez. Décrochez le poste que vous méritez.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ---- Menu hamburger ----
+  const burgerBtn = document.getElementById('burgerBtn');
+  const closeMenuBtn = document.getElementById('closeMenuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const menuBackdrop = document.getElementById('menuBackdrop');
+
+  function openMenu(){
+    mobileMenu.classList.add('open');
+    menuBackdrop.classList.add('open');
+    burgerBtn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu(){
+    mobileMenu.classList.remove('open');
+    menuBackdrop.classList.remove('open');
+    burgerBtn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  burgerBtn.addEventListener('click', openMenu);
+  closeMenuBtn.addEventListener('click', closeMenu);
+  menuBackdrop.addEventListener('click', closeMenu);
+  mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeMenu(); });
+
+  // ---- Compte à rebours jusqu'à la date limite ----
+  const countdownEl = document.getElementById('countdown');
+  if (countdownEl) {
+    const deadline = new Date(countdownEl.dataset.deadline).getTime();
+    const elDays = document.getElementById('cd-days');
+    const elHours = document.getElementById('cd-hours');
+    const elMinutes = document.getElementById('cd-minutes');
+    const elSeconds = document.getElementById('cd-seconds');
+
+    function pad(n){ return String(n).padStart(2, '0'); }
+
+    function updateCountdown(){
+      const now = new Date().getTime();
+      const distance = deadline - now;
+
+      if (distance <= 0) {
+        elDays.textContent = '00';
+        elHours.textContent = '00';
+        elMinutes.textContent = '00';
+        elSeconds.textContent = '00';
+        clearInterval(timer);
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      elDays.textContent = pad(days);
+      elHours.textContent = pad(hours);
+      elMinutes.textContent = pad(minutes);
+      elSeconds.textContent = pad(seconds);
+    }
+
+    updateCountdown();
+    const timer = setInterval(updateCountdown, 1000);
+  }
+</script>
+
+</body>
+</html>  
