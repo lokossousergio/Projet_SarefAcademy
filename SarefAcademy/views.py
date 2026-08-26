@@ -55,26 +55,22 @@ def tunel(request):
 
 
 
-
-
 # ================================================================
 # messages de confirmation envoyer par mail
 from datetime import datetime
 
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
-
-
 def send_inscription_success_email(request, nom, email):
     """
-    Envoie l'email de confirmation d'inscription au candidat.papa
-    Retourne True si l'envoi a reussi, False sinon.
+    Envoie l'email de confirmation d'inscription au candidat.
+    Retourne True si l'envoi a réussi, False sinon.
     """
 
-    annee = datetime.now().year  # recalcule a chaque appel, pas au chargement du module
+    annee = datetime.now().year
 
     subject = "Inscription - Saref Academy"
-    whatsapp_academy = "+229 01 54 15 05 30"  # <-- remplace par le vrai numero
+    whatsapp_academy = "+229 01 54 15 05 30"
 
     html_message = f"""
 <div style="padding:20px; font-family:'Segoe UI',Roboto,Arial,sans-serif;">
@@ -82,8 +78,10 @@ def send_inscription_success_email(request, nom, email):
 
         <!-- Header -->
         <div style="background:#f4f7ff; padding:20px 20px 16px 20px; text-align:center; border-bottom:3px solid #315BEA;">
-            <img src="https://i.postimg.cc/qMHxS6Wg/Whats-App-Image-2026-08-16-at-23-12-49-removebg-preview.png" alt="Saref Academy"
+            <img src="https://i.postimg.cc/qMHxS6Wg/Whats-App-Image-2026-08-16-at-23-12-49-removebg-preview.png"
+                alt="Saref Academy"
                 style="height:90px; width:auto; object-fit:contain; display:block; margin:0 auto 10px auto; border-radius:8px">
+            
             <p style="margin:0; color:#315BEA; font-size:11px; letter-spacing:4px; text-transform:uppercase; font-weight:600;">
                 Inscription bourse de formation
             </p>
@@ -150,37 +148,87 @@ def send_inscription_success_email(request, nom, email):
             <p style="margin:0 0 6px 0; font-size:13px; font-weight:700; color:#315BEA;">
                 Saref Academy
             </p>
+
             <p style="margin:0; font-size:11px; color:#aaa;">
                 © {annee} Tous droits réservés
                 &nbsp;·&nbsp;
+
                 <a href="mailto:Sarefacademy@gmail.com"
-                style="color:#315BEA; text-decoration:none;">
+                   style="color:#315BEA; text-decoration:none;">
                     contact@sarefacademy.com
                 </a>
             </p>
         </div>
 
     </div>
-    </div>
-    """
+</div>
+"""
 
     try:
-        email_msg = EmailMultiAlternatives(
-            subject,
-            "Votre client ne supporte pas HTML",
-            settings.DEFAULT_FROM_EMAIL,
-            [email]
-        )
-        email_msg.attach_alternative(html_message, "text/html")
-        email_msg.send()
-        return True
 
-    except TimeoutError:
-        print(f"[email] Timeout en envoyant a {email}")
+        response = requests.post(
+            "https://api.brevo.com/v3/smtp/email",
+
+            headers={
+                "accept": "application/json",
+                "api-key": settings.BREVO_API_KEY,
+                "content-type": "application/json",
+            },
+
+            json={
+                "sender": {
+                    "name": settings.BREVO_SENDER_NAME,
+                    "email": settings.BREVO_SENDER_EMAIL,
+                },
+
+                "to": [
+                    {
+                        "email": email,
+                        "name": nom,
+                    }
+                ],
+
+                "subject": subject,
+                "htmlContent": html_message,
+            },
+
+            timeout=20,
+        )
+
+        print("STATUS BREVO :", response.status_code)
+        print("REPONSE BREVO :", response.text)
+
+        if response.ok:
+
+            print(f"[email] Email envoyé avec succès à {email}")
+
+            return True
+
+        else:
+
+            print(
+                f"[email] Erreur Brevo pour {email} : "
+                f"{response.status_code} - {response.text}"
+            )
+
+            return False
+
+    except requests.Timeout:
+
+        print(f"[email] Timeout en envoyant à {email}")
+
+        return False
+
+    except requests.RequestException as e:
+
+        print(f"[email] Erreur réseau Brevo pour {email} : {e}")
+
         return False
 
     except Exception as e:
-        print(f"[email] Erreur en envoyant a {email} : {e}")
+
+        print(f"[email] Erreur inattendue pour {email} : {e}")
+
         return False
     
 # ================Gestion des erreurs=======
