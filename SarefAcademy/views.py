@@ -67,7 +67,7 @@ from django.core.mail import EmailMultiAlternatives
 
 def send_inscription_success_email(request, nom, email):
     """
-    Envoie l'email de confirmation d'inscription au candidat.
+    Envoie l'email de confirmation d'inscription au candidat.papa
     Retourne True si l'envoi a reussi, False sinon.
     """
 
