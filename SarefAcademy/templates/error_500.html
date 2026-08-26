@@ -5,211 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>500 - Erreur serveur | Saref Academy</title>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
+  <!--
+    Aucune classe custom : on redefinit juste les variables Bootstrap
+    (--bs-primary et --bs-dark) pour que btn-primary, bg-primary,
+    text-primary, bg-dark, badge... utilisent directement les couleurs
+    de la charte Saref Academy. Tout le reste du fichier n'utilise
+    que des classes Bootstrap standards.
+  -->
   <style>
-    :root{
-      --blue:#315BEA;
-      --blue-dark:#1E3DA6;
-      --navy:#111827;
-      --blue-soft:#EEF2FF;
-      --muted:#B9C3E8;
-      --border:#DDE5FF;
-    }
-
-    *{box-sizing:border-box;}
-
-    body{
-      margin:0;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
-      color:#fff;
-      font-family:"Poppins",sans-serif;
-      background:
-        radial-gradient(circle at 15% 20%, rgba(49,91,234,.35), transparent 45%),
-        radial-gradient(circle at 85% 80%, rgba(49,91,234,.28), transparent 50%),
-        linear-gradient(160deg, var(--navy) 0%, #0B1224 100%);
-    }
-
-    .error-shell{
-      position:relative;
-      z-index:1;
-      max-width:640px;
-      padding:2rem 1.5rem;
-      text-align:center;
-    }
-
-    .ring{
-      position:absolute;
-      border-radius:50%;
-      border:1px solid rgba(255,255,255,.08);
-      pointer-events:none;
-    }
-
-    .ring-1{ width:620px; height:620px; top:-180px; left:-160px; }
-    .ring-2{ width:420px; height:420px; bottom:-160px; right:-140px; border-color:rgba(49,91,234,.22); }
-    .ring-3{ width:260px; height:260px; bottom:-90px; right:-60px; border-color:rgba(49,91,234,.32); }
-
-    .error-icon{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      width:78px;
-      height:78px;
-      margin:0 auto 28px;
-      border-radius:50%;
-      background:var(--blue-soft);
-      box-shadow:0 16px 34px rgba(49,91,234,.35);
-      animation:pulseIcon 2.4s ease-in-out infinite;
-    }
-
-    .error-icon i{
-      color:var(--blue);
-      font-size:1.8rem;
-    }
-
-    @keyframes pulseIcon{
-      0%,100%{ box-shadow:0 16px 34px rgba(49,91,234,.35); }
-      50%{ box-shadow:0 16px 34px rgba(49,91,234,.60); }
-    }
-
-    .error-eyebrow{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:7px 16px;
-      margin-bottom:22px;
-      color:var(--muted);
-      border:1px solid rgba(255,255,255,.18);
-      border-radius:50px;
-      background:rgba(255,255,255,.05);
-      font-size:.78rem;
-      font-weight:600;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-    }
-
-    .error-code{
-      margin:0;
-      font-family:"Sora",sans-serif;
-      font-weight:800;
-      font-size:clamp(5rem,16vw,8.5rem);
-      line-height:1;
-      letter-spacing:-.03em;
-      background:linear-gradient(135deg,#fff 0%,#9CC4FF 60%,var(--blue) 100%);
-      -webkit-background-clip:text;
-      background-clip:text;
-      -webkit-text-fill-color:transparent;
-    }
-
-    .error-title{
-      margin:14px 0 12px;
-      font-family:"Sora",sans-serif;
-      font-weight:700;
-      font-size:clamp(1.3rem,3vw,1.7rem);
-      color:#fff;
-    }
-
-    .error-text{
-      max-width:440px;
-      margin:0 auto 32px;
-      color:var(--muted);
-      font-size:1rem;
-      line-height:1.7;
-    }
-
-    .error-actions{
-      display:flex;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:center;
-      gap:14px;
-    }
-
-    .btn-error-primary{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:14px 30px;
-      color:#fff;
-      background:var(--blue);
-      border:2px solid rgba(255,255,255,.25);
-      border-radius:50px;
-      font-family:"Sora",sans-serif;
-      font-weight:700;
-      text-decoration:none;
-      box-shadow:0 14px 28px rgba(49,91,234,.35);
-      transition:.25s ease;
-    }
-
-    .btn-error-primary:hover{
-      color:#fff;
-      background:var(--blue-dark);
-      transform:translateY(-3px);
-    }
-
-    .btn-error-ghost{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:14px 26px;
-      color:#fff;
-      background:transparent;
-      border:1.5px solid rgba(255,255,255,.28);
-      border-radius:50px;
-      font-family:"Sora",sans-serif;
-      font-weight:600;
-      text-decoration:none;
-      transition:.25s ease;
-      cursor:pointer;
-    }
-
-    .btn-error-ghost:hover{
-      color:var(--navy);
-      background:#fff;
-      border-color:#fff;
-    }
-
-    @media(max-width:480px){
-      .error-actions{ flex-direction:column; width:100%; }
-      .btn-error-primary, .btn-error-ghost{ width:100%; justify-content:center; }
+    :root, [data-bs-theme=light]{
+      --bs-primary: #315BEA;
+      --bs-primary-rgb: 49, 91, 234;
+      --bs-primary-bg-subtle: #EEF2FF;
+      --bs-dark: #111827;
+      --bs-dark-rgb: 17, 24, 39;
     }
   </style>
 </head>
 
-<body>
+<body class="bg-dark text-white d-flex align-items-center justify-content-center min-vh-100 py-5">
 
-  <div class="ring ring-1"></div>
-  <div class="ring ring-2"></div>
-  <div class="ring ring-3"></div>
+  <div class="container text-center" style="max-width:640px;">
 
-  <div class="error-shell">
-
-    <div class="error-icon">
-      <i class="fa-solid fa-server"></i>
+    <div class="d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-circle mb-4" style="width:80px; height:80px;">
+      <i class="fa-solid fa-server fs-3"></i>
     </div>
 
-    <span class="error-eyebrow">Erreur 500</span>
+ 
+    <h1 class="display-1 fw-bold text-primary">500</h1>
 
-    <h1 class="error-code">500</h1>
-    <h2 class="error-title">Une erreur est survenue de notre côté</h2>
-    <p class="error-text">
+    <h2 class="h3 fw-bold mb-3">Une erreur est survenue de notre côté</h2>
+
+    <p class="text-white-50 mb-4 mx-auto" style="max-width:440px;">
       Nos serveurs rencontrent un souci technique. Ce n'est pas de votre faute,
       nous travaillons déjà à le résoudre. Merci de réessayer dans quelques instants.
     </p>
 
-    <div class="error-actions">
-  
-      <a href="javascript:location.reload()" class="btn-error-primary">
-        <i class="fa-solid fa-rotate-right"></i>
-        Réessayer
-      </a>
-    </div>
+    <a href="javascript:location.reload()" class="btn btn-primary btn-lg rounded-pill px-4">
+      <i class="fa-solid fa-rotate-right me-2"></i>
+      Réessayer
+    </a>
 
   </div>
 

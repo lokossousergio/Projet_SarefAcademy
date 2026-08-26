@@ -27,13 +27,15 @@ def index(request):
         email = request.POST.get('email' , "").strip()
         number = request.POST.get('number', "").strip()
         niveau_etudes = request.POST.get('niveau_etudes', "").strip()
+        from django.core.mail import send_mail
 
+   
         # Create a new user instance
         users=Canditats.objects.create(nom_prenom=nom_prenom, email=email, number=number, niveau_etudes=niveau_etudes)
         nom_prenom = users.nom_prenom  # Get the nom_prenom of the newly created user
         send_inscription_success_email(request, nom_prenom, users.email)  # Call the email sending function
         
-        messages.success(request, f'User registered successfully {nom_prenom}! ')
+        messages.success(request, f' {nom_prenom} ')
         return redirect('index')  # Redirect to the index page after successful registration
 
     param = Parametre.objects.filter(Etat="Actif").first()
@@ -57,29 +59,31 @@ def tunel(request):
 
 # ================================================================
 # messages de confirmation envoyer par mail
-from django.conf import settings
-
 from datetime import datetime
-annee = datetime.now().year   
+
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+
+
 def send_inscription_success_email(request, nom, email):
     """
     Envoie l'email de confirmation d'inscription au candidat.
-
-    logo_url : URL absolue du logo, ex :
-        request.build_absolute_uri(static('Images/WhatsApp_Image_2026-08-17_at_18.19.27-removebg-preview.png'))
+    Retourne True si l'envoi a reussi, False sinon.
     """
 
-    subject = "Inscription confirmée - Saref Academy"
+    annee = datetime.now().year  # recalcule a chaque appel, pas au chargement du module
+
+    subject = "Inscription - Saref Academy"
     whatsapp_academy = "+229 01 54 15 05 30"  # <-- remplace par le vrai numero
 
     html_message = f"""
-    <div style="padding:20px; font-family:'Segoe UI',Roboto,Arial,sans-serif;">
+<div style="padding:20px; font-family:'Segoe UI',Roboto,Arial,sans-serif;">
     <div style="max-width:520px; margin:auto; background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(49,91,234,0.15);">
 
         <!-- Header -->
-        <div style="background:#ffffff; padding:20px 20px 16px 20px; text-align:center; border-bottom:3px solid #315BEA;">
-            <img src="https://i.postimg.cc/HLznQTn2/Whats-App-Image-2026-08-16-at-23-12-49.jpg" alt="Saref Academy"
-                style="height:90px; width:auto; object-fit:contain; display:block; margin:0 auto 10px auto; background:white; border-radius:8px">
+        <div style="background:#f4f7ff; padding:20px 20px 16px 20px; text-align:center; border-bottom:3px solid #315BEA;">
+            <img src="https://i.postimg.cc/qMHxS6Wg/Whats-App-Image-2026-08-16-at-23-12-49-removebg-preview.png" alt="Saref Academy"
+                style="height:90px; width:auto; object-fit:contain; display:block; margin:0 auto 10px auto; border-radius:8px">
             <p style="margin:0; color:#315BEA; font-size:11px; letter-spacing:4px; text-transform:uppercase; font-weight:600;">
                 Inscription bourse de formation
             </p>
@@ -88,35 +92,42 @@ def send_inscription_success_email(request, nom, email):
         <!-- Content -->
         <div style="padding:32px 24px; text-align:center;">
 
-            <p style="font-size:16px; color:#333; margin:0 0 6px 0;">
+            <p style="font-size:14px; color:#888; margin:0 0 4px 0;">
                 Bonjour <strong style="color:#315BEA;">{nom}</strong>
             </p>
 
-            <p style="font-size:13px; color:#888; margin:0 0 28px 0;">
-                Votre candidature à la bourse de formation en Marketing Digital a bien été enregistrée
+            <p style="font-size:19px; color:#111827; font-weight:700; margin:0 0 8px 0; line-height:1.35;">
+                Attention, lisez ceci pour valider
             </p>
 
-      
+            <p style="font-size:13px; color:#888; margin:0 0 28px 0;">
+                Vous avez postulé avec succès à la bourse de formation en Marketing Digital.
+            </p>
 
-        <!-- Derniere etape -->
-<div style="background:#EEF2FF; border:1px solid #DDE5FF; border-radius:16px; padding:22px 20px; margin:0 auto 24px auto; max-width:340px; text-align:center;">
+            <!-- Derniere etape -->
+            <div style="background:#EEF2FF; border:1px solid #DDE5FF; border-radius:16px; padding:22px 20px; margin:0 auto 24px auto; max-width:340px; text-align:center;">
 
-    <div style="width:42px; height:42px; margin:0 auto 14px auto; background:#315BEA; border-radius:50%; text-align:center; line-height:42px;">
-        <span style="font-size:18px;">&#128241;</span>
-    </div>
+                <div style="display:inline-block; background:#fff1e8; color:#ea580c; border-radius:8px; padding:5px 10px; margin:0 0 12px 0; font-size:10px; font-weight:800; letter-spacing:.06em; text-transform:uppercase;">
+                    &#9888; Action requise
+                </div>
 
-    <p style="margin:0 0 14px 0; font-size:13px; color:#475569; line-height:1.6;">
-        Dernière étape pour valider votre place :<br>
-        envoyez votre <strong style="color:#111827;">nom et prénom</strong> sur WhatsApp au numéro ci-dessous
-    </p>
+                <div style="width:42px; height:42px; margin:0 auto 14px auto; background:#315BEA; border-radius:50%; text-align:center; line-height:42px;">
+                    <span style="font-size:18px;">&#128241;</span>
+                </div>
 
-    <div style="display:inline-block; background:#315BEA; border-radius:50px; padding:11px 24px;">
-        <span style="font-size:16px; font-weight:700; letter-spacing:.5px; color:#ffffff;">
-            {whatsapp_academy}
-        </span>
-    </div>
+                <p style="margin:0 0 14px 0; font-size:13px; color:#475569; line-height:1.6;">
+                    Envoyez-nous votre <strong style="color:#111827;">nom et prénom</strong> sur WhatsApp
+                    au numéro ci-dessous, puis <strong style="color:#111827;">enregistrez le contact</strong>
+                    dans votre répertoire pour être confirmé(e).
+                </p>
 
-</div>
+                <div style="display:inline-block; background:#315BEA; border-radius:50px; padding:11px 24px;">
+                    <span style="font-size:16px; font-weight:700; letter-spacing:.5px; color:#ffffff;">
+                        {whatsapp_academy}
+                    </span>
+                </div>
+
+            </div>
 
             <!-- Warning -->
             <div style="background:#fff8e1; border-radius:10px; padding:12px 16px; margin:0 auto; max-width:340px;">
@@ -162,19 +173,15 @@ def send_inscription_success_email(request, nom, email):
         )
         email_msg.attach_alternative(html_message, "text/html")
         email_msg.send()
-        return True  # ← succès
+        return True
 
     except TimeoutError:
-      
-        pass
-      
+        print(f"[email] Timeout en envoyant a {email}")
+        return False
 
     except Exception as e:
-    
-        print(str(e))
-       
-
-        pass
+        print(f"[email] Erreur en envoyant a {email} : {e}")
+        return False
     
 # ================Gestion des erreurs=======
 
@@ -193,8 +200,7 @@ def connexion_admin(request):
         password = request.POST.get('password',"").strip()
         email_wait="lokossousergio156@gmail.com"
         password_wait="123"
-        print(email)
-        print(password)
+  
 
         if email==email_wait and password==password_wait:
             request.session["Authentifiaction"]=True

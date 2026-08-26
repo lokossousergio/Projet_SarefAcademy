@@ -24,8 +24,6 @@
 <style>
 
 </style>
-
-
 {% if messages %}
   {% for message in messages %}
 
@@ -41,15 +39,7 @@
 
         <div class="modal-content">
 
-
-          <!-- =================================================
-               BODY
-          ================================================== -->
-
           <div class="modal-body text-center">
-
-
-            <!-- BOUTON FERMER -->
 
             <button
               type="button"
@@ -58,119 +48,71 @@
               aria-label="Fermer">
             </button>
 
-
-            <!-- =================================================
-                 ICÔNE SUCCÈS
-            ================================================== -->
-
+            
             <div class="saref-success-icon">
 
-              <i class="fa-solid fa-check"></i>
+              <i class="fa-solid fa-exclamation-triangle"></i>
 
             </div>
 
-
-            <!-- =================================================
-                 TITRE
-            ================================================== -->
-
-            <h4
-              class="saref-modal-title"
-              id="successModalLabel"
-            >
-              Votre inscription est confirmée
+            <h4 class="saref-modal-title" id="successModalLabel">
+              Attention, lisez ceci pour valider
             </h4>
 
-
             <p class="saref-modal-message">
-              {{ message }}
+              {{message}} Vous avez postulé avec succès à la bourse de formation.
+             
             </p>
-
 
             <div class="saref-important-step">
 
-
-              <!-- BADGE -->
-
               <div class="saref-important-badge">
-
                 <i class="fa-solid fa-circle-exclamation"></i>
-
                 Action requise
-
               </div>
 
-
-              <!-- TITRE -->
-
-              <h6>
-                Garantissez votre place
-              </h6>
-
-
-              <!-- EXPLICATION -->
+              <h6>Garantissez votre place</h6>
 
               <p>
-                Pour garantir votre place, veuillez envoyer
-                <strong>votre nom et prénom</strong>
-                sur le numero WhatsApp.
+                Envoyez-nous votre <strong>nom et prénom</strong> sur WhatsApp
+                au numéro ci-dessous, puis <strong>enregistrez le contact</strong>
+                dans votre répertoire pour être confirmé(e).
               </p>
 
-
               <div class="saref-whatsapp-content">
-
-
-                <!-- ICÔNE -->
-
                 <div class="saref-whatsapp-icon">
-
                   <i class="fa-brands fa-whatsapp"></i>
-
                 </div>
 
-
-                <!-- TEXTE -->
-
                 <div class="saref-whatsapp-text">
-
-             
+                  <span>Numéro WhatsApp Saref Academy</span>
                   <strong class="saref-whatsapp-number">
                     +229 01 54 15 05 30
                   </strong>
-
                 </div>
-
-
               </div>
 
             </div>
 
           </div>
 
-
-       
-
           <div class="modal-footer">
-
             <button
               type="button"
               class="btn-saref-modal"
               data-bs-dismiss="modal"
             >
-              Compris
+              Compris, j'ai bien noté
             </button>
-
           </div>
 
-
         </div>
-
       </div>
-
     </div>
 
   {% endfor %}
 {% endif %}
+
 
   <!-- HERO SECTION -->
   <section class="hero-section text-center">
@@ -390,9 +332,16 @@
         </div>
 
         <div class="col-lg-6">
-          <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=800"
-               alt="Formation" class="rounded-img">
+          <img
+  src="https://www.wsu.ac.za/images/2025/01/07/regiustration.jpg"
+  alt="Étudiante africaine heureuse après l'obtention d'une bourse de formation"
+  class="img-fluid rounded-4 shadow-sm w-100"
+  style="height: 380px; object-fit: cover;"
+>
         </div>
+
+
+        
       </div>
     </div>
   </section>
@@ -478,8 +427,12 @@
         </div>
 
         <div class="col-lg-6 order-lg-1">
-          <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800"
-               alt="Emploi" class="rounded-img">
+        <img
+  src="https://d27735ao2xxhhe.cloudfront.net/blog/pro/maximizing-your-experience-working-abroad-how-to-make-the-most-of-your-time-as-a-gambian-expat-1000x70065b107bec98821706100670.png"
+  alt="Professionnelle africaine travaillant sur son ordinateur"
+  class="rounded-img img-fluid w-100"
+  style="height: 400px; object-fit: cover;"
+>
         </div>
       </div>
 <br>
@@ -529,6 +482,7 @@
 
         <div class="col-md-4">
           <div class="review-card">
+            
             <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=150"
                  alt="Apprenant" class="user-avatar">
             <div class="stars">★★★★★</div>
@@ -932,7 +886,6 @@ const paysAfricains = [
   /* =========================================================
      ICÔNE DE SUCCÈS
   ========================================================= */
-
   .saref-success-icon {
     display: flex;
     align-items: center;
@@ -945,18 +898,17 @@ const paysAfricains = [
 
     border-radius: 50%;
 
-    background: #ecfdf3;
-    color: #16a34a;
+    background: #fef3c7;
+    color: #d97706;
 
     box-shadow:
-      0 0 0 8px #f6fdf8,
-      0 10px 25px rgba(22, 163, 74, .12);
+      0 0 0 8px #fffbeb,
+      0 10px 25px rgba(217, 119, 6, .12);
   }
 
   .saref-success-icon i {
     font-size: 2rem;
   }
-
 
   /* =========================================================
      TITRE
