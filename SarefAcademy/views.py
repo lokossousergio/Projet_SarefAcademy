@@ -16,7 +16,7 @@ from django.core.mail import get_connection, EmailMultiAlternatives
 # Create your views here.
 import requests
 from django.shortcuts import render
-
+# dd
 # ============================================================
 # page dacceuil du site 
 def index(request):
