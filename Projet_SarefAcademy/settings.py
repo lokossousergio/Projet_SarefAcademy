@@ -28,7 +28,6 @@ DEBUG = True
 ALLOWED_HOSTS = [ '*', '10.149.41.136' ]
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-# jjj
 
 INSTALLED_APPS = [
     'django.contrib.admin',
