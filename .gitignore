@@ -3,5 +3,5 @@
 db.sqlite3
 media/
 uploads/
-__pycache__/
+Projet_SarefAcademy/__pycache__
 *.log
