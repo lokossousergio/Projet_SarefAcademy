@@ -36,9 +36,8 @@ def index(request):
         request.session["inscription"]=True
         nom_prenom = users.nom_prenom  # Get the nom_prenom of the newly created user
         send_inscription_success_email(request, nom_prenom, users.email)  # Call the email sending function
-        
-        messages.success(request, f' {nom_prenom} ')
-        return redirect('info')  # Redirect to the index page after successful registration
+     
+        return redirect('insrciption-valide')  # Redirect to the index page after successful registration
 
     param = Parametre.objects.filter(Etat="Actif").first()
 
@@ -48,14 +47,8 @@ def index(request):
     return render(request, 'index.html' , {"param":param})
 
 
-def info(request):
-    
-    if "inscription" not in request.session:
-        return redirect('index')
-    else:
-        # Supprimr la session
-        del request.session['inscription']
-        return render(request , 'info.html')
+def insrciption_valide(request):
+    return render(request , 'info.html')
 
 # =======================================================================
 
