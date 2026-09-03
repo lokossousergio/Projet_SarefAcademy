@@ -24,94 +24,6 @@
 <style>
 
 </style>
-{% if messages %}
-  {% for message in messages %}
-
-    <div
-      class="modal fade saref-modal"
-      id="successModal"
-      tabindex="-1"
-      aria-labelledby="successModalLabel"
-      aria-hidden="true"
-    >
-
-      <div class="modal-dialog modal-dialog-centered">
-
-        <div class="modal-content">
-
-          <div class="modal-body text-center">
-
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Fermer">
-            </button>
-
-            
-            <div class="saref-success-icon">
-
-              <i class="fa-solid fa-exclamation-triangle"></i>
-
-            </div>
-
-            <h4 class="saref-modal-title" id="successModalLabel">
-              Attention, lisez ceci pour valider
-            </h4>
-
-            <p class="saref-modal-message">
-              {{message}} Vous avez postulé avec succès à la bourse de formation.
-             
-            </p>
-
-            <div class="saref-important-step">
-
-              <div class="saref-important-badge">
-                <i class="fa-solid fa-circle-exclamation"></i>
-                Action requise
-              </div>
-
-              <h6>Garantissez votre place</h6>
-
-              <p>
-                Envoyez-nous votre <strong>nom et prénom</strong> sur WhatsApp
-                au numéro ci-dessous, puis <strong>enregistrez le contact</strong>
-                dans votre répertoire pour être confirmé(e).
-              </p>
-
-              <div class="saref-whatsapp-content">
-                <div class="saref-whatsapp-icon">
-                  <i class="fa-brands fa-whatsapp"></i>
-                </div>
-
-                <div class="saref-whatsapp-text">
-                  <span>Numéro WhatsApp Saref Academy</span>
-                  <strong class="saref-whatsapp-number">
-                    +229 01 54 15 05 30
-                  </strong>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn-saref-modal"
-              data-bs-dismiss="modal"
-            >
-              Compris, j'ai bien noté
-            </button>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-  {% endfor %}
-{% endif %}
 
 
   <!-- HERO SECTION -->
@@ -470,7 +382,7 @@
       <p class="text-muted">Ils ont rejoint la formation et <span class="text-brand-blue">boosté leur carrière</span>.</p>
     </div>
 
-    <div class="row g-4 justify-content-center">
+    <div class="row g-1 g-lg-4 justify-content-center">
 
       <!-- CARD 1 -->
      
@@ -1425,6 +1337,12 @@ const paysAfricains = [
   color: #555;
   line-height: 1.5;
 }
+
+@media (max-width: 767px) {
+  .testimonial-card {
+    margin-bottom: 0.2rem !important;
+  }
+}
 </style>
 
 <script>
@@ -1459,3 +1377,5 @@ document.querySelectorAll('.video-facade').forEach(facade => {
   });
 });
 </script>
+
+

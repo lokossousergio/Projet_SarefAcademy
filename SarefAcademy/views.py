@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from .models import Canditats, Admin, Parametre
+from django.http import Http404
 import requests
 
 from django.http import HttpResponse
@@ -32,11 +33,12 @@ def index(request):
    
         # Create a new user instance
         users=Canditats.objects.create(nom_prenom=nom_prenom, email=email, number=number, niveau_etudes=niveau_etudes)
+        request.session["inscription"]=True
         nom_prenom = users.nom_prenom  # Get the nom_prenom of the newly created user
         send_inscription_success_email(request, nom_prenom, users.email)  # Call the email sending function
         
         messages.success(request, f' {nom_prenom} ')
-        return redirect('index')  # Redirect to the index page after successful registration
+        return redirect('info')  # Redirect to the index page after successful registration
 
     param = Parametre.objects.filter(Etat="Actif").first()
 
@@ -46,6 +48,14 @@ def index(request):
     return render(request, 'index.html' , {"param":param})
 
 
+def info(request):
+    
+    if "inscription" not in request.session:
+        return redirect('index')
+    else:
+        # Supprimr la session
+        del request.session['inscription']
+        return render(request , 'info.html')
 
 # =======================================================================
 
