@@ -7,6 +7,7 @@ class Canditats (models.Model):
     email = models.EmailField()
     number = models.CharField(max_length=15)
     niveau_etudes = models.CharField(max_length=100)
+    motif_inscription = models.CharField(max_length=255)
     date_inscription = models.DateTimeField(auto_now_add=True)
 
 class Admin(models.Model):

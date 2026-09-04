@@ -28,11 +28,12 @@ def index(request):
         email = request.POST.get('email' , "").strip()
         number = request.POST.get('number', "").strip()
         niveau_etudes = request.POST.get('niveau_etudes', "").strip()
+        motif_inscription=request.POST.get('reason',"").strip()
         from django.core.mail import send_mail
 
    
         # Create a new user instance
-        users=Canditats.objects.create(nom_prenom=nom_prenom, email=email, number=number, niveau_etudes=niveau_etudes)
+        users=Canditats.objects.create(nom_prenom=nom_prenom, email=email, number=number, niveau_etudes=niveau_etudes , motif_inscription=motif_inscription)
         request.session["inscription"]=True
         nom_prenom = users.nom_prenom  # Get the nom_prenom of the newly created user
         send_inscription_success_email(request, nom_prenom, users.email)  # Call the email sending function

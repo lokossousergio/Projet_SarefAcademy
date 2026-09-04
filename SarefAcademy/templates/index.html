@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Saref Academy - Bourse de formation</title>
+     <link rel="icon" href="{% static 'images/WhatsApp_Image_2026-08-17_at_18.19.27-removebg-preview.png' %}" type="image/x-icon" />
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -216,6 +217,14 @@ src="https://www.facebook.com/tr?id=1365761035181904&ev=PageView&noscript=1"/>
       </div>
     </div>
 
+      <div class="mb-3">
+          <label class="small text-uppercase mb-1" style="opacity:.8;">Pourquoi souhaitez-vous postuler ? *</label>
+          <textarea class="form-control form-input-saref js-reason" required name="reason" placeholder="Décrivez brièvement vos motivations"></textarea>
+          <div class="invalid-feedback">
+            Veuillez décrire vos motivations .
+          </div>
+        </div>
+
         <button type="submit" class="btn-saref-premium btn-click">Je postule maintenant   <div class="spinner-border spinner-border-sm" style="display: none;"  role="status">
 
 </div> </button>
@@ -288,6 +297,13 @@ src="https://www.facebook.com/tr?id=1365761035181904&ev=PageView&noscript=1"/>
         <span class="competence-icon"><i class="fa-solid fa-bullhorn"></i></span>
         Introduction au marketing digital
       </li>
+   
+       <li>
+        <span class="competence-icon"><i class="fa-solid fa-ad"></i></span>
+        Publicité Ads
+      </li>
+
+      
 
       <li>
         <span class="competence-icon"><i class="fa-solid fa-users"></i></span>
@@ -351,7 +367,9 @@ src="https://www.facebook.com/tr?id=1365761035181904&ev=PageView&noscript=1"/>
           </p>
 
           <div class="job-tags">
+
             <span class="job-tag"><i class="fa-solid fa-hashtag"></i> Community Manager</span>
+           
             <span class="job-tag"><i class="fa-solid fa-palette"></i> Web Designer</span>
             <span class="job-tag"><i class="fa-solid fa-code"></i> Développeur Web</span>
             <span class="job-tag"><i class="fa-solid fa-bullseye"></i> Media Buyer</span>
@@ -419,7 +437,7 @@ src="https://www.facebook.com/tr?id=1365761035181904&ev=PageView&noscript=1"/>
               <div class="avatar"><i class="bi bi-person-fill"></i></div>
               <h5 class="card-title mb-0">Fatou, Sénégal</h5>
             </div>
-            <div class="stars mb-2">★★★★★</div>
+            
             <p class="card-text">La qualité du mentorat est incroyable. J'ai enfin compris comment fonctionne le marketing digital.</p>
           </div>
         </div>
@@ -438,7 +456,7 @@ src="https://www.facebook.com/tr?id=1365761035181904&ev=PageView&noscript=1"/>
               <div class="avatar"><i class="bi bi-person-fill"></i></div>
               <h5 class="card-title mb-0">Jean, Togo</h5>
             </div>
-            <div class="stars mb-2">★★★★★</div>
+            
             <p class="card-text">Une opportunité en or. Les formateurs sont disponibles et les projets concrets nous préparent au monde professionnel.</p>
           </div>
         </div>
@@ -457,7 +475,7 @@ src="https://www.facebook.com/tr?id=1365761035181904&ev=PageView&noscript=1"/>
               <div class="avatar"><i class="bi bi-person-fill"></i></div>
               <h5 class="card-title mb-0">Aïcha, Côte d'Ivoire</h5>
             </div>
-            <div class="stars mb-2">★★★★★</div>
+            
             <p class="card-text">Un accompagnement personnalisé qui m'a permis de lancer mon activité en ligne rapidement.</p>
           </div>
         </div>
@@ -477,7 +495,7 @@ src="https://www.facebook.com/tr?id=1365761035181904&ev=PageView&noscript=1"/>
               <div class="avatar"><i class="bi bi-person-fill"></i></div>
               <h5 class="card-title mb-0">Moussa, Bénin</h5>
             </div>
-            <div class="stars mb-2">★★★★★</div>
+            
             <p class="card-text">Grâce à cette formation, j'ai pu décrocher mon premier contrat de freelance en moins de trois mois.</p>
           </div>
         </div>
@@ -622,6 +640,14 @@ src="https://www.facebook.com/tr?id=1365761035181904&ev=PageView&noscript=1"/>
       </div>
     </div>
 
+      <div class="mb-3">
+          <label class="small text-uppercase mb-1" style="opacity:.8;">Pourquoi souhaitez-vous postuler ? *</label>
+          <textarea class="form-control form-input-saref js-reason" required name="reason" placeholder="Décrivez brièvement vos motivations"></textarea>
+          <div class="invalid-feedback">
+            Veuillez décrire vos motivations .
+          </div>
+        </div>
+
         <button type="submit" class="btn-saref-premium btn-click">Je postule maintenant  <div class="spinner-border spinner-border-sm" style="display: none;"  role="status">
 
 </div> </button>
@@ -694,6 +720,7 @@ const paysAfricains = [
     const niveau = formulaire.querySelector(".js-study-level");
     const whatsappInternational = formulaire.querySelector(".js-whatsapp-e164");
     const spinner = formulaire.querySelector(".spinner-border");
+    const reason = formulaire.querySelector(".js-reason");
 
     const telephone = window.intlTelInput(whatsapp, {
       initialCountry: "bj",
@@ -730,17 +757,25 @@ const paysAfricains = [
       return valide;
     }
 
+    function validerReason() {
+      const valide = reason.value.trim() !== "";
+      afficherEtat(reason, valide);
+      return valide;
+    }
+
     nom.addEventListener("input", validerNom);
     email.addEventListener("input", validerEmail);
     whatsapp.addEventListener("blur", validerWhatsApp);
     niveau.addEventListener("change", validerNiveau);
+    reason.addEventListener("input", validerReason);
 
     formulaire.addEventListener("submit", (event) => {
       const formulaireValide =
         validerNom() &&
         validerEmail() &&
         validerWhatsApp() &&
-        validerNiveau();
+        validerNiveau() &&
+        validerReason();
 
       if (!formulaireValide) {
         event.preventDefault();
@@ -764,15 +799,6 @@ const paysAfricains = [
 
 
 
-
-<script>
-  const successModal = new bootstrap.Modal(
-    document.getElementById("successModal")
-  );
-
-  // À appeler dans ton propre script après une inscription réussie :
-   successModal.show();
-</script>
 
 
 
