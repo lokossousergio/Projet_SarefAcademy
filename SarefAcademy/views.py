@@ -257,11 +257,8 @@ def connexion_admin(request):
         if email==email_wait and password==password_wait:
             request.session["Authentifiaction"]=True
             messages.success( request ,"Bienvenue dans votre espace administrateur")
-           
-          
             return redirect("admin_dashboard")
         else:
-
             messages.error( request ,"Email ou mot de passe incoreects veuillez ressayer")
             return redirect('connexion_admin')
         
