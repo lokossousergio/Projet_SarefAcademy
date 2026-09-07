@@ -250,8 +250,8 @@ def connexion_admin(request):
     if request.method == 'POST':
         email = request.POST.get('email',"").strip()
         password = request.POST.get('password',"").strip()
-        email_wait="lokossousergio156@gmail.com"
-        password_wait="123"
+        email_wait="sarefacademy@gmail.com"
+        password_wait="uSXL69"
   
 
         if email==email_wait and password==password_wait:
