@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from .models import Canditats, Admin, Parametre
-from django.http import Http404
+
 import requests
 
 from django.http import HttpResponse
