@@ -311,6 +311,14 @@ def suspension_delai_candidature(request):
             Parametre.objects.filter(Etat="Actif").delete()
             return redirect ('admin_dashboard')     
         
+
+# ==========================================================
+
+def supprimer_candidat(request , id_user):
+
+    Canditats.objects.filter(id=id_user).delete()
+    return redirect ('admin_dashboard')
+    
 # =====================================================
 
 # deconnexion admin

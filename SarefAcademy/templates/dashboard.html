@@ -614,6 +614,7 @@
                   <th>Niveau d'étude</th>
                   <th>Date d'inscription</th>
                   <th>Motif de candidature</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
 
@@ -638,6 +639,13 @@
                             data-reason="{{ candidat.motif_inscription }}">
                       Voir le motif
                     </button>
+                  </td>
+
+                  <td>
+                    <a href="{% url 'supprimer_candidat' id_user=candidat.id %}" class="btn btn-outline-danger btn-sm">
+                      <i class="fa-solid fa-trash me-1"></i>
+                      Supprimer
+                    </a>
                   </td>
                 </tr>
                 {% empty %}

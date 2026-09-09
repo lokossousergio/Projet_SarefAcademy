@@ -10,6 +10,7 @@ urlpatterns = [
     path('admin_dashboard',  views.admin_dashboard, name='admin_dashboard'),
     path('suspension_delai_candidature',  views.suspension_delai_candidature, name='suspension_delai_candidature'),
     path('deconnexion' , views.deconnexion , name="deconnexion"),
+    path('supprimer_candidat/<int:id_user>' , views.supprimer_candidat , name="supprimer_candidat"),
     
 ]
 #
