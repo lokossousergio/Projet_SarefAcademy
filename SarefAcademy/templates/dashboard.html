@@ -597,12 +597,20 @@
               <p class="text-secondary small mb-0">Les dernières candidatures reçues.</p>
             </div>
 
-            <div class="input-group candidate-search">
-              <span class="input-group-text bg-white">
-                <i class="fa-solid fa-magnifying-glass text-secondary"></i>
-              </span>
-              <input type="search" class="form-control" placeholder="Rechercher un candidat">
-            </div>
+     
+<!-- telecharger le pdfaa des inscriptions -->
+     <div class="d-flex gap-2">
+  <a class="btn btn-outline-primary" href="{% url 'telecharger_pdf_all' %}">
+    <i class="fa-solid fa-file-pdf"></i> Toutes les candidatures
+  </a>
+    <a class="btn btn-outline-primary" href="{% url 'telecharger_pdf_jour' %}">
+    <i class="fa-solid fa-file-pdf"></i> Candidatures du jour
+  </a>
+</div>
+
+
+
+
           </div>
 
           <div class="table-responsive">

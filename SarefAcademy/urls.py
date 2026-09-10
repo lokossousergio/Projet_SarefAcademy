@@ -11,6 +11,8 @@ urlpatterns = [
     path('suspension_delai_candidature',  views.suspension_delai_candidature, name='suspension_delai_candidature'),
     path('deconnexion' , views.deconnexion , name="deconnexion"),
     path('supprimer_candidat/<int:id_user>' , views.supprimer_candidat , name="supprimer_candidat"),
+    path('telecharger_pdf_jour' , views.telecharger_pdf_jour , name="telecharger_pdf_jour"),
+    path('telecharger_pdf_all' , views.telecharger_pdf_all, name="telecharger_pdf_all")
     
 ]
 #

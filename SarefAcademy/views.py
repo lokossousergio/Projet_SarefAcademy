@@ -325,3 +325,108 @@ def supprimer_candidat(request , id_user):
 def deconnexion(request):
     request.session.flush()
     return redirect('connexion_admin')
+
+# ============================================================
+# views.py
+from django.http import HttpResponse
+from django.utils import timezone
+from reportlab.lib.pagesizes import landscape, A4
+from reportlab.lib.units import cm
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib import colors
+
+
+def telecharger_pdf_jour(request):
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = 'attachment; filename="Liste_des_candidats_du_jour.pdf"'
+
+    # Date du jour
+    aujourdhui = timezone.now().date()
+
+    # Filtrer les candidats inscrits aujourd'hui
+    candidats = Canditats.objects.filter(date_inscription__date=aujourdhui)
+
+    doc = SimpleDocTemplate(
+        response,
+        pagesize=landscape(A4),
+        leftMargin=1.5*cm, rightMargin=1.5*cm, topMargin=1.5*cm, bottomMargin=1.5*cm
+    )
+
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle('title', parent=styles['Title'], fontSize=16)
+    date_style = ParagraphStyle('date', parent=styles['Normal'], fontSize=11, textColor=colors.grey)
+
+    story = []
+    story.append(Paragraph("Liste des candidats inscrits aujourd'hui", title_style))
+    story.append(Paragraph(f"Date : {aujourdhui.strftime('%d/%m/%Y')}", date_style))
+    story.append(Spacer(1, 14))
+
+    # En-têtes et données du tableau
+    headers = [ "Nom & Prénom", "Email", "Numéro", "Niveau d'études" ]
+    data = [headers]
+    for c in candidats:
+        data.append([c.nom_prenom, c.email, c.number, c.niveau_etudes ])
+
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2c3e50")),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#f2f2f2")]),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+    ]))
+
+    story.append(table)
+    doc.build(story)
+    return response
+
+
+
+# =====================================================
+
+def telecharger_pdf_all(request):
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = 'attachment; filename="Liste_des_candidats_général_campagne.pdf"'
+
+   
+    # Filtrer les candidats inscrits aujourd'hui
+    candidats = Canditats.objects.all()
+
+    doc = SimpleDocTemplate(
+        response,
+        pagesize=landscape(A4),
+        leftMargin=1.5*cm, rightMargin=1.5*cm, topMargin=1.5*cm, bottomMargin=1.5*cm
+    )
+
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle('title', parent=styles['Title'], fontSize=16)
+    date_style = ParagraphStyle('date', parent=styles['Normal'], fontSize=11, textColor=colors.grey)
+
+    story = []
+    story.append(Paragraph("    Liste des candidats  incrits lors de la campagne", title_style))
+
+    story.append(Spacer(1, 14))
+
+    # En-têtes et données du tableau
+    headers = [ "Nom & Prénom", "Email", "Numéro", "Niveau d'études" ]
+    data = [headers]
+    for c in candidats:
+        data.append([c.nom_prenom, c.email, c.number, c.niveau_etudes ])
+
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2c3e50")),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#f2f2f2")]),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+    ]))
+
+    story.append(table)
+    doc.build(story)
+    return response
