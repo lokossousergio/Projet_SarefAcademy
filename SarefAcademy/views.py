@@ -363,10 +363,10 @@ def telecharger_pdf_jour(request):
     story.append(Spacer(1, 14))
 
     # En-têtes et données du tableau
-    headers = [ "Nom & Prénom", "Email", "Numéro", "Niveau d'études" ]
+    headers = [ "N°" ,"Nom & Prénom", "Email", "Numéro", "Niveau d'études" ]
     data = [headers]
     for c in candidats:
-        data.append([c.nom_prenom, c.email, c.number, c.niveau_etudes ])
+        data.append([c.id , c.nom_prenom, c.email, c.number, c.niveau_etudes ])
 
     table = Table(data, repeatRows=1)
     table.setStyle(TableStyle([
@@ -411,10 +411,10 @@ def telecharger_pdf_all(request):
     story.append(Spacer(1, 14))
 
     # En-têtes et données du tableau
-    headers = [ "Nom & Prénom", "Email", "Numéro", "Niveau d'études" ]
+    headers = [ "N°" ,"Nom & Prénom", "Email", "Numéro", "Niveau d'études" ]
     data = [headers]
     for c in candidats:
-        data.append([c.nom_prenom, c.email, c.number, c.niveau_etudes ])
+        data.append([ c.id ,c.nom_prenom, c.email, c.number, c.niveau_etudes ])
 
     table = Table(data, repeatRows=1)
     table.setStyle(TableStyle([
