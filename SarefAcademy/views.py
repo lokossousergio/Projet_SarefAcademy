@@ -48,7 +48,7 @@ def index(request):
     return render(request, 'index.html' , {"param":param})
 
 
-def insrciption_valide(request):
+def inscription_valide(request):
     return render(request , 'info.html')
 
 # =======================================================================
