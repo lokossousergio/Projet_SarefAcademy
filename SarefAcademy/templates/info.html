@@ -223,6 +223,199 @@ src="https://www.facebook.com/tr?id=1424078813234077&ev=PageView
 
 <body>
 
+{% load static %}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Confirmation - Saref Academy</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+
+    body{
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      background-color: #EEF2FF;
+      background-image:
+        url("data:image/svg+xml,%3Csvg width='360' height='360' viewBox='0 0 360 360' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23315BEA' stroke-width='1.5' opacity='.08'%3E%3Ccircle cx='0' cy='0' r='95'/%3E%3Ccircle cx='0' cy='0' r='125'/%3E%3Ccircle cx='0' cy='0' r='155'/%3E%3Cpath d='M235 300c36-50 80-70 130-65'/%3E%3C/g%3E%3C/svg%3E"),
+        linear-gradient(135deg,#FAFBFF 0%,#E9EEFF 100%);
+      background-repeat: repeat, no-repeat;
+      background-size: 360px 360px, cover;
+    }
+
+    .saref-modal .modal-content {
+      overflow: hidden;
+      border: 0;
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: 0 30px 80px rgba(15, 23, 42, .22);
+    }
+
+    .saref-modal .modal-body {
+      position: relative;
+      padding: 42px 36px 28px;
+    }
+
+    .saref-success-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 22px;
+      border-radius: 50%;
+      background: #fef3c7;
+      color: #d97706;
+      box-shadow:
+        0 0 0 8px #fffbeb,
+        0 10px 25px rgba(217, 119, 6, .12);
+    }
+
+    .saref-success-icon i {
+      font-size: 2rem;
+    }
+
+    .saref-modal-title {
+      margin: 0;
+      color: #0f172a;
+      font-family: "Sora", sans-serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: -.035em;
+      line-height: 1.3;
+    }
+
+    .saref-modal-message {
+      max-width: 430px;
+      margin: 10px auto 0;
+      color: #64748b;
+      font-size: .95rem;
+      font-weight: 400;
+      line-height: 1.6;
+    }
+
+    .saref-important-step {
+      margin-top: 28px;
+      padding: 24px;
+      text-align: left;
+      border: 1px solid #fed7aa;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #fffaf5 0%, #ffffff 100%);
+      box-shadow: 0 10px 25px rgba(249, 115, 22, .08);
+    }
+
+    .saref-important-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: #fff1e8;
+      color: #ea580c;
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .saref-important-badge i {
+      font-size: .75rem;
+    }
+
+    .saref-important-step h6 {
+      margin: 13px 0 8px;
+      color: #111827;
+      font-family: "Sora", sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .saref-important-step p {
+      margin: 0 0 20px;
+      color: #64748b;
+      font-size: .89rem;
+      line-height: 1.6;
+    }
+
+    .saref-important-step p strong {
+      color: #111827;
+      font-weight: 700;
+    }
+
+    /* BOUTON REJOINDRE LA CHAINE WHATSAPP - seduisant, vert whatsapp */
+    .saref-whatsapp-cta{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 15px 20px;
+      color: #fff;
+      background: linear-gradient(135deg, #25D366 0%, #1DA851 100%);
+      border: 0;
+      border-radius: 14px;
+      font-family: "Sora", sans-serif;
+      font-size: .95rem;
+      font-weight: 700;
+      letter-spacing: .01em;
+      text-decoration: none;
+      text-transform: uppercase;
+      box-shadow: 0 10px 24px rgba(37, 211, 102, .35);
+      transition: .2s ease;
+      animation: whatsappPulse 2.4s ease-in-out infinite;
+    }
+
+    .saref-whatsapp-cta i{
+      font-size: 1.25rem;
+    }
+
+    .saref-whatsapp-cta:hover{
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(37, 211, 102, .45);
+    }
+
+    @keyframes whatsappPulse{
+      0%, 100%{ box-shadow: 0 10px 24px rgba(37, 211, 102, .35); }
+      50%{ box-shadow: 0 10px 24px rgba(37, 211, 102, .55); }
+    }
+
+    @media (max-width: 576px) {
+      .saref-modal .modal-body {
+        padding: 38px 20px 24px;
+      }
+      .saref-modal-title {
+        font-size: 1.25rem;
+      }
+      .saref-modal-message {
+        font-size: .9rem;
+      }
+      .saref-important-step {
+        padding: 18px;
+      }
+      .saref-important-step h6 {
+        font-size: 1rem;
+      }
+      .saref-important-step p {
+        font-size: .85rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
   <div class="saref-modal" style="width:100%; max-width:520px;">
     <div class="modal-content">
 
@@ -237,12 +430,7 @@ src="https://www.facebook.com/tr?id=1424078813234077&ev=PageView
         </h4>
 
         <p class="saref-modal-message">
-            {% for messages in messages %}
-            {% if messages %}
-              {{ messages }}
-            {% endif %}
-            {% endfor %}
-            Vous avez postulé avec succès à la bourse de formation.
+          Vous avez postulé avec succès à la bourse de formation.
         </p>
 
         <div class="saref-important-step">
@@ -252,26 +440,23 @@ src="https://www.facebook.com/tr?id=1424078813234077&ev=PageView
             Action requise
           </div>
 
-          <h6>Garantissez votre place</h6>
+          <h6>Une dernière étape importante</h6>
 
           <p>
-            Envoyez-nous votre <strong>nom et prénom</strong> sur WhatsApp
-            au numéro ci-dessous, puis <strong>enregistrez le contact</strong>
-            dans votre répertoire pour être confirmé(e).
+            Rejoignez maintenant la <strong>chaîne WhatsApp officielle</strong> de
+            Saref Academy. C'est sur cette chaîne que nous partagerons toutes les
+            informations importantes concernant votre candidature : prochaines
+            étapes, annonces, dates importantes et instructions à suivre.
           </p>
 
-          <div class="saref-whatsapp-content">
-            <div class="saref-whatsapp-icon">
-              <i class="fa-brands fa-whatsapp"></i>
-            </div>
-
-            <div class="saref-whatsapp-text">
-              <span>Numéro WhatsApp Saref Academy</span>
-              <strong class="saref-whatsapp-number">
-                +229 01 54 15 05 30
-              </strong>
-            </div>
-          </div>
+          <a
+            href="https://whatsapp.com/channel/0029VbD91sw545uo0Tesap18"
+            target="_blank"
+            rel="noopener"
+            class="saref-whatsapp-cta">
+            <i class="fa-brands fa-whatsapp"></i>
+            Rejoindre la chaîne WhatsApp
+          </a>
 
         </div>
 
@@ -280,6 +465,10 @@ src="https://www.facebook.com/tr?id=1424078813234077&ev=PageView
     </div>
   </div>
 
+
+
+</body>
+</html>
   <script>
     // empeche le retour arriere normal : on ajoute un etat factice dans
     // l'historique, puis on redirige vers index des que l'utilisateur clique

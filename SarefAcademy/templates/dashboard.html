@@ -650,10 +650,13 @@
                   </td>
 
                   <td>
-                    <a href="" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" data-candidat-id="{{ candidat.id }}">
-     
-                      Supprimer
-                    </a>
+              
+
+                                  <a href="" class="btn btn-outline-danger btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteModal{{ candidat.id }}">
+                Supprimer
+              </a>
                   </td>
                 </tr>
 
@@ -661,28 +664,27 @@
                 
 <!-- modal suppression -->
 
-                      <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
+<div class="modal fade" id="deleteModal{{ candidat.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ candidat.id }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
 
-            <div class="modal-header">
-              <h5 class="modal-title" id="deleteModalLabel">Confirmer la suppression</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-            </div>
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel{{ candidat.id }}">Confirmer la suppression</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
 
-            <div class="modal-body">
-              Êtes-vous sûr de vouloir supprimer ce candidat ? Cette action est irréversible.
-            </div>
+      <div class="modal-body">
+        Êtes-vous sûr de vouloir supprimer <strong>{{ candidat.nom_prenom }}</strong> ? Cette action est irréversible.
+      </div>
 
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-              <a href="{% url 'supprimer_candidat' id_user=candidat.id %}" id="confirmDeleteBtn" class="btn btn-danger">confirmer </a>
-              </a>
-            </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <a href="{% url 'supprimer_candidat' id_user=candidat.id %}" class="btn btn-danger">confirmer</a>
+      </div>
 
-          </div>
-        </div>
-
+    </div>
+  </div>
+</div>
 
                 {% empty %}
                 <tr>
@@ -872,6 +874,12 @@
       }
 
     });
+
+
+
+  
+
+
   </script>
 
 </body>

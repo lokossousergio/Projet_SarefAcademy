@@ -85,7 +85,7 @@ def send_inscription_success_email(request, nom, email):
             <img src="https://i.postimg.cc/qMHxS6Wg/Whats-App-Image-2026-08-16-at-23-12-49-removebg-preview.png"
                 alt="Saref Academy"
                 style="height:90px; width:auto; object-fit:contain; display:block; margin:0 auto 10px auto; border-radius:8px">
-            
+
             <p style="margin:0; color:#315BEA; font-size:11px; letter-spacing:4px; text-transform:uppercase; font-weight:600;">
                 Inscription bourse de formation
             </p>
@@ -107,34 +107,34 @@ def send_inscription_success_email(request, nom, email):
             </p>
 
             <!-- Derniere etape -->
-            <div style="background:#EEF2FF; border:1px solid #DDE5FF; border-radius:16px; padding:22px 20px; margin:0 auto 24px auto; max-width:340px; text-align:center;">
+            <div style="background:#EEF2FF; border:1px solid #DDE5FF; border-radius:16px; padding:24px 20px; margin:0 auto 24px auto; max-width:340px; text-align:center;">
 
                 <div style="display:inline-block; background:#fff1e8; color:#ea580c; border-radius:8px; padding:5px 10px; margin:0 0 12px 0; font-size:10px; font-weight:800; letter-spacing:.06em; text-transform:uppercase;">
                     &#9888; Action requise
                 </div>
 
-                <div style="width:42px; height:42px; margin:0 auto 14px auto; background:#315BEA; border-radius:50%; text-align:center; line-height:42px;">
-                    <span style="font-size:18px;">&#128241;</span>
-                </div>
-
-                <p style="margin:0 0 14px 0; font-size:13px; color:#475569; line-height:1.6;">
-                    Envoyez-nous votre <strong style="color:#111827;">nom et prénom</strong> sur WhatsApp
-                    au numéro ci-dessous, puis <strong style="color:#111827;">enregistrez le contact</strong>
-                    dans votre répertoire pour être confirmé(e).
+                <p style="margin:0 0 6px 0; font-size:15px; font-weight:700; color:#111827;">
+                    Une dernière étape importante
                 </p>
 
-                <div style="display:inline-block; background:#315BEA; border-radius:50px; padding:11px 24px;">
-                    <span style="font-size:16px; font-weight:700; letter-spacing:.5px; color:#ffffff;">
-                        {whatsapp_academy}
-                    </span>
-                </div>
+                <p style="margin:0; font-size:13px; color:#475569; line-height:1.6;">
+                    Rejoignez maintenant la <strong style="color:#111827;">chaîne WhatsApp officielle</strong>
+                    de Saref Academy. C'est sur cette chaîne que nous partagerons toutes les informations
+                    importantes concernant votre candidature : prochaines étapes, annonces, dates
+                    importantes et instructions à suivre.
+                    <br><br>
+                    <a href="https://whatsapp.com/channel/0029VbD91sw545uo0Tesap18"
+                       style="color:#315BEA; text-decoration:underline; font-weight:600;">
+                        Cliquez ici pour rejoindre la chaîne WhatsApp
+                    </a>
+                </p>
 
             </div>
 
             <!-- Warning -->
             <div style="background:#fff8e1; border-radius:10px; padding:12px 16px; margin:0 auto; max-width:340px;">
                 <p style="margin:0; font-size:12px; color:#b45309;">
-                    ⏱️ Cette étape valide définitivement votre place, ne tardez pas
+                    ⏱️ Cette étape est indispensable pour recevoir toutes les informations, ne tardez pas
                 </p>
             </div>
 
