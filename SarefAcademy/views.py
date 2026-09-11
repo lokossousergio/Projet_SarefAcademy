@@ -38,7 +38,7 @@ def index(request):
         nom_prenom = users.nom_prenom  # Get the nom_prenom of the newly created user
         send_inscription_success_email(request, nom_prenom, users.email)  # Call the email sending function
      
-        return redirect('insrciption-valide')  # Redirect to the index page after successful registration
+        return redirect('inscription_valide')  # Redirect to the index page after successful registration
 
     param = Parametre.objects.filter(Etat="Actif").first()
 
