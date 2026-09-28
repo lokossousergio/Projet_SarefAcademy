@@ -6,6 +6,7 @@ from SarefAcademy import views
 urlpatterns = [
     path('',  views.index, name='index'),
     path('inscription_valide',  views.inscription_valide , name='inscription_valide'),
+    path('finalisation_inscription',  views.finalisation_inscription , name='finalisation_inscription'),
     path('connexion_admin',  views.connexion_admin, name='connexion_admin'),
     path('admin_dashboard',  views.admin_dashboard, name='admin_dashboard'),
     path('suspension_delai_candidature',  views.suspension_delai_candidature, name='suspension_delai_candidature'),

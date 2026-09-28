@@ -45,8 +45,10 @@ def index(request):
     
         
 
-    return render(request, 'index.html' , {"param":param})
+    return render(request, 'tunel.html' , {"param":param})
 
+def finalisation_inscription(request):
+    return render( request , 'finalisation_inscription.html')
 
 def inscription_valide(request):
     return render(request , 'info.html')

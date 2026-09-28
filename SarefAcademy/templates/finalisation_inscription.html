@@ -1,0 +1,2235 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      document.documentElement.classList.add("page-loading");
+    </script>
+    <style>
+      html.page-loading,
+      html.page-loading body {
+        overflow: hidden;
+      }
+      html.page-loading body > :not(.page-loader) {
+        visibility: hidden;
+      }
+      .page-loading .navbar-saref {
+        display: none !important;
+      }
+      .page-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 2000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(51, 92, 236, 0.12);
+        opacity: 1;
+        visibility: visible;
+        transition:
+          opacity 450ms ease,
+          visibility 450ms ease;
+      }
+      .page-loading .page-loader {
+        display: flex;
+      }
+      .page-loader.is-leaving {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .page-loader-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+      }
+      .page-loader .navbar-brand-mark {
+        width: min(180px, 62vw);
+        height: auto;
+        aspect-ratio: 9 / 5;
+        background: transparent;
+        animation: page-loader-breathe 1.25s ease-in-out infinite;
+      }
+      .page-loader .navbar-brand-mark img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .page-loader-name {
+        margin-top: -10px;
+        color: #0f172a;
+        font-family: "Baloo 2", sans-serif;
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+      .page-loader-name span {
+        color: #335cec;
+      }
+      @keyframes page-loader-breathe {
+        0%,
+        100% {
+          opacity: 0.88;
+          transform: scale(0.78);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.04);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .page-loader {
+          transition: none;
+        }
+        .page-loader .navbar-brand-mark {
+          animation: none;
+        }
+      }
+    </style>
+    <title>Saref Academy — Formations en ligne et avenir professionnel</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        /* Bleu exact extrait du logo Saref Academy */
+        --brand-blue: #335cec;
+        --brand-blue-dark: #2b4ec9;
+        --blue-25: #f5f7fe;
+        --blue-50: #ebeffd;
+        --blue-100: #d6defb;
+        --blue-200: #adbef7;
+        --blue-300: #859df4;
+        --blue-400: #5c7df0;
+        --blue-600: #2b4ec9;
+        --blue-700: #2440a5;
+        --blue-800: #1c3382;
+        --blue-900: #14255e;
+        --blue-950: #0d173b;
+        --logo-green: #22c55e;
+        --dark-950: #0b0f19;
+        --dark-900: #0f172a;
+        --dark-800: #141f33;
+        --slate-600: #475569;
+        --slate-500: #64748b;
+        --slate-400: #94a3b8;
+        --bg-soft: #f8fafc;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        color: var(--dark-900);
+        background: #fff;
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      .font-display {
+        font-family: "Baloo 2", "Plus Jakarta Sans", sans-serif;
+        font-weight: 700;
+      }
+      .text-brand-blue {
+        color: var(--brand-blue) !important;
+      }
+      .bg-brand-blue {
+        background-color: var(--brand-blue) !important;
+      }
+      .btn-brand {
+        background: var(--brand-blue);
+        border: 1px solid var(--brand-blue);
+        color: #fff;
+        font-weight: 600;
+        border-radius: 0.6rem;
+        padding: 0.75rem 1.5rem;
+        transition: 0.2s ease;
+      }
+      .btn-brand:hover {
+        background: var(--brand-blue-dark);
+        border-color: var(--brand-blue-dark);
+        color: #fff;
+        transform: translateY(-1px);
+      }
+      .btn-outline-brand {
+        background: #fff;
+        border: 1.5px solid var(--brand-blue);
+        color: var(--brand-blue);
+        font-weight: 600;
+        border-radius: 0.6rem;
+        padding: 0.75rem 1.5rem;
+        transition: 0.2s ease;
+      }
+      .btn-outline-brand:hover {
+        background: var(--brand-blue);
+        color: #fff;
+        transform: translateY(-1px);
+      }
+
+      .pill-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 50px;
+        padding: 0.45rem 1rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--dark-900);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      }
+      .section-badge {
+        display: inline-block;
+        background: #dbeafe;
+        color: var(--brand-blue);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+        margin-bottom: 1rem;
+      }
+
+      .section-subtitle {
+        color: var(--slate-600);
+        font-size: 1.05rem;
+      }
+
+      /* ===== NAVBAR ===== */
+      .navbar-saref {
+        background: linear-gradient(180deg, #0b0f19 0%, #0f172a 100%);
+        border-bottom: 1px solid rgba(51, 92, 236, 0.35);
+        box-shadow: 0 4px 24px rgba(2, 6, 23, 0.35);
+      }
+      .navbar-saref .nav-link {
+        color: #cbd5e1;
+        font-weight: 500;
+        position: relative;
+        padding: 0.5rem 0.9rem !important;
+        transition: color 0.2s ease;
+      }
+      .navbar-saref .nav-link::after {
+        content: "";
+        position: absolute;
+        left: 0.9rem;
+        right: 0.9rem;
+        bottom: 0.15rem;
+        height: 2px;
+        background: var(--brand-blue);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.25s ease;
+      }
+      .navbar-saref .nav-link:hover {
+        color: #fff;
+      }
+      .navbar-saref .nav-link:hover::after {
+        transform: scaleX(1);
+      }
+      .navbar-saref .navbar-toggler {
+        width: 48px;
+        height: 48px;
+        padding: 0.65rem;
+        border: 1px solid var(--brand-blue);
+        border-radius: 0.65rem;
+        background: var(--brand-blue);
+      }
+      .navbar-saref .navbar-toggler:hover,
+      .navbar-saref .navbar-toggler:focus-visible {
+        border-color: var(--brand-blue-dark);
+        background: var(--brand-blue-dark);
+      }
+      .navbar-saref .navbar-toggler-icon {
+        display: flex;
+        width: 22px;
+        height: 18px;
+        flex-direction: column;
+        justify-content: space-between;
+        background: none;
+        filter: none;
+      }
+      .navbar-saref .navbar-toggler-icon span {
+        display: block;
+        width: 100%;
+        height: 2px;
+        border-radius: 2px;
+        background: #fff;
+      }
+      .navbar-saref .navbar-toggler:focus-visible {
+        outline: 3px solid #93c5fd;
+        outline-offset: 3px;
+        box-shadow: none;
+      }
+      .navbar-offcanvas {
+        background: linear-gradient(180deg, #0b0f19 0%, #0f172a 100%);
+        width: min(320px, 88vw);
+        transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .navbar-offcanvas .offcanvas-header {
+        border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+      }
+      .navbar-offcanvas .nav-link {
+        display: flex;
+        min-height: 48px;
+        align-items: center;
+      }
+      @media (max-width: 991.98px) {
+        .navbar-saref .navbar-toggler {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          flex: 0 0 48px;
+        }
+        .navbar-offcanvas .btn-brand {
+          width: 100%;
+          text-align: center;
+          margin-top: 0.5rem;
+        }
+      }
+      @media (min-width: 992px) {
+        .navbar-offcanvas .offcanvas-header {
+          display: none;
+        }
+        .navbar-offcanvas {
+          width: auto;
+        }
+      }
+      .navbar-brand-mark {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(51, 92, 236, 0.12);
+      }
+      .brand-word-saref {
+        color: #fff;
+        font-family: "Baloo 2", sans-serif;
+        font-weight: 700;
+      }
+      .brand-word-academy {
+        color: var(--brand-blue);
+        font-family: "Baloo 2", sans-serif;
+        font-weight: 600;
+      }
+
+      /* ===== HERO ===== */
+      .hero-section {
+        background: var(--bg-soft);
+      }
+      .hero-top {
+        background:
+          radial-gradient(
+            circle at 8% 12%,
+            var(--blue-100) 0%,
+            transparent 38%
+          ),
+          radial-gradient(circle at 92% 8%, var(--blue-50) 0%, transparent 32%),
+          radial-gradient(
+            circle at 88% 85%,
+            var(--blue-100) 0%,
+            transparent 40%
+          ),
+          var(--bg-soft);
+        position: relative;
+        overflow: hidden;
+      }
+      .hero-top::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image: radial-gradient(
+          rgba(51, 92, 236, 0.16) 1.6px,
+          transparent 1.6px
+        );
+        background-size: 26px 26px;
+        -webkit-mask-image: radial-gradient(
+          ellipse 65% 55% at 50% 20%,
+          #000 40%,
+          transparent 78%
+        );
+        mask-image: radial-gradient(
+          ellipse 65% 55% at 50% 20%,
+          #000 40%,
+          transparent 78%
+        );
+      }
+      .hero-blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(2px);
+        pointer-events: none;
+        z-index: 0;
+      }
+      .hero-top .container {
+        position: relative;
+        z-index: 1;
+      }
+      .hero-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-areas:
+          "eyebrow visual"
+          "title visual"
+          "description visual"
+          "actions visual"
+          "stats visual";
+        align-items: center;
+        column-gap: 3rem;
+      }
+      .hero-eyebrow {
+        grid-area: eyebrow;
+        justify-self: start;
+      }
+      .hero-layout > .hero-title {
+        grid-area: title;
+      }
+      .hero-description {
+        grid-area: description;
+      }
+      .hero-ctas {
+        grid-area: actions;
+      }
+      .hero-stats {
+        grid-area: stats;
+      }
+      .hero-visual {
+        grid-area: visual;
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        justify-content: center;
+      }
+      .hero-visual img {
+        display: block;
+        width: 100%;
+        max-width: 520px;
+        height: auto;
+        object-fit: contain;
+      }
+      @media (max-width: 991.98px) {
+        .hero-layout {
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-areas:
+            "eyebrow"
+            "visual"
+            "title"
+            "description"
+            "actions"
+            "stats";
+        }
+        .hero-visual {
+          width: 100%;
+          max-width: 460px;
+          justify-self: center;
+          margin-bottom: 1rem;
+        }
+      }
+      .hero-title {
+        font-size: 2.9rem;
+        line-height: 1.15;
+        color: var(--brand-blue);
+      }
+      @media (max-width: 991px) {
+        .hero-title {
+          font-size: 2.2rem;
+        }
+      }
+      .hero-mock-card {
+        border-radius: 1.2rem;
+        border: 1px solid #e2e8f0;
+        background: #fff;
+        box-shadow: 0 20px 45px -15px rgba(15, 23, 42, 0.25);
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+      }
+      .hero-mock-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.7rem 1rem;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      .dot {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 6px;
+      }
+      .dot-red {
+        background: #ef4444;
+      }
+      .dot-yellow {
+        background: #f59e0b;
+      }
+      .dot-green {
+        background: #10b981;
+      }
+      .hero-illustration {
+        background: linear-gradient(
+          160deg,
+          var(--blue-25) 0%,
+          var(--blue-50) 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.2rem;
+      }
+
+      .section-approach {
+        background: var(--bg-soft);
+        position: relative;
+        box-shadow: inset 0 1px 0 #e2e8f0;
+      }
+      .section-modules {
+        background:
+          radial-gradient(circle at 95% 0%, var(--blue-50) 0%, transparent 30%),
+          radial-gradient(
+            circle at 0% 100%,
+            var(--blue-50) 0%,
+            transparent 28%
+          ),
+          #ffffff;
+        position: relative;
+      }
+      .card-module::before {
+        content: "";
+        display: block;
+        height: 4px;
+        background: linear-gradient(90deg, var(--blue-300), var(--brand-blue));
+      }
+
+      /* ===== MODULE / APPROACH CARDS ===== */
+      .card-module,
+      .card-approach {
+        border: 1px solid #e2e8f0;
+        border-radius: 1rem;
+        overflow: hidden;
+        background: #fff;
+        transition: 0.2s ease;
+        height: 100%;
+      }
+      .card-module {
+        display: flex;
+        flex-direction: column;
+      }
+      .card-module:hover {
+        box-shadow: 0 12px 30px -10px rgba(15, 23, 42, 0.18);
+        transform: translateY(-3px);
+      }
+      .card-module img,
+      .card-approach img {
+        display: block;
+        width: 100%;
+        height: 190px;
+        object-fit: cover;
+      }
+      .card-module > .p-4 {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+      }
+      .card-module h5 {
+        min-height: 3.2em;
+      }
+      .card-module .btn {
+        margin-top: auto;
+      }
+      .tag-pill {
+        background: #dbeafe;
+        color: var(--brand-blue);
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 0.28rem 0.7rem;
+        border-radius: 50px;
+        display: inline-block;
+      }
+      .icon-box {
+        width: 46px;
+        height: 46px;
+        border-radius: 0.7rem;
+        background: #dbeafe;
+        color: var(--brand-blue);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+      }
+
+      /* ===== DARK PARCOURS SECTION ===== */
+      .section-dark {
+        background: var(--dark-950);
+      }
+      .step-card {
+        background: var(--dark-800);
+        border: 1px solid rgba(148, 163, 184, 0.15);
+        border-radius: 1rem;
+        padding: 1.75rem 1.4rem;
+        height: 100%;
+      }
+      .step-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--brand-blue);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+      }
+      .step-label {
+        color: var(--blue-300);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+      }
+      .step-arrow {
+        color: var(--brand-blue);
+        font-size: 1.6rem;
+      }
+      .pill-outline-dark {
+        border: 1px solid rgba(51, 92, 236, 0.5);
+        color: var(--blue-200);
+        background: rgba(51, 92, 236, 0.1);
+        border-radius: 50px;
+        padding: 0.45rem 1rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+
+      /* ===== FEATURES + STATS ===== */
+      .feature-item {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+      .stats-banner {
+        background: linear-gradient(
+          90deg,
+          var(--dark-950) 0%,
+          var(--brand-blue) 100%
+        );
+        padding: 3.5rem 0;
+      }
+      .stat-number {
+        font-family: "Baloo 2", sans-serif;
+        font-weight: 700;
+        font-size: 2.6rem;
+        color: var(--blue-200);
+      }
+
+      /* ===== TESTIMONIALS ===== */
+      .testimonial-card {
+        background: var(--bg-soft);
+        border: 1px solid #e2e8f0;
+        border-radius: 1rem;
+        padding: 1.75rem;
+        height: 100%;
+      }
+      .avatar-circle {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      .star-rating i {
+        color: #f59e0b;
+      }
+
+      /* ===== CONTACT (REDESIGNED) ===== */
+      .contact-info-card {
+        background: linear-gradient(
+          150deg,
+          var(--blue-950) 0%,
+          var(--dark-900) 55%,
+          var(--brand-blue) 140%
+        );
+        border-radius: 1.2rem;
+        padding: 2.2rem;
+        color: #fff;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+      }
+      .contact-info-card::before {
+        content: "";
+        position: absolute;
+        top: -60px;
+        right: -60px;
+        width: 220px;
+        height: 220px;
+        background: radial-gradient(
+          circle,
+          rgba(133, 157, 244, 0.35),
+          transparent 70%
+        );
+        border-radius: 50%;
+      }
+      .contact-info-card::after {
+        content: "";
+        position: absolute;
+        bottom: -70px;
+        left: -40px;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(
+          circle,
+          rgba(51, 92, 236, 0.4),
+          transparent 70%
+        );
+        border-radius: 50%;
+      }
+      .contact-info-row {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+        position: relative;
+        z-index: 1;
+      }
+      .contact-icon-circle {
+        width: 44px;
+        height: 44px;
+        border-radius: 0.7rem;
+        background: rgba(255, 255, 255, 0.14);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--blue-200);
+        font-size: 1.15rem;
+        flex-shrink: 0;
+      }
+      .contact-label {
+        font-size: 0.72rem;
+        letter-spacing: 0.05em;
+        color: var(--blue-200);
+        font-weight: 700;
+      }
+      .contact-social a {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        transition: 0.2s ease;
+      }
+      .contact-social a:hover {
+        background: var(--brand-blue);
+        color: #fff;
+      }
+      .form-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 1.2rem;
+        padding: 2.2rem;
+        height: 100%;
+      }
+      .form-control,
+      .form-select {
+        border-radius: 0.6rem;
+        border: 1px solid #e2e8f0;
+        padding: 0.7rem 0.9rem;
+      }
+      .form-control:focus,
+      .form-select:focus {
+        border-color: var(--brand-blue);
+        box-shadow: 0 0 0 0.2rem rgba(51, 92, 236, 0.15);
+      }
+      .form-label {
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+      .faq-section {
+        background: var(--blue-25);
+      }
+      .faq-content {
+        max-width: 860px;
+      }
+      .faq-accordion .accordion-item {
+        background: transparent;
+        border: 0;
+        border-bottom: 1px solid #dbe2f0;
+        border-radius: 0;
+      }
+      .faq-accordion .accordion-button {
+        padding: 1.2rem 0;
+        color: var(--dark-900);
+        background: transparent;
+        font-weight: 700;
+        box-shadow: none;
+      }
+      .faq-accordion .accordion-button:not(.collapsed) {
+        color: var(--brand-blue);
+      }
+      .faq-accordion .accordion-body {
+        padding: 0 2.5rem 1.25rem 0;
+        color: var(--slate-600);
+        line-height: 1.7;
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        .motion-ready .reveal-item {
+          opacity: 0;
+          transform: translate3d(0, 22px, 0);
+          transition:
+            opacity 650ms cubic-bezier(0.22, 1, 0.36, 1),
+            transform 650ms cubic-bezier(0.22, 1, 0.36, 1),
+            box-shadow 200ms ease;
+          transition-delay: var(--reveal-delay, 0ms);
+        }
+        .motion-ready .reveal-item.is-visible {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+        .motion-ready .card-module.reveal-item.is-visible:hover {
+          transform: translate3d(0, -3px, 0);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          scroll-behavior: auto !important;
+          transition: none !important;
+        }
+        .card-module:hover {
+          transform: none;
+        }
+      }
+
+      /* ===== CTA BANNER (100% bleu de marque, texture + halos) ===== */
+      .cta-wrapper {
+        background: var(--dark-950);
+        padding: 4.5rem 0;
+      }
+      .cta-banner {
+        background:
+          radial-gradient(
+            circle at 12% 18%,
+            rgba(173, 190, 247, 0.45),
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 88% 12%,
+            rgba(92, 125, 240, 0.4),
+            transparent 38%
+          ),
+          radial-gradient(
+            circle at 82% 92%,
+            rgba(51, 92, 236, 0.55),
+            transparent 48%
+          ),
+          repeating-linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.05) 0px,
+            rgba(255, 255, 255, 0.05) 2px,
+            transparent 2px,
+            transparent 26px
+          ),
+          linear-gradient(
+            125deg,
+            #0d173b 0%,
+            #1c3382 30%,
+            #335cec 68%,
+            #5c7df0 100%
+          );
+        border-radius: 1.5rem;
+        padding: 4rem 2rem;
+        text-align: center;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 25px 60px -20px rgba(51, 92, 236, 0.6);
+      }
+      .cta-banner::before {
+        content: "";
+        position: absolute;
+        top: -100px;
+        left: -80px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.25),
+          transparent 70%
+        );
+        border-radius: 50%;
+      }
+      .cta-banner::after {
+        content: "";
+        position: absolute;
+        bottom: -60px;
+        right: 8%;
+        width: 220px;
+        height: 220px;
+        border: 1px solid rgba(214, 222, 251, 0.35);
+        border-radius: 50%;
+      }
+      .cta-badge {
+        background: rgba(255, 255, 255, 0.15);
+        color: var(--blue-100);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+      }
+      .cta-input-group {
+        max-width: 560px;
+        margin: 2rem auto 0;
+        position: relative;
+        z-index: 1;
+      }
+      .cta-input-group .form-control {
+        border-radius: 50px 0 0 50px;
+        border: none;
+        padding: 0.9rem 1.3rem;
+      }
+      .btn-cta {
+        background: var(--dark-950);
+        color: #fff;
+        font-weight: 700;
+        border-radius: 0 50px 50px 0;
+        padding: 0.9rem 1.6rem;
+        border: none;
+        white-space: nowrap;
+      }
+      .btn-cta:hover {
+        background: #000;
+        color: #fff;
+      }
+
+      /* ===== FOOTER ===== */
+      footer {
+        background: var(--dark-950);
+        color: var(--slate-400);
+        border-top: 1px solid rgba(148, 163, 184, 0.1);
+      }
+      footer h6 {
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.82rem;
+        letter-spacing: 0.05em;
+      }
+      footer a {
+        color: var(--slate-400);
+        text-decoration: none;
+        font-size: 0.92rem;
+        line-height: 2.1;
+      }
+      footer a:hover {
+        color: var(--blue-200);
+      }
+      .footer-social a {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.06);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        margin-right: 0.5rem;
+      }
+      .footer-social a:hover {
+        background: var(--brand-blue);
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        .home-entering .navbar-saref {
+          animation: home-nav-enter 550ms ease-out both;
+        }
+        .home-entering .hero-top .container {
+          animation: home-hero-enter 780ms 70ms cubic-bezier(0.22, 1, 0.36, 1)
+            both;
+        }
+      }
+      @keyframes home-nav-enter {
+        from {
+          opacity: 0;
+          transform: translateY(-12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes home-hero-enter {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="page-loader"
+      role="status"
+      aria-live="polite"
+      aria-label="Chargement de Saref Academy"
+    >
+      <div class="page-loader-content">
+        <span class="navbar-brand-mark" style="width: 400px;">
+          <img
+            src="{% static 'images/WhatsApp_Image_2026-08-20_at_13.16.27-removebg-preview.png' %}"
+            alt=""
+            width="380"
+            height="150"
+          />
+        </span>
+        <div class="page-loader-name" style="margin-top: -10vh" >Saref <span>Academy</span></div>
+      </div>
+    </div>
+    <!-- ================= NAVBAR ================= -->
+    <nav class="navbar navbar-expand-lg navbar-saref sticky-top py-3">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+          <span class="navbar-brand-mark">
+            <img
+              src="{% static 'images/WhatsApp_Image_2026-08-20_at_13.16.27-removebg-preview.png'%}"
+              alt=""
+              width="180"
+              height="100"
+            />
+          </span>
+          <span class="fs-5"
+            ><span class="brand-word-saref">Saref</span>
+            <span class="brand-word-academy">Academy</span></span
+          >
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#mobileMenu"
+          aria-controls="mobileMenu"
+          aria-expanded="false"
+          aria-label="Ouvrir le menu de navigation"
+        >
+          <span class="navbar-toggler-icon" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </span>
+        </button>
+        <div
+          class="offcanvas offcanvas-start offcanvas-lg navbar-offcanvas"
+          tabindex="-1"
+          id="mobileMenu"
+          aria-labelledby="mobileMenuLabel"
+        >
+          <div class="offcanvas-header d-lg-none">
+            <span class="fs-5" id="mobileMenuLabel"
+              ><span class="brand-word-saref">Saref</span>
+              <span class="hero-title">Academy</span></span
+            >
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="offcanvas"
+              aria-label="Fermer"
+            ></button>
+          </div>
+          <div
+            class="offcanvas-body d-flex flex-column flex-lg-row align-items-lg-center w-100"
+          >
+            <ul class="navbar-nav mx-lg-auto mb-3 mb-lg-0 gap-lg-2">
+              <li class="nav-item">
+                <a class="nav-link" href="#modules" data-bs-dismiss="offcanvas"
+                  >Formations</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#modules" data-bs-dismiss="offcanvas"
+                  >Modules</a
+                >
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  href="#certifications"
+                  data-bs-dismiss="offcanvas"
+                  >Certifications</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#faq" data-bs-dismiss="offcanvas"
+                  >FAQ</a
+                >
+              </li>
+            </ul>
+            <a href="#" class="btn btn-brand">Espace Étudiant</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ================= HERO ================= -->
+    <section class="hero-top py-5">
+      <!-- Décorations flottantes -->
+      <div
+        class="hero-blob"
+        style="
+          top: 8%;
+          left: 2%;
+          width: 90px;
+          height: 90px;
+          background: var(--blue-200);
+          opacity: 0.35;
+        "
+      ></div>
+      <div
+        class="hero-blob"
+        style="
+          top: 65%;
+          left: 6%;
+          width: 50px;
+          height: 50px;
+          background: var(--brand-blue);
+          opacity: 0.18;
+        "
+      ></div>
+      <div
+        class="hero-blob"
+        style="
+          top: 15%;
+          right: 4%;
+          width: 60px;
+          height: 60px;
+          background: var(--blue-300);
+          opacity: 0.3;
+        "
+      ></div>
+      <div
+        class="hero-blob"
+        style="
+          top: 80%;
+          right: 10%;
+          width: 110px;
+          height: 110px;
+          background: var(--blue-100);
+          opacity: 0.5;
+        "
+      ></div>
+      <div class="container py-4">
+        <div class="hero-layout">
+          <span class="section-badge hero-eyebrow"
+            >FORMATIONS EN LIGNE · PRATIQUES · CERTIFIANTES</span
+          >
+          <div class="hero-visual">
+            <img
+              src="{% static 'images/WhatsApp_Image_2026-09-28_at_12.55.05-removebg-preview.png' %}"
+              alt="Saref Academy Dashboard"
+              class="img-fluid"
+            />
+          </div>
+          <h1 class="hero-title mb-4">
+            Développez vos compétences et construisez votre avenir.
+          </h1>
+          <p class="section-subtitle hero-description mb-4">
+            Formez-vous aux compétences les plus recherchées du marché avec
+            Saref Academy. Accédez à des formations certifiantes de haut niveau,
+            conçues par des experts de l'industrie pour accélérer votre
+            carrière.
+          </p>
+          <div class="d-flex flex-wrap gap-3 mb-4 hero-ctas">
+            <a href="#" class="btn btn-brand">Commencer gratuitement</a>
+            <a href="#modules" class="btn btn-outline-brand"
+              >Découvrir les formations</a
+            >
+          </div>
+          <div class="d-flex flex-wrap gap-2 hero-stats">
+            <span class="pill-badge"
+              ><i class="bi bi-people-fill text-brand-blue"></i> 10 000+
+              étudiants Saref Academy</span
+            >
+            <span class="pill-badge"
+              ><i class="bi bi-journal-bookmark-fill text-brand-blue"></i> 50+
+              formations Saref Academy</span
+            >
+            <span class="pill-badge"
+              ><i class="bi bi-star-fill text-brand-blue"></i> 95% satisfaction
+              Saref Academy</span
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MODULES ================= -->
+    <section id="modules" class="py-5 section-modules">
+      <div class="container py-4">
+        <div class="text-center mx-auto mb-5" style="max-width: 640px">
+          <span class="section-badge">8 MODULES DE FORMATION</span>
+          <h2 class="mb-3">Nos Modules de Formation</h2>
+          <p class="section-subtitle">
+            Un programme complet pour maîtriser tous les aspects du marketing
+            digital
+          </p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+          <!-- Module 1 -->
+          <div class="col-md-6 col-lg-4">
+            <div class="card-module">
+              <img
+                src="https://i.postimg.cc/C5667G2M/business-woman-working-office.jpg"
+                alt=""
+              />
+              <div class="p-4">
+                <div class="d-flex gap-2 mb-3">
+                  <span class="tag-pill">1 an</span
+                  ><span class="tag-pill">Certifiant</span>
+                </div>
+                <h5 class="fw-bold mb-3">
+                  Formation professionnelle en Marketing digital et E-commerce
+                </h5>
+                <a href="#" class="btn btn-outline-brand w-100"
+                  >Découvrir la formation</a
+                >
+              </div>
+            </div>
+          </div>
+          <!-- Module 2 -->
+          <div class="col-md-6 col-lg-4">
+            <div class="card-module">
+              <img
+                src="https://i.postimg.cc/XN8WFt72/freelance-graphic-designer-editing-photos-modern-computer-setup.jpg"
+                alt=""
+              />
+              <div class="p-4">
+                <div class="d-flex gap-2 mb-3">
+                  <span class="tag-pill">1 an</span
+                  ><span class="tag-pill">Certifiant</span>
+                </div>
+                <h5 class="fw-bold mb-3">
+                  Formation professionnelle en Design graphique
+                </h5>
+                <a href="#" class="btn btn-outline-brand w-100"
+                  >Découvrir la formation</a
+                >
+              </div>
+            </div>
+          </div>
+          <!-- Module 3 -->
+          <div class="col-md-6 col-lg-4">
+            <div class="card-module">
+              <img
+                src="https://i.postimg.cc/Vsj6h7sd/christopher-gower-m-HRf-Lhg-ABo-unsplash.jpg"
+                alt=""
+              />
+              <div class="p-4">
+                <div class="d-flex gap-2 mb-3">
+                  <span class="tag-pill">1 an</span
+                  ><span class="tag-pill">Certifiant</span>
+                </div>
+                <h5 class="fw-bold mb-3">
+                  Formation professionnelle en Développement web
+                </h5>
+                <a href="#" class="btn btn-outline-brand w-100"
+                  >Découvrir la formation</a
+                >
+              </div>
+            </div>
+          </div>
+          <!-- Module 4 -->
+          <div class="col-md-6 col-lg-4">
+            <div class="card-module">
+              <img
+                src="https://i.postimg.cc/2jFkGVTC/luke-caunt-5ut-Yi64hn-J0-unsplash.jpg"
+                alt=""
+              />
+              <div class="p-4">
+                <div class="d-flex gap-2 mb-3">
+                  <span class="tag-pill">1 an</span
+                  ><span class="tag-pill">Certifiant</span>
+                </div>
+                <h5 class="fw-bold mb-3">
+                  Formation professionnelle en Archivage numérique
+                </h5>
+                <a href="#" class="btn btn-outline-brand w-100"
+                  >Découvrir la formation</a
+                >
+              </div>
+            </div>
+          </div>
+          <!-- Module 5 -->
+          <div class="col-md-6 col-lg-4">
+            <div class="card-module">
+              <img
+                src="https://i.postimg.cc/ryQ6zWQf/young-filmmaker-working-media-post-production-from-agency-office.jpg"
+                alt=""
+              />
+              <div class="p-4">
+                <div class="d-flex gap-2 mb-3">
+                  <span class="tag-pill">1 an</span
+                  ><span class="tag-pill">Certifiant</span>
+                </div>
+                <h5 class="fw-bold mb-3">
+                  Formation professionnelle en Montage vidéo
+                </h5>
+                <a href="#" class="btn btn-outline-brand w-100"
+                  >Découvrir la formation</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= APPROCHE PÉDAGOGIQUE ================= -->
+    <section class="py-5 section-approach">
+      <div class="container py-4">
+        <div class="mb-5" style="max-width: 720px">
+          <span class="section-badge">MÉTHODE SAREF ACADEMY</span>
+          <h2 class="mb-3">
+            Une approche pédagogique pensée pour transformer les connaissances
+            en résultats
+          </h2>
+          <p class="section-subtitle">
+            Notre méthode combine apprentissage pratique, mentorat expert et
+            certification reconnue pour accélérer la progression de vos équipes.
+          </p>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-4">
+            <div class="card-approach">
+              <img
+                src="https://images.pexels.com/photos/5922398/pexels-photo-5922398.jpeg?auto=compress&cs=tinysrgb&w=900&h=600&dpr=1"
+                alt="Homme africain concentré en train de travailler sur un ordinateur portable"
+              />
+              <div class="p-4">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                  <span class="icon-box"
+                    ><i class="bi bi-briefcase-fill"></i
+                  ></span>
+                  <h5 class="fw-bold mb-0">Apprentissage Pratique</h5>
+                </div>
+                <p class="text-secondary mb-0">
+                  Des projets concrets, des études de cas réelles et des
+                  exercices immédiatement applicables pour transformer la
+                  théorie en compétences opérationnelles.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="card-approach">
+              <img
+                src="https://images.pexels.com/photos/6281922/pexels-photo-6281922.jpeg?auto=compress&cs=tinysrgb&w=900&h=600&dpr=1"
+                alt="Femme africaine en visioconférence depuis son espace de travail"
+              />
+              <div class="p-4">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                  <span class="icon-box"
+                    ><i class="bi bi-people-fill"></i
+                  ></span>
+                  <h5 class="fw-bold mb-0">Mentorat Expert</h5>
+                </div>
+                <p class="text-secondary mb-0">
+                  Un accompagnement personnalisé par des professionnels du
+                  terrain qui partagent leurs meilleures pratiques, leurs
+                  erreurs et leurs méthodes éprouvées.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="card-approach">
+              <img
+                src="https://images.pexels.com/photos/7713221/pexels-photo-7713221.jpeg?auto=compress&cs=tinysrgb&w=900&h=600&dpr=1"
+                alt="Diplômée africaine tenant son certificat"
+              />
+              <div class="p-4">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                  <span class="icon-box"><i class="bi bi-award-fill"></i></span>
+                  <h5 class="fw-bold mb-0">Certification Reconnue</h5>
+                </div>
+                <p class="text-secondary mb-0">
+                  Une validation officielle de vos compétences à l'issue de la
+                  formation, reconnue par le marché et valorisée dans votre
+                  parcours professionnel.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PARCOURS CERTIFIANTS (DARK) ================= -->
+    <section id="certifications" class="section-dark py-5">
+      <div class="container py-5">
+        <div class="text-center mx-auto mb-5" style="max-width: 640px">
+          <span class="section-badge">DIPLÔMES DE NIVEAU </span>
+          <h2 class="text-white mb-3">Parcours Certifiants Saref Academy</h2>
+          <p class="text-secondary-emphasis" style="color: #94a3b8 !important">
+            Suivez un parcours pédagogique structuré : apprenez, pratiquez,
+            validez et obtenez votre certification pour valoriser votre CV.
+          </p>
+        </div>
+
+        <div
+          class="d-flex flex-column flex-lg-row align-items-stretch gap-2 mb-4"
+        >
+          <div class="step-card flex-fill">
+            <div class="step-icon"><i class="bi bi-play-btn-fill"></i></div>
+            <div class="step-label mb-1">ÉTAPE 1</div>
+            <h5 class="text-white fw-bold">Suivre les cours</h5>
+            <p class="mb-0" style="color: #94a3b8">
+              Explorez les modules vidéo, les ressources et les supports de
+              cours.
+            </p>
+          </div>
+          <div
+            class="d-none d-lg-flex align-items-center justify-content-center step-arrow px-1"
+          >
+            <i class="bi bi-arrow-right"></i>
+          </div>
+          <div class="step-card flex-fill">
+            <div class="step-icon"><i class="bi bi-pencil-fill"></i></div>
+            <div class="step-label mb-1">ÉTAPE 2</div>
+            <h5 class="text-white fw-bold">Faire les exercices</h5>
+            <p class="mb-0" style="color: #94a3b8">
+              Mettez en pratique vos connaissances avec des exercices et des cas
+              concrets.
+            </p>
+          </div>
+          <div
+            class="d-none d-lg-flex align-items-center justify-content-center step-arrow px-1"
+          >
+            <i class="bi bi-arrow-right"></i>
+          </div>
+          <div class="step-card flex-fill">
+            <div class="step-icon"><i class="bi bi-check-square-fill"></i></div>
+            <div class="step-label mb-1">ÉTAPE 3</div>
+            <h5 class="text-white fw-bold">Passer les tests</h5>
+            <p class="mb-0" style="color: #94a3b8">
+              Validez vos acquis avec des évaluations et des contrôles de
+              connaissance.
+            </p>
+          </div>
+          <div
+            class="d-none d-lg-flex align-items-center justify-content-center step-arrow px-1"
+          >
+            <i class="bi bi-arrow-right"></i>
+          </div>
+          <div class="step-card flex-fill">
+            <div class="step-icon"><i class="bi bi-award-fill"></i></div>
+            <div class="step-label mb-1">ÉTAPE 4</div>
+            <h5 class="text-white fw-bold">Obtenir la certification</h5>
+            <p class="mb-0" style="color: #94a3b8">
+              Recevez votre diplôme et valorisez votre parcours sur votre CV.
+            </p>
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+          <span class="pill-outline-dark"
+            ><i class="bi bi-check-circle"></i> 4 étapes progressives</span
+          >
+          <span class="pill-outline-dark"
+            ><i class="bi bi-award"></i> Diplôme à l'issue</span
+          >
+          <span class="pill-outline-dark"
+            ><i class="bi bi-journal-text"></i> Cours, exercices et tests</span
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= POURQUOI SAREF ACADEMY ================= -->
+    <section class="py-5 hero-section">
+      <div class="container py-4">
+        <div class="text-center mx-auto mb-5" style="max-width: 640px">
+          <span class="section-badge">LA MÉTHODE DIGILEARN</span>
+          <h2 class="mb-0">Pourquoi Saref Academy ?</h2>
+        </div>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="feature-item">
+              <span class="icon-box"><i class="bi bi-record-circle"></i></span>
+              <div>
+                <h6 class="fw-bold mb-1">Apprentissage à votre rythme</h6>
+                <p class="text-secondary small mb-0">
+                  Suivez vos cours Saref Academy 24h/24 et 7j/7 depuis
+                  l'appareil de votre choix sans aucune contrainte de temps.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-item">
+              <span class="icon-box"><i class="bi bi-folder-fill"></i></span>
+              <div>
+                <h6 class="fw-bold mb-1">Projets pratiques réels</h6>
+                <p class="text-secondary small mb-0">
+                  Validez chaque bloc de compétences Saref Academy par des cas
+                  réels tirés de scénarios d'entreprises partenaires.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-item">
+              <span class="icon-box"><i class="bi bi-person-video3"></i></span>
+              <div>
+                <h6 class="fw-bold mb-1">Mentorat personnalisé</h6>
+                <p class="text-secondary small mb-0">
+                  Bénéficiez d'une heure de coaching visio par semaine avec un
+                  mentor expert Saref Academy.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-item">
+              <span class="icon-box"
+                ><i class="bi bi-patch-check-fill"></i
+              ></span>
+              <div>
+                <h6 class="fw-bold mb-1">Certifications reconnues</h6>
+                <p class="text-secondary small mb-0">
+                  Les certifications d'État Saref Academy augmentent
+                  l'employabilité auprès des recruteurs du digital.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-item">
+              <span class="icon-box"><i class="bi bi-chat-dots-fill"></i></span>
+              <div>
+                <h6 class="fw-bold mb-1">Communauté dynamique</h6>
+                <p class="text-secondary small mb-0">
+                  Rejoignez le Discord privé Saref Academy de 5000+ étudiants
+                  pour réseauter et collaborer.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-item">
+              <span class="icon-box"><i class="bi bi-arrow-repeat"></i></span>
+              <div>
+                <h6 class="fw-bold mb-1">Mises à jour gratuites</h6>
+                <p class="text-secondary small mb-0">
+                  Le marketing évolue vite. Saref Academy met à jour tous ses
+                  cours tous les trimestres sans surcoût.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STATS BANNER ================= -->
+    <section class="stats-banner">
+      <div class="container">
+        <div class="row text-center g-4">
+          <div class="col-6 col-md-3">
+            <div
+              class="stat-number"
+              data-count-to="10000"
+              data-count-suffix="+"
+            >
+              10 000+
+            </div>
+            <div class="text-white-50">Étudiants formés</div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-number" data-count-to="50" data-count-suffix="+">
+              50+
+            </div>
+            <div class="text-white-50">Formations d'excellence</div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-number" data-count-to="200" data-count-suffix="+">
+              200+
+            </div>
+            <div class="text-white-50">Heures de contenu vidéo</div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-number" data-count-to="95" data-count-suffix="%">
+              95%
+            </div>
+            <div class="text-white-50">Taux de réussite</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TESTIMONIALS ================= -->
+    <section class="py-5 bg-white">
+      <div class="container py-4">
+        <div class="text-center mx-auto mb-5" style="max-width: 640px">
+          <span class="section-badge">ILS ONT RÉUSSI AVEC DIGILEARN</span>
+          <h2 class="mb-0">Ce qu'en Disent Nos Étudiants</h2>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-4">
+            <div class="testimonial-card">
+              <div class="star-rating mb-3">
+                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i
+                ><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i
+                ><i class="bi bi-star-fill"></i>
+              </div>
+              <p class="fst-italic mb-4">
+                "Grâce à DigiLearn, j'ai complètement réorienté ma carrière. Le
+                mentorat hebdomadaire m'a donné confiance pour passer mes
+                entretiens."
+              </p>
+              <div class="d-flex align-items-center gap-2">
+                <img
+                  src="data:image/jpeg;base64,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"
+                  class="avatar-circle"
+                  alt="Thomas Laroche"
+                />
+                <div>
+                  <div class="fw-bold small">Thomas Laroche</div>
+                  <div class="text-secondary" style="font-size: 0.8rem">
+                    Responsable SEO chez Decathlon
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="testimonial-card">
+              <div class="star-rating mb-3">
+                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i
+                ><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i
+                ><i class="bi bi-star-fill"></i>
+              </div>
+              <p class="fst-italic mb-4">
+                "Le parcours Growth Hacker m'a permis de doubler mon TJM en 6
+                mois seulement. Les cours sont constamment mis à jour."
+              </p>
+              <div class="d-flex align-items-center gap-2">
+                <img
+                  src="data:image/jpeg;base64,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"
+                  class="avatar-circle"
+                  alt="Clara Bonnet"
+                />
+                <div>
+                  <div class="fw-bold small">Clara Bonnet</div>
+                  <div class="text-secondary" style="font-size: 0.8rem">
+                    Freelance Social Ads
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="testimonial-card">
+              <div class="star-rating mb-3">
+                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i
+                ><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i
+                ><i class="bi bi-star-fill"></i>
+              </div>
+              <p class="fst-italic mb-4">
+                "Le point fort : la sandbox d'entraînement de Google Ads. On
+                pratique avec des cas réalistes de budgets à gérer."
+              </p>
+              <div class="d-flex align-items-center gap-2">
+                <img
+                  src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCADIAMgDASIAAhEBAxEB/8QAHAAAAQUBAQEAAAAAAAAAAAAABQADBAYHAgEI/8QAPxAAAgEDAwIDBgIHBgcBAQAAAQIDAAQRBRIhBjETQVEiMmFxgZEUsQcjQlJyocEVJDRi0eEWMzVDgrLwY3P/xAAZAQADAQEBAAAAAAAAAAAAAAAAAQIDBAX/xAAkEQACAgMBAQABBAMAAAAAAAAAAQIRAyExEkEyBBMiUSNhcf/aAAwDAQACEQMRAD8AtRXHlS2jjjvUmRPOmmYIRkH7ViWcFK82100i7TjOflXKSrtG4nPyoA8Mdc7Kd8WPzNeGWL94UDOVU+Vcyq2OSadDoezUpVyKQA+RTTLKamOtMlOaAHIUwgod1Lciz0eeTz24FGI09gVVevpsWcVuO7tzQBQFnTHIwflUjR9a0exklXULIySE8PjPFNiHntQq9tYzctndz5YrRJMhst13qfT9/AVgsW3EZD7cYoG9zFIVWEZI9kCvLWyIiW0iUs8gyT6Uv7JvNFf8XcIjJ+yN1FIVkyNZdPiJaNQ785zzQy7s5dQK+EBuPfJr271Rrt90sXPwNE+n/Du7uOAxkeec0bWwDOlWLR29vE4G8LgirLbWoAHFeWOmRQuHVTu+JoqkaouTgAd6mykNRw4HaoOsaza6RCWkYGTyUdzQzqTquGwVoLP9bPjy8qz2O/k1C933ZLyMeCfKmo2JuiV1Jqt7qZEszFYi2FjzTtvGqQoeFGKh62myKMA87qkQxu8SlzxjtV/DM7eRm4iB+dKuwpxgDApUCNovJPE2YysgPb1qTG2+MBlAalcwLKAXBQg8EjFd+GSijJ47ECszY5KgeQ+1eKuR7o+1Okcc5z8q8UADvQA2Yx+6v2puaNWAGxalez6140e4cMKAGVUAD2F4riZc84qX4XGMivJLcle4pDsEyrkjBxTRUVNmhC+dDrgunY0hhBF9gfKqF1k5n1URjtGtWpdRceyVoNd6WJjNePNEznJO73Y/mfWmhMqiW+ccV69mjMCycjzruFEmv2ijvG4O6Rx2wBnj0qTfC1sbZGM+ZHAbZ7zAnsM/nTCgVb3MUN+Y1P6w8DIojcWxvMCUbgKA3N+BercSRRuUPvjjNXDQZodZhLWQBdR7cZPtD6elNkpAX/h+Jjnbij/TvT8NrKLgZLAY5omumXA7xGpElzFpdpum970qbGkTHaO3jLysFA9apXUfUk11crp9gTGH7v6/Kpt7Ld353MpEZ5Ciq1fL+G6gt3mG0beM00hNjiaX4NtK7+1IVJLGqnaRs1yAH2nceau93fQtBIquuSpHeqdYx77xFI43GriTIe1OGVFTfLvBanlgugg2yZGKlazEoihVQPfFEoI0CKGI7U70SB1t71u0g+1KrEioB7CilSsDceqFUaehAx+tTt86k3LywW8L29uJVGN4B5C+o9aj9Uf9Nz6SJ+YonBzAnyFMobtZre6j3R4PqMcj508Io/3B9qjzWal/FgPhy+o8/nT1uZTH+uADD0oGdeBEf2F+1DteijTTyyqAQy8gfEUUob1F/wBMf+Jf/YUAS47aHYv6te3pTOowRLZyEIAQOMCpcfuL8qY1L/By/KgCpzrxQm7HejUw9mg96MA1kykDhYPfoyK+zcSBzjPFNWekRzxXFjcb2jVvaIbufSrHpdsr6dCR7zMW/mak2ECQxSK3tOWJcnzNRkuqRtiq7ZWR0/p9tGViiCevGTVd1/QRNh4CCcYNaFe+E6EFB27iq3dIoU4PG7iuX1KL6dqjGa2jL7zRLmF94Gdv7JrzQLy50zWoHhkaOQOFJABBB7j5VdNRRSHx3NVfUbMJJFMo53bc/T/aunFlctM5s2FRVo3a6t4lsDNHkErkVTtYtFnQBySWcDNW+Pd/w3bb2LMYEyT37Cq3fjhP/wCgpz/JGMPxZPh0S3ESe03YedZ1+k7T47a/sihPtAjvWsxn9UnyrMv0q86jYD4NWhn9KNHCC68tn51KsYVWVD57jXkK5mX51KtF/WL/ABGnF6CfTjU1/Vjk+8K7VTx7R+9e6iMxj+OulFV8IJNqGz7xpU7ZoS3AJ+VKkLRvPU4zph/jX8xRK1P93j/hFD+pRnS3/iX86IWhzax/wiq+D+j1InHekKauTiOhD4em4QHBPNQOoTnS5CPVf/YU/sBGaj64M6S/zX8xTaolOwkrBYgT6VGv5Uazkwc5FPSf4c/Kh0pDQHFFDsDzj2aDXy5OMgZ8ycAUdnXigeprlGGcAgjPzFZS5o0jTas9ttQaK3RLdFKLGgEvJD7j3HwHeo1/1PZ6dfJp6W11PM67g6gBT9Wx/wDEVIsi07tG8Solo6IrDO5sDufhjFcdR2KXTxSS7ljCsjMpwRnBxnyzjH1rn92k2df7fmbSAE/Wj2spjvdLfYSQDHIrH7cGm21qwvQXhl8NoxmSOX2WGe3BoffdJreXW6wtNoI2je3Yeo+Pxp696Yt59LubqVEkjgjEELnks4JLMD5gE4+hqWoNGic4siaxq2mpK6/iYxz2ByaGQyRXrQrCwlDSqox9u1AdO0+VkWRXCjPOVzn5Zo9030/NrerQQRyG3uWlUCSIe7g+8Ppk/Sto44xemc88k5LaNr1LCacUTsoCjHwqs3yMY0P+cVfbmzji0xIXZpiiKpkk5ZyPM/E0Au7eIGPeo2hxxVyhcrMYypM5jYeEuT5Vmn6UPa1SyP8AlatihFtG5Z0GMccVl/6YJLeS/wBOEMe1gHycYyOKpqkRF2yh2q5nT50V03T7mdwYoWIyeccVAsF/vcfpzWoaBEo02IgDtShwMnSj32hXKGFJsL4snGPKjlt0vboAZWZzRHqBf71Yj/8ASiir7NWZ2QLbTbaAYjiUfSlRDbSoAtvUdxmwKAe8w/OpiOVs4tpxwKrnVusQWCxxSo7FiD7IzgZ7milhN4kCMGJQgEZqlV0VT6Tknk8dUJ4NSbwkQEjvQ8Sf3hSOQKnXMitDgedMRHSbAAbua41tgNJkOfT8xUa7uILWFp7iQIicljQWbqjSNZtmtrG8SWUMBsB57+lEgRanuUa04PJWocf/ACCD3NNSnwbQSyHaijJpjS9TtNTR2s5llVDtJU5wafwW7FcDg0C1JfZNWG4HBoFqC5BrFmiOdMlju4sBT4qJskOOOPdNSp7uGOzl/EAFBkMG7YqJ02oaGeVGBR5SikfvL3H88UM6phMunXabyON2AeWHoBXPOLXDrxy9dAllHFrOoM9iskWnRtiQ+M+1/UBc4qxaxc2j6IqQTIUX2GCrtwMcDHlQXp6xv1sGeRY1jk9tdgI2g/skY8h50A6i06VXknF2silQrosmB29OD6+VSop6s29PtAzTy34uWK3uECbiygruUg98elad+imyzf6hfSbGZI0jUquApOScfQfzrJNJike5Uxo0apyCeOPPit0/Rfata9N+NMNr3UzSjP7vYfka2hH+Zz5Jf4yz6j/hj8xVaurq3llECTRtMrDKBuR9KseouDb4B86qWt6ZDchZogIbxT+rnUYZT/WtZdOZcJeuapa6NYm7vWKxjA4GST6Cso631u0167tp7Hf4cYIO9ccmi/UFrrN5bHTtWumcI+5X2AZ9DVIu7ebT3a3nHKeY8x61k8lukZ207HdPP96T61qegFTpsQVgeOcGsngUzOqxvtz3Nat0zZw2mlxLCuCRlj5k1cOF5HbIuvjN9YD/AD0VVeBQvXDnVrBf8xNFh2qzM8xSr2lQMD6n1BDregpqcUZCtwVJ5UZ86s/Ser2utaTHNZ52LlCCMYI4IrLultL1ZdHv7RLdmjckRuThc+eKY6Z1nWOlY5bIxr75OxgTg+ZGKFSk2av1KMUb1DEqjPnUHV7sQ2cxV9rqPShul64kdtHeXl4rROgJAGNpqZK0epSlYz+rkXO7Hei2SREVtQ0IiQB3ZfOqRpugG11tNS8IwpFkMrDGRnvWk2EEFrA0aPxH3BNAOsruNbYGMgbhin4TlbD24xossgh1HSmWKRWWRMAjmqZ07pVxoGvTB8C3uhwB5MP9qCab1K/T+XmWWS3fsqckH4Cous9YS3kYlaT8PJncka8so8s/HFJ43docci80ahdkKCSRgck57Vn/AFd1VbWyi106VJppDhpEOQg+B8zVL6h6v1LVIfw7ztHbD/tIe/zPnVWNwxkXLHA7Vah/ZFv4bj+jm6S86blsN+JbSdxnzwx3Kf5kfSurpg2qQ/iFKsrFHUjjJ7GqB0L1ANK6ggaV9ttdAQS+gJPst9D+danrunpfxBg3h3Ce5IDj6H/7ipy43LaLxZFHTB99bzwxtHGMK4zlTjafWqJq9rMV4Mxz+2ZN2TnvjFWltXu491jfRkzqMiVRy4HkR5/MVU7vWE8RowJGOfayuK5Ix3SO1zajbI9raol1aRXU4t4y/wCvc8kJ8PUmth0rUxd26mwTbBHhIwRgYHp8Kyjowx61qqzz2xuoY+X2c7Ae2R3rTmli0a1adbaQ2Y5IjXJT4474raGjilJzdh2dyYgWHOOarep3sltPFI7xNalvaUe+P9akS9SafJok19a3Ecvhxltu7B4HYisai12+TVG1eVGuNhL+GSdqg+XwpTlb0JukaT1e99cQR3emyRTWg99duWX/AGrKdZlmm1FjcyBmIGCOwFXPpTrVJ72YzW/M/eKMcVXOuBbXnUR/s8AI6g7VGOfMYpVcr+koH2eJG2xHaO2/zNa7ogC6bAuc4Qd6yVI5bVTGFAlHGPStB6V0me0jW5ub2WWR19wN7IrSIS0Pa0c63YD50XB4oJqzZ16yHopNGAeKsk7zSrgtSoAnvY+FZ/h9OcRqp4xUCfpGW6kNyWUSFcHjNB9P6t0sWcbtPOHPGCpyfMmjvT3USa68kWlTSssWNzMhAH3rNbNfWuk6DpuIWeySJRLkHI9RQa/6vM2r/wBl6PZzzXMBKOEXsQcHv5fGm+r+oJLMjTTfNHNLwssRwYn7jPwqN0xaS7rvVZHZdU2FZSR7LN+8B8eKTd6RN70WtIZFg8eeJkdhlxnzqi9R6pb6hPKhkYLBgAJzk0Duf0i61eXQ0+EIXd/DPGMHOM1HYBAI0ztHr5n1NdMLJlRC1jVrmbamfCjXhVAwcfE0Ee4yCKOXapIhDAGqzdxtBLj9k9vhVMlHkkm40zk5pMa8BqSx8OSNufka3fovWP7Z6atppW3TKvhS/wAS8H78H61gW7nNXb9GmszWd7cafHsJuV3xeITtDgeePXimmS0aD1FFaw2bXV7OIFh5SY9wfQDz+VZ7pE+nTpeSSXBe88GQorptXG05I9TiiOr2Gp6lcyX9zcvPLEpAgfhQvmFXsKrM+ngXZMBOGheRQPUDt/Ok4K/Q1N+fNgPTL+70u5ju9PuZLeZQCrxtg/I+o+BrTNH/AEtM9k1rr1pukK4FxbKAD8WT/T7VlS+4ufIYr0cGpaTKTaN50PpjR9T0KK7khDPOm7xFYjcDQHVdOg0G0k02CPe11J7zckLQPoLq+PTNIurHULyeNYHElssYzkH3l+/P1NPv1RaaxrEL3MrxfrAoaQAKE9TXNKFMqUk9rpF1XRB0lqltJb3aS/iIydmOUP8ApQWXcb95QzeJnJb41Yut9KtIdbt20+58VrldwQHcFx559KrF67Wl06yKw9R6mktsVJMkFj7bsxLkElieTVh6Y1W9aLa05KqOAaps0slxgKpVcfeubUXMcga3dw459k1ouUKUk3ovOoarOuuWjMAx2kYo0uvKoPiRkY9KpKzz3GpWTXEeyQLznzolqTlbZyvc8VVvQUiwL1XprSbHm2N6EUqyy7m2TnncQO9KrSIaNH1qz0Wy6dZ45zLNMQlvOp90dicUP6J6gPS148N0jyRSFMAHAUE+9+VOdRS2l1o9nLAYyqezsxhgRQi4WTULCd5IVSNmUGf0PkK5nKtistXVZ0rXerrNNPmCyzr4dz7PmDx9cflRyPUp36oOh6Rbhba0g2XU0wzk4GMHzrM9Gb8PqLOkvhXMakQMqbgzAenxqydCahexa2w1Cd3nu2KTLJ3VscY+lVHeyl0gX3S0uj9UG4DiWJ1eRTj3WPH9TXssLEFnAHyNWXXZMTyW2wr4L45OTzzVcu3yGArshwmXQJdsYn2u3snsTQ2+COhwc0SviJYSp94ciq/KSrU2CGBnBB7ivM16GzJj94VyeDUFnpqbo94bHU7W6Bx4UgJ+XnUI1586BGy67MqTJLH7tzbO2R8AKqe9DrFlGDhWR0A/iUiiEF4Lzo3T7yRstbsYH+vH+lVaa4ZbyKfPMbhh9DVPhK6A5ozFNLGf2HI/nXBFEuoohFrt6ijCmTcPkef60ONQUGOjdOTVupLSxkOEm3Bj8ApP9KKdXaPZaLqRgtLj8Qm3LL3MZ9CarGm3ctjqFvdQOUkicFWHlVi1fR79LX8W1vM5mO4v3z8TWc+jIOm3ktncma2UklSmSMgA07cSPfXrCNMtjBbyxRHpzWYrWyFs1kjjOHf9rJ9a8n0fUJ72STTiRCSScHhfhUf6GuWQJrcxwldwY4ol07C/hlvDDcd6h31peWkTPcpnaPezUzRIZFg3xzkbhnFNRdbEm/orsuNegBU5Cnip9wHZCPDJB8qEzmU65GPE9oL3qZK1y7MplIUDgiqcQ9EOTS47lXVUVX75JpV7Zx4uissrElTkk0qrhI3qNzFHZ2sqEO0gO6POQmDjP1pq0kkniFtJdeHGMyRqeFZh615punvd3EsF5G4B3ZkAwY2xnJH9KZvIprXSoGG3ZOSpbzwD+RrmS1QvLRJ0/UUGpwT3UaxxQjnb54/rRPRdSuZOrk1CFNs0z4jjxnaDxn7UM6TsYNSvpkvphFEkLOzE47VP0vRb69tLK50cMbqO5YO5PAA5DfKq0tFqJaeqb1JLq5aFWDQOFlz3JwMn+YqtzTqTuUgq1G9T0q40n/F3RuJromWRyMc9iP5VUrpHiZigwhPI7r/tXZj/ABREuke6lCTEZ4PIoTethsjnNSbp3I9sA47MKgSe12NDBIjs/II7g09KPazTDjBqQ/IB+FQWc+Ved69zgVyvBI+1AFq6du89NaraOf8AlyRTqPhuANDrjLO3zNR9Hn8N7qMn2ZrWRD8wNw/Kn5GyxI86r4L6OdVKDqEE47TWkT59TjB/Kg/htKQiY3E+dHNfQvpmj3HrA8Z/8W/3oCx4OKQI6kCQzKEYP4fJJ7E/6VqGq67rEui2d1p1qiW08AZjt3bSRyMVlB5bFXjp+31fW9EjS2mZLe0LRZV8ZB55HnjNRPhSI2g6Je31zLLHtEaHMhJ7nvxXNre3trqMqw3TIokOVY8NRay0K7sZJJ7LUQ8cBDTAHGRijD3OmWGmxS3duJWcZysWe/rWH0dfxAlz+J1iXwbomGE/tJyCa8FncWEY2Ylh8nXzorpuq6HeT+HBmF27I4wCaKW+nJawvDGS0bMWAbnGfKrja6TVmeyTFtZVgedtE/FJHNEtS6bDym4thtk9PWgkyTWz7JkKketadE0OOQTnHPrSqP4maVMRaurbqwOteJYSsDKmJckHD/snj7VTr+6nla0tbh1aItuAAxjntWtJ0J0+hJW0bk55kY/1pN0LoDMGazJI7ZkPFYeXZo0rMUvE8IxsnCyM3APlmtK6V6n03TrBbe309lZvaI396sv/AAP0+QobT0YLnGSeKlw9K6HGVI02ElRgE54FUl/Yf8Kz1NqMepQ20qQmIoSpyc5zVNu/dI9DWndW6VaR6DLJa2yRtC6t7I8s4P51mtwPaJI9k104/wATKfQFOoZsFcE+YofdQlOSB86IajOok2wDkdzQ52dwd5psEQ35pwNuQVw4xXKHjFZljg5rx+DmvM+lInIoA7DlDuU84NEom3Rq3qBQpeQKIWrZjA9KYE7UJxLoVrH+1FMw+hB/0oE3B5qXPKQqxeRO77ZH9ahy8UMSORy1FtMv72GGWztJZFScgmNPMihK5FTNPuns723ukyGhkVwR8DmpatDDluL6xiaKJbjdN74CsR9asOm6/dG1S2uNKmeNRtOEPb7VpFpNb3cEdxbMjwyqHRl7EGpShR5D7VjRcaS2Z43S+nayolsUnsJ8ZwUO3NWFLOa2jSOdSzIoBYcg/GrMCPQVzMR4T/wmqSFSvRWNykHJFQr20gvIysiqa8ZSSSD514Ny9xxQBVtS0KW3Je2O9f3TSq1NyO2aVV6J8l+pV4DXoNIs9Fe1zmvQaAGr+3F3YXNse0sTL9ccfzrGbnIR93AHBranlWGN5XOFjUsfkBmsV1VxOskkeMSOW48ua1xfTPIV27Xa5ZBlahyHPaiUqDHBqBcBkyV4q2SiI64BLcVHHFPMGc8mmmGGwKzZaFmvc8VyKRPlQB3Fk5FTLU4GKYgTAyaciO1iPjTAVx+yfRiPypmYez9a7uG5A+Oa4c5jpAMqcGnlDN2PFM09GR2FCBl8/Rz1WunPFo14jGGeb9VNu/5bN5EehP8AM1rCnFfOUbNG6uhIZSCCPIitv6R11dd0iO4ZgblMJcqBjD+vyPeomq2OLLCGrmdv1L/wmuA1eXDYt5D/AJTUlFW2lcn1qPNKynjmni6k0y8iHI280gZy04IAAOaVMEH1pUxGkivahG/iHYMa5OpKO0Z+9T+5H+y/EifSocdS9Ix969GpE/8AbH3pfuRDxIY6uuvwugXODhpQIl/8u/8ALNZTJs8No4/2Tk/Wrn1/qPjW1paqMEu0jAHyAwPzNUhcRt4btzLwBXVipxswyalRDlhJBZR286G3jop2u2T+6KmapeET/gbT3xw7+lDLyNI2WGIl3xlifM+p9apsSRFkJ7gbVPammRgcY59KIfhwpQS9l5PqxNNyKWnZiMZOcCoaKsg16gyeaeMYJJIxXGwjtyKVDseU4WkO4NM5OAcHGcZrtWyOPKmB5cn2wfhRLpWyttT121sb3d4M5ZDtODnacY+uKGTnOK4jdkYMjFWU5DKcEH4VIBrq3p6Tp/UBEpkktZADFMwxu9QceYoNH3qy6j1i2raONP1WwjmdVGy4WQq4cDAbGMfMedVhDQhsmKMgUR0PVbzR7+K4t5pEjDqZY0biRQeQR2PGaGRPwBVj0HpTU9dQvbIkUI/7kzbQfkO5+gxV1ZPDWdI1a01ezW7sZC8JJX2hgqR3BHrUm7bFpKf8prNLGy1nou5a5ieK+sj/AIqK3fJA/e2+RHr96vZ1G3vNFe9tZRJBJEWVh/8Ad6xlGmWnZXRNg8jmvVlBBJABocb+JwGBpPdhgBGRSAmyvkZXilUNbgdyRilQBcg+a9DHPelSrjOs9B5rtOfnSpUDM/1XURqGr3kyndDC/gx48wgwfuxNCLlxv3qcNx38qVKvVgqikedLcmwVDH4V1KzcyMSc/DvXFontPK4ySaVKgY4cbt3dz/KmnXvjk+tKlQBGcAV4sRZN75VPL1b5UqVSB0YT4Rf3QPKuNuVyFwBSpUAcPHuHeu7PTLy/laKygaZ1XcVXvj60qVKkx3R5eafeWWPxlrNDk4BkQjP1p2w0fUdQGbSzmkX94LhfuaVKs8j8rRpij7dMs+kdF3cU8FxqctskaSKzQsd28A8gntVk1i11LVrrxbVIoQOFcNjaPhilSrhlllJ2z0YYoxjSGoenrLTZBe6nK5nj5Tw327j5duT8qplxrV5p806abKYba5ZjJblBtDZwSAe2RjtSpV04G5J2c36mKjVEeLWpVxviRh/l4qZb6vbFvaLR5/eGR9xSpVvSOSwpAfE9tHVkPYg5BpUqVQyj/9k="
+                  class="avatar-circle"
+                  alt="Mehdi Alami"
+                />
+                <div>
+                  <div class="fw-bold small">Mehdi Alami</div>
+                  <div class="text-secondary" style="font-size: 0.8rem">
+                    Traffic Manager chez BlaBlaCar
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FAQ ================= -->
+    <section id="faq" class="py-5 faq-section">
+      <div class="container py-4">
+        <div class="faq-content mx-auto">
+          <div class="text-center mb-4">
+            <span class="section-badge">FOIRE AUX QUESTIONS</span>
+            <h2 class="mb-2">Vos questions, nos réponses</h2>
+            <p class="section-subtitle mb-0">
+              Les informations essentielles pour choisir votre formation.
+            </p>
+          </div>
+          <div class="accordion faq-accordion" id="faqAccordion">
+            <div class="accordion-item">
+              <h3 class="accordion-header" id="faqHeadingOne">
+                <button
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqAnswerOne"
+                  aria-expanded="true"
+                  aria-controls="faqAnswerOne"
+                >
+                  Comment suivre une formation à mon rythme ?
+                </button>
+              </h3>
+              <div
+                id="faqAnswerOne"
+                class="accordion-collapse collapse show"
+                aria-labelledby="faqHeadingOne"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  Les cours sont accessibles en ligne 24 h/24 et 7 j/7. Vous
+                  pouvez avancer selon votre emploi du temps et depuis
+                  l’appareil de votre choix.
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h3 class="accordion-header" id="faqHeadingTwo">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqAnswerTwo"
+                  aria-expanded="false"
+                  aria-controls="faqAnswerTwo"
+                >
+                  Les formations comprennent-elles de la pratique ?
+                </button>
+              </h3>
+              <div
+                id="faqAnswerTwo"
+                class="accordion-collapse collapse"
+                aria-labelledby="faqHeadingTwo"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  Oui. Les parcours s’appuient sur des exercices et des projets
+                  pratiques inspirés de situations professionnelles.
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h3 class="accordion-header" id="faqHeadingThree">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqAnswerThree"
+                  aria-expanded="false"
+                  aria-controls="faqAnswerThree"
+                >
+                  Puis-je être accompagné pendant mon parcours ?
+                </button>
+              </h3>
+              <div
+                id="faqAnswerThree"
+                class="accordion-collapse collapse"
+                aria-labelledby="faqHeadingThree"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  Un mentorat personnalisé est proposé avec un rendez-vous en
+                  visioconférence chaque semaine.
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h3 class="accordion-header" id="faqHeadingFour">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqAnswerFour"
+                  aria-expanded="false"
+                  aria-controls="faqAnswerFour"
+                >
+                  Les formations préparent-elles à une certification ?
+                </button>
+              </h3>
+              <div
+                id="faqAnswerFour"
+                class="accordion-collapse collapse"
+                aria-labelledby="faqHeadingFour"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  Certains parcours préparent à une certification. Consultez la
+                  présentation de la formation choisie pour connaître les
+                  modalités correspondantes.
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h3 class="accordion-header" id="faqHeadingFive">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqAnswerFive"
+                  aria-expanded="false"
+                  aria-controls="faqAnswerFive"
+                >
+                  Comment obtenir des informations sur une formation ?
+                </button>
+              </h3>
+              <div
+                id="faqAnswerFive"
+                class="accordion-collapse collapse"
+                aria-labelledby="faqHeadingFive"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  <a href="#contact">Contactez notre équipe</a> : nous
+                  répondrons à vos questions sur les parcours proposés.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CONTACT (REDESIGNED) ================= -->
+    <section id="contact" class="py-5 hero-section">
+      <div class="container py-4">
+        <div class="text-center mx-auto mb-5" style="max-width: 640px">
+          <span class="section-badge">NOUS SOMMES LÀ POUR VOUS AIDER</span>
+          <h2 class="mb-3">Contactez-nous</h2>
+          <p class="section-subtitle">
+            Vous avez des questions sur nos formations ? Notre équipe est là
+            pour vous aider.
+          </p>
+        </div>
+
+        <div class="row g-4">
+          <!-- Colonne infos - redesign -->
+          <div class="col-lg-5">
+            <div class="contact-info-card">
+              <div>
+                <h4 class="fw-bold mb-4">Parlons de votre projet</h4>
+                <div class="d-flex flex-column gap-4">
+                  <div class="contact-info-row">
+                    <span class="contact-icon-circle"
+                      ><i class="bi bi-envelope-fill"></i
+                    ></span>
+                    <div>
+                      <div class="contact-label">EMAIL</div>
+                      <div class="fw-bold">contact@sarefacademy.com</div>
+                    </div>
+                  </div>
+                  <div class="contact-info-row">
+                    <span class="contact-icon-circle"
+                      ><i class="bi bi-telephone-fill"></i
+                    ></span>
+                    <div>
+                      <div class="contact-label">TÉLÉPHONE</div>
+                      <div class="fw-bold">+33 1 23 45 67 89</div>
+                    </div>
+                  </div>
+                  <div class="contact-info-row">
+                    <span class="contact-icon-circle"
+                      ><i class="bi bi-geo-alt-fill"></i
+                    ></span>
+                    <div>
+                      <div class="contact-label">ADRESSE</div>
+                      <div class="fw-bold">Paris, France</div>
+                    </div>
+                  </div>
+                  <div class="contact-info-row">
+                    <span class="contact-icon-circle"
+                      ><i class="bi bi-clock-fill"></i
+                    ></span>
+                    <div>
+                      <div class="contact-label">HORAIRES</div>
+                      <div class="fw-bold">Lun – Ven, 9h00 – 18h00</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="position-relative" style="z-index: 1">
+                <hr
+                  style="border-color: rgba(255, 255, 255, 0.15)"
+                  class="my-4"
+                />
+                <div class="mb-2 small" style="color: var(--blue-200)">
+                  Suivez-nous
+                </div>
+                <div class="contact-social d-flex gap-2">
+                  <a href="#"><i class="bi bi-facebook"></i></a>
+                  <a href="#"><i class="bi bi-twitter-x"></i></a>
+                  <a href="#"><i class="bi bi-linkedin"></i></a>
+                  <a href="#"><i class="bi bi-instagram"></i></a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Colonne formulaire -->
+          <div class="col-lg-7">
+            <div class="form-card">
+              <h4 class="fw-bold mb-2">Envoyez-nous un message</h4>
+              <p class="text-secondary mb-4">
+                Remplissez le formulaire ci-dessous et nous reviendrons vers
+                vous rapidement.
+              </p>
+              <form>
+                <div class="mb-3">
+                  <label class="form-label">Nom complet</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Votre nom complet"
+                  />
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Email</label>
+                    <input
+                      type="email"
+                      class="form-control"
+                      placeholder="votre@email.com"
+                    />
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Téléphone</label>
+                    <input
+                      type="tel"
+                      class="form-control"
+                      placeholder="+33 6 00 00 00 00"
+                    />
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Sujet</label>
+                  <select class="form-select">
+                    <option selected>Sélectionnez un sujet</option>
+                    <option>Renseignement sur une formation</option>
+                    <option>Question administrative</option>
+                    <option>Partenariat</option>
+                    <option>Autre</option>
+                  </select>
+                </div>
+                <div class="mb-4">
+                  <label class="form-label">Message</label>
+                  <textarea
+                    class="form-control"
+                    rows="4"
+                    placeholder="Décrivez votre demande ou votre projet..."
+                  ></textarea>
+                </div>
+                <button type="submit" class="btn btn-brand w-100">
+                  Envoyer le message
+                </button>
+                <p class="text-center text-secondary small mt-3 mb-0">
+                  Nous vous répondons généralement sous 24 à 48 heures ouvrées.
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="pt-5 pb-4">
+      <div class="container">
+        <div class="row g-4 mb-4">
+          <div class="col-lg-4">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <span class="navbar-brand-mark">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 100 100"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M50 6 L94 50 L50 94 L6 50 Z" fill="#335CEC" />
+                  <path
+                    d="M35 32 C25 32 25 48 40 50 C55 52 55 68 40 68"
+                    stroke="white"
+                    stroke-width="9"
+                    stroke-linecap="round"
+                    fill="none"
+                  />
+                  <circle cx="60" cy="34" r="7" fill="#22C55E" />
+                </svg>
+              </span>
+              <span class="fs-5"
+                ><span class="brand-word-saref">Saref</span>
+                <span class="brand-word-academy">Academy</span></span
+              >
+            </div>
+            <p class="small" style="max-width: 340px">
+              La plateforme de formation nouvelle génération Saref Academy pour
+              maîtriser le marketing digital, acquérir des certifications
+              reconnues et propulser votre carrière professionnelle.
+            </p>
+            <div class="footer-social mt-3">
+              <a href="#"><i class="bi bi-facebook"></i></a>
+              <a href="#"><i class="bi bi-twitter-x"></i></a>
+              <a href="#"><i class="bi bi-linkedin"></i></a>
+              <a href="#"><i class="bi bi-youtube"></i></a>
+              <a href="#"><i class="bi bi-instagram"></i></a>
+            </div>
+          </div>
+          <div class="col-6 col-lg-2">
+            <h6>FORMATIONS</h6>
+            <div class="d-flex flex-column">
+              <a href="#">Référencement SEO</a>
+              <a href="#">Social Media &amp; Ads</a>
+              <a href="#">Google Ads Pro</a>
+              <a href="#">Email Marketing</a>
+              <a href="#">Copywriting</a>
+            </div>
+          </div>
+          <div class="col-6 col-lg-2">
+            <h6>RESSOURCES</h6>
+            <div class="d-flex flex-column">
+              <a href="#">Blog</a>
+              <a href="#">Guides PDF Gratuits</a>
+              <a href="#">Sandbox Google Ads</a>
+              <a href="#">Webinaires</a>
+              <a href="#">FAQ</a>
+            </div>
+          </div>
+          <div class="col-6 col-lg-2">
+            <h6>À PROPOS</h6>
+            <div class="d-flex flex-column">
+              <a href="#">Notre Mission</a>
+              <a href="#">Nos Mentors</a>
+              <a href="#">Partenaires</a>
+              <a href="#">Recrutement</a>
+              <a href="#">Presse</a>
+            </div>
+          </div>
+          <div class="col-6 col-lg-2">
+            <h6>SUPPORT</h6>
+            <div class="d-flex flex-column">
+              <a href="#">Centre d'aide</a>
+              <a href="#">Contactez-nous</a>
+              <a href="#">Discord Privé</a>
+              <a href="#">Status</a>
+              <a href="#">RGPD</a>
+            </div>
+          </div>
+        </div>
+        <hr style="border-color: rgba(148, 163, 184, 0.15)" />
+        <div
+          class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 pt-2"
+        >
+          <div class="small">
+            © 2024 Saref Academy. Tous droits réservés. Déclaration d'activité
+            de formation enregistrée sous le numéro 117560.
+          </div>
+          <div class="d-flex gap-3 small">
+            <a href="#">Mentions légales</a>
+            <a href="#">Politique de cookies</a>
+            <a href="#">CGU / CGV</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      (() => {
+        const menu = document.getElementById("mobileMenu");
+        const toggle = document.querySelector('[data-bs-target="#mobileMenu"]');
+        if (!menu || !toggle || !window.bootstrap?.Offcanvas) return;
+
+        menu.addEventListener("show.bs.offcanvas", () => {
+          toggle.setAttribute("aria-expanded", "true");
+          toggle.setAttribute("aria-label", "Fermer le menu de navigation");
+        });
+        menu.addEventListener("hidden.bs.offcanvas", () => {
+          toggle.setAttribute("aria-expanded", "false");
+          toggle.setAttribute("aria-label", "Ouvrir le menu de navigation");
+        });
+      })();
+    </script>
+    <script>
+      const motionPreference = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      );
+
+      if (!motionPreference.matches && "IntersectionObserver" in window) {
+        const revealTargets = document.querySelectorAll(
+          [
+            "section h1",
+            "section h2",
+            "section .section-badge",
+            "section .section-subtitle",
+            ".hero-top .btn",
+            ".hero-top .pill-badge",
+            ".hero-visual img",
+            ".card-module",
+            ".card-approach",
+            ".step-card",
+            ".feature-item",
+            ".stats-banner .stat-number",
+            ".stats-banner .text-white-50",
+            ".testimonial-card",
+            ".form-card",
+            ".cta-banner",
+          ].join(", "),
+        );
+        const heroTargets = document.querySelectorAll(
+          ".hero-top .section-badge, .hero-top h1, .hero-top .section-subtitle, .hero-top .btn, .hero-top .pill-badge, .hero-visual img",
+        );
+
+        heroTargets.forEach((target, index) => {
+          target.style.setProperty("--reveal-delay", `${index * 65}ms`);
+        });
+
+        const numberFormatter = new Intl.NumberFormat("fr-FR", {
+          maximumFractionDigits: 0,
+        });
+        const counters = document.querySelectorAll(
+          ".stat-number[data-count-to]",
+        );
+
+        const animateCounter = (counter) => {
+          if (counter.dataset.countStarted === "true") return;
+          counter.dataset.countStarted = "true";
+
+          const targetValue = Number(counter.dataset.countTo);
+          const suffix = counter.dataset.countSuffix || "";
+          const duration = 1500;
+          const startTime = performance.now();
+
+          const updateCounter = (currentTime) => {
+            const progress = Math.min((currentTime - startTime) / duration, 1);
+            const easedProgress = 1 - Math.pow(1 - progress, 4);
+            const currentValue = Math.round(targetValue * easedProgress);
+            counter.textContent = `${numberFormatter.format(currentValue)}${suffix}`;
+
+            if (progress < 1) {
+              requestAnimationFrame(updateCounter);
+            } else {
+              counter.textContent = `${numberFormatter.format(targetValue)}${suffix}`;
+            }
+          };
+
+          counter.textContent = `0${suffix}`;
+          requestAnimationFrame(updateCounter);
+        };
+
+        counters.forEach((counter) => {
+          counter.textContent = `0${counter.dataset.countSuffix || ""}`;
+        });
+
+        revealTargets.forEach((target) => {
+          target.classList.add("reveal-item");
+          if (target.closest(".hero-top")) return;
+
+          const column = target.closest('.row > [class*="col-"]');
+          if (column) {
+            const columnIndex = Array.from(
+              column.parentElement.children,
+            ).indexOf(column);
+            target.style.setProperty(
+              "--reveal-delay",
+              `${(columnIndex % 3) * 85}ms`,
+            );
+          }
+        });
+
+        const revealObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              entry.target.classList.toggle("is-visible", entry.isIntersecting);
+              if (
+                entry.isIntersecting &&
+                entry.target.matches(".stat-number[data-count-to]")
+              ) {
+                animateCounter(entry.target);
+              }
+            });
+          },
+          { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
+        );
+
+        document.documentElement.classList.add("motion-ready");
+        revealTargets.forEach((target) => revealObserver.observe(target));
+      }
+    </script>
+    <script>
+      (() => {
+        const root = document.documentElement;
+        const loader = document.querySelector(".page-loader");
+        if (!loader || !root.classList.contains("page-loading")) return;
+
+        const reduceMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+        const minimumDisplayTime = reduceMotion ? 450 : 1350;
+        const fadeDuration = reduceMotion ? 0 : 450;
+        const startedAt = performance.now();
+        let isClosing = false;
+
+        const closeLoader = () => {
+          if (isClosing) return;
+          isClosing = true;
+          root.classList.add("home-entering");
+
+          const remainingTime = Math.max(
+            0,
+            minimumDisplayTime - (performance.now() - startedAt),
+          );
+          window.setTimeout(() => {
+            loader.classList.add("is-leaving");
+            window.setTimeout(() => {
+              loader.hidden = true;
+              root.classList.remove("page-loading");
+            }, fadeDuration);
+          }, remainingTime);
+        };
+
+        window.addEventListener("load", closeLoader, { once: true });
+        window.setTimeout(closeLoader, 2400);
+      })();
+    </script>
+  </body>
+</html>
