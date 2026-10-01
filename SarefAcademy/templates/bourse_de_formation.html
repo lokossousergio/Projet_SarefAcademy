@@ -1,0 +1,1613 @@
+{% load static %}
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Saref Academy - Bourse de formation</title>
+    <link
+      rel="icon"
+      type="image/jpeg"
+      href="{% static 'images/WhatsApp Image 2026-08-20 at 13.16.27.jpeg' %}"
+    />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Sora:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/css/intlTelInput.css"
+    />
+    <link rel="stylesheet" href="{% static 'css/bourse_de_formation.css' %}" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Facebook Pixel Code -->
+    <script>
+      !(function (f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function () {
+          n.callMethod
+            ? n.callMethod.apply(n, arguments)
+            : n.queue.push(arguments);
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = !0;
+        n.version = "2.0";
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = !0;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s);
+      })(
+        window,
+        document,
+        "script",
+        "https://connect.facebook.net/en_US/fbevents.js",
+      );
+      fbq("init", "1424078813234077");
+      fbq("track", "PageView");
+    </script>
+    <noscript>
+      <img
+        height="1"
+        width="1"
+        src="https://www.facebook.com/tr?id=1424078813234077&ev=PageView
+&noscript=1"
+      />
+    </noscript>
+    <!-- End Facebook Pixel Code -->
+
+    <!-- End Facebook Pixel Code -->
+    <style>
+      .iti {
+        width: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- HERO SECTION -->
+    <section class="hero-section text-center">
+      <div class="container">
+        <img
+          class="hero-logo"
+          src="{% static 'images/WhatsApp_Image_2026-08-17_at_18.19.27-removebg-preview.png' %}"
+          alt="Saref Academy"
+        />
+
+        <div class="row justify-content-center">
+          <div class="col-lg-10">
+            <h1 class="hero-title">
+              Décrochez une
+              <span class="text-brand-blue">Bourse de Formation</span> d'une
+              valeur de <span class="font-sora">1 500 000 FCFA</span> en
+              <span class="text-brand-blue">Marketing Digital</span>
+            </h1>
+          </div>
+        </div>
+
+        <div class="row justify-content-center mt-4">
+          <div class="col-lg-9">
+            <p class="hero-description mx-auto">
+              Devenez un <strong>expert du marketing digital</strong> à partir
+              de zéro et décrochez votre <strong>job de rêve</strong> avec un
+              programme de formation complet et pratique.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PREMIER FORMULAIRE -->
+
+    <section class="form-section" id="postuler">
+      <div class="container">
+        <div class="saref-form-card">
+          <div class="d-flex justify-content-center gap-2 mb-4">
+            <div class="icon-box-small"><i class="fa-solid fa-code"></i></div>
+            <div class="icon-box-small">
+              <i class="fa-solid fa-bullhorn"></i>
+            </div>
+            <div class="icon-box-small"><i class="fa-solid fa-laptop"></i></div>
+          </div>
+
+          <h4
+            class="text-center mb-4"
+            style="line-height: 1.4; font-weight: 700"
+          >
+            Postulez gratuitement pour obtenir une bourse de formation
+          </h4>
+
+          <style>
+            .deadline-simple {
+              display: inline-flex;
+              align-items: center;
+              gap: 12px;
+              margin: 24px auto;
+              padding: 12px 22px;
+              background: #f8faff;
+              border: 1px solid #e4e9fa;
+              border-radius: 50px;
+              box-shadow: 0 6px 18px rgba(17, 24, 39, 0.06);
+            }
+
+            .deadline-simple-icon {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex: none;
+              width: 34px;
+              height: 34px;
+              border-radius: 50%;
+              background: #eef2ff;
+              color: #315bea;
+              font-size: 0.95rem;
+            }
+
+            .deadline-simple .txt {
+              margin: 0;
+              color: #111827;
+              font-family: "Poppins", sans-serif;
+              font-size: 0.9rem;
+              text-align: left;
+            }
+
+            .deadline-simple .txt strong {
+              display: block;
+              font-family: "Sora", sans-serif;
+              font-weight: 700;
+              font-size: 0.98rem;
+              color: #111827;
+            }
+
+            @media (max-width: 480px) {
+              .deadline-simple {
+                width: 100%;
+                padding: 12px 18px;
+              }
+            }
+          </style>
+
+          {% if param is not None %}
+          <div class="text-center">
+            <div class="deadline-simple">
+              <div class="deadline-simple-icon">
+                <i class="fa-solid fa-calendar-days"></i>
+              </div>
+              <p class="txt">
+                Clôture des candidatures
+                <strong
+                  >{{ param.Date_cloture_inscription|date:"d F Y à H\h i"
+                  }}</strong
+                >
+              </p>
+            </div>
+          </div>
+
+          {% endif %}
+
+          <div class="form-line"></div>
+
+          <form
+            class="js-application-form"
+            novalidate
+            method="post"
+            action="{% url 'bourse-de-formation'%}"
+          >
+            {% csrf_token %}
+            <div class="mb-3">
+              <label class="small text-uppercase mb-1" style="opacity: 0.8"
+                >Nom et prénom *</label
+              >
+              <input
+                type="text"
+                class="form-control form-input-saref js-fullname"
+                required
+                name="nom_prenom"
+                placeholder="Entrez votre nom et prenom"
+              />
+              <div class="invalid-feedback">Entrez votre nom et prénom.</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="small text-uppercase mb-1" style="opacity: 0.8"
+                >Email *</label
+              >
+              <input
+                type="email"
+                class="form-control form-input-saref js-email"
+                required
+                name="email"
+                placeholder="Entrez votre adresse email"
+              />
+              <div class="invalid-feedback">
+                Entrez une adresse email valide.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label
+                for="whatsapp"
+                class="small text-uppercase mb-1"
+                style="opacity: 0.8"
+              >
+                Numéro WhatsApp *
+              </label>
+
+              <input
+                type="tel"
+                name="whatsapp"
+                id="whatsapp"
+                class="form-control form-input-saref js-whatsapp"
+                required
+              />
+
+              <input type="hidden" name="number" class="js-whatsapp-e164" />
+
+              <div class="invalid-feedback">
+                Entrez un numéro WhatsApp valide.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="small text-uppercase mb-1" style="opacity: 0.8">
+                Niveau d'étude *
+              </label>
+
+              <select
+                name="niveau_etudes"
+                class="form-select form-input-saref js-study-level"
+                required
+                placeholder="Choisissez votre niveau"
+              >
+                <option value="" selected disabled>
+                  Choisissez votre niveau
+                </option>
+                <option value="Collège">Collège</option>
+                <option value="Lycée">Lycée</option>
+                <option value="Baccalauréat">Baccalauréat</option>
+                <option value="Baccalauréat +1">Baccalauréat +1</option>
+                <option value="Baccalauréat +2">Baccalauréat +2</option>
+                <option value="Licence">Licence</option>
+                <option value="Master">Master</option>
+                <option value="Doctorat">Doctorat</option>
+              </select>
+
+              <div class="invalid-feedback">
+                Sélectionnez votre niveau d'étude.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="small text-uppercase mb-1" style="opacity: 0.8"
+                >Pourquoi souhaitez-vous suivre une formation en marketing
+                digital ? *</label
+              >
+              <textarea
+                class="form-control form-input-saref js-reason"
+                required
+                name="reason"
+                placeholder="Décrivez brièvement vos motivations"
+              ></textarea>
+              <div class="invalid-feedback">
+                Veuillez décrire vos motivations .
+              </div>
+            </div>
+
+            <button type="submit" class="btn-saref-premium btn-click">
+              Je postule maintenant
+              <div
+                class="spinner-border spinner-border-sm"
+                style="display: none"
+                role="status"
+              ></div>
+            </button>
+            <p
+              class="text-center mt-2 mb-0"
+              style="font-size: 0.8rem; opacity: 0.8"
+            >
+              Se termine bientôt - 100% gratuit
+            </p>
+          </form>
+
+          <div class="text-center mt-4">
+            <p class="small text-uppercase mb-3" style="letter-spacing: 1px">
+              La phase de candidature se termine dans
+            </p>
+
+            <div
+              class="d-flex justify-content-center gap-3 js-countdown"
+              data-deadline="{{ param.Date_cloture_inscription|date:'c' }}"
+            >
+              <div class="timer-circle">
+                <strong class="cd-days">00</strong><span>DYS</span>
+              </div>
+              <div class="timer-circle">
+                <strong class="cd-hours">00</strong><span>HRS</span>
+              </div>
+              <div class="timer-circle">
+                <strong class="cd-min">00</strong><span>MIN</span>
+              </div>
+              <div class="timer-circle">
+                <strong class="cd-sec">00</strong><span>SEC</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 50 BOURSES -->
+    <section class="section-padding">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <h2 class="mb-4">
+              <span class="text-brand-blue">50 bourses de formation </span> en
+              marketing digital disponibles
+            </h2>
+            <p>
+              Êtes-vous un jeune Africain qui cherche à percer dans l'industrie
+              du marketing digital mais qui a du mal à accéder à des
+              <span class="text-brand-blue"
+                >opportunités de formation de qualité</span
+              >
+              abordables ?
+            </p>
+            <p>
+              Notre programme complet fournit aux apprenants les outils et les
+              connaissances nécessaires pour devenir des
+              <span class="text-brand-blue">acteurs compétents</span> dans le
+              paysage numérique.
+            </p>
+          </div>
+
+          <div class="col-lg-6">
+            <img
+              src="https://www.wsu.ac.za/images/2025/01/07/regiustration.jpg"
+              alt="Étudiante africaine heureuse après l'obtention d'une bourse de formation"
+              class="img-fluid rounded-4 shadow-sm w-100"
+              style="height: 380px; object-fit: cover"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPETENCES -->
+    <section class="container">
+      <div class="competences-box">
+        <h3 class="mb-4">Compétences à acquérir</h3>
+
+        <ul class="competences-list">
+          <li>
+            <span class="competence-icon"
+              ><i class="fa-solid fa-bullhorn"></i
+            ></span>
+            Introduction au marketing digital
+          </li>
+
+          <li>
+            <span class="competence-icon"><i class="fa-solid fa-ad"></i></span>
+            Publicité Ads
+          </li>
+
+          <li>
+            <span class="competence-icon"
+              ><i class="fa-solid fa-users"></i
+            ></span>
+            Community management
+          </li>
+
+          <li>
+            <span class="competence-icon"
+              ><i class="fa-solid fa-pen-ruler"></i
+            ></span>
+            Graphisme
+          </li>
+
+          <li>
+            <span class="competence-icon"
+              ><i class="fa-solid fa-film"></i
+            ></span>
+            Montage vidéo
+          </li>
+
+          <li>
+            <span class="competence-icon"
+              ><i class="fa-solid fa-robot"></i
+            ></span>
+            Closing et IA
+          </li>
+
+          <li>
+            <span class="competence-icon"
+              ><i class="fa-solid fa-filter"></i
+            ></span>
+            Funnel building
+          </li>
+
+          <li>
+            <span class="competence-icon"
+              ><i class="fa-solid fa-magnifying-glass"></i
+            ></span>
+            SEO et rédaction web
+          </li>
+
+          <li>
+            <span class="competence-icon"
+              ><i class="fa-brands fa-wordpress"></i
+            ></span>
+            Création de site web WordPress
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <br />
+
+    <div class="cta-postuler">
+      <a href="#postuler" class="btn-postuler-anime">
+        Postulez maintenant
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+
+    <!-- EMPLOI -->
+    <section class="section-padding">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6 order-lg-2">
+            <h2 class="mb-4">
+              <span class="text-brand-blue">Opportunité d'emploi</span> après la
+              formation
+            </h2>
+            <p>
+              Après la formation, nous vous accompagnons dans la recherche d'un
+              emploi avec la possibilité de travailler avec
+              <span class="text-brand-blue">nos partenaires européens</span>.
+            </p>
+
+            <div class="job-tags">
+              <span class="job-tag"
+                ><i class="fa-solid fa-hashtag"></i> Community Manager</span
+              >
+
+              <span class="job-tag"
+                ><i class="fa-solid fa-palette"></i> Web Designer</span
+              >
+              <span class="job-tag"
+                ><i class="fa-solid fa-code"></i> Développeur Web</span
+              >
+              <span class="job-tag"
+                ><i class="fa-solid fa-bullseye"></i> Media Buyer</span
+              >
+              <span class="job-tag"
+                ><i class="fa-solid fa-chart-line"></i> Growth Marketer</span
+              >
+              <span class="job-tag"
+                ><i class="fa-solid fa-diagram-project"></i> Chef de Projet
+                Digital</span
+              >
+            </div>
+            <br />
+          </div>
+
+          <div class="col-lg-6 order-lg-1">
+            <img
+              src="https://d27735ao2xxhhe.cloudfront.net/blog/pro/maximizing-your-experience-working-abroad-how-to-make-the-most-of-your-time-as-a-gambian-expat-1000x70065b107bec98821706100670.png"
+              alt="Professionnelle africaine travaillant sur son ordinateur"
+              class="rounded-img img-fluid w-100"
+              style="height: 400px; object-fit: cover"
+            />
+          </div>
+        </div>
+        <br />
+        <div class="cta-postuler">
+          <a href="#postuler" class="btn-postuler-anime">
+            Postulez maintenant
+            <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- À mettre dans le <head> de ta page si ce n'est pas déjà fait -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+
+    <!-- À mettre dans le <head> de ta page si ce n'est pas déjà fait -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+
+    <section class="testimonials-section">
+      <div class="container">
+        <div class="text-center mb-5">
+          <h2>
+            <span class="text-brand-blue">Avis des anciens</span> boursiers
+          </h2>
+          <p class="text-muted">
+            Ils ont rejoint la formation et
+            <span class="text-brand-blue">boosté leur carrière</span>.
+          </p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+          <!-- CARD 1 -->
+          <div class="col-12 col-md-6 col-lg-4" style="">
+            <div class="card testimonial-card h-100 shadow-sm">
+              <div
+                class="video-facade"
+                data-video-id="rKeG-plSJl0"
+                style="
+                  background-image: url(&quot;https://img.youtube.com/vi/rKeG-plSJl0/maxresdefault.jpg&quot;);
+                "
+              >
+                <div class="play-btn"><i class="bi bi-play-fill"></i></div>
+              </div>
+              <div class="card-body">
+                <div class="reviewer d-flex align-items-center mb-2">
+                  <div class="avatar"><i class="bi bi-person-fill"></i></div>
+                  <h5 class="card-title mb-0">Ayémar, Burkina Faso</h5>
+                </div>
+
+                <p class="card-text">
+                  Bonjour à tous ! Je suis Gaël, étudiant à la Saref Academy. Je
+                  suis la formation depuis mon pays de résidence, le Burkina
+                  Faso.
+                  <br /><br />
+                  Ce qui fait la force de Saref Academy, c'est l'expertise des
+                  formateurs. Les modules sur le référencement SEO et la
+                  publicité en ligne sont très concrets et directement
+                  applicables sur le marché du travail. À la fin de mon
+                  parcours, j'ai obtenu un certificat de fin de formation qui
+                  m'aide aujourd'hui à décrocher des contrats en freelance.
+                  <br /><br />
+                  N'hésitez pas à faire l'expérience !
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD 2 -->
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="card testimonial-card h-100 shadow-sm">
+              <div
+                class="video-facade"
+                data-video-id="AKtb-KMgBxg"
+                style="
+                  background-image: url(&quot;https://img.youtube.com/vi/AKtb-KMgBxg/maxresdefault.jpg&quot;);
+                "
+              >
+                <div class="play-btn"><i class="bi bi-play-fill"></i></div>
+              </div>
+              <div class="card-body">
+                <div class="reviewer d-flex align-items-center mb-2">
+                  <div class="avatar"><i class="bi bi-person-fill"></i></div>
+                  <h5 class="card-title mb-0">Bérénice, Bénin</h5>
+                </div>
+
+                <p class="card-text">
+                  Bonjour à tous. Je suis Bérénice, étudiante à la Saref
+                  Academy. Je suis la formation depuis mon pays de résidence le
+                  Bénin. Comme plusieurs d'entre vous, j'ai postulé à la bourse
+                  Saref Academy après avoir vu la publicité sur Facebook. Je
+                  recherchais déjà une formation pratique en marketing digital,
+                  une formation qui allait me donner les bases de ce domaine.
+                  <br /><br />
+                  J'ai pour ambition de créer ma propre marque de vêtements, et
+                  je voulais apprendre à utiliser le digital pour promouvoir mon
+                  activité. La formation est purement pratique, avec des
+                  formateurs toujours à l'écoute. Je vous recommande vivement la
+                  Saref Academy. Vous n'allez pas le regretter !
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD 3 -->
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="card testimonial-card h-100 shadow-sm">
+              <img
+                src="https://i.postimg.cc/hjnpVnsk/Whats-App-Image-2026-09-07-at-20-43-39.jpg"
+                alt="Joras, Côte d'Ivoire"
+                class="card-img-top"
+                style="object-fit: cover"
+              />
+
+              <div class="card-body">
+                <div class="reviewer d-flex align-items-center mb-2">
+                  <div class="avatar"><i class="bi bi-person-fill"></i></div>
+                  <h5 class="card-title mb-0">Joras, Côte d'Ivoire</h5>
+                </div>
+
+                <p class="card-text">
+                  Bonjour à vous ! J'espère que vous allez bien ? Je m'appelle
+                  Joras, je suis la formation en Marketing digital de Saref
+                  Academy depuis mon pays de résidence la Côte d'Ivoire.
+                  <br /><br />
+                  Cette formation, je peux vous l'assurer, est très pratique.
+                  Par exemple, je ne connaissais rien du graphisme et du montage
+                  vidéo. Mais aujourd'hui, je suis capable de concevoir des
+                  affiches pour les réseaux sociaux et faire des vidéos pour
+                  TikTok.
+                  <br /><br />
+                  Investissez-vous réellement. Cette formation est la meilleure.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-section" id="postuler">
+      <div class="container">
+        <div class="saref-form-card">
+          <div class="d-flex justify-content-center gap-2 mb-4">
+            <div class="icon-box-small"><i class="fa-solid fa-code"></i></div>
+            <div class="icon-box-small">
+              <i class="fa-solid fa-bullhorn"></i>
+            </div>
+            <div class="icon-box-small"><i class="fa-solid fa-laptop"></i></div>
+          </div>
+
+          <h4
+            class="text-center mb-4"
+            style="line-height: 1.4; font-weight: 700"
+          >
+            Postulez gratuitement pour obtenir une bourse de formation
+          </h4>
+
+          <style>
+            .deadline-simple {
+              display: inline-flex;
+              align-items: center;
+              gap: 12px;
+              margin: 24px auto;
+              padding: 12px 22px;
+              background: #f8faff;
+              border: 1px solid #e4e9fa;
+              border-radius: 50px;
+              box-shadow: 0 6px 18px rgba(17, 24, 39, 0.06);
+            }
+
+            .deadline-simple-icon {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex: none;
+              width: 34px;
+              height: 34px;
+              border-radius: 50%;
+              background: #eef2ff;
+              color: #315bea;
+              font-size: 0.95rem;
+            }
+
+            .deadline-simple .txt {
+              margin: 0;
+              color: #111827;
+              font-family: "Poppins", sans-serif;
+              font-size: 0.9rem;
+              text-align: left;
+            }
+
+            .deadline-simple .txt strong {
+              display: block;
+              font-family: "Sora", sans-serif;
+              font-weight: 700;
+              font-size: 0.98rem;
+              color: #111827;
+            }
+
+            @media (max-width: 480px) {
+              .deadline-simple {
+                width: 100%;
+                padding: 12px 18px;
+              }
+            }
+          </style>
+
+          {% if param is not None %}
+          <div class="text-center">
+            <div class="deadline-simple">
+              <div class="deadline-simple-icon">
+                <i class="fa-solid fa-calendar-days"></i>
+              </div>
+              <p class="txt">
+                Clôture des candidatures
+                <strong
+                  >{{ param.Date_cloture_inscription|date:"d F Y à H\h i"
+                  }}</strong
+                >
+              </p>
+            </div>
+          </div>
+          {% endif %}
+
+          <div class="form-line"></div>
+
+          <form
+            class="js-application-form"
+            novalidate
+            method="post"
+            action="{% url 'bourse-de-formation'%}"
+          >
+            {% csrf_token %}
+            <div class="mb-3">
+              <label class="small text-uppercase mb-1" style="opacity: 0.8"
+                >Nom et prénom *</label
+              >
+              <input
+                type="text"
+                class="form-control form-input-saref js-fullname"
+                required
+                name="nom_prenom"
+                placeholder="Entrez votre nom et prenom"
+              />
+              <div class="invalid-feedback">Entrez votre nom et prénom.</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="small text-uppercase mb-1" style="opacity: 0.8"
+                >Email *</label
+              >
+              <input
+                type="email"
+                class="form-control form-input-saref js-email"
+                required
+                name="email"
+                placeholder="Entrez votre adresse email"
+              />
+              <div class="invalid-feedback">
+                Entrez une adresse email valide.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label
+                for="whatsapp"
+                class="small text-uppercase mb-1"
+                style="opacity: 0.8"
+              >
+                Numéro WhatsApp *
+              </label>
+
+              <input
+                type="tel"
+                name="whatsapp"
+                id="whatsapp"
+                class="form-control form-input-saref js-whatsapp"
+                required
+              />
+
+              <input type="hidden" name="number" class="js-whatsapp-e164" />
+
+              <div class="invalid-feedback">
+                Entrez un numéro WhatsApp valide.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="small text-uppercase mb-1" style="opacity: 0.8">
+                Niveau d'étude *
+              </label>
+              <select
+                name="niveau_etudes"
+                class="form-select form-input-saref js-study-level"
+                required
+                placeholder="Choisissez votre niveau"
+              >
+                <option value="" selected disabled>
+                  Choisissez votre niveau
+                </option>
+                <option value="Collège">Collège</option>
+                <option value="Lycée">Lycée</option>
+                <option value="Baccalauréat">Baccalauréat</option>
+                <option value="Baccalauréat +1">Baccalauréat +1</option>
+                <option value="Baccalauréat +2">Baccalauréat +2</option>
+                <option value="Licence">Licence</option>
+                <option value="Master">Master</option>
+                <option value="Doctorat">Doctorat</option>
+              </select>
+
+              <div class="invalid-feedback">
+                Sélectionnez votre niveau d'étude.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="small text-uppercase mb-1" style="opacity: 0.8"
+                >Pourquoi souhaitez-vous suivre une formation en marketing
+                digital ? *</label
+              >
+              <textarea
+                class="form-control form-input-saref js-reason"
+                required
+                name="reason"
+                placeholder="Décrivez brièvement vos motivations"
+              ></textarea>
+              <div class="invalid-feedback">
+                Veuillez décrire vos motivations .
+              </div>
+            </div>
+
+            <button type="submit" class="btn-saref-premium btn-click">
+              Je postule maintenant
+              <div
+                class="spinner-border spinner-border-sm"
+                style="display: none"
+                role="status"
+              ></div>
+            </button>
+            <p
+              class="text-center mt-2 mb-0"
+              style="font-size: 0.8rem; opacity: 0.8"
+            >
+              Se termine bientôt - 100% gratuit
+            </p>
+          </form>
+
+          <div class="text-center mt-4">
+            <p class="small text-uppercase mb-3" style="letter-spacing: 1px">
+              La phase de candidature se termine dans
+            </p>
+
+            <div
+              class="d-flex justify-content-center gap-3 js-countdown"
+              data-deadline="{{ param.Date_cloture_inscription|date:'c' }}"
+            >
+              <div class="timer-circle">
+                <strong class="cd-days">00</strong><span>DYS</span>
+              </div>
+              <div class="timer-circle">
+                <strong class="cd-hours">00</strong><span>HRS</span>
+              </div>
+              <div class="timer-circle">
+                <strong class="cd-min">00</strong><span>MIN</span>
+              </div>
+              <div class="timer-circle">
+                <strong class="cd-sec">00</strong><span>SEC</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/js/intlTelInput.min.js"></script>
+<script>
+  const paysAfricains = [
+    "bj", // Bénin
+    "bf", // Burkina Faso
+    "bi", // Burundi
+    "cm", // Cameroun
+    "cf", // République centrafricaine
+    "td", // Tchad
+    "km", // Comores
+    "cg", // Congo
+    "cd", // RDC
+    "ci", // Côte d'Ivoire
+    "dj", // Djibouti
+    "ga", // Gabon
+    "gn", // Guinée
+    "gq", // Guinée équatoriale
+    "mg", // Madagascar
+    "ml", // Mali
+    "ne", // Niger
+    "rw", // Rwanda
+    "sn", // Sénégal
+    "sc", // Seychelles
+    "tg", // Togo
+  ];
+
+  const telephoneInstances = new WeakMap();
+
+  const regexNom = /^[A-Za-zÀ-ÿ' -]{2,80}$/;
+  const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  function afficherEtat(champ, valide) {
+    champ.classList.toggle("is-valid", valide);
+    champ.classList.toggle("is-invalid", !valide);
+  }
+
+  document.querySelectorAll(".js-application-form").forEach((formulaire) => {
+    const nom = formulaire.querySelector(".js-fullname");
+    const email = formulaire.querySelector(".js-email");
+    const whatsapp = formulaire.querySelector(".js-whatsapp");
+    const niveau = formulaire.querySelector(".js-study-level");
+    const whatsappInternational = formulaire.querySelector(".js-whatsapp-e164");
+    const spinner = formulaire.querySelector(".spinner-border");
+    const reason = formulaire.querySelector(".js-reason");
+
+    const telephone = window.intlTelInput(whatsapp, {
+      initialCountry: "bj",
+      onlyCountries: paysAfricains,
+      separateDialCode: true,
+      nationalMode: true,
+      loadUtils: () =>
+        import("https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/js/utils.js"),
+    });
+
+    telephoneInstances.set(whatsapp, telephone);
+
+    function validerNom() {
+      const valide = regexNom.test(nom.value.trim());
+      afficherEtat(nom, valide);
+      return valide;
+    }
+
+    function validerEmail() {
+      const valide = regexEmail.test(email.value.trim());
+      afficherEtat(email, valide);
+      return valide;
+    }
+
+    function validerWhatsApp() {
+      const valide = whatsapp.value.trim() !== "" && telephone.isValidNumber();
+      afficherEtat(whatsapp, valide);
+      return valide;
+    }
+
+    function validerNiveau() {
+      const valide = niveau.value !== "";
+      afficherEtat(niveau, valide);
+      return valide;
+    }
+
+    function validerReason() {
+      const valide = reason.value.trim() !== "";
+      afficherEtat(reason, valide);
+      return valide;
+    }
+
+    nom.addEventListener("input", validerNom);
+    email.addEventListener("input", validerEmail);
+    whatsapp.addEventListener("blur", validerWhatsApp);
+    niveau.addEventListener("change", validerNiveau);
+    reason.addEventListener("input", validerReason);
+
+    formulaire.addEventListener("submit", (event) => {
+      const formulaireValide =
+        validerNom() &&
+        validerEmail() &&
+        validerWhatsApp() &&
+        validerNiveau() &&
+        validerReason();
+
+      if (!formulaireValide) {
+        event.preventDefault();
+        formulaire.querySelector(".is-invalid")?.focus();
+        spinner.style.display = "none";
+        return;
+      } else {
+        spinner.style.display = "inline-block";
+      }
+
+      // Numéro propre à envoyer au serveur : +22997000000
+      whatsappInternational.value = telephone.getNumber();
+    });
+  });
+</script>
+
+<style>
+  .iti__dropdown-content,
+  .iti__country-list {
+    background: #111827 !important;
+    border: 1px solid #374151 !important;
+    color: #ffffff !important;
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35) !important;
+  }
+
+  .iti__country {
+    color: #ffffff !important;
+  }
+
+  .iti__country:hover,
+  .iti__country.iti__highlight {
+    background: #1f2937 !important;
+  }
+
+  .iti__dial-code {
+    color: #cbd5e1 !important;
+  }
+
+  .iti__divider {
+    border-bottom-color: #374151 !important;
+  }
+
+  .iti__search-input {
+    background: #111827 !important;
+    border: 1px solid #374151 !important;
+    color: #ffffff !important;
+  }
+
+  .iti__search-input::placeholder {
+    color: #94a3b8 !important;
+  }
+
+  /* =========================================================
+     SAREF MODAL — CONFIRMATION INSCRIPTION
+  ========================================================= */
+
+  .saref-modal .modal-content {
+    overflow: hidden;
+    border: 0;
+    border-radius: 24px;
+    background: #fff;
+    box-shadow: 0 30px 80px rgba(15, 23, 42, 0.22);
+  }
+
+  /* =========================================================
+     BODY
+  ========================================================= */
+
+  .saref-modal .modal-body {
+    position: relative;
+    padding: 42px 36px 28px;
+  }
+
+  /* =========================================================
+     BOUTON FERMER
+  ========================================================= */
+
+  .saref-modal .modal-body .btn-close {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    z-index: 5;
+
+    width: 32px;
+    height: 32px;
+
+    padding: 0;
+    margin: 0;
+
+    border-radius: 50%;
+
+    background-color: #f1f5f9;
+    background-size: 11px;
+
+    opacity: 1;
+
+    transition: 0.2s ease;
+  }
+
+  .saref-modal .modal-body .btn-close:hover {
+    background-color: #e2e8f0;
+    transform: rotate(90deg);
+  }
+
+  /* =========================================================
+     ICÔNE DE SUCCÈS
+  ========================================================= */
+  .saref-success-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 72px;
+    height: 72px;
+
+    margin: 0 auto 22px;
+
+    border-radius: 50%;
+
+    background: #fef3c7;
+    color: #d97706;
+
+    box-shadow:
+      0 0 0 8px #fffbeb,
+      0 10px 25px rgba(217, 119, 6, 0.12);
+  }
+
+  .saref-success-icon i {
+    font-size: 2rem;
+  }
+
+  /* =========================================================
+     TITRE
+  ========================================================= */
+
+  .saref-modal-title {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-family: "Sora", sans-serif;
+    font-size: 1.45rem;
+    font-weight: 700;
+
+    letter-spacing: -0.035em;
+    line-height: 1.3;
+  }
+
+  /* =========================================================
+     MESSAGE
+  ========================================================= */
+
+  .saref-modal-message {
+    max-width: 430px;
+
+    margin: 10px auto 0;
+
+    color: #64748b;
+
+    font-size: 0.95rem;
+    font-weight: 400;
+
+    line-height: 1.6;
+  }
+
+  /* =========================================================
+     ACTION IMPORTANTE
+  ========================================================= */
+
+  .saref-important-step {
+    margin-top: 28px;
+    padding: 20px;
+
+    text-align: left;
+
+    border: 1px solid #fed7aa;
+    border-radius: 18px;
+
+    background: linear-gradient(135deg, #fffaf5 0%, #ffffff 100%);
+
+    box-shadow: 0 10px 25px rgba(249, 115, 22, 0.08);
+  }
+
+  /* =========================================================
+     BADGE ACTION REQUISE
+  ========================================================= */
+
+  .saref-important-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 6px 10px;
+
+    border-radius: 8px;
+
+    background: #fff1e8;
+    color: #ea580c;
+
+    font-size: 0.68rem;
+    font-weight: 800;
+
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .saref-important-badge i {
+    font-size: 0.75rem;
+  }
+
+  /* =========================================================
+     TITRE GARANTIR LA PLACE
+  ========================================================= */
+
+  .saref-important-step h6 {
+    margin: 13px 0 5px;
+
+    color: #111827;
+
+    font-family: "Sora", sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  /* =========================================================
+     TEXTE ACTION
+  ========================================================= */
+
+  .saref-important-step p {
+    margin: 0 0 17px;
+
+    color: #64748b;
+
+    font-size: 0.86rem;
+    line-height: 1.55;
+  }
+
+  .saref-important-step p strong {
+    color: #111827;
+    font-weight: 700;
+  }
+
+  /* =========================================================
+     WHATSAPP
+  ========================================================= */
+
+  .saref-whatsapp-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding-top: 15px;
+
+    border-top: 1px solid #f1e4d9;
+  }
+
+  /* ICÔNE WHATSAPP */
+
+  .saref-whatsapp-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 auto;
+
+    width: 46px;
+    height: 46px;
+
+    border-radius: 13px;
+
+    background: #25d366;
+    color: #fff;
+
+    font-size: 1.35rem;
+
+    box-shadow: 0 7px 16px rgba(37, 211, 102, 0.22);
+  }
+
+  /* TEXTE WHATSAPP */
+
+  .saref-whatsapp-text {
+    min-width: 0;
+  }
+
+  .saref-whatsapp-text span {
+    display: block;
+
+    color: #64748b;
+
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+
+  /* NUMÉRO */
+
+  .saref-whatsapp-number {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #111827;
+
+    font-family: "Sora", sans-serif;
+    font-size: 0.98rem;
+    font-weight: 800;
+  }
+
+  /* =========================================================
+     FOOTER
+  ========================================================= */
+
+  .saref-modal .modal-footer {
+    justify-content: center;
+
+    padding: 0 36px 32px;
+
+    border: 0;
+  }
+
+  /* =========================================================
+     BOUTON
+  ========================================================= */
+
+  .saref-modal .btn-saref-modal {
+    width: 100%;
+
+    padding: 13px 20px;
+
+    border: 0;
+    border-radius: 11px;
+
+    background: #315bea;
+    color: #fff;
+
+    font-family: "Sora", sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+
+    box-shadow: 0 8px 18px rgba(49, 91, 234, 0.18);
+
+    transition: 0.2s ease;
+  }
+
+  .saref-modal .btn-saref-modal:hover {
+    background: #2446c8;
+    color: #fff;
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 11px 22px rgba(49, 91, 234, 0.23);
+  }
+
+  .saref-modal .btn-saref-modal:active {
+    transform: translateY(0);
+  }
+
+  /* =========================================================
+     MOBILE
+  ========================================================= */
+
+  @media (max-width: 576px) {
+    .saref-modal .modal-dialog {
+      margin: 14px;
+    }
+
+    .saref-modal .modal-body {
+      padding: 38px 20px 24px;
+    }
+
+    .saref-modal-title {
+      font-size: 1.25rem;
+    }
+
+    .saref-modal-message {
+      font-size: 0.9rem;
+    }
+
+    .saref-important-step {
+      padding: 17px;
+    }
+
+    .saref-important-step h6 {
+      font-size: 0.95rem;
+    }
+
+    .saref-important-step p {
+      font-size: 0.83rem;
+    }
+
+    .saref-modal .modal-footer {
+      padding: 0 20px 22px;
+    }
+
+    .saref-modal .btn-saref-modal {
+      width: 100%;
+    }
+  }
+</style>
+
+<!-- A placer juste avant </body>, une seule fois -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var counters = document.querySelectorAll(".js-countdown");
+
+    counters.forEach(function (counter) {
+      var deadline = new Date(counter.dataset.deadline).getTime();
+
+      // si la date est absente ou invalide, on ne fait rien
+      if (isNaN(deadline)) return;
+
+      var daysEl = counter.querySelector(".cd-days");
+      var hoursEl = counter.querySelector(".cd-hours");
+      var minEl = counter.querySelector(".cd-min");
+      var secEl = counter.querySelector(".cd-sec");
+
+      function pad(n) {
+        return String(n).padStart(2, "0");
+      }
+
+      function update() {
+        var now = new Date().getTime();
+        var diff = deadline - now;
+
+        if (diff <= 0) {
+          daysEl.textContent = "00";
+          hoursEl.textContent = "00";
+          minEl.textContent = "00";
+          secEl.textContent = "00";
+          clearInterval(interval);
+          // optionnel : afficher un message "candidatures closes"
+          // counter.closest('.saref-form-card').querySelector('form').style.display = 'none';
+
+          document.querySelectorAll(".btn-click").forEach(function (btn) {
+            btn.disabled = true;
+            btn.textContent = "Candidatures fermées";
+          });
+          return;
+        }
+
+        var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        var hours = Math.floor(
+          (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+        );
+        var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        daysEl.textContent = pad(days);
+        hoursEl.textContent = pad(hours);
+        minEl.textContent = pad(minutes);
+        secEl.textContent = pad(seconds);
+      }
+
+      update();
+      var interval = setInterval(update, 1000);
+    });
+  });
+</script>
+
+<!-- controle du bouton si aucune candidature n'est ouverte -->
+<script>
+  {% if  param is None %}
+      document.querySelectorAll('.btn-click').forEach(function(btn) {
+          btn.disabled = true;
+          btn.textContent = "Candidatures Non Ouvertes";
+      });
+  {% endif %}
+</script>
+
+<style>
+  .testimonials-section,
+  .testimonials-section h2,
+  .testimonials-section p,
+  .testimonials-section .card-title,
+  .testimonials-section .card-text {
+    font-family:
+      "Poppins",
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+
+  .testimonials-section h2 {
+    font-weight: 700;
+  }
+
+  .testimonial-card {
+    border: none;
+    border-radius: 22px;
+    overflow: hidden;
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+  .testimonial-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12) !important;
+  }
+
+  .video-facade {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9 / 16; /* format vertical, marche sans dépendre de Bootstrap */
+    max-height: 500px;
+    background-size: cover;
+    background-position: center;
+    background-color: #e9ecef; /* couleur de fond visible tant que l'image n'est pas chargée */
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: #000;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+    transition: transform 0.2s;
+  }
+
+  .video-facade:hover .play-btn {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  .video-facade iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  .reviewer .avatar {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 50%;
+    background: #eef2ff;
+    color: #3b5bdb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-right: 10px;
+  }
+
+  .testimonial-card .card-title {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .stars {
+    color: #ffb400;
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+  }
+
+  .testimonial-card .card-text {
+    font-size: 0.92rem;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 767px) {
+    .testimonial-card {
+      margin-bottom: 0.2rem !important;
+    }
+  }
+</style>
+
+<script>
+  // Repli automatique : si maxresdefault.jpg n'existe pas (fréquent pour les Shorts),
+  // on bascule sur hqdefault.jpg qui existe toujours.
+  document.querySelectorAll(".video-facade").forEach((facade) => {
+    const videoId = facade.dataset.videoId;
+    const testImg = new Image();
+    testImg.onload = function () {
+      // maxresdefault fait souvent 120x90 par défaut quand il n'existe pas réellement
+      if (this.naturalWidth <= 120) {
+        facade.style.backgroundImage = `url('https://img.youtube.com/vi/${videoId}/hqdefault.jpg')`;
+      }
+    };
+    testImg.onerror = function () {
+      facade.style.backgroundImage = `url('https://img.youtube.com/vi/${videoId}/hqdefault.jpg')`;
+    };
+    testImg.src = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+  });
+
+  document.querySelectorAll(".video-facade").forEach((facade) => {
+    facade.addEventListener("click", function () {
+      const videoId = this.dataset.videoId;
+      const iframe = document.createElement("iframe");
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+      iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+      iframe.setAttribute("allow", "autoplay; encrypted-media");
+      iframe.setAttribute("allowfullscreen", "");
+      this.innerHTML = "";
+      this.style.backgroundImage = "none";
+      this.appendChild(iframe);
+    });
+  });
+</script>

@@ -21,6 +21,31 @@ from django.shortcuts import render
 # ============================================================
 # page dacceuil du site 
 def index(request):
+    return render( request , 'index.html')
+# page dacceuil du site 
+def Marketing_digital(request):
+    return render( request , 'formations/formation_marketing_digital.html')
+def Design_graphique(request):
+    return render( request , 'formations/formation_design_graphique.html')
+def Montage_video(request):
+    return render( request , 'formations/formation_montage_video.html')
+def Developpement_web(request):
+    return render( request , 'formations/formation_developpement_web.html')
+def Archivage_numerique(request):
+    return render( request , 'formations/formation_archivage_numerique.html')
+def Journalisme_web(request):
+    return render( request , 'formations/formation_Journalisme_web.html')
+
+def connexion_etudiant(request):
+    return render( request , 'Espace_etudiants/connexion.html')
+
+def inscription_etudiant(request):
+    return render( request , 'Espace_etudiants/inscription.html')
+
+def dashboard_etudiant(request):
+    return render( request , 'Espace_etudiants/dashboard.html')
+# =================================================================
+def bourse_de_formation(request):
 
 
     if request.method == 'POST':
@@ -45,10 +70,8 @@ def index(request):
     
         
 
-    return render(request, 'index.html' , {"param":param})
+    return render(request, 'bourse_de_formation.html' , {"param":param})
 
-def finalisation_inscription(request):
-    return render( request , 'finalisation_inscription.html')
 
 def inscription_valide(request):
     return render(request , 'info.html')

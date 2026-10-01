@@ -1,0 +1,102 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-lg navbar-saref sticky-top py-3">
+  <div class="container">
+    <a
+      class="navbar-brand d-flex align-items-center gap-2"
+      href="{% url 'index' %}"
+      aria-label="Saref Academy, accueil"
+    >
+      <span class="navbar-brand-mark">
+        <img
+          src="{% static 'images/WhatsApp_Image_2026-08-20_at_13.16.27-removebg-preview.png' %}"
+          alt=""
+          width="180"
+          height="100"
+        />
+      </span>
+      <span class="fs-5">
+        <span class="brand-word-saref">Saref</span>
+        <span class="brand-word-academy">Academy</span>
+      </span>
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#mobileMenu"
+      aria-controls="mobileMenu"
+      aria-expanded="false"
+      aria-label="Ouvrir le menu de navigation"
+    >
+      <span class="navbar-toggler-icon" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+    </button>
+    <div
+      class="offcanvas offcanvas-start offcanvas-lg navbar-offcanvas"
+      tabindex="-1"
+      id="mobileMenu"
+      aria-labelledby="mobileMenuLabel"
+    >
+      <div class="offcanvas-header d-lg-none">
+        <a
+          class="mobile-menu-brand"
+          id="mobileMenuLabel"
+          href="{% url 'index' %}"
+          aria-label="Saref Academy, accueil"
+        >
+          <span class="navbar-brand-mark">
+            <img
+              src="{% static 'images/WhatsApp_Image_2026-08-20_at_13.16.27-removebg-preview.png' %}"
+              alt=""
+              width="180"
+              height="100"
+            />
+          </span>
+          <span class="fs-5">
+            <span class="brand-word-saref">Saref</span>
+            <span class="brand-word-academy">Academy</span>
+          </span>
+        </a>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="offcanvas"
+          aria-label="Fermer"
+        ></button>
+      </div>
+      <div
+        class="offcanvas-body d-flex flex-column flex-lg-row align-items-lg-center w-100"
+      >
+        <ul class="navbar-nav mx-lg-auto mb-3 mb-lg-0 gap-lg-2">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'index' %}#modules">Formations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'index' %}#approche-pedagogique"
+              >Pédagogie</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'index' %}#certifications"
+              >Certifications</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'index' %}#contacts">Contacts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'index' %}#faq">FAQ</a>
+          </li>
+        </ul>
+        <a
+          href="{% url 'bourse-de-formation' %}"
+          class="btn btn-brand student-entry-link"
+        >
+          Espace Étudiant
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
