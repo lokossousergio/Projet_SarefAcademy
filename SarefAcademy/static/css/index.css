@@ -271,7 +271,7 @@ html {
 .navbar-saref .navbar-toggler:hover,
 .navbar-saref .navbar-toggler:focus-visible {
   border-color: var(--brand-blue);
-  background: rgba(51, 92, 236, 0.12);
+  background: rgba(15, 23, 42, 0.08);
   transform: translateY(-1px);
 }
 .navbar-saref .navbar-toggler-icon {
@@ -404,7 +404,7 @@ html {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(51, 92, 236, 0.12);
+  background: transparent;
 }
 .brand-word-saref {
   color: #0f172a;
@@ -803,7 +803,7 @@ html {
 }
 .testimonial-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(51, 92, 236, 0.12);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
 }
 @media (max-width: 575.98px) {
   .testimonial-group > .row > [class*="col-"] {
@@ -1227,7 +1227,7 @@ html {
   gap: 1rem;
   padding: 0.85rem 1.3rem;
   margin-bottom: 1.25rem;
-  border: 1px solid rgba(51, 92, 236, 0.12);
+  border: 1px solid rgba(15, 23, 42, 0.1);
   border-radius: 10px;
   background: #fff;
   color: var(--dark-900) !important;
@@ -1287,7 +1287,7 @@ html {
 }
 .footer-contact-line:hover {
   border-color: rgba(133, 157, 244, 0.42) !important;
-  background: rgba(51, 92, 236, 0.12);
+  background: rgba(255, 255, 255, 0.08);
 }
 .footer-contact-icon {
   display: inline-flex;
