@@ -1,0 +1,1041 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f8fafc" />
+    <title>Candidater à une formation | Saref Academy</title>
+
+    <!-- Polices : Inter (texte) + Lexend (titres) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/formation.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}" />
+    <!-- Doit rester en dernier pour surcharger les autres feuilles -->
+    <link
+      rel="stylesheet"
+      href="{% static 'css/candidature_formation.css' %}"
+    />
+    <script src="{% static 'js/candidature_formation.js' %}" defer></script>
+  </head>
+  <body id="top" class="formation-page">
+    {% include "partials/formations_navbar.html" %}
+
+    <main class="page-shell">
+      <header class="page-header">
+        <p class="eyebrow">
+          <span class="eyebrow-dot"></span> ADMISSIONS · CANDIDATURE EN LIGNE
+        </p>
+        <h1>Candidater à une formation</h1>
+        <p class="intro">
+          Complétez les étapes pour préparer votre dossier de candidature.
+        </p>
+      </header>
+
+      <ol class="stepper" aria-label="Étapes de candidature">
+        <li
+          class="stepper-item is-current"
+          data-step-indicator="0"
+          aria-current="step"
+        >
+          <span>1</span><b>Formation</b>
+        </li>
+        <li class="stepper-item" data-step-indicator="1">
+          <span>2</span><b>Motivation</b>
+        </li>
+        <li class="stepper-item" data-step-indicator="2">
+          <span>3</span><b>Documents</b>
+        </li>
+        <li class="stepper-item" data-step-indicator="3">
+          <span>4</span><b>Récapitulatif</b>
+        </li>
+      </ol>
+
+      <div class="content-grid">
+        <form class="application-form" novalidate>
+          <!-- Étape 1 -->
+          <section
+            class="form-step"
+            data-step="0"
+            aria-labelledby="formation-title"
+          >
+            <div class="section-heading">
+              <span class="section-index">01</span>
+              <div>
+                <h2 id="formation-title">Choisissez votre formation</h2>
+                <p>Une seule formation peut être suivie à la fois.</p>
+              </div>
+            </div>
+            <fieldset class="course-grid">
+              <legend class="visually-hidden">Formation souhaitée</legend>
+              <label class="course-option">
+                <input type="radio" name="formation" value="archivage-numerique" required />
+                <span class="course-icon" aria-hidden="true"><i class="bi bi-archive"></i></span>
+                <span class="course-label">Archivage numérique</span>
+                <span class="course-hint">Formation certifiante</span>
+                <span class="course-check" aria-hidden="true"><i class="bi bi-check-lg"></i></span>
+              </label>
+              <label class="course-option">
+                <input type="radio" name="formation" value="design-graphique" required />
+                <span class="course-icon" aria-hidden="true"><i class="bi bi-palette"></i></span>
+                <span class="course-label">Design graphique</span>
+                <span class="course-hint">Formation certifiante</span>
+                <span class="course-check" aria-hidden="true"><i class="bi bi-check-lg"></i></span>
+              </label>
+              <label class="course-option">
+                <input type="radio" name="formation" value="developpement-web" required />
+                <span class="course-icon" aria-hidden="true"><i class="bi bi-code-slash"></i></span>
+                <span class="course-label">Développement web</span>
+                <span class="course-hint">Formation certifiante</span>
+                <span class="course-check" aria-hidden="true"><i class="bi bi-check-lg"></i></span>
+              </label>
+              <label class="course-option">
+                <input type="radio" name="formation" value="journalisme-web" required />
+                <span class="course-icon" aria-hidden="true"><i class="bi bi-newspaper"></i></span>
+                <span class="course-label">Journalisme web</span>
+                <span class="course-hint">Formation certifiante</span>
+                <span class="course-check" aria-hidden="true"><i class="bi bi-check-lg"></i></span>
+              </label>
+              <label class="course-option">
+                <input type="radio" name="formation" value="marketing-digital" required />
+                <span class="course-icon" aria-hidden="true"><i class="bi bi-graph-up-arrow"></i></span>
+                <span class="course-label">Marketing digital et e-commerce</span>
+                <span class="course-hint">Formation certifiante</span>
+                <span class="course-check" aria-hidden="true"><i class="bi bi-check-lg"></i></span>
+              </label>
+              <label class="course-option">
+                <input type="radio" name="formation" value="montage-video" required />
+                <span class="course-icon" aria-hidden="true"><i class="bi bi-camera-reels"></i></span>
+                <span class="course-label">Montage vidéo</span>
+                <span class="course-hint">Formation certifiante</span>
+                <span class="course-check" aria-hidden="true"><i class="bi bi-check-lg"></i></span>
+              </label>
+            </fieldset>
+          </section>
+
+          <!-- Étape 2 -->
+          <section
+            class="form-step"
+            data-step="1"
+            aria-labelledby="motivation-title"
+            hidden
+          >
+            <div class="section-heading">
+              <span class="section-index">02</span>
+              <div>
+                <h2 id="motivation-title">Parlez-nous de votre projet</h2>
+                <p>Comment cette formation vous aidera-t-elle à avancer ?</p>
+              </div>
+            </div>
+            <!-- Identité : déjà connue, l'étudiant est connecté.
+                 Champs masqués conservés pour le JS (récapitulatif) et l'envoi. -->
+            <input type="hidden" id="candidate-name" name="nom_prenom" value="{{ user.get_full_name|default:user.username }}" />
+            <input type="hidden" id="candidate-email" name="email" value="{{ user.email }}" />
+            <input type="hidden" id="candidate-phone" name="telephone" value="{{ user.profile.telephone|default:'' }}" />
+
+            <div class="applicant-card">
+              <span class="applicant-avatar" aria-hidden="true">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
+              <div>
+                <small>Candidature au nom de</small>
+                <strong>{{ user.get_full_name|default:user.username }}</strong>
+                <span>{{ user.email }}</span>
+              </div>
+              <a class="applicant-edit" href="">Modifier mon profil</a>
+            </div>
+
+            <div class="fields-grid">
+              <div class="field field-wide">
+                <label for="candidate-motivation">Votre motivation <span>*</span></label>
+                <textarea
+                  id="candidate-motivation"
+                  name="motivation"
+                  rows="6"
+                  minlength="40"
+                  required
+                  aria-describedby="motivation-note"
+                  placeholder="Présentez votre projet et ce que vous souhaitez apprendre…"
+                ></textarea>
+                <small class="field-note" id="motivation-note">40 caractères minimum.</small>
+              </div>
+            </div>
+          </section>
+
+          <!-- Étape 3 -->
+          <section
+            class="form-step"
+            data-step="2"
+            aria-labelledby="documents-title"
+            hidden
+          >
+            <div class="section-heading">
+              <span class="section-index">03</span>
+              <div>
+                <h2 id="documents-title">Ajoutez vos documents</h2>
+                <p>Préparez les pièces utiles à l’étude de votre dossier.</p>
+              </div>
+            </div>
+            <div class="upload-field">
+              <label for="candidate-cv">CV au format PDF <span>*</span></label>
+              <div class="upload-control">
+                <span class="upload-icon" aria-hidden="true"><i class="bi bi-cloud-arrow-up"></i></span>
+                <div>
+                  <strong>Choisir un fichier</strong>
+                  <small>PDF uniquement · 5 Mo maximum</small>
+                </div>
+                <input
+                  id="candidate-cv"
+                  name="cv"
+                  type="file"
+                  accept="application/pdf,.pdf"
+                  required
+                />
+              </div>
+            </div>
+            <div class="upload-field">
+              <label for="candidate-diploma">Dernier diplôme <span class="optional">Facultatif</span></label>
+              <div class="upload-control">
+                <span class="upload-icon upload-icon-green" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
+                <div>
+                  <strong>Ajouter un document</strong>
+                  <small>PDF uniquement · 5 Mo maximum</small>
+                </div>
+                <input
+                  id="candidate-diploma"
+                  name="diplome"
+                  type="file"
+                  accept="application/pdf,.pdf"
+                />
+              </div>
+            </div>
+            <p class="privacy-note">
+              <i class="bi bi-shield-lock" aria-hidden="true"></i>
+              Vos documents restent sur cet appareil et ne sont pas transmis.
+            </p>
+          </section>
+
+          <!-- Étape 4 -->
+          <section
+            class="form-step"
+            data-step="3"
+            aria-labelledby="review-title"
+            hidden
+          >
+            <div class="section-heading">
+              <span class="section-index">04</span>
+              <div>
+                <h2 id="review-title">Récapitulatif</h2>
+                <p>Vérifiez les informations saisies sur cet appareil.</p>
+              </div>
+            </div>
+            <dl class="review-list">
+              <div><dt>Formation</dt><dd id="review-formation">Aucune formation choisie</dd></div>
+              <div><dt>Nom</dt><dd id="review-name">—</dd></div>
+              <div><dt>E-mail</dt><dd id="review-email">—</dd></div>
+              <div><dt>Téléphone</dt><dd id="review-phone">—</dd></div>
+              <div><dt>CV</dt><dd id="review-cv">À joindre</dd></div>
+              <div><dt>Diplôme</dt><dd id="review-diploma">Non ajouté</dd></div>
+            </dl>
+            <p class="local-only-note" role="status" tabindex="-1">
+              <i class="bi bi-info-circle" aria-hidden="true"></i>
+              Le formulaire est une maquette interactive. L’envoi et
+              l’enregistrement en ligne ne sont pas activés.
+            </p>
+          </section>
+
+          <div class="form-footer">
+            <button class="button button-secondary" type="button" data-previous hidden>
+              <i class="bi bi-arrow-left" aria-hidden="true"></i> Précédent
+            </button>
+            <span class="footer-spacer"></span>
+            <button class="button button-primary" type="button" data-next>
+              Continuer <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            </button>
+            <button class="button button-primary" type="button" data-finish hidden>
+              Terminer la prévisualisation
+            </button>
+          </div>
+          <p class="required-note">* Champs obligatoires</p>
+        </form>
+
+        <aside class="side-summary" aria-label="Résumé de la candidature">
+          <div class="summary-top">
+            <span class="summary-icon" aria-hidden="true"><i class="bi bi-mortarboard"></i></span>
+            <div>
+              <strong>Votre candidature</strong>
+              <small>Formation professionnelle</small>
+            </div>
+          </div>
+          <div class="summary-rule"></div>
+          <p class="summary-label">FORMATION SÉLECTIONNÉE</p>
+          <p class="summary-course" id="side-formation">Aucune formation choisie</p>
+          <div class="summary-meta">
+            <span class="meta-mark" aria-hidden="true"><i class="bi bi-check2-circle"></i></span>
+            <span>Étude du dossier<br /><strong>Sans frais de candidature</strong></span>
+          </div>
+          <div class="summary-meta">
+            <span class="meta-mark meta-mark-green" aria-hidden="true"><i class="bi bi-clock"></i></span>
+            <span>Une équipe à votre écoute<br /><strong>Réponse sous 48 h ouvrées</strong></span>
+          </div>
+          <p class="summary-help">
+            Besoin d’aide ?<br /><a href="mailto:contact@sarefacademy.com">contact@sarefacademy.com</a>
+          </p>
+        </aside>
+      </div>
+    </main>
+
+    {% include "partials/formations_footer.html" %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
+<style>
+    /* ==========================================================
+   Candidature à une formation — Saref Academy
+   Polices : Inter (texte) + Lexend (titres)
+   ========================================================== */
+
+/* ===== VARIABLES ===== */
+.formation-page {
+  --brand-blue: #335cec;
+  --brand-blue-dark: #2b4ec9;
+  --blue-25: #f5f7fe;
+  --blue-50: #ebeffd;
+  --blue-100: #d6defb;
+  --blue-200: #adbef7;
+  --blue-700: #2440a5;
+  --blue-800: #1c3382;
+  --logo-green: #22c55e;
+  --green-100: #dcfce7;
+  --green-700: #15803d;
+  --ink: #0f172a;
+  --slate-600: #475569;
+  --slate-500: #64748b;
+  --line: #e2e8f0;
+  --line-strong: #cbd5e1;
+  --danger: #dc2626;
+  --bg-soft: #f8fafc;
+
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-head: "Lexend", "Inter", system-ui, sans-serif;
+
+  --radius-lg: 1.25rem;
+  --radius-md: 1rem;
+  --radius-sm: 0.75rem;
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 12px 28px -16px rgb(15 23 42 / 0.12);
+  --ring: 0 0 0 0.25rem rgb(51 92 236 / 0.2);
+
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--bg-soft);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* L'attribut hidden doit toujours gagner sur display:flex/grid */
+.formation-page [hidden] {
+  display: none !important;
+}
+
+/* ===== EN-TÊTE DE PAGE ===== */
+.formation-page .page-shell {
+  width: min(100% - 2rem, 70rem);
+  margin-inline: auto;
+  padding-block: clamp(2rem, 5vw, 4rem) clamp(3rem, 7vw, 5rem);
+}
+
+.formation-page .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--blue-700);
+}
+.formation-page .eyebrow-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--logo-green);
+}
+
+.formation-page h1,
+.formation-page h2 {
+  font-family: var(--font-head);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.formation-page h1 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.12;
+}
+.formation-page .intro {
+  max-width: 40rem;
+  margin: 0;
+  font-size: 1.0625rem;
+  color: var(--slate-600);
+}
+
+/* ===== STEPPER ===== */
+.formation-page .stepper {
+  list-style: none;
+  margin: 2rem 0 2.5rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.formation-page .stepper-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--slate-500);
+}
+.formation-page .stepper-item span {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: #fff;
+  border: 1.5px solid var(--blue-200);
+  font-weight: 600;
+  color: var(--slate-500);
+  transition: background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.formation-page .stepper-item b {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.formation-page .stepper-item::after {
+  content: "";
+  flex: 1;
+  min-width: 1rem;
+  height: 2px;
+  margin-right: 0.5rem;
+  border-radius: 2px;
+  background: var(--blue-100);
+}
+.formation-page .stepper-item:last-child::after {
+  display: none;
+}
+.formation-page .stepper-item.is-current {
+  color: var(--ink);
+}
+.formation-page .stepper-item.is-current span {
+  background: var(--brand-blue);
+  border-color: var(--brand-blue);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgb(51 92 236 / 0.18);
+}
+/* Étapes terminées (classes courantes : is-complete / is-done / is-completed) */
+.formation-page .stepper-item.is-complete span,
+.formation-page .stepper-item.is-done span,
+.formation-page .stepper-item.is-completed span {
+  background: var(--logo-green);
+  border-color: var(--logo-green);
+  color: #fff;
+}
+.formation-page .stepper-item.is-complete,
+.formation-page .stepper-item.is-done,
+.formation-page .stepper-item.is-completed {
+  color: var(--ink);
+}
+
+/* ===== MISE EN PAGE ===== */
+.formation-page .content-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20rem;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.formation-page .application-form {
+  padding: clamp(1.25rem, 3vw, 2.25rem);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.formation-page .section-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+.formation-page .section-index {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius-sm);
+  background: var(--blue-50);
+  color: var(--blue-700);
+  font-family: var(--font-head);
+  font-weight: 600;
+}
+.formation-page .section-heading h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.formation-page .section-heading p {
+  margin: 0;
+  color: var(--slate-600);
+  font-size: 0.9375rem;
+}
+
+/* ===== CHOIX DE LA FORMATION ===== */
+.formation-page .course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.875rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.formation-page .course-option {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas:
+    "icon label check"
+    "icon hint  check";
+  column-gap: 0.875rem;
+  align-items: center;
+  padding: 1rem;
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.formation-page .course-option:hover {
+  border-color: var(--blue-200);
+  background: var(--blue-25);
+}
+.formation-page .course-option input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.formation-page .course-icon {
+  grid-area: icon;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius-sm);
+  background: var(--blue-50);
+  color: var(--brand-blue);
+  font-size: 1.25rem;
+}
+.formation-page .course-label {
+  grid-area: label;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.3;
+}
+.formation-page .course-hint {
+  grid-area: hint;
+  font-size: 0.8125rem;
+  color: var(--slate-500);
+}
+.formation-page .course-check {
+  grid-area: check;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  border: 1.5px solid var(--line-strong);
+  color: transparent;
+  font-size: 0.875rem;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.formation-page .course-option:has(input:checked) {
+  border-color: var(--brand-blue);
+  background: var(--blue-25);
+  box-shadow: 0 0 0 3px rgb(51 92 236 / 0.14);
+}
+.formation-page .course-option:has(input:checked) .course-icon {
+  background: var(--brand-blue);
+  color: #fff;
+}
+.formation-page .course-option:has(input:checked) .course-check {
+  background: var(--brand-blue);
+  border-color: var(--brand-blue);
+  color: #fff;
+}
+.formation-page .course-option:has(input:focus-visible) {
+  outline: 3px solid rgb(51 92 236 / 0.4);
+  outline-offset: 2px;
+}
+
+/* ===== CHAMPS ===== */
+.formation-page .fields-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+.formation-page .field-wide {
+  grid-column: 1 / -1;
+}
+.formation-page .field label,
+.formation-page .upload-field > label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.formation-page .field label span,
+.formation-page .upload-field > label span {
+  color: var(--danger);
+}
+.formation-page .field input,
+.formation-page .field textarea {
+  display: block;
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0 1rem;
+  font: 500 1rem/1.5 var(--font-body);
+  color: var(--ink);
+  background: #fff;
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.formation-page .field textarea {
+  min-height: 9rem;
+  padding: 0.875rem 1rem;
+  resize: vertical;
+}
+.formation-page .field input::placeholder,
+.formation-page .field textarea::placeholder {
+  color: var(--slate-500);
+  font-weight: 400;
+}
+.formation-page .field input:focus,
+.formation-page .field textarea:focus {
+  outline: 0;
+  border-color: var(--brand-blue);
+  box-shadow: var(--ring);
+}
+.formation-page .field input.is-invalid,
+.formation-page .field textarea.is-invalid,
+.formation-page .field input:user-invalid,
+.formation-page .field textarea:user-invalid {
+  border-color: var(--danger);
+}
+.formation-page .field-note {
+  display: block;
+  margin-top: 0.375rem;
+  font-size: 0.8125rem;
+  color: var(--slate-500);
+}
+
+/* ===== CANDIDAT CONNECTÉ ===== */
+.formation-page .applicant-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--blue-25);
+  border: 1px solid var(--blue-100);
+  border-radius: var(--radius-md);
+}
+.formation-page .applicant-avatar {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--brand-blue);
+  color: #fff;
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+.formation-page .applicant-card div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.4;
+}
+.formation-page .applicant-card small {
+  font-size: 0.75rem;
+  color: var(--slate-500);
+}
+.formation-page .applicant-card strong {
+  font-weight: 600;
+}
+.formation-page .applicant-card div span {
+  font-size: 0.875rem;
+  color: var(--slate-600);
+  overflow-wrap: anywhere;
+}
+.formation-page .applicant-edit {
+  margin-left: auto;
+  flex: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--blue-700);
+  text-underline-offset: 3px;
+}
+@media (max-width: 40rem) {
+  .formation-page .applicant-card { flex-wrap: wrap; }
+  .formation-page .applicant-edit { margin-left: 0; }
+}
+
+/* ===== DOCUMENTS ===== */
+.formation-page .upload-field + .upload-field {
+  margin-top: 1.25rem;
+}
+.formation-page .upload-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--blue-25);
+  border: 1.5px dashed var(--blue-200);
+  border-radius: var(--radius-md);
+  transition: border-color 0.2s, background 0.2s;
+}
+.formation-page .upload-control:hover,
+.formation-page .upload-control:focus-within {
+  background: var(--blue-50);
+  border-color: var(--brand-blue);
+}
+.formation-page .upload-control input[type="file"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.formation-page .upload-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius-sm);
+  background: var(--brand-blue);
+  color: #fff;
+  font-size: 1.25rem;
+}
+.formation-page .upload-icon-green {
+  background: var(--green-100);
+  color: var(--green-700);
+}
+.formation-page .upload-control strong {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+.formation-page .upload-control small {
+  color: var(--slate-500);
+  font-size: 0.8125rem;
+}
+.formation-page .upload-field > label .optional {
+  margin-left: 0.5rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: var(--slate-600);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.formation-page .privacy-note,
+.formation-page .local-only-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  margin: 1.5rem 0 0;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--blue-25);
+  border: 1px solid var(--blue-100);
+  color: var(--blue-800);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.formation-page .privacy-note i,
+.formation-page .local-only-note i {
+  flex: none;
+  margin-top: 0.125rem;
+}
+
+/* ===== RÉCAPITULATIF ===== */
+.formation-page .review-list {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.formation-page .review-list > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.875rem 1.25rem;
+}
+.formation-page .review-list > div + div {
+  border-top: 1px solid var(--line);
+}
+.formation-page .review-list > div:nth-child(even) {
+  background: var(--bg-soft);
+}
+.formation-page .review-list dt {
+  flex: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--slate-500);
+}
+.formation-page .review-list dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+/* ===== PIED DU FORMULAIRE ET BOUTONS ===== */
+.formation-page .form-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+.formation-page .footer-spacer {
+  flex: 1;
+}
+.formation-page .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 3rem;
+  padding: 0 1.5rem;
+  font: 600 0.9375rem var(--font-body);
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.1s;
+}
+.formation-page .button:active {
+  transform: translateY(1px);
+}
+.formation-page .button:focus-visible {
+  outline: 3px solid rgb(51 92 236 / 0.4);
+  outline-offset: 2px;
+}
+.formation-page .button-primary {
+  background: var(--brand-blue);
+  color: #fff;
+}
+.formation-page .button-primary:hover {
+  background: var(--brand-blue-dark);
+}
+.formation-page .button-secondary {
+  background: #fff;
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+.formation-page .button-secondary:hover {
+  background: var(--blue-25);
+  border-color: var(--blue-200);
+  color: var(--blue-700);
+}
+.formation-page .required-note {
+  margin: 1rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--slate-500);
+}
+
+/* ===== RÉSUMÉ LATÉRAL ===== */
+.formation-page .side-summary {
+  position: sticky;
+  top: 1.5rem;
+  padding: 1.5rem;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+.formation-page .summary-top {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+.formation-page .summary-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.875rem;
+  background: var(--brand-blue);
+  color: #fff;
+  font-size: 1.25rem;
+}
+.formation-page .summary-top strong {
+  display: block;
+  font-family: var(--font-head);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.formation-page .summary-top small {
+  color: var(--slate-500);
+  font-size: 0.8125rem;
+}
+.formation-page .summary-rule {
+  height: 1px;
+  margin: 1.25rem 0;
+  background: var(--line);
+}
+.formation-page .summary-label {
+  margin: 0 0 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--slate-500);
+}
+.formation-page .summary-course {
+  margin: 0 0 1.25rem;
+  font-family: var(--font-head);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+.formation-page .summary-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: var(--slate-600);
+  line-height: 1.45;
+}
+.formation-page .summary-meta strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.formation-page .meta-mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: var(--blue-50);
+  color: var(--brand-blue);
+  font-size: 1.0625rem;
+}
+.formation-page .meta-mark-green {
+  background: var(--green-100);
+  color: var(--green-700);
+}
+.formation-page .summary-help {
+  margin: 1.5rem 0 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.875rem;
+  color: var(--slate-600);
+}
+.formation-page .summary-help a {
+  color: var(--blue-700);
+  font-weight: 600;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 62rem) {
+  .formation-page .content-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .formation-page .side-summary {
+    position: static;
+  }
+}
+
+@media (max-width: 40rem) {
+  .formation-page .stepper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .formation-page .stepper-item {
+    flex: 1 1 auto;
+  }
+  .formation-page .stepper-item:last-child {
+    flex: 0 0 auto;
+  }
+  .formation-page .stepper-item b {
+    display: none;
+  }
+  .formation-page .stepper-item.is-current b {
+    display: inline;
+  }
+  .formation-page .fields-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .formation-page .footer-spacer {
+    display: none;
+  }
+  .formation-page .form-footer {
+    flex-wrap: wrap;
+  }
+  .formation-page .button {
+    flex: 1 1 0;
+  }
+  .formation-page .review-list > div {
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+  .formation-page .review-list dd {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .formation-page * {
+    transition: none !important;
+  }
+}
+</style>

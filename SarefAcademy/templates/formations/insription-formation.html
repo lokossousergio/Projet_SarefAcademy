@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inscription à une formation | Saref Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    /* ===== VARIABLES SAREF ACADEMY ===== */
+    :root {
+      --brand-blue: #335cec;
+      --brand-blue-dark: #2b4ec9;
+      --blue-25: #f5f7fe;
+      --blue-50: #ebeffd;
+      --blue-100: #d6defb;
+      --blue-200: #adbef7;
+      --blue-300: #859df4;
+      --blue-400: #5c7df0;
+      --blue-800: #1c3382;
+      --logo-green: #22c55e;
+      --dark-900: #0f172a;
+      --slate-600: #475569;
+      --slate-500: #64748b;
+
+      /* Surcharge des variables Bootstrap */
+      --bs-primary: var(--brand-blue);
+      --bs-primary-rgb: 51, 92, 236;
+      --bs-link-color: var(--brand-blue-dark);
+      --bs-link-hover-color: var(--blue-800);
+      --bs-body-font-family: 'Outfit', system-ui, sans-serif;
+      --bs-body-color: var(--dark-900);
+      --bs-border-color: var(--blue-100);
+    }
+
+    /* ===== BOUTONS ET CHAMPS ===== */
+    .btn-primary {
+      --bs-btn-bg: var(--brand-blue); --bs-btn-border-color: var(--brand-blue);
+      --bs-btn-hover-bg: var(--brand-blue-dark); --bs-btn-hover-border-color: var(--brand-blue-dark);
+      --bs-btn-active-bg: var(--blue-800); --bs-btn-active-border-color: var(--blue-800);
+      --bs-btn-focus-shadow-rgb: 51, 92, 236;
+      font-weight: 600; border-radius: .875rem;
+    }
+    .form-control, .form-select {
+      min-height: 3.375rem; background-color: var(--blue-25); border-radius: .875rem; font-weight: 500;
+    }
+    textarea.form-control { min-height: 7.5rem; resize: none; }
+    .form-control:focus, .form-select:focus {
+      background-color: #fff; border-color: var(--brand-blue); box-shadow: 0 0 0 .25rem rgba(51, 92, 236, .2);
+    }
+    .field-icon { position: relative; }
+    .field-icon > i { position: absolute; left: 1rem; top: 1rem; color: var(--slate-500); z-index: 4; pointer-events: none; }
+    .field-icon > .form-control, .field-icon > .form-select { padding-left: 2.875rem; }
+    .required { color: #dc2626; }
+
+    /* ===== PANNEAU GAUCHE ===== */
+    .panel {
+      position: relative; overflow: hidden; height: 100%;
+      background: var(--brand-blue); color: #fff; border-radius: 2rem; padding: 3rem;
+      display: flex; flex-direction: column;
+    }
+    .panel::before, .panel::after { content: ""; position: absolute; border-radius: 50%; pointer-events: none; }
+    .panel::before { width: 32rem; height: 32rem; right: -9rem; top: -9rem; background: var(--blue-400); opacity: .35; }
+    .panel::after { width: 20rem; height: 20rem; right: -3rem; top: -3rem; background: var(--blue-300); opacity: .25; }
+    .panel > * { position: relative; }
+    .brand { display: inline-flex; align-items: center; gap: .75rem; font-weight: 700; font-size: 1.5rem; color: #fff; text-decoration: none; }
+    .panel h1 { font-size: clamp(2rem, 3.2vw, 2.875rem); line-height: 1.12; font-weight: 700; max-width: 32rem; }
+    .panel .lead { color: var(--blue-50); max-width: 29rem; }
+    .pill {
+      display: inline-flex; align-items: center; padding: .625rem 1rem; border-radius: 999px;
+      background: rgba(255, 255, 255, .16); border: 1px solid rgba(255, 255, 255, .3); font-weight: 500;
+    }
+    .illustration { max-width: 35rem; width: 100%; margin: auto auto 0; }
+
+    /* ===== MOBILE ===== */
+    .mobile-head { background: var(--brand-blue); padding: 1.5rem 0 4rem; }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row min-vh-100">
+
+      <!-- Panneau image (ordinateur) -->
+      <aside class="col-lg-6 d-none d-lg-block p-4">
+        <div class="panel">
+          <a class="brand" href="#">
+            <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect width="44" height="44" rx="12" fill="#fff"/><path d="M13 29c3 3 15 3 15-3s-14-3-14-9 11-6 15-3" stroke="#335cec" stroke-width="3.5" stroke-linecap="round"/><circle cx="33" cy="12" r="3.5" fill="#22c55e"/></svg>
+            Saref Academy
+          </a>
+          <h1 class="mt-5 mb-3">Choisissez votre formation et démarrez dès aujourd'hui.</h1>
+          <p class="lead mb-4">Remplissez le formulaire, notre équipe vous contacte sur WhatsApp pour finaliser votre inscription.</p>
+          <div class="d-flex flex-wrap gap-2">
+            <span class="pill">Cours en ligne</span>
+            <span class="pill">Accès 24h/24</span>
+            <span class="pill">Bourses disponibles</span>
+          </div>
+          <svg class="illustration" viewBox="0 0 560 330" role="img" aria-label="Illustration d'un cours en ligne">
+            <rect x="110" y="30" width="340" height="215" rx="18" fill="#fff"/>
+            <rect x="128" y="48" width="304" height="179" rx="10" fill="#ebeffd"/>
+            <circle cx="280" cy="137" r="34" fill="#335cec"/><path d="M270 120l26 17-26 17z" fill="#fff"/>
+            <rect x="128" y="205" width="150" height="8" rx="4" fill="#adbef7"/><rect x="128" y="205" width="90" height="8" rx="4" fill="#335cec"/>
+            <rect x="70" y="245" width="420" height="20" rx="10" fill="#d6defb"/>
+            <g transform="translate(20 70)"><rect width="140" height="76" rx="16" fill="#fff"/><circle cx="36" cy="38" r="18" fill="#dcfce7"/><path d="M27 38l7 7 12-14" stroke="#15803d" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="64" y="26" width="62" height="8" rx="4" fill="#0f172a"/><rect x="64" y="44" width="42" height="8" rx="4" fill="#adbef7"/></g>
+            <g transform="translate(410 150)"><rect width="140" height="76" rx="16" fill="#fff"/><circle cx="36" cy="38" r="18" fill="#22c55e"/><path d="M28 44l3-7a8 8 0 114 5z" fill="#fff"/><rect x="64" y="26" width="62" height="8" rx="4" fill="#0f172a"/><rect x="64" y="44" width="42" height="8" rx="4" fill="#adbef7"/></g>
+          </svg>
+        </div>
+      </aside>
+
+      <!-- Formulaire -->
+      <main class="col-lg-6 p-0">
+        <div class="mobile-head d-lg-none">
+          <div class="container"><a class="brand" href="#">Saref Academy</a></div>
+        </div>
+        <div class="container py-4 py-lg-5 d-flex align-items-center justify-content-center h-100">
+          <div class="w-100" style="max-width: 31.25rem">
+            <h2 class="fw-bold mb-2">Inscription</h2>
+            <p class="text-secondary mb-4">Les champs marqués d'un <span class="required">*</span> sont obligatoires.</p>
+
+            <form id="inscription-form" class="needs-validation row g-3" novalidate>
+
+              <div class="col-12">
+                <label for="nom" class="form-label fw-semibold">Nom et prénom <span class="required">*</span></label>
+                <div class="field-icon">
+                  <i class="bi bi-person"></i>
+                  <input type="text" class="form-control" id="nom" name="nom" placeholder="Ex : Aïcha Dossou" autocomplete="name" required>
+                  <div class="invalid-feedback">Saisissez votre nom et prénom.</div>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label for="email" class="form-label fw-semibold">Email <span class="required">*</span></label>
+                <div class="field-icon">
+                  <i class="bi bi-envelope"></i>
+                  <input type="email" class="form-control" id="email" name="email" placeholder="vous@exemple.com" autocomplete="email" required>
+                  <div class="invalid-feedback">Saisissez une adresse e-mail valide.</div>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label for="whatsapp" class="form-label fw-semibold">Numéro WhatsApp <span class="required">*</span></label>
+                <div class="row g-2">
+                  <div class="col-5">
+                    <label for="indicatif" class="visually-hidden">Pays</label>
+                    <select class="form-select" id="indicatif" aria-label="Indicatif du pays">
+                  <option value="+229" selected>Bénin (+229)</option>
+                  <option value="+228">Togo (+228)</option>
+                  <option value="+225">Côte d'Ivoire (+225)</option>
+                  <option value="+221">Sénégal (+221)</option>
+                  <option value="+223">Mali (+223)</option>
+                  <option value="+226">Burkina Faso (+226)</option>
+                  <option value="+227">Niger (+227)</option>
+                  <option value="+224">Guinée (+224)</option>
+                  <option value="+222">Mauritanie (+222)</option>
+                  <option value="+237">Cameroun (+237)</option>
+                  <option value="+241">Gabon (+241)</option>
+                  <option value="+242">Congo-Brazzaville (+242)</option>
+                  <option value="+243">RD Congo (+243)</option>
+                  <option value="+235">Tchad (+235)</option>
+                  <option value="+236">Centrafrique (+236)</option>
+                  <option value="+257">Burundi (+257)</option>
+                  <option value="+250">Rwanda (+250)</option>
+                  <option value="+253">Djibouti (+253)</option>
+                  <option value="+269">Comores (+269)</option>
+                  <option value="+261">Madagascar (+261)</option>
+                  <option value="+212">Maroc (+212)</option>
+                  <option value="+213">Algérie (+213)</option>
+                  <option value="+216">Tunisie (+216)</option>
+                    </select>
+                  </div>
+                  <div class="col-7">
+                    <div class="field-icon">
+                      <i class="bi bi-whatsapp text-success"></i>
+                      <input type="tel" class="form-control" id="whatsapp" placeholder="01 23 45 67" inputmode="numeric" pattern="[0-9 ]{8,14}" autocomplete="tel-national" required>
+                      <div class="invalid-feedback">Saisissez un numéro valide (8 à 12 chiffres).</div>
+                    </div>
+                  </div>
+                </div>
+                <input type="hidden" id="whatsapp_complet" name="whatsapp">
+              </div>
+
+              <div class="col-12">
+                <label for="niveau" class="form-label fw-semibold">Niveau d'étude</label>
+                <div class="field-icon">
+                  <i class="bi bi-mortarboard"></i>
+                  <input type="text" class="form-control" id="niveau" name="niveau" placeholder="Ex : Licence 2, Baccalauréat">
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label for="formation" class="form-label fw-semibold">Formations <span class="required">*</span></label>
+                <div class="field-icon">
+                  <i class="bi bi-book"></i>
+                  <select class="form-select" id="formation" name="formation" required>
+                    <option value="" selected disabled>Choisissez une formation</option>
+                    <option>[Formation 1]</option>
+                    <option>[Formation 2]</option>
+                    <option>[Formation 3]</option>
+                  </select>
+                  <div class="invalid-feedback">Choisissez une formation.</div>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label for="motivation" class="form-label fw-semibold">Pourquoi souhaitez-vous suivre une formation ?</label>
+                <div class="field-icon">
+                  <i class="bi bi-chat-left-text"></i>
+                  <textarea class="form-control" id="motivation" name="motivation" placeholder="Parlez-nous de vos objectifs…"></textarea>
+                </div>
+              </div>
+
+              <div class="col-12 mt-4">
+                <button type="submit" class="btn btn-primary btn-lg w-100">Envoyer ma demande</button>
+              </div>
+            </form>
+
+            <p class="text-center text-secondary mt-4 mb-0">Déjà un compte ? <a href="connexion.html" class="fw-semibold text-decoration-none">Se connecter</a></p>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const form = document.getElementById('inscription-form');
+    form.addEventListener('submit', event => {
+      // Numéro complet = indicatif + numéro (espaces retirés)
+      const indicatif = document.getElementById('indicatif').value;
+      const numero = document.getElementById('whatsapp').value.replace(/\s+/g, '');
+      document.getElementById('whatsapp_complet').value = indicatif + numero;
+
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      form.classList.add('was-validated');
+    });
+  </script>
+</body>
+</html>

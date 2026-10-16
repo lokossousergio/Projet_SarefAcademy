@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#335cec">
+<title>Tableau de bord | SAREF Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/espace.css">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body class="espace espace-apprenant">
+<div class="app">
+<aside class="sidebar sidebar-apprenant offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="Navigation apprenant">
+<div class="offcanvas-body sidebar-inner">
+<div class="d-flex justify-content-end d-lg-none mb-2"><button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Fermer"></button></div>
+<a class="brand" href="/apprenant/"><svg width="36" height="36" viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#fff"/><path d="M13 26c0 2.9 2.6 4.6 6 4.6 4 0 6.3-2 6.3-4.7 0-2.9-2.7-4-6.1-4.9-3.1-.8-4.7-1.6-4.7-3.4 0-1.5 1.4-2.8 3.7-2.8 2 0 3.4 1 3.8 2.7" stroke="#335cec" stroke-width="2.3" stroke-linecap="round" fill="none"/></svg><div><b>SAREF Academy</b><small>ESPACE APPRENANT</small></div></a>
+<nav class="d-grid gap-1" aria-label="Menu principal">
+<a class="navitem active" href="/apprenant/" aria-current="page"><i class="bi bi-grid-1x2"></i>Tableau de bord</a>
+<a class="navitem" href="/apprenant/formations/"><i class="bi bi-mortarboard"></i>Mes formations</a>
+<a class="navitem" href="/apprenant/modules/"><i class="bi bi-book"></i>Mes modules</a>
+<a class="navitem" href="/apprenant/paiements/"><i class="bi bi-credit-card"></i>Mes paiements</a>
+<a class="navitem" href="/apprenant/profil/"><i class="bi bi-person"></i>Mon profil</a>
+<div class="nav-cap">COMPTE</div>
+<a class="navitem" href="/apprenant/parametres/"><i class="bi bi-gear"></i>Paramètres</a>
+<form method="post" action="/deconnexion/"><button class="navitem" type="submit"><i class="bi bi-box-arrow-right"></i>Déconnexion</button></form>
+</nav>
+<div class="wa-box mt-auto mb-3"><b><i class="bi bi-whatsapp me-1"></i>Canal WhatsApp</b>Posez vos questions et suivez les annonces de meets.<br><a href="https://wa.me/22997000000" target="_blank" rel="noopener">Rejoindre le groupe</a></div>
+<div class="sidebar-user"><span class="avatar avatar-md">AK</span><div class="who"><b>Aïcha Kora</b><small>Apprenante</small></div></div>
+</div></aside>
+<div class="app-col">
+<header class="topbar">
+<button class="btn-icon-s d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Ouvrir le menu"><i class="bi bi-list fs-5"></i></button>
+<form class="tb-search" role="search" action="/apprenant/formations/"><i class="bi bi-search"></i><input type="search" name="q" placeholder="Rechercher une formation, un module…" aria-label="Rechercher"></form>
+<span class="tb-spacer"></span>
+<a class="btn-s btn-primary-s btn-sm-s d-none d-md-inline-flex" href="/candidature/"><i class="bi bi-plus-lg"></i>Postuler à une formation</a>
+<div class="dropdown"><button class="btn-icon-s" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notifications"><i class="bi bi-bell"></i><span class="dot"></span></button><div class="dropdown-menu dropdown-menu-end notif-menu p-0"><div class="notif-head"><span>Notifications</span><a class="link-s" href="#">Tout marquer comme lu</a></div><a class="notif-item " href="/apprenant/formations/1/"><i class="bi bi-check-circle"></i><span>Candidature acceptée : Développement Web Full-Stack<small>Il y a 3 semaines</small></span></a><a class="notif-item new" href="/apprenant/modules/3/"><i class="bi bi-play-circle"></i><span>Chapitre 4 du module 3 disponible<small>Hier</small></span></a><a class="notif-item new" href="/apprenant/paiements/"><i class="bi bi-cash-coin"></i><span>Tranche 3 à régler avant le 12 nov.<small>Il y a 2 jours</small></span></a></div></div>
+<div class="tb-user"><span class="avatar ">AK</span><span class="d-none d-md-block"><b>Aïcha K.</b><small>Apprenante</small></span></div>
+</header>
+<main class="app-main">
+<div class="page-head"><div><h1 class="page-title">Bonjour, Aïcha 👋</h1><p class="page-sub">Voici où vous en êtes dans vos formations.</p></div></div>
+<section class="hero mb-3" aria-labelledby="hero-t"><div class="row align-items-center g-4"><div class="col-lg-8"><span class="hero-chip"><i class="bi bi-play-circle"></i>Reprendre où vous vous êtes arrêtée</span>
+<h2 id="hero-t" class="fs-3 fw-bold mt-3 mb-1">Module 3 · Chapitre 3 : Manipuler le DOM</h2><p class="mb-3">Développement Web Full-Stack · M. Dossou · 26 min</p>
+<div class="d-flex flex-wrap gap-2"><a class="btn-s btn-light-s" href="/apprenant/modules/3/?chapitre=3"><i class="bi bi-play-fill"></i>Continuer le chapitre</a><a class="btn-s" style="background:rgb(255 255 255/.16);color:#fff" href="/apprenant/formations/1/">Voir la formation</a></div></div>
+<div class="col-lg-4 d-flex justify-content-lg-end"><div class="ring light" style="--sz:128px;--p:31"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="bg" cx="50" cy="50" r="42"/><circle class="fg" cx="50" cy="50" r="42"/></svg><b>31%</b></div></div></div></section>
+<div class="row g-3 mb-3"><div class="col-6 col-xl-3"><div class="s-card stat hover-lift reveal" style="--d:0s"><div class="stat-top"><span class="stat-label">Formations en cours</span><span class="stat-icon "><i class="bi bi-mortarboard"></i></span></div><div class="stat-value"><span data-count="1" data-suffix="" data-dec="0">1</span></div><div class="stat-sub">sur 4 candidatures</div></div></div>
+<div class="col-6 col-xl-3"><div class="s-card stat hover-lift reveal" style="--d:0.07s"><div class="stat-top"><span class="stat-label">Chapitres terminés</span><span class="stat-icon green"><i class="bi bi-check2-all"></i></span></div><div class="stat-value"><span data-count="11" data-suffix=" / 36" data-dec="0">11 / 36</span></div><div class="stat-sub">formation en cours</div></div></div>
+<div class="col-6 col-xl-3"><div class="s-card stat hover-lift reveal" style="--d:0.14s"><div class="stat-top"><span class="stat-label">Prochain meet</span><span class="stat-icon "><i class="bi bi-camera-video"></i></span></div><div class="stat-value">Jeu. 8 oct.</div><div class="stat-sub">18h00 · Module 4 (Django)</div></div></div>
+<div class="col-6 col-xl-3"><div class="s-card stat hover-lift reveal" style="--d:0.21s"><div class="stat-top"><span class="stat-label">Paiement</span><span class="stat-icon amber"><i class="bi bi-credit-card"></i></span></div><div class="stat-value">2 / 3</div><div class="stat-sub">tranches payées</div></div></div></div>
+<div class="row g-3"><div class="col-lg-7"><div class="s-card s-card-pad mb-3 reveal"><div class="s-card-head"><h2 class="s-card-title">Mes formations</h2><a class="link-s" href="/apprenant/formations/">Tout voir →</a></div><a class="d-flex align-items-center gap-3 p-3 border rounded-4 mb-2 text-reset hover-lift" href="/apprenant/formations/1/"><span class="stat-icon"><i class="bi bi-code-slash"></i></span><span class="flex-grow-1"><b class="d-block">Développement Web Full-Stack</b><small class="text-secondary">Vague 2026-A · M. Dossou</small><span class="d-block mt-2" style="max-width:260px"><div class="s-progress " role="progressbar" aria-valuenow="31" aria-valuemin="0" aria-valuemax="100"><span style="--w:31%"></span></div></span></span><span class="s-badge b-en_cours">En cours</span></a><a class="d-flex align-items-center gap-3 p-3 border rounded-4 mb-2 text-reset hover-lift" href="/apprenant/formations/2/"><span class="stat-icon"><i class="bi bi-megaphone"></i></span><span class="flex-grow-1"><b class="d-block">Marketing Digital</b><small class="text-secondary">Vague 2026-A · M. Soglo</small><span class="d-block mt-2" style="max-width:260px"><span class="small text-secondary">Réponse sous 48 h ouvrées</span></span></span><span class="s-badge b-attente">En attente</span></a><a class="d-flex align-items-center gap-3 p-3 border rounded-4 mb-2 text-reset hover-lift" href="/apprenant/formations/3/"><span class="stat-icon"><i class="bi bi-palette"></i></span><span class="flex-grow-1"><b class="d-block">UI/UX Design</b><small class="text-secondary">Vague 2025-B · Mme Adjarra</small><span class="d-block mt-2" style="max-width:260px"><div class="s-progress green" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"><span style="--w:100%"></span></div></span></span><span class="s-badge b-admis">Terminée · Admis</span></a>
+<a class="btn-s btn-soft-s w-100 mt-2" href="/candidature/"><i class="bi bi-plus-lg"></i>Postuler à une autre formation</a></div>
+<div class="s-card s-card-pad reveal"><div class="s-card-head"><h2 class="s-card-title">Programme en cours</h2><a class="link-s" href="/apprenant/modules/">Mes modules →</a></div><a class="chap done" href="/apprenant/modules/1/" style="border-radius:12px;margin-bottom:6px;border:1px solid var(--line-soft)"><i class="bi bi-check-lg ci"></i><span><b class="d-block">Module 1 — Introduction au développement Web</b><small class="text-secondary">4 / 4 chapitres terminés</small></span></a><a class="chap done" href="/apprenant/modules/2/" style="border-radius:12px;margin-bottom:6px;border:1px solid var(--line-soft)"><i class="bi bi-check-lg ci"></i><span><b class="d-block">Module 2 — HTML &amp; CSS avancé</b><small class="text-secondary">5 / 5 chapitres terminés</small></span></a><a class="chap current" href="/apprenant/modules/3/" style="border-radius:12px;margin-bottom:6px;border:1px solid var(--line-soft)"><i class="bi bi-play-fill ci"></i><span><b class="d-block">Module 3 — JavaScript moderne</b><small class="text-secondary">2 / 4 chapitres terminés</small></span></a><div class="chap locked" style="border-radius:12px;margin-bottom:6px;border:1px solid var(--line-soft)"><i class="bi bi-lock ci"></i><span><b class="d-block">Module 4 — Django &amp; logique backend</b><small class="text-secondary">Session live le 8 oct. 2026, 18h00</small></span></div></div></div>
+<div class="col-lg-5"><div class="s-card s-card-pad mb-3 reveal"><div class="s-card-head"><h2 class="s-card-title">Mes paiements</h2><a class="link-s" href="/apprenant/paiements/">Détail →</a></div>
+<div class="small text-secondary">Montant total</div><div class="fs-3 fw-bold mb-3">450 000 FCFA</div>
+<div class="d-flex justify-content-between align-items-center py-2 border-top"><span>Tranche 1 · 150 000 FCFA</span><span class="s-badge b-paye">Payée</span></div><div class="d-flex justify-content-between align-items-center py-2 border-top"><span>Tranche 2 · 150 000 FCFA</span><span class="s-badge b-paye">Payée</span></div><div class="d-flex justify-content-between align-items-center py-2 border-top"><span>Tranche 3 · 150 000 FCFA</span><span class="s-badge b-attente">Avant le 12 nov.</span></div></div>
+<div class="s-card s-card-pad reveal"><h2 class="s-card-title">Canal WhatsApp</h2><p class="text-secondary">Annonces de meets, rappels et questions rapides se passent dans le groupe de votre formation.</p><a class="btn-s btn-ok-s w-100" href="https://wa.me/22997000000" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i>Rejoindre le groupe</a></div></div></div>
+</main></div></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/espace.js" defer></script>
+</body>
+</html>

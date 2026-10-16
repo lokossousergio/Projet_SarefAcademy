@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#335cec">
+<title>Candidatures | SAREF Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/espace.css">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body class="espace espace-admin">
+<div class="app">
+<aside class="sidebar sidebar-admin offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="Navigation administrateur">
+<div class="offcanvas-body sidebar-inner">
+<div class="d-flex justify-content-end d-lg-none mb-2"><button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Fermer"></button></div>
+<a class="brand" href="/gestion/"><svg width="36" height="36" viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#fff"/><path d="M13 26c0 2.9 2.6 4.6 6 4.6 4 0 6.3-2 6.3-4.7 0-2.9-2.7-4-6.1-4.9-3.1-.8-4.7-1.6-4.7-3.4 0-1.5 1.4-2.8 3.7-2.8 2 0 3.4 1 3.8 2.7" stroke="#335cec" stroke-width="2.3" stroke-linecap="round" fill="none"/></svg><div><b>SAREF Academy</b><small>ESPACE ADMIN</small></div></a>
+<nav class="d-grid gap-1" aria-label="Menu principal">
+<div class="nav-cap" style="margin-top:0">PILOTAGE</div>
+<a class="navitem" href="/gestion/"><i class="bi bi-grid-1x2"></i>Tableau de bord</a>
+<a class="navitem active" href="/gestion/candidatures/" aria-current="page"><i class="bi bi-clipboard-check"></i>Candidatures<span class="count">23</span></a>
+<a class="navitem" href="/gestion/apprenants/"><i class="bi bi-people"></i>Apprenants</a>
+<a class="navitem" href="/gestion/resultats/"><i class="bi bi-award"></i>Résultats &amp; attestations</a>
+<div class="nav-cap">PÉDAGOGIE</div>
+<a class="navitem" href="/gestion/formations/"><i class="bi bi-mortarboard"></i>Formations &amp; modules</a>
+<a class="navitem" href="/gestion/formateurs/"><i class="bi bi-person-video3"></i>Formateurs</a>
+<a class="navitem" href="/gestion/organisation/"><i class="bi bi-diagram-3"></i>Organisation</a>
+<div class="nav-cap">GESTION</div>
+<a class="navitem" href="/gestion/finance/"><i class="bi bi-cash-coin"></i>Finance</a>
+<a class="navitem" href="/gestion/vagues/"><i class="bi bi-folder2"></i>Vagues &amp; années</a>
+<a class="navitem" href="/gestion/parametres/"><i class="bi bi-gear"></i>Paramètres</a>
+</nav>
+<div class="sidebar-user"><span class="avatar avatar-md">SA</span><div class="who"><b>Samuel Adjovi</b><small>Administrateur</small></div>
+<form method="post" action="/deconnexion/"><button class="logout" type="submit" aria-label="Se déconnecter" title="Se déconnecter"><i class="bi bi-box-arrow-right"></i></button></form></div>
+</div></aside>
+<div class="app-col">
+<header class="topbar">
+<button class="btn-icon-s d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Ouvrir le menu"><i class="bi bi-list fs-5"></i></button>
+<form class="tb-search" role="search" action="/gestion/candidatures/"><i class="bi bi-search"></i><input type="search" name="q" placeholder="Rechercher un candidat, une formation…" aria-label="Rechercher"></form>
+<span class="tb-spacer"></span>
+<a class="chip-vague" href="/gestion/vagues/"><span class="live"></span>Vague 2026-A <em>en cours</em></a>
+<div class="dropdown"><button class="btn-icon-s" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notifications"><i class="bi bi-bell"></i><span class="dot"></span></button><div class="dropdown-menu dropdown-menu-end notif-menu p-0"><div class="notif-head"><span>Notifications</span><a class="link-s" href="#">Tout marquer comme lu</a></div><a class="notif-item new" href="/gestion/candidatures/"><i class="bi bi-clipboard-check"></i><span>5 nouvelles candidatures à traiter<small>Il y a 12 min</small></span></a><a class="notif-item new" href="/gestion/finance/"><i class="bi bi-cash-coin"></i><span>Paiement en retard : Serge Dansou<small>Il y a 2 h</small></span></a><a class="notif-item " href="/gestion/formations/1/"><i class="bi bi-play-circle"></i><span>Module 4 prêt à être activé après le meet<small>Hier</small></span></a></div></div>
+<div class="tb-user"><span class="avatar ">SA</span><span class="d-none d-md-block"><b>Samuel A.</b><small>Admin</small></span></div>
+</header>
+<main class="app-main">
+<div class="page-head"><div><h1 class="page-title">Candidatures</h1><p class="page-sub">224 candidatures · Vague 2026-A · un apprenant peut postuler à plusieurs formations</p></div><div class="d-flex flex-wrap gap-2"><a class="btn-s btn-line-s" href="#"><i class="bi bi-download"></i>Exporter (CSV)</a></div></div><form method="get" class="s-card toolbar reveal">
+<nav class="pill-tabs " aria-label="Filtrer"><a class="pill active" href="?statut=" data-list="#t-cand" data-filter="">Toutes<span class="n">224</span></a><a class="pill" href="?statut=attente" data-list="#t-cand" data-filter="attente">En attente<span class="n">23</span></a><a class="pill" href="?statut=accepte" data-list="#t-cand" data-filter="accepte">Acceptées<span class="n">187</span></a><a class="pill" href="?statut=refuse" data-list="#t-cand" data-filter="refuse">Refusées<span class="n">14</span></a></nav>
+<div class="search-box ms-lg-auto" style="max-width:15rem"><i class="bi bi-search"></i><label class="visually-hidden" for="q">Rechercher</label><input id="q" name="q" type="search" class="s-input" placeholder="Nom, e-mail…" data-list="#t-cand" data-search></div>
+<label class="visually-hidden" for="f">Formation</label><select id="f" name="formation" class="s-input form-select w-auto" data-list="#t-cand" data-match><option value="">Toutes les formations</option><option>Développement Web Full-Stack</option><option>UI/UX Design</option><option>Marketing Digital</option><option>Data &amp; IA</option></select>
+<label class="visually-hidden" for="v">Vague</label><select id="v" name="vague" class="s-input form-select w-auto"><option>Vague 2026-A (en cours)</option><option>Vague 2025-B (archivée)</option><option>Vague 2025-A (archivée)</option></select>
+<label class="visually-hidden" for="t">Tri</label><select id="t" name="tri" class="s-input form-select w-auto"><option>Plus récentes</option><option>Nom (A–Z)</option></select></form>
+<div class="s-card overflow-hidden reveal"><div class="table-responsive"><table class="s-table " id="t-cand" data-empty="#vide-t-cand"><thead><tr><th>Candidat</th><th>Formation</th><th>Vague</th><th>Date de candidature</th><th>Statut</th><th></th></tr></thead><tbody>
+<tr data-status="attente"><td><div class="user-cell"><span class="avatar ">MB</span><div><b>Mariam Bello</b><small>mariam.bello@mail.com</small></div></div></td><td>UI/UX Design</td><td>2026-A</td><td>2 oct. 2026</td><td><span class="s-badge b-attente">En attente</span></td><td class="text-end"><a class="btn-s btn-primary-s btn-sm-s" href="/gestion/candidatures/1/">Examiner</a></td></tr><tr data-status="accepte"><td><div class="user-cell"><span class="avatar ">JK</span><div><b>Jonas Koffi</b><small>jonas.koffi@mail.com</small></div></div></td><td>Développement Web Full-Stack</td><td>2026-A</td><td>1 oct. 2026</td><td><span class="s-badge b-accepte">Accepté</span></td><td class="text-end"><a class="btn-s btn-soft-s btn-sm-s" href="/gestion/candidatures/2/">Voir</a></td></tr><tr data-status="attente"><td><div class="user-cell"><span class="avatar ">FS</span><div><b>Fatou Sow</b><small>fatou.sow@mail.com</small></div></div></td><td>Marketing Digital</td><td>2026-A</td><td>1 oct. 2026</td><td><span class="s-badge b-attente">En attente</span></td><td class="text-end"><a class="btn-s btn-primary-s btn-sm-s" href="/gestion/candidatures/3/">Examiner</a></td></tr><tr data-status="refuse"><td><div class="user-cell"><span class="avatar ">RL</span><div><b>Rayan Lawson</b><small>rayan.lawson@mail.com</small></div></div></td><td>Développement Web Full-Stack</td><td>2026-A</td><td>30 sept. 2026</td><td><span class="s-badge b-refuse">Refusé</span></td><td class="text-end"><a class="btn-s btn-soft-s btn-sm-s" href="/gestion/candidatures/4/">Voir</a></td></tr><tr data-status="accepte"><td><div class="user-cell"><span class="avatar ">AK</span><div><b>Aïcha Kora</b><small>aicha.kora@mail.com</small></div></div></td><td>Développement Web Full-Stack</td><td>2026-A</td><td>12 sept. 2026</td><td><span class="s-badge b-accepte">Accepté</span></td><td class="text-end"><a class="btn-s btn-soft-s btn-sm-s" href="/gestion/candidatures/5/">Voir</a></td></tr><tr data-status="accepte"><td><div class="user-cell"><span class="avatar ">PT</span><div><b>Pauline Towa</b><small>pauline.towa@mail.com</small></div></div></td><td>UI/UX Design</td><td>2026-A</td><td>10 sept. 2026</td><td><span class="s-badge b-accepte">Accepté</span></td><td class="text-end"><a class="btn-s btn-soft-s btn-sm-s" href="/gestion/candidatures/6/">Voir</a></td></tr><tr data-status="accepte"><td><div class="user-cell"><span class="avatar ">NB</span><div><b>Nadège Biaou</b><small>nadege.biaou@mail.com</small></div></div></td><td>Marketing Digital</td><td>2026-A</td><td>3 sept. 2026</td><td><span class="s-badge b-accepte">Accepté</span></td><td class="text-end"><a class="btn-s btn-soft-s btn-sm-s" href="/gestion/candidatures/7/">Voir</a></td></tr><tr data-status="accepte"><td><div class="user-cell"><span class="avatar ">SD</span><div><b>Serge Dansou</b><small>serge.dansou@mail.com</small></div></div></td><td>Développement Web Full-Stack</td><td>2026-A</td><td>2 sept. 2026</td><td><span class="s-badge b-accepte">Accepté</span></td><td class="text-end"><a class="btn-s btn-soft-s btn-sm-s" href="/gestion/candidatures/8/">Voir</a></td></tr><tr data-status="attente"><td><div class="user-cell"><span class="avatar ">KA</span><div><b>Kevin Adjovi</b><small>kevin.adjovi@mail.com</small></div></div></td><td>UI/UX Design</td><td>2026-A</td><td>31 août 2026</td><td><span class="s-badge b-attente">En attente</span></td><td class="text-end"><a class="btn-s btn-primary-s btn-sm-s" href="/gestion/candidatures/9/">Examiner</a></td></tr><tr data-status="attente"><td><div class="user-cell"><span class="avatar ">AK</span><div><b>Aïcha Kora</b><small>aicha.kora@mail.com</small></div></div></td><td>Marketing Digital</td><td>2026-A</td><td>28 août 2026</td><td><span class="s-badge b-attente">En attente</span></td><td class="text-end"><a class="btn-s btn-primary-s btn-sm-s" href="/gestion/candidatures/10/">Examiner</a></td></tr><tr data-status="refuse"><td><div class="user-cell"><span class="avatar ">YA</span><div><b>Yannick Agossou</b><small>yannick.agossou@mail.com</small></div></div></td><td>Marketing Digital</td><td>2026-A</td><td>29 août 2026</td><td><span class="s-badge b-refuse">Refusé</span></td><td class="text-end"><a class="btn-s btn-soft-s btn-sm-s" href="/gestion/candidatures/11/">Voir</a></td></tr><tr data-status="accepte"><td><div class="user-cell"><span class="avatar ">IS</span><div><b>Ibrahim Salami</b><small>ibrahim.salami@mail.com</small></div></div></td><td>Développement Web Full-Stack</td><td>2026-A</td><td>28 août 2026</td><td><span class="s-badge b-accepte">Accepté</span></td><td class="text-end"><a class="btn-s btn-soft-s btn-sm-s" href="/gestion/candidatures/12/">Voir</a></td></tr>
+</tbody></table></div><div class="empty-s" id="vide-t-cand" hidden><i class="bi bi-search fs-3 d-block mb-2"></i>Aucun résultat pour ce filtre.</div><div class="table-foot"><span>Affichage 1–12 sur 224</span><nav class="pager" aria-label="Pagination"><span class="off">← Précédent</span><span class="on" aria-current="page">1</span><a href="?page=2">2</a><a href="?page=3">3</a><span>…</span><a href="?page=19">19</a><a href="?page=2">Suivant →</a></nav></div></div>
+</main></div></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/espace.js" defer></script>
+</body>
+</html>

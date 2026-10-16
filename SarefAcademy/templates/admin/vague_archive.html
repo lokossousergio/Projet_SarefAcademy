@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#335cec">
+<title>Archive de la vague | SAREF Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/espace.css">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body class="espace espace-admin">
+<div class="app">
+<aside class="sidebar sidebar-admin offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="Navigation administrateur">
+<div class="offcanvas-body sidebar-inner">
+<div class="d-flex justify-content-end d-lg-none mb-2"><button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Fermer"></button></div>
+<a class="brand" href="/gestion/"><svg width="36" height="36" viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#fff"/><path d="M13 26c0 2.9 2.6 4.6 6 4.6 4 0 6.3-2 6.3-4.7 0-2.9-2.7-4-6.1-4.9-3.1-.8-4.7-1.6-4.7-3.4 0-1.5 1.4-2.8 3.7-2.8 2 0 3.4 1 3.8 2.7" stroke="#335cec" stroke-width="2.3" stroke-linecap="round" fill="none"/></svg><div><b>SAREF Academy</b><small>ESPACE ADMIN</small></div></a>
+<nav class="d-grid gap-1" aria-label="Menu principal">
+<div class="nav-cap" style="margin-top:0">PILOTAGE</div>
+<a class="navitem" href="/gestion/"><i class="bi bi-grid-1x2"></i>Tableau de bord</a>
+<a class="navitem" href="/gestion/candidatures/"><i class="bi bi-clipboard-check"></i>Candidatures<span class="count">23</span></a>
+<a class="navitem" href="/gestion/apprenants/"><i class="bi bi-people"></i>Apprenants</a>
+<a class="navitem" href="/gestion/resultats/"><i class="bi bi-award"></i>Résultats &amp; attestations</a>
+<div class="nav-cap">PÉDAGOGIE</div>
+<a class="navitem" href="/gestion/formations/"><i class="bi bi-mortarboard"></i>Formations &amp; modules</a>
+<a class="navitem" href="/gestion/formateurs/"><i class="bi bi-person-video3"></i>Formateurs</a>
+<a class="navitem" href="/gestion/organisation/"><i class="bi bi-diagram-3"></i>Organisation</a>
+<div class="nav-cap">GESTION</div>
+<a class="navitem" href="/gestion/finance/"><i class="bi bi-cash-coin"></i>Finance</a>
+<a class="navitem active" href="/gestion/vagues/" aria-current="page"><i class="bi bi-folder2"></i>Vagues &amp; années</a>
+<a class="navitem" href="/gestion/parametres/"><i class="bi bi-gear"></i>Paramètres</a>
+</nav>
+<div class="sidebar-user"><span class="avatar avatar-md">SA</span><div class="who"><b>Samuel Adjovi</b><small>Administrateur</small></div>
+<form method="post" action="/deconnexion/"><button class="logout" type="submit" aria-label="Se déconnecter" title="Se déconnecter"><i class="bi bi-box-arrow-right"></i></button></form></div>
+</div></aside>
+<div class="app-col">
+<header class="topbar">
+<button class="btn-icon-s d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Ouvrir le menu"><i class="bi bi-list fs-5"></i></button>
+<form class="tb-search" role="search" action="/gestion/candidatures/"><i class="bi bi-search"></i><input type="search" name="q" placeholder="Rechercher un candidat, une formation…" aria-label="Rechercher"></form>
+<span class="tb-spacer"></span>
+<a class="chip-vague" href="/gestion/vagues/"><span class="live"></span>Vague 2026-A <em>en cours</em></a>
+<div class="dropdown"><button class="btn-icon-s" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notifications"><i class="bi bi-bell"></i><span class="dot"></span></button><div class="dropdown-menu dropdown-menu-end notif-menu p-0"><div class="notif-head"><span>Notifications</span><a class="link-s" href="#">Tout marquer comme lu</a></div><a class="notif-item new" href="/gestion/candidatures/"><i class="bi bi-clipboard-check"></i><span>5 nouvelles candidatures à traiter<small>Il y a 12 min</small></span></a><a class="notif-item new" href="/gestion/finance/"><i class="bi bi-cash-coin"></i><span>Paiement en retard : Serge Dansou<small>Il y a 2 h</small></span></a><a class="notif-item " href="/gestion/formations/1/"><i class="bi bi-play-circle"></i><span>Module 4 prêt à être activé après le meet<small>Hier</small></span></a></div></div>
+<div class="tb-user"><span class="avatar ">SA</span><span class="d-none d-md-block"><b>Samuel A.</b><small>Admin</small></span></div>
+</header>
+<main class="app-main">
+<nav class="crumb" aria-label="Fil d’Ariane"><a href="/gestion/vagues/">Vagues &amp; années</a> / Archive 2025-B</nav><div class="page-head"><div><h1 class="page-title">Archive — Vague 2025-B</h1><p class="page-sub">Archivée le 15 juin 2025 · consultation en lecture seule</p></div><div class="d-flex flex-wrap gap-2"><a class="btn-s btn-line-s" href="#"><i class="bi bi-download"></i>Exporter le bilan</a><button class="btn-s btn-primary-s" type="button"><i class="bi bi-copy"></i>Dupliquer la structure</button></div></div><div class="banner warn mb-3"><i class="bi bi-lock"></i><span>Cette vague est <b>archivée</b> : les données ne sont plus modifiables.</span></div>
+<div class="row g-3 mb-3"><div class="col-6 col-xl-3"><div class="s-card stat hover-lift reveal" style="--d:0s"><div class="stat-top"><span class="stat-label">Candidats</span><span class="stat-icon "><i class="bi bi-people"></i></span></div><div class="stat-value"><span data-count="198" data-suffix="" data-dec="0">198</span></div><div class="stat-sub">dossiers reçus</div></div></div><div class="col-6 col-xl-3"><div class="s-card stat hover-lift reveal" style="--d:0.07s"><div class="stat-top"><span class="stat-label">Acceptés</span><span class="stat-icon green"><i class="bi bi-check2-circle"></i></span></div><div class="stat-value"><span data-count="165" data-suffix="" data-dec="0">165</span></div><div class="stat-sub">83 % des candidats</div></div></div>
+<div class="col-6 col-xl-3"><div class="s-card stat hover-lift reveal" style="--d:0.14s"><div class="stat-top"><span class="stat-label">Admis</span><span class="stat-icon "><i class="bi bi-award"></i></span></div><div class="stat-value"><span data-count="147" data-suffix="" data-dec="0">147</span></div><div class="stat-sub">attestations délivrées</div></div></div><div class="col-6 col-xl-3"><div class="s-card stat hover-lift reveal" style="--d:0.21s"><div class="stat-top"><span class="stat-label">Encaissé</span><span class="stat-icon "><i class="bi bi-cash-stack"></i></span></div><div class="stat-value"><span data-count="38.4" data-suffix=" M FCFA" data-dec="1">38,4 M FCFA</span></div><div class="stat-sub">paiements validés</div></div></div></div>
+<div class="s-card overflow-hidden mb-3 reveal"><div class="s-card-head px-4 pt-4"><h2 class="s-card-title">Bilan par formation</h2></div><div class="table-responsive"><table class="s-table "><thead><tr><th>Formation</th><th>Candidats</th><th>Acceptés</th><th>Résultats</th><th>Encaissé</th></tr></thead><tbody>
+<tr><td><b>Développement Web Full-Stack</b></td><td>84</td><td>71</td><td>62 admis</td><td>17,1 M FCFA</td></tr><tr><td><b>UI/UX Design</b></td><td>62</td><td>52</td><td>47 admis</td><td>11,2 M FCFA</td></tr><tr><td><b>Marketing Digital</b></td><td>52</td><td>42</td><td>38 admis</td><td>10,1 M FCFA</td></tr>
+</tbody></table></div></div>
+<div class="s-card overflow-hidden reveal"><div class="s-card-head px-4 pt-4"><h2 class="s-card-title">Apprenants de la vague</h2><a class="link-s" href="/gestion/apprenants/">Tous les apprenants →</a></div><div class="table-responsive"><table class="s-table "><thead><tr><th>Apprenant</th><th>Formation</th><th>Résultat</th><th>Attestation</th></tr></thead><tbody>
+<tr><td><div class="user-cell"><span class="avatar ">OG</span><b>Odile Gbaguidi</b></div></td><td>UI/UX Design</td><td><span class="s-badge b-admis">Admis</span></td><td>Disponible</td></tr><tr><td><div class="user-cell"><span class="avatar ">AY</span><b>Armand Yèhouénou</b></div></td><td>Marketing Digital</td><td><span class="s-badge b-admis">Admis</span></td><td>Disponible</td></tr><tr><td><div class="user-cell"><span class="avatar ">SA</span><b>Sylvie Ahouansou</b></div></td><td>Développement Web Full-Stack</td><td><span class="s-badge b-non_admis">Non admis</span></td><td>—</td></tr><tr><td><div class="user-cell"><span class="avatar ">CM</span><b>Christian Mensah</b></div></td><td>UI/UX Design</td><td><span class="s-badge b-admis">Admis</span></td><td>Disponible</td></tr>
+</tbody></table></div></div>
+</main></div></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/espace.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#335cec">
+<title>Postuler à une formation | SAREF Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/espace.css">
+<script>document.documentElement.classList.add('js')</script>
+<style>
+/* ===== Page de candidature : mise en page propre à cet écran ===== */
+.cd { display: grid; grid-template-columns: minmax(340px, 5fr) 7fr; min-height: 100vh; }
+.cd-side { position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; gap: 2rem; padding: clamp(1.5rem, 3.2vw, 3rem); color: #fff;
+  background: linear-gradient(160deg, rgb(51 92 236 / .94) 0%, rgb(20 37 94 / .96) 70%), url('/static/img/apercu-cours.jpg') center / cover; }
+.cd-side::before { content: ""; position: absolute; width: 26rem; height: 26rem; right: -9rem; bottom: -10rem; border-radius: 50%; background: rgb(34 197 94 / .25); animation: float 7s ease-in-out infinite; }
+.cd-side > * { position: relative; }
+.cd-side h1 { color: #fff; font-size: clamp(1.7rem, 1.2rem + 1.6vw, 2.6rem); line-height: 1.15; font-weight: 700; }
+.cd-side .lead { color: rgb(255 255 255 / .88); font-size: 1rem; max-width: 26rem; }
+.cd-perks { list-style: none; margin: 1.5rem 0 0; padding: 0; display: grid; gap: 14px; }
+.cd-perks li { display: flex; gap: 12px; align-items: center; font-weight: 500; }
+.cd-perks i { flex: none; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 11px; background: rgb(255 255 255 / .16); color: var(--logo-green); }
+.cd-quote { padding: 1rem 1.15rem; border-radius: 16px; background: rgb(255 255 255 / .12); border: 1px solid rgb(255 255 255 / .2); font-size: 13px; line-height: 1.6; }
+.cd-main { display: flex; flex-direction: column; background: #fff; }
+.cd-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.1rem clamp(1.25rem, 4vw, 3.5rem); }
+.cd-top a.quit { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-soft); font-weight: 500; }
+.cd-top a.quit:hover { color: var(--brand-blue-dark); }
+.cd-prog { height: 4px; background: var(--blue-50); }
+.cd-prog span { display: block; height: 100%; width: 25%; background: linear-gradient(90deg, var(--brand-blue), var(--logo-green)); transition: width .6s var(--ease); }
+.cd-body { flex: 1; width: 100%; max-width: 44rem; margin: 0 auto; padding: clamp(1.25rem, 3vw, 2.5rem) clamp(1.25rem, 4vw, 2rem) 1rem; }
+.cd-steps { display: flex; gap: 8px; margin-bottom: 1.75rem; }
+.cd-steps li { flex: 1; list-style: none; display: flex; align-items: center; gap: 10px; font-size: 12.5px; font-weight: 600; color: var(--ink-mute); }
+.cd-steps span { flex: none; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; border: 1.5px solid var(--line); background: #fff; transition: all .3s var(--ease); }
+.cd-steps li.on { color: var(--ink); } .cd-steps li.on span { background: var(--brand-blue); border-color: var(--brand-blue); color: #fff; box-shadow: 0 0 0 4px rgb(51 92 236 / .18); }
+.cd-steps li.done span { background: var(--logo-green); border-color: var(--logo-green); color: var(--dark-950); }
+.cd-steps li:not(:last-child)::after { content: ""; flex: 1; height: 2px; border-radius: 2px; background: var(--line); }
+.cd-steps ol, ol.cd-steps { padding: 0; margin-bottom: 1.75rem; }
+.step { display: none; }
+.step.on { display: block; animation: stepin .5s var(--ease) both; }
+.step.back.on { animation-name: stepback; }
+@keyframes stepin { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+@keyframes stepback { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
+.step h2 { font-size: clamp(1.4rem, 1.1rem + 1vw, 1.75rem); font-weight: 700; margin-bottom: .35rem; }
+.fgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 12px; margin-top: 1.25rem; border: 0; padding: 0; min-width: 0; }
+.fcard { position: relative; display: flex; align-items: center; gap: 14px; padding: 16px; border: 1.5px solid var(--line); border-radius: var(--r-md); background: #fff; cursor: pointer; transition: all .25s var(--ease); }
+.fcard:hover { border-color: var(--blue-200); transform: translateY(-3px); box-shadow: var(--sh-2); }
+.fcard input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.fcard .fc-ic { flex: none; width: 46px; height: 46px; display: grid; place-items: center; border-radius: 13px; background: var(--blue-50); color: var(--brand-blue); font-size: 1.3rem; transition: all .25s; }
+.fcard .fc-t { flex: 1; min-width: 0; line-height: 1.35; } .fcard .fc-t b { display: block; font-size: 14px; } .fcard small { color: var(--ink-mute); font-size: 12px; }
+.fcard .fc-ck { flex: none; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; border: 1.5px solid var(--line); color: transparent; font-size: .8rem; transition: all .25s; }
+.fcard:has(input:checked) { border-color: var(--brand-blue); background: var(--blue-25); box-shadow: 0 0 0 3px rgb(51 92 236 / .14); }
+.fcard:has(input:checked) .fc-ic { background: var(--brand-blue); color: #fff; transform: scale(1.06) rotate(-4deg); }
+.fcard:has(input:checked) .fc-ck { background: var(--brand-blue); border-color: var(--brand-blue); color: #fff; animation: pop .35s var(--ease); }
+.fcard:has(input:focus-visible) { outline: 3px solid rgb(51 92 236 / .4); outline-offset: 2px; }
+.fcard:has(input:disabled) { opacity: .62; cursor: not-allowed; background: #f8fafc; }
+.fcard:has(input:disabled):hover { transform: none; box-shadow: none; border-color: var(--line); }
+.fcard:has(input:disabled) input { cursor: not-allowed; }
+.vague-note { display: flex; align-items: center; gap: 10px; margin-top: 1.25rem; padding: .8rem 1rem; border-radius: var(--r-sm); background: var(--blue-50); color: var(--blue-800); font-size: 13px; }
+.photo-row { display: flex; align-items: center; gap: 1.25rem; padding: 1rem; border: 1.5px dashed var(--blue-200); border-radius: var(--r-md); background: var(--blue-25); }
+.photo-prev { flex: none; width: 84px; height: 84px; display: grid; place-items: center; border-radius: 50%; overflow: hidden; background: var(--blue-50); color: var(--brand-blue); font-size: 2rem; border: 3px solid #fff; box-shadow: var(--sh-2); }
+.photo-prev img { width: 100%; height: 100%; object-fit: cover; }
+.counter { display: flex; justify-content: space-between; margin-top: 6px; font-size: 12px; color: var(--ink-mute); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: .75rem; }
+.chips button { border: 1px solid var(--line); border-radius: 999px; background: #fff; padding: 6px 12px; font: 500 12px var(--bs-body-font-family); color: var(--ink-soft); transition: all .2s; }
+.chips button:hover { border-color: var(--brand-blue); color: var(--brand-blue-dark); background: var(--blue-25); }
+.recap { margin: 1.25rem 0; border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
+.recap div { display: flex; justify-content: space-between; gap: 1.5rem; padding: 12px 16px; border-bottom: 1px solid var(--line-soft); }
+.recap div:last-child { border-bottom: 0; } .recap dt { font-weight: 500; color: var(--ink-mute); } .recap dd { margin: 0; font-weight: 600; text-align: right; overflow-wrap: anywhere; }
+.recap { padding: 0; } .recap dl { margin: 0; }
+.cd-foot { position: sticky; bottom: 0; display: flex; align-items: center; gap: .75rem; padding: 1rem clamp(1.25rem, 4vw, 3.5rem); background: rgb(255 255 255 / .92); backdrop-filter: blur(10px); border-top: 1px solid var(--line); }
+.cd-foot .sp { flex: 1; }
+.err { display: none; margin-top: .75rem; padding: .7rem 1rem; border-radius: var(--r-sm); background: var(--bad-bg); color: var(--bad); font-size: 13px; font-weight: 500; }
+.err.on { display: block; animation: fadeUp .3s var(--ease); }
+.success { display: none; text-align: center; max-width: 30rem; margin: 3rem auto; }
+.success.on { display: block; animation: fadeUp .6s var(--ease); }
+.success .big { display: grid; place-items: center; width: 92px; height: 92px; margin: 0 auto 1.5rem; border-radius: 50%; background: var(--ok-bg); color: var(--ok); font-size: 3rem; animation: pop .6s var(--ease); }
+@media (max-width: 991.98px) { .cd { grid-template-columns: 1fr; } .cd-side { padding-bottom: 5rem; } .cd-side .cd-quote, .cd-perks { display: none; } .cd-main { margin-top: -2.5rem; border-radius: 28px 28px 0 0; position: relative; } .cd-steps li b { display: none; } .cd-steps li.on b { display: inline; } }
+</style>
+</head>
+<body class="espace">
+<div class="cd">
+<aside class="cd-side">
+<a class="brand m-0 text-white" href="/apprenant/" aria-label="SAREF Academy">
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#fff"/><path d="M13 26c0 2.9 2.6 4.6 6 4.6 4 0 6.3-2 6.3-4.7 0-2.9-2.7-4-6.1-4.9-3.1-.8-4.7-1.6-4.7-3.4 0-1.5 1.4-2.8 3.7-2.8 2 0 3.4 1 3.8 2.7" stroke="#335cec" stroke-width="2.3" stroke-linecap="round" fill="none"/></svg>
+<div><b>SAREF Academy</b></div></a>
+<div>
+<h1>Lancez votre prochaine étape, une formation à la fois.</h1>
+<p class="lead mt-3">Quelques minutes suffisent pour envoyer votre dossier. Vous pouvez postuler à plusieurs formations.</p>
+<ul class="cd-perks">
+<li><i class="bi bi-camera-video"></i>Meets en direct et replays après chaque session</li>
+<li><i class="bi bi-file-earmark-pdf"></i>Vidéos et PDF par chapitre, accessibles à tout moment</li>
+<li><i class="bi bi-whatsapp"></i>Groupe WhatsApp pour échanger avec votre formateur</li>
+</ul>
+</div>
+<div class="cd-quote"><i class="bi bi-chat-quote me-2"></i>Votre candidature est étudiée par l’équipe. Vous êtes notifié par e-mail et dans votre espace dès qu’une décision est prise.</div>
+</aside>
+
+<div class="cd-main">
+<div class="cd-top">
+<a class="quit" href="/apprenant/formations/"><i class="bi bi-arrow-left"></i>Quitter</a>
+<span class="small text-secondary d-none d-sm-inline">Aïcha Kora · aicha.kora@mail.com</span>
+</div>
+<div class="cd-prog" aria-hidden="true"><span id="bar"></span></div>
+
+<form id="cand" method="post" enctype="multipart/form-data" novalidate class="d-flex flex-column flex-grow-1">
+<div class="cd-body">
+<ol class="cd-steps" aria-label="Étapes de la candidature">
+<li class="on" data-i="0"><span>1</span><b>Formation</b></li>
+<li data-i="1"><span>2</span><b>Profil</b></li>
+<li data-i="2"><span>3</span><b>Motivation</b></li>
+<li data-i="3"><span>4</span><b>Envoi</b></li>
+</ol>
+
+<!-- Étape 1 : formation (modèle Candidats.formation) -->
+<section class="step on" data-step="0" aria-labelledby="t0">
+<h2 id="t0">Quelle formation vous attire ?</h2>
+<p class="text-secondary mb-0">Choisissez une formation. Vous pourrez en choisir d’autres ensuite.</p>
+<fieldset class="fgrid">
+<legend class="visually-hidden">Formation souhaitée</legend>
+<label class="fcard"><input type="radio" name="formation" value="montage-video" data-label="Montage vidéo"><span class="fc-ic"><i class="bi bi-camera-reels"></i></span><span class="fc-t"><b>Montage vidéo</b><small>3 mois · 3 tranches</small></span><span class="fc-ck"><i class="bi bi-check-lg"></i></span></label>
+<label class="fcard"><input type="radio" name="formation" value="journalisme-web" data-label="Journalisme web"><span class="fc-ic"><i class="bi bi-newspaper"></i></span><span class="fc-t"><b>Journalisme web</b><small>2 mois · 2 tranches</small></span><span class="fc-ck"><i class="bi bi-check-lg"></i></span></label>
+<label class="fcard"><input type="radio" name="formation" value="dev-web" disabled><span class="fc-ic"><i class="bi bi-code-slash"></i></span><span class="fc-t"><b>Développement Web</b><small>Déjà candidaté · vague 2026-A</small></span><span class="fc-ck"><i class="bi bi-lock"></i></span></label>
+<label class="fcard"><input type="radio" name="formation" value="marketing" disabled><span class="fc-ic"><i class="bi bi-megaphone"></i></span><span class="fc-t"><b>Marketing Digital</b><small>Déjà candidaté · vague 2026-A</small></span><span class="fc-ck"><i class="bi bi-lock"></i></span></label>
+<label class="fcard"><input type="radio" name="formation" value="ui-ux" disabled><span class="fc-ic"><i class="bi bi-palette"></i></span><span class="fc-t"><b>UI/UX Design</b><small>Déjà suivie · vague 2025-B</small></span><span class="fc-ck"><i class="bi bi-lock"></i></span></label>
+</fieldset>
+<input type="hidden" name="configVague" value="2026-A">
+<div class="vague-note"><i class="bi bi-calendar3"></i><span>Votre candidature sera rattachée à la <b>vague 2026-A</b> · du 1 sept. au 31 déc. 2026.</span></div>
+</section>
+
+<!-- Étape 2 : profil (modèles Etudiants + Candidats.photo_profils) -->
+<section class="step" data-step="1" aria-labelledby="t1">
+<h2 id="t1">Complétons votre profil</h2>
+<p class="text-secondary">Ces informations aident l’équipe à étudier votre dossier.</p>
+<div class="row g-3 mt-1">
+<div class="col-md-6"><label class="s-label" for="prenom">Prénom</label><input id="prenom" name="prenom" class="s-input" value="Aïcha" readonly></div>
+<div class="col-md-6"><label class="s-label" for="nom">Nom</label><input id="nom" name="nom" class="s-input" value="Kora" readonly></div>
+<div class="col-12"><label class="s-label" for="email">Adresse e-mail</label><input id="email" name="email" type="email" class="s-input" value="aicha.kora@mail.com" readonly></div>
+<div class="col-md-6"><label class="s-label" for="telephone">Téléphone / WhatsApp <span class="t-red">*</span></label><input id="telephone" name="telephone" type="tel" class="s-input" placeholder="+229 00 00 00 00" required></div>
+<div class="col-md-6"><label class="s-label" for="niveau_etudes">Niveau d’études <span class="t-red">*</span></label>
+<select id="niveau_etudes" name="niveau_etudes" class="s-input form-select" required><option value="">Choisir…</option><option>Baccalauréat</option><option>BTS</option><option>Licence 1</option><option>Licence 2</option><option>Licence 3</option><option>Master 1</option><option>Master 2</option><option>Autre</option></select></div>
+<div class="col-12"><label class="s-label" for="photo_profils">Photo de profil</label>
+<div class="photo-row"><span class="photo-prev" id="prev"><i class="bi bi-person"></i></span><div class="flex-grow-1"><b class="d-block">Ajoutez une photo nette</b><small class="text-secondary">JPG ou PNG · 2 Mo maximum</small></div>
+<label class="btn-s btn-line-s btn-sm-s mb-0" for="photo_profils"><i class="bi bi-upload"></i>Choisir</label><input id="photo_profils" name="photo_profils" type="file" accept="image/*" class="visually-hidden"></div></div>
+</div>
+</section>
+
+<!-- Étape 3 : motivation (Candidats.motif_inscription, 255 caractères) -->
+<section class="step" data-step="2" aria-labelledby="t2">
+<h2 id="t2">Pourquoi cette formation ?</h2>
+<p class="text-secondary">Dites-nous en quelques phrases ce que vous en attendez.</p>
+<label class="s-label mt-2" for="motif_inscription">Votre motivation <span class="t-red">*</span></label>
+<textarea id="motif_inscription" name="motif_inscription" class="s-input" rows="6" maxlength="255" minlength="30" required placeholder="Ex : Je souhaite me former pour…" data-counter="#cnt"></textarea>
+<div class="counter"><span>30 caractères minimum</span><span id="cnt">0 / 255</span></div>
+<div class="chips" aria-label="Idées pour démarrer">
+<button type="button" data-ins="Je souhaite me reconvertir et acquérir un métier du numérique. ">Reconversion</button>
+<button type="button" data-ins="Je veux compléter mes études avec des compétences pratiques. ">Compléter mes études</button>
+<button type="button" data-ins="Je veux développer mon activité et mes projets personnels. ">Projet personnel</button>
+</div>
+</section>
+
+<!-- Étape 4 : récapitulatif -->
+<section class="step" data-step="3" aria-labelledby="t3">
+<h2 id="t3">Tout est prêt ?</h2>
+<p class="text-secondary">Vérifiez votre dossier avant de l’envoyer.</p>
+<div class="recap"><dl>
+<div><dt>Formation</dt><dd id="r-form">—</dd></div><div><dt>Vague</dt><dd>2026-A</dd></div><div><dt>Candidat</dt><dd>Aïcha Kora</dd></div><div><dt>Téléphone</dt><dd id="r-tel">—</dd></div><div><dt>Niveau d’études</dt><dd id="r-niv">—</dd></div><div><dt>Photo</dt><dd id="r-photo">Non ajoutée</dd></div><div><dt>Motivation</dt><dd id="r-motif" style="max-width:22rem">—</dd></div></dl></div>
+<label class="d-flex gap-2 align-items-start small text-secondary" style="cursor:pointer"><input class="form-check-input mt-1" type="checkbox" id="ok" name="accepte" required><span>Je confirme que ces informations sont exactes et j’accepte d’être contacté(e) par e-mail et WhatsApp à propos de ma candidature.</span></label>
+</section>
+
+<div class="err" id="err" role="alert"></div>
+</div>
+
+<!-- Confirmation -->
+<div class="success" id="success" role="status">
+<div class="big"><i class="bi bi-check2-circle"></i></div>
+<h2 class="fw-bold">Candidature envoyée !</h2>
+<p class="text-secondary">Merci Aïcha. L’équipe étudie votre dossier. Vous serez notifiée par e-mail et dans votre espace dès qu’une décision sera prise.</p>
+<div class="d-grid gap-2 mt-4"><a class="btn-s btn-primary-s" href="/apprenant/formations/"><i class="bi bi-mortarboard"></i>Voir mes formations</a><a class="btn-s btn-line-s" href="/candidature/">Postuler à une autre formation</a>
+<a class="btn-s btn-ok-s" href="https://wa.me/22997000000" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i>Rejoindre le groupe WhatsApp</a></div>
+</div>
+
+<div class="cd-foot" id="foot">
+<button type="button" class="btn-s btn-line-s" id="prevBtn" style="visibility:hidden"><i class="bi bi-arrow-left"></i>Retour</button>
+<span class="sp"></span>
+<button type="button" class="btn-s btn-primary-s" id="nextBtn">Continuer<i class="bi bi-arrow-right"></i></button>
+<button type="submit" class="btn-s btn-ok-s" id="sendBtn" hidden><i class="bi bi-send"></i>Envoyer ma candidature</button>
+</div>
+</form>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/espace.js" defer></script>
+<script>
+(function () {
+  var form = document.getElementById('cand'), steps = form.querySelectorAll('.step'), dots = form.querySelectorAll('.cd-steps li');
+  var bar = document.getElementById('bar'), prev = document.getElementById('prevBtn'), next = document.getElementById('nextBtn'), send = document.getElementById('sendBtn'), err = document.getElementById('err');
+  var cur = 0;
+  function show(n, back) {
+    steps.forEach(function (s, i) { s.classList.toggle('on', i === n); s.classList.toggle('back', !!back); });
+    dots.forEach(function (d, i) { d.classList.toggle('on', i === n); d.classList.toggle('done', i < n); d.querySelector('span').innerHTML = i < n ? '<i class="bi bi-check-lg"></i>' : (i + 1); });
+    bar.style.width = ((n + 1) * 25) + '%';
+    prev.style.visibility = n === 0 ? 'hidden' : 'visible';
+    next.hidden = n === 3; send.hidden = n !== 3;
+    err.classList.remove('on'); cur = n;
+    if (n === 3) recap();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function fail(msg) { err.textContent = msg; err.classList.add('on'); }
+  function valid(n) {
+    if (n === 0 && !form.querySelector('input[name=formation]:checked')) { fail('Choisissez une formation pour continuer.'); return false; }
+    if (n === 1) { var t = form.telephone, l = form.niveau_etudes; if (!t.value.trim()) { fail('Indiquez votre numéro de téléphone / WhatsApp.'); t.focus(); return false; } if (!l.value) { fail('Sélectionnez votre niveau d’études.'); l.focus(); return false; } }
+    if (n === 2 && form.motif_inscription.value.trim().length < 30) { fail('Votre motivation doit contenir au moins 30 caractères.'); form.motif_inscription.focus(); return false; }
+    if (n === 3 && !form.accepte.checked) { fail('Cochez la case de confirmation pour envoyer.'); return false; }
+    return true;
+  }
+  function recap() {
+    var f = form.querySelector('input[name=formation]:checked');
+    document.getElementById('r-form').textContent = f ? f.dataset.label : '—';
+    document.getElementById('r-tel').textContent = form.telephone.value || '—';
+    document.getElementById('r-niv').textContent = form.niveau_etudes.value || '—';
+    document.getElementById('r-photo').textContent = form.photo_profils.files.length ? form.photo_profils.files[0].name : 'Non ajoutée';
+    document.getElementById('r-motif').textContent = form.motif_inscription.value || '—';
+  }
+  next.addEventListener('click', function () { if (valid(cur)) show(cur + 1); });
+  prev.addEventListener('click', function () { show(cur - 1, true); });
+  form.querySelectorAll('input[name=formation]').forEach(function (r) { r.addEventListener('change', function () { err.classList.remove('on'); }); });
+  form.photo_profils.addEventListener('change', function () {
+    var f = this.files[0]; if (!f) return;
+    document.getElementById('prev').innerHTML = '<img alt="Aperçu de la photo" src="' + URL.createObjectURL(f) + '">';
+  });
+  document.querySelectorAll('.chips button').forEach(function (b) { b.addEventListener('click', function () {
+    var t = form.motif_inscription; t.value = (t.value + b.dataset.ins).slice(0, t.maxLength); t.dispatchEvent(new Event('input')); t.focus(); }); });
+  // Démo : affiche l'écran de succès. Pour brancher Django, SUPPRIMEZ ce bloc : le formulaire partira en POST.
+  form.addEventListener('submit', function (e) {
+    e.preventDefault(); if (!valid(3)) return;
+    form.querySelector('.cd-body').style.display = 'none'; document.getElementById('foot').style.display = 'none';
+    bar.style.width = '100%'; document.getElementById('success').classList.add('on'); window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+</body>
+</html>

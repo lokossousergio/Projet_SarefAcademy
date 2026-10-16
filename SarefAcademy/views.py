@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
-from .models import Canditats, Admin, Parametre
+from .models import Candidats, Admin, Parametre
 
 import requests
 
@@ -17,12 +17,12 @@ from django.core.mail import get_connection, EmailMultiAlternatives
 # Create your views here.
 import requests
 from django.shortcuts import render
-# dd
+
 # ============================================================
-# page dacceuil du site 
+# render dacceuil du site 
 def index(request):
     return render( request , 'index.html')
-# page dacceuil du site 
+# render dacceuil du site 
 def Marketing_digital(request):
     return render( request , 'formations/formation_marketing_digital.html')
 def Design_graphique(request):
@@ -35,6 +35,10 @@ def Archivage_numerique(request):
     return render( request , 'formations/formation_archivage_numerique.html')
 def Journalisme_web(request):
     return render( request , 'formations/formation_Journalisme_web.html')
+
+
+def candidature_formation(request):
+    return render(request, "bourse_postule/candidature.html")
 
 def connexion_etudiant(request):
     return render( request , 'Espace_etudiants/connexion.html')
@@ -58,12 +62,12 @@ def bourse_de_formation(request):
 
    
         # Create a new user instance
-        users=Canditats.objects.create(nom_prenom=nom_prenom, email=email, number=number, niveau_etudes=niveau_etudes , motif_inscription=motif_inscription)
+        users=Candidats.objects.create(nom_prenom=nom_prenom, email=email, number=number, niveau_etudes=niveau_etudes , motif_inscription=motif_inscription)
         request.session["inscription"]=True
         nom_prenom = users.nom_prenom  # Get the nom_prenom of the newly created user
         send_inscription_success_email(request, nom_prenom, users.email)  # Call the email sending function
      
-        return redirect('inscription_valide')  # Redirect to the index page after successful registration
+        return redirect('inscription_valide')  # Redirect to the index render after successful registration
 
     param = Parametre.objects.filter(Etat="Actif").first()
 
@@ -291,7 +295,7 @@ def connexion_admin(request):
 
 # =======================================================
 
-# administration page dashboad
+# administration render dashboad
 def admin_dashboard(request):
      verify_Authentifiaction=request.session.get("Authentifiaction")
      print(verify_Authentifiaction)
@@ -301,13 +305,13 @@ def admin_dashboard(request):
 
         from django.utils import timezone
 
-        candidats_tle = Canditats.objects.count()
+        candidats_tle = Candidats.objects.count()
 
-        candidats_insct_ajdh = Canditats.objects.filter(date_inscription__date=timezone.now().date() ).count()
+        candidats_insct_ajdh = Candidats.objects.filter(date_inscription__date=timezone.now().date() ).count()
         param = Parametre.objects.filter(Etat="Actif").first()
      
 
-        candidats=Canditats.objects.all().order_by('-id')
+        candidats=Candidats.objects.all().order_by('-id')
     
 
         if request.method=="POST":
@@ -341,7 +345,7 @@ def suspension_delai_candidature(request):
 
 def supprimer_candidat(request , id_user):
 
-    Canditats.objects.filter(id=id_user).delete()
+    Candidats.objects.filter(id=id_user).delete()
     return redirect ('admin_dashboard')
     
 # =====================================================
@@ -351,107 +355,205 @@ def deconnexion(request):
     request.session.flush()
     return redirect('connexion_admin')
 
-# ============================================================
-# views.py
-from django.http import HttpResponse
-from django.utils import timezone
-from reportlab.lib.pagesizes import landscape, A4
-from reportlab.lib.units import cm
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib import colors
+# # ============================================================
+# # views.py
+# from django.http import HttpResponse
+# from django.utils import timezone
+# from reportlab.lib.rendersizes import landscape, A4
+# from reportlab.lib.units import cm
+# from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+# from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+# from reportlab.lib import colors
 
 
-def telecharger_pdf_jour(request):
-    response = HttpResponse(content_type="application/pdf")
-    response["Content-Disposition"] = 'attachment; filename="Liste_des_candidats_du_jour.pdf"'
+# def telecharger_pdf_jour(request):
+#     response = HttpResponse(content_type="application/pdf")
+#     response["Content-Disposition"] = 'attachment; filename="Liste_des_candidats_du_jour.pdf"'
 
-    # Date du jour
-    aujourdhui = timezone.now().date()
+#     # Date du jour
+#     aujourdhui = timezone.now().date()
 
-    # Filtrer les candidats inscrits aujourd'hui
-    candidats = Canditats.objects.filter(date_inscription__date=aujourdhui)
+#     # Filtrer les candidats inscrits aujourd'hui
+#     candidats = Candidats.objects.filter(date_inscription__date=aujourdhui)
 
-    doc = SimpleDocTemplate(
-        response,
-        pagesize=landscape(A4),
-        leftMargin=1.5*cm, rightMargin=1.5*cm, topMargin=1.5*cm, bottomMargin=1.5*cm
-    )
+#     doc = SimpleDocTemplate(
+#         response,
+#         rendersize=landscape(A4),
+#         leftMargin=1.5*cm, rightMargin=1.5*cm, topMargin=1.5*cm, bottomMargin=1.5*cm
+#     )
 
-    styles = getSampleStyleSheet()
-    title_style = ParagraphStyle('title', parent=styles['Title'], fontSize=16)
-    date_style = ParagraphStyle('date', parent=styles['Normal'], fontSize=11, textColor=colors.grey)
+#     styles = getSampleStyleSheet()
+#     title_style = ParagraphStyle('title', parent=styles['Title'], fontSize=16)
+#     date_style = ParagraphStyle('date', parent=styles['Normal'], fontSize=11, textColor=colors.grey)
 
-    story = []
-    story.append(Paragraph("Liste des candidats inscrits aujourd'hui", title_style))
-    story.append(Paragraph(f"Date : {aujourdhui.strftime('%d/%m/%Y')}", date_style))
-    story.append(Spacer(1, 14))
+#     story = []
+#     story.append(Paragraph("Liste des candidats inscrits aujourd'hui", title_style))
+#     story.append(Paragraph(f"Date : {aujourdhui.strftime('%d/%m/%Y')}", date_style))
+#     story.append(Spacer(1, 14))
 
-    # En-têtes et données du tableau
-    headers = [ "N°" ,"Nom & Prénom", "Email", "Numéro", "Niveau d'études" ]
-    data = [headers]
-    for c in candidats:
-        data.append([c.id , c.nom_prenom, c.email, c.number, c.niveau_etudes ])
+#     # En-têtes et données du tableau
+#     headers = [ "N°" ,"Nom & Prénom", "Email", "Numéro", "Niveau d'études" ]
+#     data = [headers]
+#     for c in candidats:
+#         data.append([c.id , c.nom_prenom, c.email, c.number, c.niveau_etudes ])
 
-    table = Table(data, repeatRows=1)
-    table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2c3e50")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#f2f2f2")]),
-        ('TOPPADDING', (0, 0), (-1, -1), 6),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-    ]))
+#     table = Table(data, repeatRows=1)
+#     table.setStyle(TableStyle([
+#         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2c3e50")),
+#         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+#         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+#         ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+#         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#f2f2f2")]),
+#         ('TOPPADDING', (0, 0), (-1, -1), 6),
+#         ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+#     ]))
 
-    story.append(table)
-    doc.build(story)
-    return response
+#     story.append(table)
+#     doc.build(story)
+#     return response
 
 
 
-# =====================================================
+# # =====================================================
 
-def telecharger_pdf_all(request):
-    response = HttpResponse(content_type="application/pdf")
-    response["Content-Disposition"] = 'attachment; filename="Liste_des_candidats_général_campagne.pdf"'
+# def telecharger_pdf_all(request):
+#     response = HttpResponse(content_type="application/pdf")
+#     response["Content-Disposition"] = 'attachment; filename="Liste_des_candidats_général_campagne.pdf"'
 
    
-    # Filtrer les candidats inscrits aujourd'hui
-    candidats = Canditats.objects.all()
+#     # Filtrer les candidats inscrits aujourd'hui
+#     candidats = Candidats.objects.all()
 
-    doc = SimpleDocTemplate(
-        response,
-        pagesize=landscape(A4),
-        leftMargin=1.5*cm, rightMargin=1.5*cm, topMargin=1.5*cm, bottomMargin=1.5*cm
-    )
+#     doc = SimpleDocTemplate(
+#         response,
+#         rendersize=landscape(A4),
+#         leftMargin=1.5*cm, rightMargin=1.5*cm, topMargin=1.5*cm, bottomMargin=1.5*cm
+#     )
 
-    styles = getSampleStyleSheet()
-    title_style = ParagraphStyle('title', parent=styles['Title'], fontSize=16)
-    date_style = ParagraphStyle('date', parent=styles['Normal'], fontSize=11, textColor=colors.grey)
+#     styles = getSampleStyleSheet()
+#     title_style = ParagraphStyle('title', parent=styles['Title'], fontSize=16)
+#     date_style = ParagraphStyle('date', parent=styles['Normal'], fontSize=11, textColor=colors.grey)
 
-    story = []
-    story.append(Paragraph("    Liste des candidats  incrits lors de la campagne", title_style))
+#     story = []
+#     story.append(Paragraph("    Liste des candidats  incrits lors de la campagne", title_style))
 
-    story.append(Spacer(1, 14))
+#     story.append(Spacer(1, 14))
 
-    # En-têtes et données du tableau
-    headers = [ "N°" ,"Nom & Prénom", "Email", "Numéro", "Niveau d'études" ]
-    data = [headers]
-    for c in candidats:
-        data.append([ c.id ,c.nom_prenom, c.email, c.number, c.niveau_etudes ])
+#     # En-têtes et données du tableau
+#     headers = [ "N°" ,"Nom & Prénom", "Email", "Numéro", "Niveau d'études" ]
+#     data = [headers]
+#     for c in candidats:
+#         data.append([ c.id ,c.nom_prenom, c.email, c.number, c.niveau_etudes ])
 
-    table = Table(data, repeatRows=1)
-    table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2c3e50")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#f2f2f2")]),
-        ('TOPPADDING', (0, 0), (-1, -1), 6),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-    ]))
+#     table = Table(data, repeatRows=1)
+#     table.setStyle(TableStyle([
+#         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2c3e50")),
+#         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+#         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+#         ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+#         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#f2f2f2")]),
+#         ('TOPPADDING', (0, 0), (-1, -1), 6),
+#         ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+#     ]))
 
-    story.append(table)
-    doc.build(story)
-    return response
+#     story.append(table)
+#     doc.build(story)
+#     return response
+
+ 
+# ===== Candidature (page seule, sans barre de navigation ni pied de page) =====
+def candidature(request):
+    return render(request, "candidature.html")
+ 
+ 
+# ===== Espace apprenant =====
+def apprenant_dashboard(request):
+    return render(request, "apprenant/dashboard.html")
+ 
+ 
+def apprenant_formations(request):
+    return render(request, "apprenant/formations.html")
+ 
+ 
+def apprenant_formation_detail(request, pk):
+    # Démo : la page dépend du statut de la candidature. Remplacez ce dictionnaire par le vrai statut
+    # (accepté -> formation_detail, en attente -> formation_detail_attente, terminée -> formation_detail_terminee).
+    pages = {2: "apprenant/formation_detail_attente.html", 3: "apprenant/formation_detail_terminee.html"}
+    return render(request, pages.get(pk, "apprenant/formation_detail.html"))
+ 
+ 
+def apprenant_modules(request):
+    return render(request, "apprenant/modules.html")
+ 
+ 
+def apprenant_module_detail(request, pk):
+    return render(request, "apprenant/module_detail.html")
+ 
+ 
+def apprenant_paiements(request):
+    return render(request, "apprenant/paiements.html")
+ 
+ 
+def apprenant_profil(request):
+    return render(request, "apprenant/profil.html")
+ 
+ 
+def apprenant_parametres(request):
+    return render(request, "apprenant/parametres.html")
+ 
+ 
+# ===== Espace admin =====
+def admin_dashboard(request):
+    return render(request, "admin/dashboard.html")
+ 
+ 
+def admin_candidatures(request):
+    return render(request, "admin/candidatures.html")
+ 
+ 
+def admin_candidature_detail(request, pk):
+    return render(request, "admin/candidature_detail.html")
+ 
+ 
+def admin_apprenants(request):
+    return render(request, "admin/apprenants.html")
+ 
+ 
+def admin_apprenant_detail(request, pk):
+    return render(request, "admin/apprenant_detail.html")
+ 
+ 
+def admin_resultats(request):
+    return render(request, "admin/resultats.html")
+ 
+ 
+def admin_finance(request):
+    return render(request, "admin/finance.html")
+ 
+ 
+def admin_organisation(request):
+    return render(request, "admin/organisation.html")
+ 
+ 
+def admin_formations(request):
+    return render(request, "admin/formations.html")
+ 
+ 
+def admin_formation_detail(request, pk):
+    return render(request, "admin/formation_detail.html")
+ 
+ 
+def admin_formateurs(request):
+    return render(request, "admin/formateurs.html")
+ 
+ 
+def admin_vagues(request):
+    return render(request, "admin/vagues.html")
+ 
+ 
+def admin_vague_archive(request, pk):
+    return render(request, "admin/vague_archive.html")
+ 
+ 
+def admin_parametres(request):
+    return render(request, "admin/parametres.html")

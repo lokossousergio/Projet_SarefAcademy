@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#335cec">
+<title>Tableau de bord | SAREF Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/espace.css">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body class="espace espace-admin">
+<div class="app">
+<aside class="sidebar sidebar-admin offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="Navigation administrateur">
+<div class="offcanvas-body sidebar-inner">
+<div class="d-flex justify-content-end d-lg-none mb-2"><button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Fermer"></button></div>
+<a class="brand" href="/gestion/"><svg width="36" height="36" viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#fff"/><path d="M13 26c0 2.9 2.6 4.6 6 4.6 4 0 6.3-2 6.3-4.7 0-2.9-2.7-4-6.1-4.9-3.1-.8-4.7-1.6-4.7-3.4 0-1.5 1.4-2.8 3.7-2.8 2 0 3.4 1 3.8 2.7" stroke="#335cec" stroke-width="2.3" stroke-linecap="round" fill="none"/></svg><div><b>SAREF Academy</b><small>ESPACE ADMIN</small></div></a>
+<nav class="d-grid gap-1" aria-label="Menu principal">
+<div class="nav-cap" style="margin-top:0">PILOTAGE</div>
+<a class="navitem active" href="/gestion/" aria-current="page"><i class="bi bi-grid-1x2"></i>Tableau de bord</a>
+<a class="navitem" href="/gestion/candidatures/"><i class="bi bi-clipboard-check"></i>Candidatures<span class="count">23</span></a>
+<a class="navitem" href="/gestion/apprenants/"><i class="bi bi-people"></i>Apprenants</a>
+<a class="navitem" href="/gestion/resultats/"><i class="bi bi-award"></i>Résultats &amp; attestations</a>
+<div class="nav-cap">PÉDAGOGIE</div>
+<a class="navitem" href="/gestion/formations/"><i class="bi bi-mortarboard"></i>Formations &amp; modules</a>
+<a class="navitem" href="/gestion/formateurs/"><i class="bi bi-person-video3"></i>Formateurs</a>
+<a class="navitem" href="/gestion/organisation/"><i class="bi bi-diagram-3"></i>Organisation</a>
+<div class="nav-cap">GESTION</div>
+<a class="navitem" href="/gestion/finance/"><i class="bi bi-cash-coin"></i>Finance</a>
+<a class="navitem" href="/gestion/vagues/"><i class="bi bi-folder2"></i>Vagues &amp; années</a>
+<a class="navitem" href="/gestion/parametres/"><i class="bi bi-gear"></i>Paramètres</a>
+</nav>
+<div class="sidebar-user"><span class="avatar avatar-md">SA</span><div class="who"><b>Samuel Adjovi</b><small>Administrateur</small></div>
+<form method="post" action="/deconnexion/"><button class="logout" type="submit" aria-label="Se déconnecter" title="Se déconnecter"><i class="bi bi-box-arrow-right"></i></button></form></div>
+</div></aside>
+<div class="app-col">
+<header class="topbar">
+<button class="btn-icon-s d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Ouvrir le menu"><i class="bi bi-list fs-5"></i></button>
+<form class="tb-search" role="search" action="/gestion/candidatures/"><i class="bi bi-search"></i><input type="search" name="q" placeholder="Rechercher un candidat, une formation…" aria-label="Rechercher"></form>
+<span class="tb-spacer"></span>
+<a class="chip-vague" href="/gestion/vagues/"><span class="live"></span>Vague 2026-A <em>en cours</em></a>
+<div class="dropdown"><button class="btn-icon-s" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notifications"><i class="bi bi-bell"></i><span class="dot"></span></button><div class="dropdown-menu dropdown-menu-end notif-menu p-0"><div class="notif-head"><span>Notifications</span><a class="link-s" href="#">Tout marquer comme lu</a></div><a class="notif-item new" href="/gestion/candidatures/"><i class="bi bi-clipboard-check"></i><span>5 nouvelles candidatures à traiter<small>Il y a 12 min</small></span></a><a class="notif-item new" href="/gestion/finance/"><i class="bi bi-cash-coin"></i><span>Paiement en retard : Serge Dansou<small>Il y a 2 h</small></span></a><a class="notif-item " href="/gestion/formations/1/"><i class="bi bi-play-circle"></i><span>Module 4 prêt à être activé après le meet<small>Hier</small></span></a></div></div>
+<div class="tb-user"><span class="avatar ">SA</span><span class="d-none d-md-block"><b>Samuel A.</b><small>Admin</small></span></div>
+</header>
+<main class="app-main">
+<div class="page-head"><div><h1 class="page-title">Tableau de bord</h1><p class="page-sub">Vague en cours : <b>2026-A</b> · Année académique 2025-2026</p></div><div class="d-flex flex-wrap gap-2"><a class="btn-s btn-line-s" href="#"><i class="bi bi-download"></i>Exporter</a><a class="btn-s btn-primary-s" href="/gestion/candidatures/"><i class="bi bi-clipboard-check"></i>Traiter les candidatures</a></div></div><div class="row g-3 mb-3">
+<div class="col-6 col-xl-3"><div class="s-card stat hover-lift reveal" style="--d:0s"><div class="stat-top"><span class="stat-label">En attente</span><span class="stat-icon amber"><i class="bi bi-hourglass-split"></i></span></div><div class="stat-value"><span data-count="23" data-suffix="" data-dec="0">23</span></div><div class="stat-sub">candidatures à traiter</div></div></div>
+<div class="col-6 col-xl-3"><div class="s-card stat hover-lift reveal" style="--d:0.07s"><div class="stat-top"><span class="stat-label">Acceptées</span><span class="stat-icon green"><i class="bi bi-check2-circle"></i></span></div><div class="stat-value"><span data-count="187" data-suffix="" data-dec="0">187</span></div><div class="stat-sub">apprenants inscrits</div></div></div>
+<div class="col-6 col-xl-3"><div class="s-card stat hover-lift reveal" style="--d:0.14s"><div class="stat-top"><span class="stat-label">Refusées</span><span class="stat-icon red"><i class="bi bi-x-circle"></i></span></div><div class="stat-value"><span data-count="14" data-suffix="" data-dec="0">14</span></div><div class="stat-sub">ce trimestre</div></div></div>
+<div class="col-6 col-xl-3"><div class="s-card stat hover-lift reveal" style="--d:0.21s"><div class="stat-top"><span class="stat-label">Total encaissé</span><span class="stat-icon "><i class="bi bi-cash-stack"></i></span></div><div class="stat-value"><span data-count="41.2" data-suffix=" M FCFA" data-dec="1">41,2 M FCFA</span></div><div class="stat-sub">vague en cours</div></div></div></div>
+<div class="row g-3 mb-3">
+<div class="col-lg-4"><div class="s-card s-card-pad h-100 reveal"><h2 class="s-card-title">Candidatures par statut</h2>
+<div class="d-flex align-items-center gap-4 flex-wrap"><div class="donut" style="--c1:var(--logo-green);--c2:#f59e0b;--c3:#ef4444;--a:83.5%;--b:93.8%" role="img" aria-label="83 % acceptées, 10 % en attente, 6 % refusées"><b>224<small>candidatures</small></b></div>
+<ul class="list-unstyled m-0">
+<li class="mb-2"><span class="legend-dot" style="background:var(--logo-green)"></span>Acceptées · 187</li>
+<li class="mb-2"><span class="legend-dot" style="background:#f59e0b"></span>En attente · 23</li>
+<li><span class="legend-dot" style="background:#ef4444"></span>Refusées · 14</li></ul></div></div></div>
+<div class="col-lg-4"><div class="s-card s-card-pad h-100 reveal" style="--d:.08s"><h2 class="s-card-title">Candidatures par formation</h2>
+<div class="bar-row"><div class="top"><span>Développement Web</span><span>96</span></div><div class="bar-track"><span class="bar-fill" style="--w:100%"></span></div></div><div class="bar-row"><div class="top"><span>UI/UX Design</span><span>62</span></div><div class="bar-track"><span class="bar-fill" style="--w:65%"></span></div></div><div class="bar-row"><div class="top"><span>Marketing Digital</span><span>41</span></div><div class="bar-track"><span class="bar-fill" style="--w:43%"></span></div></div><div class="bar-row"><div class="top"><span>Data &amp; IA</span><span>25</span></div><div class="bar-track"><span class="bar-fill" style="--w:26%"></span></div></div></div></div>
+<div class="col-lg-4"><div class="s-card s-card-pad h-100 reveal" style="--d:.16s"><h2 class="s-card-title">Modules activés par formation</h2>
+<div class="bar-row"><div class="top"><span>Développement Web</span><span>3 / 10</span></div><div class="bar-track"><span class="bar-fill" style="--w:30%"></span></div></div><div class="bar-row"><div class="top"><span>UI/UX Design</span><span>6 / 8</span></div><div class="bar-track"><span class="bar-fill" style="--w:75%"></span></div></div><div class="bar-row"><div class="top"><span>Marketing Digital</span><span>2 / 7</span></div><div class="bar-track"><span class="bar-fill" style="--w:29%"></span></div></div>
+<p class="small text-secondary mb-0 mt-2">Un module est activé après la tenue de son meet.</p></div></div></div>
+<div class="row g-3 mb-3">
+<div class="col-lg-8"><div class="s-card s-card-pad h-100 reveal"><div class="s-card-head"><h2 class="s-card-title">Encaissements des 6 derniers mois</h2><a class="link-s" href="/gestion/finance/">Voir la finance →</a></div>
+<div class="row g-3 align-items-end"><div class="col-md-7"><div class="cols"><div class="col"><i style="--h:38%;animation-delay:0.0s"></i>Mai</div><div class="col"><i style="--h:52%;animation-delay:0.08s"></i>Juin</div><div class="col"><i style="--h:46%;animation-delay:0.16s"></i>Juil.</div><div class="col"><i style="--h:70%;animation-delay:0.24s"></i>Août</div><div class="col"><i style="--h:88%;animation-delay:0.32s"></i>Sept.</div><div class="col"><i style="--h:64%;animation-delay:0.4s"></i>Oct.</div></div></div>
+<div class="col-md-5"><div class="info-row"><span>Encaissé</span><b class="t-green">41,2 M FCFA</b></div><div class="info-row"><span>Reste à payer</span><b class="t-amber">11,8 M FCFA</b></div><div class="info-row"><span>En retard</span><b class="t-red">2,1 M FCFA · 9 apprenants</b></div></div></div></div></div>
+<div class="col-lg-4"><div class="s-card s-card-pad h-100 reveal" style="--d:.1s"><h2 class="s-card-title">À faire aujourd'hui</h2><div class="task"><span class="ti"><i class="bi bi-clipboard-check"></i></span><div class="flex-grow-1"><b>23 candidatures à traiter</b><small>Les plus anciennes datent de 4 jours</small></div><a class="btn-s btn-soft-s btn-sm-s" href="/gestion/candidatures/?statut=attente">Traiter</a></div><div class="task"><span class="ti"><i class="bi bi-play-circle"></i></span><div class="flex-grow-1"><b>Activer le module 4 (Django)</b><small>Session live du 8 oct. terminée</small></div><a class="btn-s btn-soft-s btn-sm-s" href="/gestion/formations/1/">Activer</a></div><div class="task"><span class="ti"><i class="bi bi-cash-coin"></i></span><div class="flex-grow-1"><b>9 paiements en retard</b><small>2,1 M FCFA à relancer</small></div><a class="btn-s btn-soft-s btn-sm-s" href="/gestion/finance/?situation=en_retard">Relancer</a></div><div class="task"><span class="ti"><i class="bi bi-award"></i></span><div class="flex-grow-1"><b>6 résultats à saisir</b><small>Vague 2025-B terminée</small></div><a class="btn-s btn-soft-s btn-sm-s" href="/gestion/resultats/">Saisir</a></div></div></div></div>
+<div class="s-card overflow-hidden reveal"><div class="s-card-head px-4 pt-4"><h2 class="s-card-title">Candidatures récentes</h2><a class="link-s" href="/gestion/candidatures/">Voir toutes →</a></div>
+<div class="table-responsive"><table class="s-table "><thead><tr><th>Candidat</th><th>Formation</th><th>Vague</th><th>Date</th><th>Statut</th><th></th></tr></thead><tbody>
+<tr data-status="attente"><td><div class="user-cell"><span class="avatar ">MB</span><div><b>Mariam Bello</b><small>mariam.bello@mail.com</small></div></div></td><td>UI/UX Design</td><td>2026-A</td><td>2 oct. 2026</td><td><span class="s-badge b-attente">En attente</span></td><td class="text-end"><a class="btn-s btn-primary-s btn-sm-s" href="/gestion/candidatures/1/">Examiner</a></td></tr><tr data-status="accepte"><td><div class="user-cell"><span class="avatar ">JK</span><div><b>Jonas Koffi</b><small>jonas.koffi@mail.com</small></div></div></td><td>Développement Web Full-Stack</td><td>2026-A</td><td>1 oct. 2026</td><td><span class="s-badge b-accepte">Accepté</span></td><td class="text-end"><a class="btn-s btn-soft-s btn-sm-s" href="/gestion/candidatures/2/">Voir</a></td></tr><tr data-status="attente"><td><div class="user-cell"><span class="avatar ">FS</span><div><b>Fatou Sow</b><small>fatou.sow@mail.com</small></div></div></td><td>Marketing Digital</td><td>2026-A</td><td>1 oct. 2026</td><td><span class="s-badge b-attente">En attente</span></td><td class="text-end"><a class="btn-s btn-primary-s btn-sm-s" href="/gestion/candidatures/3/">Examiner</a></td></tr><tr data-status="refuse"><td><div class="user-cell"><span class="avatar ">RL</span><div><b>Rayan Lawson</b><small>rayan.lawson@mail.com</small></div></div></td><td>Développement Web Full-Stack</td><td>2026-A</td><td>30 sept. 2026</td><td><span class="s-badge b-refuse">Refusé</span></td><td class="text-end"><a class="btn-s btn-soft-s btn-sm-s" href="/gestion/candidatures/4/">Voir</a></td></tr><tr data-status="accepte"><td><div class="user-cell"><span class="avatar ">AK</span><div><b>Aïcha Kora</b><small>aicha.kora@mail.com</small></div></div></td><td>Développement Web Full-Stack</td><td>2026-A</td><td>12 sept. 2026</td><td><span class="s-badge b-accepte">Accepté</span></td><td class="text-end"><a class="btn-s btn-soft-s btn-sm-s" href="/gestion/candidatures/5/">Voir</a></td></tr>
+</tbody></table></div></div>
+</main></div></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/espace.js" defer></script>
+</body>
+</html>
