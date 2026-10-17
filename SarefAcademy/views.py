@@ -9,7 +9,7 @@ from django.contrib import messages
 # makepassword 
 from django.contrib.auth.hashers import make_password , check_password
 
-
+from django.core.mail import send_mail
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail import get_connection, EmailMultiAlternatives
 
