@@ -44,8 +44,7 @@
                 {{ module.titre|default:"Les bases du Web" }}
               </h1>
               <p class="page-sub">
-                {{ module.description|default:"Premiers pas avec les pages et
-                les navigateurs." }}
+                {{ module.description|default:"Premiers pas avec les pages et les navigateurs." }}
               </p>
             </div>
             <a class="btn-s btn-line-s" href="{% url 'formateur_formations' %}">
@@ -270,15 +269,7 @@
                         id="module-actif"
                         name="est_active"
                         value="1"
-                        {%
-                        if
-                        module.est_active
-                        or
-                        not
-                        module
-                        %}checked{%
-                        endif
-                        %}
+                        {% if module.est_active or not module %}checked{% endif %}
                       />
                       <label class="visually-hidden" for="module-actif">
                         Module actif

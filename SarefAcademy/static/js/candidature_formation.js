@@ -65,8 +65,10 @@ document.addEventListener("DOMContentLoaded", () => {
       ?.textContent.trim();
     document.querySelector("#review-formation").textContent =
       label || "Choisissez une formation";
-    document.querySelector("#side-formation").textContent =
-      label || "Aucune formation sélectionnée";
+    const sideFormation = document.querySelector("#side-formation");
+    if (sideFormation) {
+      sideFormation.textContent = label || "Aucune formation sélectionnée";
+    }
     document.querySelector("#review-name").textContent =
       form.elements.nom_prenom.value || "—";
     document.querySelector("#review-email").textContent =
@@ -75,8 +77,6 @@ document.addEventListener("DOMContentLoaded", () => {
       form.elements.telephone.value || "—";
     document.querySelector("#review-cv").textContent =
       form.elements.cv.files[0]?.name || "À joindre";
-    document.querySelector("#review-diploma").textContent =
-      form.elements.diplome.files[0]?.name || "Non ajouté";
   };
 
   form.addEventListener("input", updateSummary);

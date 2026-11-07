@@ -324,8 +324,7 @@
                     <span class="trainer-portrait" aria-hidden="true">
                       <i class="bi bi-person-video3"></i>
                       <b>
-                        {{ formateur.prenom|first|upper }}{{
-                        formateur.nom|first|upper }}
+                        {{ formateur.prenom|first|upper }}{{ formateur.nom|first|upper }}
                       </b>
                     </span>
                     <div class="min-w-0">
@@ -335,8 +334,7 @@
                       <span
                         class="s-badge {% if formateur.actif %}b-actif{% else %}b-en_cours{% endif %}"
                       >
-                        {% if formateur.actif %}Actif{% else %}Suspendu{% endif
-                        %}
+                        {% if formateur.actif %}Actif{% else %}Suspendu{% endif %}
                       </span>
                     </div>
                   </div>
@@ -349,8 +347,7 @@
                   <div class="d-flex gap-2">
                     <i class="bi bi-whatsapp text-success"></i>
                     <span>
-                      {{ formateur.telephone|default:'Téléphone non renseigné'
-                      }}
+                      {{ formateur.telephone|default:'Téléphone non renseigné' }}
                     </span>
                   </div>
                 </div>
@@ -596,8 +593,7 @@
                           </option>
                           {% for formation in formations %}
                           <option value="{{ formation.pk }}">
-                            {{ formation.nom }}{% if formation.statut %} · {{
-                            formation.get_statut_display }}{% endif %}
+                            {{ formation.nom }}{% if formation.statut %} · {{ formation.get_statut_display }}{% endif %}
                           </option>
                           {% empty %}
                           <option value="" disabled>

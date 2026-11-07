@@ -62,8 +62,7 @@
                 </div>
                 <h1 class="h2 fw-bold">{{ formation.nom }}</h1>
                 <p>
-                  {{ formation.description|default:"Votre programme de formation
-                  SAREF Academy." }}
+                  {{ formation.description|default:"Votre programme de formation SAREF Academy." }}
                 </p>
                 {% if candidat.statut == 'accepte' %}
                 <a class="btn-s btn-light-s" href="#programme">
@@ -122,9 +121,7 @@
                   <span class="acc-title">
                     <b>{{ module.titre }}</b>
                     <small>
-                      {{ module.chapitres.count }} chapitre(s){% if
-                      module.description %} · {{
-                      module.description|truncatewords:12 }}{% endif %}
+                      {{ module.chapitres.count }} chapitre(s){% if module.description %} · {{ module.description|truncatewords:12 }}{% endif %}
                     </small>
                   </span>
                   <span
@@ -158,11 +155,9 @@
                         <i class="bi bi-camera-video me-1"></i>
                         Vidéo{% endif %}{% if chapitre.support_pdf %} ·
                         <i class="bi bi-file-earmark-pdf me-1"></i>
-                        PDF{% endif %}{% if chapitre.duree %} · {{
-                        chapitre.duree }} min{% endif %}
+                        PDF{% endif %}{% if chapitre.duree %} · {{ chapitre.duree }} min{% endif %}
                       </span>
-                      {% if candidat.statut == 'accepte' and module.est_active
-                      and chapitre.est_active %}
+                      {% if candidat.statut == 'accepte' and module.est_active and chapitre.est_active %}
                       <a
                         class="btn-s btn-primary-s btn-sm-s"
                         href="{% url 'apprenant_module_detail' module.pk %}?chapitre={{ chapitre.pk }}"
@@ -172,9 +167,7 @@
                       </a>
                       {% else %}
                       <span class="s-badge b-brouillon">
-                        {% if candidat.statut != 'accepte' or not
-                        module.est_active %}Verrouillé{% else %}Contenu non
-                        publié{% endif %}
+                        {% if candidat.statut != 'accepte' or not module.est_active %}Verrouillé{% else %}Contenu non publié{% endif %}
                       </span>
                       {% endif %}
                     </span>
@@ -223,8 +216,7 @@
                 {% for formateur in formation.formateurs.all %}
                 <div class="d-flex align-items-center gap-3 border-top py-3">
                   <span class="avatar avatar-md">
-                    {{ formateur.prenom|first|upper }}{{
-                    formateur.nom|first|upper }}
+                    {{ formateur.prenom|first|upper }}{{ formateur.nom|first|upper }}
                   </span>
                   <div>
                     <b>{{ formateur.prenom }} {{ formateur.nom }}</b>
@@ -246,16 +238,17 @@
               </a>
             </aside>
           </div>
-          {% else %} {% if request.resolver_match.kwargs.pk == 2 %} {% with
-          demo_title="Marketing digital" demo_desc="Explorez la stratégie de
-          contenu, les réseaux sociaux et la mesure des résultats."
-          demo_duration="3" demo_price="90 000" %} {% include
-          "apprenant/formation_demo_detail.html" %} {% endwith %} {% else %} {%
-          with demo_title="Développement Web" demo_desc="Découvrez les bases du
-          Web, HTML, CSS et JavaScript à travers un programme progressif."
-          demo_duration="4" demo_price="120 000" %} {% include
-          "apprenant/formation_demo_detail.html" %} {% endwith %} {% endif %} {%
-          endif %}
+          {% else %}
+          {% if request.resolver_match.kwargs.pk == 2 %}
+          {% with demo_title="Marketing digital" demo_desc="Explorez la stratégie de contenu, les réseaux sociaux et la mesure des résultats." demo_duration="3" demo_price="90 000" %}
+          {% include "apprenant/formation_demo_detail.html" %}
+          {% endwith %}
+          {% else %}
+          {% with demo_title="Développement Web" demo_desc="Découvrez les bases du Web, HTML, CSS et JavaScript à travers un programme progressif." demo_duration="4" demo_price="120 000" %}
+          {% include "apprenant/formation_demo_detail.html" %}
+          {% endwith %}
+          {% endif %}
+          {% endif %}
         </main>
       </div>
     </div>

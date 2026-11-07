@@ -54,8 +54,7 @@
         <main class="app-main">
           <nav class="crumb" aria-label="Fil d'Ariane">
             <a href="{% url 'admin_formations' %}">Formations &amp; modules</a>
-            / {{ module.titre|default:"Les bases du Web" }} / {{
-            chapitre.nom|default:"Comment fonctionne le Web ?" }}
+            / {{ module.titre|default:"Les bases du Web" }} / {{ chapitre.nom|default:"Comment fonctionne le Web ?" }}
           </nav>
           <div class="page-head">
             <div>
@@ -88,8 +87,7 @@
                   <span
                     class="s-badge {% if chapitre.est_active %}b-actif{% else %}b-en_cours{% endif %}"
                   >
-                    {% if chapitre.est_active %}Publié{% else %}Brouillon{%
-                    endif %}
+                    {% if chapitre.est_active %}Publié{% else %}Brouillon{% endif %}
                   </span>
                 </div>
                 {% if chapitre.support_video_url or not chapitre %}
@@ -275,15 +273,7 @@
                             id="est_active"
                             name="est_active"
                             value="1"
-                            {%
-                            if
-                            chapitre.est_active
-                            or
-                            not
-                            chapitre
-                            %}checked{%
-                            endif
-                            %}
+                            {% if chapitre.est_active or not chapitre %}checked{% endif %}
                           />
                           <label class="visually-hidden" for="est_active">
                             Chapitre actif
@@ -319,8 +309,7 @@
                 <div class="info-row">
                   <span>Durée</span>
                   <b>
-                    {% if chapitre.duree %}{{ chapitre.duree }} min{% else %}—{%
-                    endif %}
+                    {% if chapitre.duree %}{{ chapitre.duree }} min{% else %}—{% endif %}
                   </b>
                 </div>
                 <div class="info-row">

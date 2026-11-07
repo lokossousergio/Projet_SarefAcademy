@@ -60,8 +60,7 @@
                   </div>
                   <small class="text-white-50">Vague courante</small>
                   <div class="small mt-2">
-                    {{ nb_candidatures|default:"—" }} candidatures · {{
-                    nb_etudiants|default:"—" }} étudiants
+                    {{ nb_candidatures|default:"—" }} candidatures · {{ nb_etudiants|default:"—" }} étudiants
                   </div>
                 </div>
               </div>
@@ -189,8 +188,7 @@
                       <tr>
                         <td>
                           <b>
-                            {{ candidat.etudiant.prenom }} {{
-                            candidat.etudiant.nom }}
+                            {{ candidat.etudiant.prenom }} {{ candidat.etudiant.nom }}
                           </b>
                           <small>{{ candidat.etudiant.email }}</small>
                         </td>

@@ -23,9 +23,6 @@ urlpatterns = [
     path('deconnexion/', views.deconnexion, name='deconnexion'),
     path('mot-de-passe/', views.changer_mot_de_passe, name='changer_mot_de_passe'),
 
-    # ===== Espace Candidature =====
-    path('candidature/', views.candidature, name='candidature'),
-
     # ===== Espace Formateur =====
     path('formateur/', views.formateur_dashboard, name='formateur_dashboard'),
     path('formateur/module/<int:pk>/', views.formateur_module, name='formateur_module'),

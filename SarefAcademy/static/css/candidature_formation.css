@@ -570,3 +570,163 @@ h2 {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Écran de candidature en panneaux, assorti à la connexion */
+@keyframes application-float {
+  0%,
+  100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.application-page {
+  min-height: 100vh;
+  background: #f6f8fc;
+}
+
+.application-layout {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: minmax(0, 1.05fr) minmax(380px, 0.95fr);
+}
+
+.application-brand {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 48px clamp(32px, 7vw, 112px);
+  color: #fff;
+  background:
+    linear-gradient(160deg, rgb(51 92 236 / 94%) 0%, rgb(20 37 94 / 96%) 70%),
+    url("/static/img/apercu-cours.jpg") center / cover;
+}
+
+.formation-page.application-page .application-brand .brand-name {
+  margin: 0 0 18px;
+  color: #fff;
+  font-family: "Sora", sans-serif;
+  font-size: clamp(2.1rem, 4vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.application-back-link {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 9px;
+  color: rgb(255 255 255 / 82%);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.application-back-link:hover {
+  transform: translateX(-3px);
+  color: #fff;
+}
+
+.application-workspace {
+  display: flex;
+  min-width: 0;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(28px, 4vw, 58px) clamp(20px, 4vw, 58px);
+  background: #f6f8fc;
+}
+
+.formation-page.application-page .application-workspace .page-shell {
+  width: min(100%, 790px);
+  margin: 0 auto;
+  padding: 0;
+}
+
+.formation-page.application-page .page-header {
+  margin-bottom: 0;
+}
+
+.formation-page.application-page .page-header h2 {
+  margin: 0 0 9px;
+  font-size: clamp(1.7rem, 2.5vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.formation-page.application-page .intro {
+  max-width: 38rem;
+  margin-bottom: 0;
+  font-size: 0.95rem;
+}
+
+.formation-page.application-page .stepper {
+  max-width: none;
+  margin: 28px 0 22px;
+}
+
+.formation-page.application-page .stepper-item::after {
+  margin-right: 0;
+}
+
+.formation-page.application-page .application-content-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.formation-page.application-page .application-form {
+  padding: clamp(20px, 3vw, 34px);
+  border-color: #e5e9f0;
+  border-radius: 18px;
+  box-shadow: 0 14px 38px rgb(15 23 42 / 7%);
+}
+
+.formation-page.application-page .course-option {
+  border-radius: 12px;
+}
+
+.formation-page.application-page .field input,
+.formation-page.application-page .field textarea,
+.formation-page.application-page .upload-control {
+  border-radius: 10px;
+}
+
+.formation-page.application-page .button {
+  min-height: 44px;
+  border-radius: 9px;
+}
+
+@media (max-width: 850px) {
+  .application-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .application-brand {
+    position: relative;
+    min-height: 240px;
+    padding: 36px 28px;
+  }
+
+  .application-back-link {
+    margin-top: 22px;
+  }
+
+  .application-workspace {
+    min-height: calc(100vh - 240px);
+    padding: 42px 24px;
+  }
+}
+
+@media (max-width: 580px) {
+  .application-workspace {
+    padding: 25px 14px 36px;
+  }
+
+  .formation-page.application-page .stepper {
+    margin-block: 22px 16px;
+  }
+
+  .formation-page.application-page .application-form {
+    padding: 18px 14px;
+  }
+}

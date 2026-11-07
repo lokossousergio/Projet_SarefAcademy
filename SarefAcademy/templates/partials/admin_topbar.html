@@ -11,21 +11,23 @@
   <div class="topbar-title">
     <small>SAREF ACADEMY · ADMINISTRATION</small>
     <strong>
-      {% with page=request.resolver_match.url_name %}{% if page ==
-      'admin_dashboard' %}Tableau de bord{% elif page == 'admin_candidatures'
-      %}Candidatures{% elif page == 'admin_candidature_detail' %}Détail de
-      candidature{% elif page == 'admin_apprenants' %}Apprenants{% elif page ==
-      'admin_apprenant_detail' %}Dossier apprenant{% elif page ==
-      'admin_resultats' %}Résultats et attestations{% elif page ==
-      'admin_finance' %}Finance{% elif page == 'admin_organisation'
-      %}Organisation{% elif page == 'admin_formations' %}Formations et modules{%
-      elif page == 'admin_formation_detail' %}Programme de formation{% elif page
-      == 'admin_formateurs' %}Équipe pédagogique{% elif page ==
-      'admin_formateur_detail' %}Fiche formateur{% elif page == 'admin_vagues'
-      %}Vagues et années{% elif page == 'admin_vague_archive' %}Archives de
-      vague{% elif page == 'admin_parametres' %}Paramètres{% elif page ==
-      'admin_chapitre_detail' %}Ressource pédagogique{% else %}Espace de
-      gestion{% endif %}{% endwith %}
+      {% if request.resolver_match.url_name == 'admin_dashboard' %}Tableau de bord
+      {% elif request.resolver_match.url_name == 'admin_candidatures' %}Candidatures
+      {% elif request.resolver_match.url_name == 'admin_candidature_detail' %}Détail de candidature
+      {% elif request.resolver_match.url_name == 'admin_apprenants' %}Apprenants
+      {% elif request.resolver_match.url_name == 'admin_apprenant_detail' %}Dossier apprenant
+      {% elif request.resolver_match.url_name == 'admin_resultats' %}Résultats et attestations
+      {% elif request.resolver_match.url_name == 'admin_finance' %}Finance
+      {% elif request.resolver_match.url_name == 'admin_organisation' %}Organisation
+      {% elif request.resolver_match.url_name == 'admin_formations' %}Formations et modules
+      {% elif request.resolver_match.url_name == 'admin_formation_detail' %}Programme de formation
+      {% elif request.resolver_match.url_name == 'admin_formateurs' %}Équipe pédagogique
+      {% elif request.resolver_match.url_name == 'admin_formateur_detail' %}Fiche formateur
+      {% elif request.resolver_match.url_name == 'admin_vagues' %}Vagues et années
+      {% elif request.resolver_match.url_name == 'admin_vague_archive' %}Archives de vague
+      {% elif request.resolver_match.url_name == 'admin_parametres' %}Paramètres
+      {% elif request.resolver_match.url_name == 'admin_chapitre_detail' %}Ressource pédagogique
+      {% else %}Espace de gestion{% endif %}
     </strong>
   </div>
   <span class="tb-spacer"></span>

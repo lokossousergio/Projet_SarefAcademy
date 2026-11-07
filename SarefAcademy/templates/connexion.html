@@ -34,18 +34,24 @@
        Panneau gauche : Identité visuelle SAREF
        Panneau droit  : Formulaire de connexion propre
        ===================================================== -->
-    <main class="login-page">
+    <main class="login-page member-login-page">
       <!-- PANNEAU GAUCHE (Hero visuel SAREF) -->
-      <section class="login-brand">
+      <section class="login-brand member-login-brand">
         <div class="ring ring-1"></div>
         <div class="ring ring-2"></div>
         <div class="brand-content">
           <!-- Logo SAREF -->
-          <div class="brand-logo-wrap">
-            <img
-              src="{% static 'images/logo-saref.jpeg' %}"
-              alt="Logo Saref Academy"
-            />
+          <div class="login-brand-lockup">
+            <span class="brand-mark">
+              <img
+                src="{% static 'images/saref-mark.png' %}"
+                alt="Logo SAREF Academy"
+              />
+            </span>
+            <span class="login-brand-wordmark">
+              <b>Saref Academy</b>
+              <small>ESPACE SÉCURISÉ</small>
+            </span>
           </div>
           <span class="brand-badge">
             <i class="fa-solid fa-shield-halved"></i>
@@ -83,43 +89,30 @@
         </div>
       </section>
       <!-- PANNEAU DROIT (Formulaire de connexion formateur & admin) -->
-      <section class="login-area">
+      <section class="login-area member-login-area">
         <form
-          class="login-form auth-form"
+          class="login-form auth-form member-login-card"
           method="post"
           action="{% url 'connexion' %}"
         >
           {% csrf_token %} {% for message in messages %}
-          <div class="alert alert-danger py-2 small" role="alert">
+          <div class="alert alert-danger py-2 small member-login-alert" role="alert">
+            <i class="fa-solid fa-circle-exclamation me-2"></i>
             {{ message }}
           </div>
           {% endfor %}
           <p class="login-eyebrow">
-            <i class="fa-solid fa-lock me-1"></i>
-            Espace Sécurisé
+            <i class="fa-solid fa-circle me-1"></i>
+            Votre espace
           </p>
-          <h2 class="login-title">Bon retour parmi nous</h2>
+          <h2 class="login-title">Connexion</h2>
           <p class="login-subtitle">
-            Renseignez vos identifiants pour accéder à votre espace de travail.
+            Entrez vos identifiants pour accéder à votre espace.
           </p>
-          <!-- Sélecteur de profil (Formateur / Administrateur) -->
-          <div class="mb-3">
-            <label class="form-label" for="role_select">Vous êtes</label>
-            <div class="input-group">
-              <span class="input-group-text">
-                <i class="fa-solid fa-users-gear"></i>
-              </span>
-              <select id="role_select" class="form-control" name="role">
-                <option value="admin">Administrateur SAREF</option>
-                <option value="formateur">Formateur</option>
-              </select>
-            </div>
-          </div>
+          <input type="hidden" name="role" value="formateur" />
           <!-- Champ Email / Identifiant -->
-          <div class="mb-3">
-            <label for="email" class="form-label">
-              Adresse email ou identifiant
-            </label>
+          <div class="mb-4 member-login-field">
+            <label for="email" class="form-label">Identifiant</label>
             <div class="input-group">
               <span class="input-group-text">
                 <i class="fa-regular fa-envelope"></i>
@@ -129,13 +122,13 @@
                 name="email"
                 type="text"
                 class="form-control"
-                placeholder="nom@sarefacademy.com"
+                placeholder="E-mail ou identifiant"
                 required
               />
             </div>
           </div>
           <!-- Champ Mot de passe avec toggle visibilité -->
-          <div class="mb-4">
+          <div class="mb-4 member-login-field">
             <label for="password" class="form-label">Mot de passe</label>
             <div class="input-group">
               <span class="input-group-text">
@@ -168,23 +161,19 @@
             <i class="fa-solid fa-arrow-right"></i>
           </button>
           <!-- Liens rapides / retour accueil -->
-          <div
-            class="d-flex justify-content-between align-items-center mt-3 pt-2"
-          >
+          <div class="member-login-links">
             <a
               href="{% url 'index' %}"
-              class="small text-decoration-none text-muted"
+              class="small text-decoration-none"
             >
               <i class="fa-solid fa-house me-1"></i>
               Retour au site
             </a>
-            <span class="small text-muted">
-              Accès sécurisé pour équipe et formateurs
-            </span>
+            <span class="small">Espace formateur</span>
           </div>
-          <p class="login-footer mt-4">
+          <p class="login-footer member-login-footer">
             <i class="fa-solid fa-circle-info me-1"></i>
-            Étape 1/2 : Vous accéderez ensuite à la configuration de la vague.
+            Connexion sécurisée
           </p>
         </form>
       </section>

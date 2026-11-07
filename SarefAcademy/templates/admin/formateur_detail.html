@@ -157,14 +157,12 @@
                     <div class="flex-grow-1 min-w-0">
                       <div class="eyebrow-s">Profil pédagogique</div>
                       <h2 class="h5 fw-bold mb-1">
-                        {{ formateur.prenom|default:"Nom du formateur" }} {{
-                        formateur.nom }}
+                        {{ formateur.prenom|default:"Nom du formateur" }} {{ formateur.nom }}
                       </h2>
                       <span
                         class="s-badge {% if formateur.actif %}b-actif{% else %}b-en_cours{% endif %}"
                       >
-                        {% if formateur.actif %}Compte actif{% elif formateur
-                        %}Compte suspendu{% else %}Aperçu du profil{% endif %}
+                        {% if formateur.actif %}Compte actif{% elif formateur %}Compte suspendu{% else %}Aperçu du profil{% endif %}
                       </span>
                     </div>
                     <i class="bi bi-person-vcard fs-3 text-primary"></i>
@@ -253,14 +251,7 @@
                     {% for formation in formations %}
                     <option
                       value="{{ formation.pk }}"
-                      {%
-                      if
-                      formation
-                      in
-                      formateur.formations.all
-                      %}selected{%
-                      endif
-                      %}
+                      {% if formation in formateur.formations.all %}selected{% endif %}
                     >
                       {{ formation.nom }}
                     </option>
@@ -286,12 +277,7 @@
                         id="actif"
                         name="actif"
                         value="1"
-                        {%
-                        if
-                        formateur.actif
-                        %}checked{%
-                        endif
-                        %}
+                        {% if formateur.actif %}checked{% endif %}
                       />
                       <label class="visually-hidden" for="actif">
                         Compte actif

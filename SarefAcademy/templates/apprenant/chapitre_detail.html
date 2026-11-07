@@ -10,8 +10,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>
-      {% if chapitre %}{{ chapitre.nom }}{% else %}Chapitre de formation{% endif
-      %} | SAREF Academy
+      {% if chapitre %}{{ chapitre.nom }}{% else %}Chapitre de formation{% endif %} | SAREF Academy
     </title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
@@ -62,8 +61,7 @@
           {% if chapitre %}
           <nav class="crumb">
             <a href="{% url 'apprenant_formations' %}">Mes formations</a>
-            / {{ chapitre.modules.formation.nom }} / {{ chapitre.modules.titre
-            }}
+            / {{ chapitre.modules.formation.nom }} / {{ chapitre.modules.titre }}
           </nav>
           <section class="hero mb-4">
             <div
@@ -86,8 +84,7 @@
                 </div>
                 <h1 class="h2 fw-bold mb-2">{{ chapitre.nom }}</h1>
                 <p class="mb-0">
-                  {{ chapitre.description|default:"Consultez la vidéo, les
-                  supports et les informations de ce chapitre." }}
+                  {{ chapitre.description|default:"Consultez la vidéo, les supports et les informations de ce chapitre." }}
                 </p>
               </div>
               <a
@@ -152,8 +149,7 @@
                   </a>
                 </div>
               </section>
-              {% endif %} {% if not chapitre.support_video_url and not
-              chapitre.support_pdf %}
+              {% endif %} {% if not chapitre.support_video_url and not chapitre.support_pdf %}
               <section class="s-card s-card-pad">
                 <i class="bi bi-hourglass-split fs-2 text-primary"></i>
                 <h2 class="h5 mt-3">Ressources en préparation</h2>
@@ -167,9 +163,7 @@
                 <span class="eyebrow-s">À propos du chapitre</span>
                 <h2 class="s-card-title mt-1">Informations pédagogiques</h2>
                 <p class="text-secondary mb-0">
-                  {{ chapitre.description|default:"Suivez les ressources dans
-                  l’ordre et revenez au programme pour continuer votre
-                  formation." }}
+                  {{ chapitre.description|default:"Suivez les ressources dans l’ordre et revenez au programme pour continuer votre formation." }}
                 </p>
               </section>
             </div>
@@ -208,19 +202,16 @@
               </section>
             </aside>
           </div>
-          {% elif request.GET.formation == 'web' or request.GET.formation ==
-          'mkt' %} {% with demo_formation=request.GET.formation
-          demo_module=request.GET.module demo_chapter=request.GET.chapitre %} {%
-          if demo_chapter == '1' and demo_module == '1' or demo_chapter == '1'
-          and demo_module == '2' %}
+          {% elif request.GET.formation == 'web' or request.GET.formation == 'mkt' %}
+          {% with demo_formation=request.GET.formation demo_module=request.GET.module demo_chapter=request.GET.chapitre %}
+          {% if demo_chapter == '1' and demo_module == '1' or demo_chapter == '1' and demo_module == '2' %}
           <nav class="crumb">
             <a href="{% url 'apprenant_formations' %}">Mes formations</a>
             /
             <a
               href="{% if demo_formation == 'mkt' %}{% url 'apprenant_formation_detail' 2 %}{% else %}{% url 'apprenant_formation_detail' 1 %}{% endif %}"
             >
-              {% if demo_formation == 'mkt' %}Marketing digital{% else
-              %}Développement Web{% endif %}
+              {% if demo_formation == 'mkt' %}Marketing digital{% else %}Développement Web{% endif %}
             </a>
             / Chapitre
           </nav>
@@ -236,11 +227,7 @@
                   </span>
                   <span class="hero-chip">
                     <i class="bi bi-journals"></i>
-                    {% if demo_module == '1' %}{% if demo_formation == 'mkt'
-                    %}Introduction au marketing numérique{% else %}Les bases du
-                    Web{% endif %}{% else %}{% if demo_formation == 'mkt'
-                    %}Réseaux sociaux et contenu{% else %}HTML et structure des
-                    pages{% endif %}{% endif %}
+                    {% if demo_module == '1' %}{% if demo_formation == 'mkt' %}Introduction au marketing numérique{% else %}Les bases du Web{% endif %}{% else %}{% if demo_formation == 'mkt' %}Réseaux sociaux et contenu{% else %}HTML et structure des pages{% endif %}{% endif %}
                   </span>
                   <span class="hero-chip">
                     <i class="bi bi-clock"></i>
@@ -248,11 +235,7 @@
                   </span>
                 </div>
                 <h1 class="h2 fw-bold mb-2">
-                  {% if demo_formation == 'mkt' %}{% if demo_module == '1' %}Les
-                  fondamentaux du marketing digital{% else %}Choisir ses
-                  plateformes{% endif %}{% else %}{% if demo_module == '1'
-                  %}Comment fonctionne le Web ?{% else %}Les balises
-                  essentielles{% endif %}{% endif %}
+                  {% if demo_formation == 'mkt' %}{% if demo_module == '1' %}Les fondamentaux du marketing digital{% else %}Choisir ses plateformes{% endif %}{% else %}{% if demo_module == '1' %}Comment fonctionne le Web ?{% else %}Les balises essentielles{% endif %}{% endif %}
                 </h1>
                 <p class="mb-0">
                   Consultez les ressources mises à disposition par l’équipe
@@ -320,11 +303,7 @@
                 <span class="eyebrow-s">À propos du chapitre</span>
                 <h2 class="s-card-title mt-1">Informations pédagogiques</h2>
                 <p class="text-secondary mb-0">
-                  {% if demo_formation == 'mkt' %}Découvrez les notions
-                  essentielles et les outils présentés dans ce chapitre de
-                  marketing digital.{% else %}Découvrez les notions essentielles
-                  et les concepts présentés dans ce chapitre de développement
-                  Web.{% endif %}
+                  {% if demo_formation == 'mkt' %}Découvrez les notions essentielles et les outils présentés dans ce chapitre de marketing digital.{% else %}Découvrez les notions essentielles et les concepts présentés dans ce chapitre de développement Web.{% endif %}
                 </p>
               </section>
             </div>
@@ -332,17 +311,12 @@
               <section class="s-card s-card-pad mb-4">
                 <span class="eyebrow-s">Fiche du chapitre</span>
                 <h2 class="s-card-title mt-1 mb-3">
-                  {% if demo_formation == 'mkt' %}{% if demo_module == '1' %}Les
-                  fondamentaux du marketing digital{% else %}Choisir ses
-                  plateformes{% endif %}{% else %}{% if demo_module == '1'
-                  %}Comment fonctionne le Web ?{% else %}Les balises
-                  essentielles{% endif %}{% endif %}
+                  {% if demo_formation == 'mkt' %}{% if demo_module == '1' %}Les fondamentaux du marketing digital{% else %}Choisir ses plateformes{% endif %}{% else %}{% if demo_module == '1' %}Comment fonctionne le Web ?{% else %}Les balises essentielles{% endif %}{% endif %}
                 </h2>
                 <div class="info-row">
                   <span>Formation</span>
                   <b>
-                    {% if demo_formation == 'mkt' %}Marketing digital{% else
-                    %}Développement Web{% endif %}
+                    {% if demo_formation == 'mkt' %}Marketing digital{% else %}Développement Web{% endif %}
                   </b>
                 </div>
                 <div class="info-row">

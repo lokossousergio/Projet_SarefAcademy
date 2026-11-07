@@ -11,25 +11,21 @@
   <div class="topbar-title">
     <small>SAREF ACADEMY · ESPACE FORMATEUR</small>
     <strong>
-      {% with page=request.resolver_match.url_name %}{% if page ==
-      'formateur_dashboard' %}Tableau de bord{% elif page ==
-      'formateur_formations' %}Mes formations{% elif page ==
-      'formateur_formation_detail' %}Programme de formation{% elif page ==
-      'formateur_apprenants' %}Mes apprenants{% elif page == 'formateur_module'
-      or page == 'formateur_module_modifier' or page ==
-      'formateur_module_ajouter' %}Gestion des modules{% elif page ==
-      'formateur_chapitre_detail' or page == 'formateur_chapitre_ajouter'
-      %}Gestion des chapitres{% elif page == 'changer_mot_de_passe' %}Sécurité
-      du compte{% else %}Espace pédagogique{% endif %}{% endwith %}
+      {% if request.resolver_match.url_name == 'formateur_dashboard' %}Tableau de bord
+      {% elif request.resolver_match.url_name == 'formateur_formations' %}Mes formations
+      {% elif request.resolver_match.url_name == 'formateur_formation_detail' %}Programme de formation
+      {% elif request.resolver_match.url_name == 'formateur_apprenants' %}Mes apprenants
+      {% elif request.resolver_match.url_name == 'formateur_module' or request.resolver_match.url_name == 'formateur_module_modifier' or request.resolver_match.url_name == 'formateur_module_ajouter' %}Gestion des modules
+      {% elif request.resolver_match.url_name == 'formateur_chapitre_detail' or request.resolver_match.url_name == 'formateur_chapitre_ajouter' %}Gestion des chapitres
+      {% elif request.resolver_match.url_name == 'changer_mot_de_passe' %}Sécurité du compte
+      {% else %}Espace pédagogique{% endif %}
     </strong>
   </div>
   <span class="tb-spacer"></span>
   <span class="topbar-state">
     <i class="bi bi-mortarboard"></i>
     <span>
-      {% if formateur %}{{ formateur.formations.count }} formation{{
-      formateur.formations.count|pluralize }}{% else %}Espace pédagogique{%
-      endif %}
+      {% if formateur %}{{ formateur.formations.count }} formation{{ formateur.formations.count|pluralize }}{% else %}Espace pédagogique{% endif %}
     </span>
   </span>
   <div class="tb-user">

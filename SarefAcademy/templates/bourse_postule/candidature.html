@@ -15,6 +15,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Sora:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
@@ -26,6 +30,11 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
       rel="stylesheet"
     />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}" />
     <link rel="stylesheet" href="{% static 'css/formation.css' %}" />
     <link rel="stylesheet" href="{% static 'css/footer.css' %}" />
     <!-- Doit rester en dernier pour surcharger les autres feuilles -->
@@ -35,17 +44,59 @@
     />
     <script src="{% static 'js/candidature_formation.js' %}" defer></script>
   </head>
-  <body id="top" class="formation-page">
-    {% include "partials/formations_navbar.html" %}
-    <main class="page-shell">
+  <body id="top" class="formation-page application-page">
+    <main class="application-layout">
+      <section class="login-brand application-brand">
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+        <div class="brand-content">
+          <a class="login-brand-lockup" href="{% url 'index' %}" aria-label="Saref Academy, accueil">
+            <span class="brand-mark">
+              <img src="{% static 'images/saref-mark.png' %}" alt="Logo SAREF Academy" />
+            </span>
+            <span class="login-brand-wordmark">
+              <b>Saref Academy</b>
+              <small>ADMISSIONS</small>
+            </span>
+          </a>
+          <span class="brand-badge">
+            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+            Candidature en ligne
+          </span>
+          <h1 class="brand-name">Donnez de l’élan à votre avenir professionnel.</h1>
+          <p class="brand-copy">
+            Choisissez une formation, présentez votre projet et préparez votre dossier étape par étape.
+          </p>
+          <ul class="auth-perks">
+            <li>
+              <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+              <span>Des formations professionnelles certifiantes</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+              <span>Un parcours de candidature guidé</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-headset" aria-hidden="true"></i>
+              <span>Une équipe à votre écoute</span>
+            </li>
+          </ul>
+          <a class="application-back-link" href="{% url 'index' %}">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            Retour au site
+          </a>
+        </div>
+      </section>
+      <section class="application-workspace">
+        <div class="page-shell">
       <header class="page-header">
         <p class="eyebrow">
           <span class="eyebrow-dot"></span>
-          ADMISSIONS · CANDIDATURE EN LIGNE
+          CANDIDATURE EN LIGNE
         </p>
-        <h1>Candidater à une formation</h1>
+        <h2>Candidater à une formation</h2>
         <p class="intro">
-          Complétez les étapes pour préparer votre dossier de candidature.
+          Préparez votre dossier en suivant les étapes ci-dessous.
         </p>
       </header>
       <ol class="stepper" aria-label="Étapes de candidature">
@@ -63,14 +114,14 @@
         </li>
         <li class="stepper-item" data-step-indicator="2">
           <span>3</span>
-          <b>Documents</b>
+          <b>CV</b>
         </li>
         <li class="stepper-item" data-step-indicator="3">
           <span>4</span>
           <b>Récapitulatif</b>
         </li>
       </ol>
-      <div class="content-grid">
+      <div class="content-grid application-content-grid">
         <form class="application-form" novalidate>
           <!-- Étape 1 -->
           <section
@@ -221,17 +272,6 @@
               name="telephone"
               value="{{ user.profile.telephone|default:'' }}"
             />
-            <div class="applicant-card">
-              <span class="applicant-avatar" aria-hidden="true">
-                {{ user.first_name|default:user.username|slice:":1"|upper }}
-              </span>
-              <div>
-                <small>Candidature au nom de</small>
-                <strong>{{ user.get_full_name|default:user.username }}</strong>
-                <span>{{ user.email }}</span>
-              </div>
-              <a class="applicant-edit" href="">Modifier mon profil</a>
-            </div>
             <div class="fields-grid">
               <div class="field field-wide">
                 <label for="candidate-motivation">
@@ -263,8 +303,8 @@
             <div class="section-heading">
               <span class="section-index">03</span>
               <div>
-                <h2 id="documents-title">Ajoutez vos documents</h2>
-                <p>Préparez les pièces utiles à l’étude de votre dossier.</p>
+                <h2 id="documents-title">Ajoutez votre CV</h2>
+                <p>Joignez votre CV au format PDF pour compléter votre dossier.</p>
               </div>
             </div>
             <div class="upload-field">
@@ -289,30 +329,9 @@
                 />
               </div>
             </div>
-            <div class="upload-field">
-              <label for="candidate-diploma">
-                Dernier diplôme
-                <span class="optional">Facultatif</span>
-              </label>
-              <div class="upload-control">
-                <span class="upload-icon upload-icon-green" aria-hidden="true">
-                  <i class="bi bi-plus-lg"></i>
-                </span>
-                <div>
-                  <strong>Ajouter un document</strong>
-                  <small>PDF uniquement · 5 Mo maximum</small>
-                </div>
-                <input
-                  id="candidate-diploma"
-                  name="diplome"
-                  type="file"
-                  accept="application/pdf,.pdf"
-                />
-              </div>
-            </div>
             <p class="privacy-note">
               <i class="bi bi-shield-lock" aria-hidden="true"></i>
-              Vos documents restent sur cet appareil et ne sont pas transmis.
+              Votre CV reste sur cet appareil et n’est pas transmis.
             </p>
           </section>
           <!-- Étape 4 -->
@@ -350,10 +369,6 @@
                 <dt>CV</dt>
                 <dd id="review-cv">À joindre</dd>
               </div>
-              <div>
-                <dt>Diplôme</dt>
-                <dd id="review-diploma">Non ajouté</dd>
-              </div>
             </dl>
             <p class="local-only-note" role="status" tabindex="-1">
               <i class="bi bi-info-circle" aria-hidden="true"></i>
@@ -387,52 +402,10 @@
           </div>
           <p class="required-note">* Champs obligatoires</p>
         </form>
-        <aside class="side-summary" aria-label="Résumé de la candidature">
-          <div class="summary-top">
-            <span class="summary-icon" aria-hidden="true">
-              <i class="bi bi-mortarboard"></i>
-            </span>
-            <div>
-              <strong>Votre candidature</strong>
-              <small>Formation professionnelle</small>
-            </div>
-          </div>
-          <div class="summary-rule"></div>
-          <p class="summary-label">FORMATION SÉLECTIONNÉE</p>
-          <p class="summary-course" id="side-formation">
-            Aucune formation choisie
-          </p>
-          <div class="summary-meta">
-            <span class="meta-mark" aria-hidden="true">
-              <i class="bi bi-check2-circle"></i>
-            </span>
-            <span>
-              Étude du dossier
-              <br />
-              <strong>Sans frais de candidature</strong>
-            </span>
-          </div>
-          <div class="summary-meta">
-            <span class="meta-mark meta-mark-green" aria-hidden="true">
-              <i class="bi bi-clock"></i>
-            </span>
-            <span>
-              Une équipe à votre écoute
-              <br />
-              <strong>Réponse sous 48 h ouvrées</strong>
-            </span>
-          </div>
-          <p class="summary-help">
-            Besoin d’aide ?
-            <br />
-            <a href="mailto:contact@sarefacademy.com">
-              contact@sarefacademy.com
-            </a>
-          </p>
-        </aside>
       </div>
+        </div>
+      </section>
     </main>
-    {% include "partials/formations_footer.html" %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

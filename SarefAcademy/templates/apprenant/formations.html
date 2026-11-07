@@ -39,7 +39,7 @@
                 Suivez vos candidatures et ouvrez les programmes accessibles.
               </p>
             </div>
-            <a class="btn-s btn-primary-s" href="{% url 'candidature' %}">
+            <a class="btn-s btn-primary-s" href="{% url 'candidature-formation' %}">
               <i class="bi bi-plus-lg me-1"></i>
               Nouvelle candidature
             </a>
@@ -61,7 +61,7 @@
                 <div
                   class="course-cover learner-course-cover {% cycle 'c1' 'c2' 'c3' 'c4' 'c5' %}"
                   style="
-                    --course-cover-image: url(&quot;{% static &quot;img/apercu-cours.jpg&quot; %}&quot;);
+                    --course-cover-image: url('{% static 'img/apercu-cours.jpg' %}');
                   "
                 >
                   <span class="course-cover-icon">
@@ -88,8 +88,7 @@
                     {{ candidat.formation.nom }}
                   </h3>
                   <p class="small text-secondary flex-grow-1">
-                    {{ candidat.formation.description|default:"Programme de
-                    formation SAREF Academy."|truncatewords:24 }}
+                    {{ candidat.formation.description|default:"Programme de formation SAREF Academy."|truncatewords:24 }}
                   </p>
                   <div class="course-meta mb-3">
                     <span>
@@ -128,7 +127,7 @@
                 <div
                   class="course-cover learner-course-cover c1"
                   style="
-                    --course-cover-image: url(&quot;{% static &quot;img/apercu-cours.jpg&quot; %}&quot;);
+                    --course-cover-image: url('{% static 'img/apercu-cours.jpg' %}');
                   "
                 >
                   <span class="course-cover-icon">
@@ -177,7 +176,7 @@
                 <div
                   class="course-cover learner-course-cover c3"
                   style="
-                    --course-cover-image: url(&quot;{% static &quot;img/apercu-cours.jpg&quot; %}&quot;);
+                    --course-cover-image: url('{% static 'img/apercu-cours.jpg' %}');
                   "
                 >
                   <span class="course-cover-icon">
@@ -246,8 +245,7 @@
                   </span>
                   <h3 class="h5 mt-2">{{ formation.nom }}</h3>
                   <p class="small text-secondary">
-                    {{ formation.description|default:"Formation proposée par
-                    SAREF Academy."|truncatewords:18 }}
+                    {{ formation.description|default:"Formation proposée par SAREF Academy."|truncatewords:18 }}
                   </p>
                   <div class="course-meta mb-3">
                     <span>
@@ -261,7 +259,7 @@
                   </div>
                   <a
                     class="btn-s btn-line-s w-100"
-                    href="{% url 'candidature' %}"
+                    href="{% url 'candidature-formation' %}"
                   >
                     Postuler
                   </a>

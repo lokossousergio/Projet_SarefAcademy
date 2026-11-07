@@ -62,8 +62,7 @@
                     <span
                       class="s-badge {% if formation.statut == 'active' %}b-actif{% else %}b-brouillon{% endif %}"
                     >
-                      {{ formation.get_statut_display|default:"Formation
-                      assignée" }}
+                      {{ formation.get_statut_display|default:"Formation assignée" }}
                     </span>
                     <span class="small text-secondary">
                       {{ formation.duree }} mois
@@ -71,8 +70,7 @@
                   </div>
                   <h2 class="h5 mt-2">{{ formation.nom }}</h2>
                   <p class="small text-secondary">
-                    {{ formation.description|default:"Consultez le programme et
-                    les ressources pédagogiques."|truncatewords:20 }}
+                    {{ formation.description|default:"Consultez le programme et les ressources pédagogiques."|truncatewords:20 }}
                   </p>
                   <div class="course-meta mb-3">
                     <span>

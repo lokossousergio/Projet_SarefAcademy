@@ -57,8 +57,7 @@
               <span class="acc-num">{{ module.ordre }}</span>
               <span class="module-accordion-title">
                 <small>
-                  {{ module.formation.nom }} · MODULE {{ module.ordre }} · {{
-                  module.chapitres.count }} chapitre(s)
+                  {{ module.formation.nom }} · MODULE {{ module.ordre }} · {{ module.chapitres.count }} chapitre(s)
                 </small>
                 <b>{{ module.titre }}</b>
                 {% if module.description %}
@@ -68,9 +67,7 @@
               <span
                 class="s-badge {% if module.formation_id in formations_acceptees and module.est_active %}b-actif{% else %}b-brouillon{% endif %}"
               >
-                {% if module.formation_id in formations_acceptees and
-                module.est_active %}Disponible{% else %}En préparation{% endif
-                %}
+                {% if module.formation_id in formations_acceptees and module.est_active %}Disponible{% else %}En préparation{% endif %}
               </span>
               <i class="bi bi-chevron-down module-chevron"></i>
             </button>
@@ -86,8 +83,7 @@
                   <span class="module-chapter-title">
                     <b>{{ chapitre.ordre }}. {{ chapitre.nom }}</b>
                     <small>
-                      {{ chapitre.duree }} min{% if chapitre.description %} · {{
-                      chapitre.description|truncatewords:12 }}{% endif %}
+                      {{ chapitre.duree }} min{% if chapitre.description %} · {{ chapitre.description|truncatewords:12 }}{% endif %}
                     </small>
                   </span>
                   <span class="chapter-resources">
@@ -103,8 +99,7 @@
                     ></i>
                     {% endif %}
                   </span>
-                  {% if chapitre.est_active and module.est_active and
-                  module.formation_id in formations_acceptees %}
+                  {% if chapitre.est_active and module.est_active and module.formation_id in formations_acceptees %}
                   <a
                     class="btn-s btn-primary-s btn-sm-s"
                     href="{% url 'apprenant_module_detail' module.pk %}?chapitre={{ chapitre.pk }}"

@@ -155,11 +155,11 @@ def formateur_formations(request):
 
 
 def formateur_formation_detail(request, formation_id=1):
-    return render(request, 'formateur/formation_detail.html')
+    return render(request, 'formateur/formation_detail.html', {'formation_id': formation_id})
 
 
 def formateur_module(request, pk=1):
-    return render(request, 'formateur/module.html')
+    return render(request, 'formateur/module.html', {'pk': pk})
 
 
 def formateur_module_ajouter(request):
@@ -167,11 +167,11 @@ def formateur_module_ajouter(request):
 
 
 def formateur_module_modifier(request, pk=1):
-    return render(request, 'formateur/formations.html')
+    return render(request, 'formateur/formations.html', {'pk': pk})
 
 
 def formateur_module_supprimer(request, pk=1):
-    return render(request, 'formateur/formations.html')
+    return render(request, 'formateur/formations.html', {'pk': pk})
 
 
 def formateur_chapitre_ajouter(request):
@@ -179,7 +179,10 @@ def formateur_chapitre_ajouter(request):
 
 
 def formateur_chapitre_detail(request, formation_id=1, chapitre_id=1):
-    return render(request, 'formateur/chapitre_detail.html')
+    return render(request, 'formateur/chapitre_detail.html', {
+        'formation_id': formation_id,
+        'chapitre_id': chapitre_id,
+    })
 
 
 # -----------------------------------------------------------------------------
@@ -239,7 +242,7 @@ def admin_candidatures(request):
 
 
 def admin_candidature_detail(request, pk=1):
-    return render(request, 'admin/candidature_detail.html')
+    return render(request, 'admin/candidature_detail.html', {'pk': pk})
 
 
 def admin_apprenants(request):
@@ -247,7 +250,7 @@ def admin_apprenants(request):
 
 
 def admin_apprenant_detail(request, pk=1):
-    return render(request, 'admin/apprenant_detail.html')
+    return render(request, 'admin/apprenant_detail.html', {'pk': pk})
 
 
 def admin_resultats(request):
@@ -267,11 +270,14 @@ def admin_formations(request):
 
 
 def admin_formation_detail(request, pk=1):
-    return render(request, 'admin/formation_detail.html')
+    return render(request, 'admin/formation_detail.html', {'pk': pk})
 
 
 def admin_chapitre_detail(request, formation_id=1, chapitre_id=1):
-    return render(request, 'admin/chapitre_detail.html')
+    return render(request, 'admin/chapitre_detail.html', {
+        'formation_id': formation_id,
+        'chapitre_id': chapitre_id,
+    })
 
 
 def admin_formateurs(request):
@@ -279,7 +285,7 @@ def admin_formateurs(request):
 
 
 def admin_formateur_detail(request, pk=1):
-    return render(request, 'admin/formateur_detail.html')
+    return render(request, 'admin/formateur_detail.html', {'pk': pk})
 
 
 def admin_vagues(request):
@@ -287,7 +293,7 @@ def admin_vagues(request):
 
 
 def admin_vague_archive(request, pk=1):
-    return render(request, 'admin/vague_archive.html')
+    return render(request, 'admin/vague_archive.html', {'pk': pk})
 
 
 def admin_parametres(request):

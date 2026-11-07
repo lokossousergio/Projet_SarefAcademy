@@ -34,15 +34,13 @@
         <main class="app-main">
           <nav class="crumb">
             <a href="{% url 'formateur_formations' %}">Mes formations</a>
-            / {% if formation %}{{ formation.nom }}{% elif formation_id == 2
-            %}Marketing Digital{% else %}Développement Web{% endif %}
+            / {% if formation %}{{ formation.nom }}{% elif formation_id == 2 %}Marketing Digital{% else %}Développement Web{% endif %}
           </nav>
           <div class="page-head">
             <div>
               <span class="eyebrow-s">Programme pédagogique</span>
               <h1 class="page-title">
-                {% if formation %}{{ formation.nom }}{% elif formation_id == 2
-                %}Marketing Digital{% else %}Développement Web{% endif %}
+                {% if formation %}{{ formation.nom }}{% elif formation_id == 2 %}Marketing Digital{% else %}Développement Web{% endif %}
               </h1>
               <p class="page-sub">
                 Ouvrez un module pour gérer ses chapitres, leurs ressources et
@@ -91,16 +89,13 @@
                     <span class="acc-title">
                       <b>{{ module.titre }}</b>
                       <small>
-                        {{ module.chapitres.count }} chapitre(s){% if
-                        module.date_session %} · Session {{
-                        module.date_session|date:"d/m/Y" }}{% endif %}
+                        {{ module.chapitres.count }} chapitre(s){% if module.date_session %} · Session {{ module.date_session|date:"d/m/Y" }}{% endif %}
                       </small>
                     </span>
                     <span
                       class="s-badge {% if module.est_active %}b-active{% else %}b-brouillon{% endif %}"
                     >
-                      {% if module.est_active %}Activé{% else %}En préparation{%
-                      endif %}
+                      {% if module.est_active %}Activé{% else %}En préparation{% endif %}
                     </span>
                     <i class="bi bi-chevron-down acc-chevron"></i>
                   </button>
@@ -118,9 +113,7 @@
                           <i class="bi bi-camera-video me-1"></i>
                           Vidéo{% endif %}{% if chapitre.support_pdf %} ·
                           <i class="bi bi-file-earmark-pdf me-1"></i>
-                          PDF{% endif %} · {{ chapitre.duree }} min · {% if
-                          chapitre.est_active %}Actif{% else %}Brouillon{% endif
-                          %}
+                          PDF{% endif %} · {{ chapitre.duree }} min · {% if chapitre.est_active %}Actif{% else %}Brouillon{% endif %}
                         </span>
                         <a
                           class="btn-icon-s"
@@ -483,29 +476,25 @@
                     <span
                       class="s-badge {% if formation.statut == 'active' or not formation %}b-active{% else %}b-brouillon{% endif %}"
                     >
-                      {% if formation %}{{ formation.get_statut_display }}{%
-                      else %}Active{% endif %}
+                      {% if formation %}{{ formation.get_statut_display }}{% else %}Active{% endif %}
                     </span>
                   </div>
                   <div class="info-row">
                     <span>Durée</span>
                     <b>
-                      {% if formation %}{{ formation.duree }}{% elif
-                      formation_id == 2 %}3{% else %}4{% endif %} mois
+                      {% if formation %}{{ formation.duree }}{% elif formation_id == 2 %}3{% else %}4{% endif %} mois
                     </b>
                   </div>
                   <div class="info-row">
                     <span>Tarif</span>
                     <b>
-                      {% if formation %}{{ formation.prix }}{% elif formation_id
-                      == 2 %}90 000{% else %}120 000{% endif %} FCFA
+                      {% if formation %}{{ formation.prix }}{% elif formation_id == 2 %}90 000{% else %}120 000{% endif %} FCFA
                     </b>
                   </div>
                   <div class="info-row">
                     <span>Modules</span>
                     <b>
-                      {% if formation %}{{ modules.count }}{% else %}3{% endif
-                      %}
+                      {% if formation %}{{ modules.count }}{% else %}3{% endif %}
                     </b>
                   </div>
                   <a

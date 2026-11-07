@@ -39,8 +39,7 @@
                   Votre parcours SAREF
                 </span>
                 <h1 class="h2 fw-bold mt-3">
-                  Bonjour{% if etudiant.prenom %}, {{ etudiant.prenom }}{% endif
-                  %} 👋
+                  Bonjour{% if etudiant.prenom %}, {{ etudiant.prenom }}{% endif %} 👋
                 </h1>
                 <p class="mb-0">
                   Retrouvez les formations auxquelles vous avez accès, vos cours
@@ -83,9 +82,7 @@
                   <div class="flex-grow-1">
                     <b class="d-block">{{ candidat.formation.nom }}</b>
                     <small class="text-secondary">
-                      {{ candidat.formation.duree }} mois · {{
-                      candidat.formation.modules.count }} modules · {{
-                      candidat.configVague.nom }}
+                      {{ candidat.formation.duree }} mois · {{ candidat.formation.modules.count }} modules · {{ candidat.configVague.nom }}
                     </small>
                   </div>
                   <a
@@ -172,7 +169,7 @@
                       <tr>
                         <td colspan="4" class="text-center py-4 text-secondary">
                           Aucune candidature n’est enregistrée pour le moment.
-                          <a href="{% url 'candidature' %}">
+                          <a href="{% url 'candidature-formation' %}">
                             Découvrir les formations
                           </a>
                           .
@@ -226,17 +223,12 @@
               <section class="s-card s-card-pad">
                 <span class="eyebrow-s">Mon profil</span>
                 <h2 class="s-card-title mt-1">
-                  {{ etudiant.prenom|default:'Aïcha' }} {{
-                  etudiant.nom|default:'Kora' }}
+                  {{ etudiant.prenom|default:'Aïcha' }} {{ etudiant.nom|default:'Kora' }}
                 </h2>
                 <p class="small text-secondary mb-3">
-                  {{ etudiant.email|default:"aicha.kora@gmail.com" }}{% if
-                  etudiant.telephone %}
-                  <br />
-                  {{ etudiant.telephone }}{% endif %}{% if
-                  etudiant.niveau_etudes %}
-                  <br />
-                  {{ etudiant.niveau_etudes }}{% endif %}
+                  {{ etudiant.email|default:"aicha.kora@gmail.com" }}
+                  {% if etudiant.telephone %}<br />{{ etudiant.telephone }}{% endif %}
+                  {% if etudiant.niveau_etudes %}<br />{{ etudiant.niveau_etudes }}{% endif %}
                 </p>
                 <a
                   class="btn-s btn-line-s w-100"

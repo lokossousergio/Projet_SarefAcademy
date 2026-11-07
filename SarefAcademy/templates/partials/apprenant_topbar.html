@@ -11,15 +11,8 @@
   <div class="topbar-title">
     <small>SAREF ACADEMY · ESPACE APPRENANT</small>
     <strong>
-      {% with page=request.resolver_match.url_name %}{% if page ==
-      'apprenant_dashboard' %}Mon tableau de bord{% elif page ==
-      'apprenant_formations' %}Mes formations{% elif page ==
-      'apprenant_formation_detail' %}Détail de la formation{% elif page ==
-      'apprenant_modules' %}Mes modules{% elif page == 'apprenant_module_detail'
-      %}Détail du chapitre{% elif page == 'apprenant_paiements' %}Mes
-      paiements{% elif page == 'apprenant_profil' %}Mon profil{% elif page ==
-      'apprenant_parametres' %}Paramètres du compte{% else %}Mon espace{% endif
-      %}{% endwith %}
+      {% with page=request.resolver_match.url_name %}{% if page == 'apprenant_dashboard' %}Mon tableau de bord{% elif page == 'apprenant_formations' %}Mes formations{% elif page == 'apprenant_formation_detail' %}Détail de la formation{% elif page == 'apprenant_modules' %}Mes modules{% elif page == 'apprenant_module_detail' %}Détail du chapitre{% elif page == 'apprenant_paiements' %}Mes
+      paiements{% elif page == 'apprenant_profil' %}Mon profil{% elif page == 'apprenant_parametres' %}Paramètres du compte{% else %}Mon espace{% endif %}{% endwith %}
     </strong>
   </div>
   <span class="tb-spacer"></span>

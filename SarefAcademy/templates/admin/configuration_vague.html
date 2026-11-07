@@ -41,65 +41,65 @@
         <div class="ring ring-1"></div>
         <div class="ring ring-2"></div>
         <div class="brand-content">
-          <div class="brand-logo-wrap">
-            <img
-              src="{% static 'images/logo-saref.jpeg' %}"
-              alt="Logo Saref Academy"
-            />
+          <div class="login-brand-lockup">
+            <span class="brand-mark">
+              <img
+                src="{% static 'images/saref-mark.png' %}"
+                alt="Logo SAREF Academy"
+              />
+            </span>
+            <span class="login-brand-wordmark">
+              <b>Saref Academy</b>
+              <small>ADMINISTRATION</small>
+            </span>
           </div>
           <span class="brand-badge">
             <i class="fa-solid fa-calendar-check"></i>
-            Étape 2 / 2 · Session académique
+            SESSION ACADÉMIQUE
           </span>
-          <h1 class="brand-name">Configurez la Vague en cours</h1>
+          <h1 class="brand-name">Préparez votre prochaine session de formation.</h1>
           <p class="brand-copy">
-            Définissez la session académique active pour synchroniser les
-            candidatures, ouvrir l'accès aux cours et piloter vos formations en
-            toute clarté.
+            Définissez le nom et les dates de la vague avant de poursuivre vers votre espace d’administration.
           </p>
           <ul class="auth-perks">
             <li>
               <i class="fa-solid fa-layer-group"></i>
               <span>
-                Gestion de cohorte unifiée (formations &amp; candidatures)
+                Une période claire pour vos candidatures
               </span>
             </li>
             <li>
               <i class="fa-solid fa-toggle-on"></i>
               <span>
-                Activation immédiate pour les apprenants et formateurs
+                Des dates visibles par vos équipes
               </span>
             </li>
             <li>
               <i class="fa-solid fa-calendar-days"></i>
-              <span>Dates d'ouverture et de clôture officielles</span>
+              <span>Une activation au moment choisi</span>
             </li>
           </ul>
           <p class="brand-note">
             <i class="fa-solid fa-circle-check"></i>
-            <span>
-              Cette étape initialise le calendrier pédagogique avant l'accès
-              direct au tableau de bord.
-            </span>
+            <span>Vous pourrez ajuster ces paramètres depuis l’administration.</span>
           </p>
         </div>
       </section>
       <!-- PANNEAU DROIT - FORMULAIRE CONFIG VAGUE -->
-      <section class="login-area">
+      <section class="login-area wave-config-area">
         <!-- Envoi vers le dashboard admin -->
         <form
-          class="login-form auth-form config-form"
+          class="login-form auth-form config-form wave-config-card"
           method="get"
           action="{% url 'admin_dashboard' %}"
         >
           <p class="login-eyebrow">
             <i class="fa-solid fa-sliders me-1"></i>
-            Paramétrage de la cohorte
+            PARAMÉTRAGE INITIAL
           </p>
-          <h2 class="login-title">Session en cours</h2>
+          <h2 class="login-title">Configurer une vague</h2>
           <p class="login-subtitle">
-            Renseignez les dates de la vague pour synchroniser l'ensemble de la
-            plateforme.
+            Indiquez son nom, son année académique et ses dates.
           </p>
           <div class="row g-3 mb-3">
             <div class="col-md-6">

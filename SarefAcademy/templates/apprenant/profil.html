@@ -58,22 +58,12 @@
                   id="profileInitials"
                 >
                   {% if etudiant.prenom %}{{ etudiant.prenom|first|upper }}{%
-                  elif request.user.is_authenticated %}{{
-                  request.user.etudiant.prenom|default:request.user.first_name|first|upper|default:'A'
-                  }}{% else %}A{% endif %}{% if etudiant.nom %}{{
-                  etudiant.nom|first|upper }}{% elif
-                  request.user.is_authenticated %}{{
-                  request.user.etudiant.nom|default:request.user.last_name|first|upper|default:'K'
-                  }}{% else %}K{% endif %}
+                  elif request.user.is_authenticated %}{{ request.user.etudiant.prenom|default:request.user.first_name|first|upper|default:'A' }}{% else %}A{% endif %}{% if etudiant.nom %}{{ etudiant.nom|first|upper }}{% elif
+                  request.user.is_authenticated %}{{ request.user.etudiant.nom|default:request.user.last_name|first|upper|default:'K' }}{% else %}K{% endif %}
                 </span>
                 <h2 class="h5 fw-bold" id="profileDisplayName">
                   {% if etudiant.prenom %}{{ etudiant.prenom }}{% elif
-                  request.user.is_authenticated %}{{
-                  request.user.etudiant.prenom|default:request.user.first_name|default:'Aïcha'
-                  }}{% else %}Aïcha{% endif %} {% if etudiant.nom %}{{
-                  etudiant.nom }}{% elif request.user.is_authenticated %}{{
-                  request.user.etudiant.nom|default:request.user.last_name|default:'Kora'
-                  }}{% else %}Kora{% endif %}
+                  request.user.is_authenticated %}{{ request.user.etudiant.prenom|default:request.user.first_name|default:'Aïcha' }}{% else %}Aïcha{% endif %} {% if etudiant.nom %}{{ etudiant.nom }}{% elif request.user.is_authenticated %}{{ request.user.etudiant.nom|default:request.user.last_name|default:'Kora' }}{% else %}Kora{% endif %}
                 </h2>
                 <p class="small text-secondary mb-3">Apprenant SAREF Academy</p>
                 <span class="s-badge b-actif">Compte apprenant</span>
@@ -82,19 +72,15 @@
                   <span>Candidatures</span>
                   <b>
                     {% if candidatures %}{{ candidatures|length }}{% elif
-                    request.user.is_authenticated %}{{
-                    request.user.etudiant.candidats.count|default:'0' }}{% else
+                    request.user.is_authenticated %}{{ request.user.etudiant.candidats.count|default:'0' }}{% else
                     %}0{% endif %}
                   </b>
                 </div>
                 <div class="info-row">
                   <span>Membre depuis</span>
                   <b>
-                    {% if etudiant.date_inscription %}{{
-                    etudiant.date_inscription|date:'d/m/Y' }}{% elif
-                    request.user.is_authenticated %}{{
-                    request.user.etudiant.date_inscription|date:'d/m/Y'|default:'—'
-                    }}{% else %}—{% endif %}
+                    {% if etudiant.date_inscription %}{{ etudiant.date_inscription|date:'d/m/Y' }}{% elif
+                    request.user.is_authenticated %}{{ request.user.etudiant.date_inscription|date:'d/m/Y'|default:'—' }}{% else %}—{% endif %}
                   </b>
                 </div>
               </section>
