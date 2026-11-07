@@ -1,46 +1,808 @@
 {% load static %}
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#335cec"><title>Formateurs | SAREF Academy</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"><link rel="stylesheet" href="{% static 'css/espace.css' %}">
-<style>.trainer-avatar{width:54px;height:54px;display:grid;place-items:center;flex:0 0 auto;border-radius:17px;background:linear-gradient(145deg,#e8edff,#f3f5ff);color:var(--blue-800);font-weight:700;font-size:1.05rem}.trainer-card{transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;border:1px solid #e8ebf3}.trainer-card:hover{transform:translateY(-3px);border-color:var(--blue-200);box-shadow:0 14px 32px rgba(24,45,100,.09)}.credential-note{display:flex;gap:12px;align-items:flex-start;padding:15px 18px;border:1px solid #f3dfaa;border-radius:14px;background:#fffaf0}.message-preview{white-space:pre-wrap;min-height:100px;padding:14px;border:1px solid var(--line);border-radius:12px;background:#f8fafc;font-size:.85rem}.team-stat{display:flex;align-items:center;gap:14px;padding:17px 20px}.team-stat-icon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:#eef2ff;color:#334db7;font-size:1.15rem}.team-stat strong{display:block;font-size:1.35rem;line-height:1.2;color:#172554}.team-stat small{color:#68738a}.team-filter{border:1px solid #e4e8f1;background:#fff;color:#45516b;border-radius:999px;padding:7px 13px;font-size:.84rem;font-weight:600}.team-filter.active{background:#1c3382;border-color:#1c3382;color:#fff}.trainer-contact{overflow-wrap:anywhere}.trainer-card .btn-icon-s{flex:0 0 auto}</style></head>
-<body class="espace espace-admin"><div class="app">{% include 'partials/sidebar_admin.html' %}<div class="app-col">
-{% include 'partials/admin_topbar.html' %}
-<main class="app-main"><div class="page-head"><div><span class="eyebrow-s">Équipe pédagogique</span><h1 class="page-title">Formateurs</h1><p class="page-sub">Consultez leurs coordonnées, leurs formations et l’état de leur accès.</p></div><button class="btn-s btn-primary-s" type="button" data-bs-toggle="modal" data-bs-target="#addFormateurModal"><i class="bi bi-person-plus me-1"></i>Nouveau formateur</button></div>
-{% for message in messages %}<div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button></div>{% endfor %}
-{% if created_access %}<section class="s-card s-card-pad mb-4 border-success"><div class="d-flex flex-wrap justify-content-between align-items-center gap-3"><div><span class="eyebrow-s text-success">Compte prêt à transmettre</span><h2 class="h5 fw-bold mb-1">{{ created_access.name }}</h2><p class="small text-secondary mb-0">Identifiant : {{ created_access.email }} · Mot de passe provisoire : <strong>{{ created_access.password }}</strong></p></div>{% if created_access.whatsapp_url %}<a class="btn-s btn-primary-s" href="{{ created_access.whatsapp_url }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp me-1"></i>Partager sur WhatsApp</a>{% else %}<span class="small text-secondary">Ajoutez un numéro avec indicatif pays pour WhatsApp.</span>{% endif %}</div></section>{% endif %}
-<div class="credential-note mb-4"><i class="bi bi-shield-lock text-warning fs-5"></i><div><b>Les mots de passe ne sont pas consultables.</b><div class="small text-secondary">Réinitialisez l’accès pour créer un nouveau mot de passe provisoire, puis transmettez-le au formateur.</div></div></div>
-<div class="row g-3 mb-4"><div class="col-sm-6 col-xl-4"><div class="s-card team-stat h-100"><span class="team-stat-icon"><i class="bi bi-people"></i></span><div><strong>{{ formateurs|length }}</strong><small>Formateurs enregistrés</small></div></div></div><div class="col-sm-6 col-xl-4"><div class="s-card team-stat h-100"><span class="team-stat-icon" style="background:#e8f7ef;color:#17834d"><i class="bi bi-person-check"></i></span><div><strong>{{ formateurs_actifs }}</strong><small>Comptes actifs</small></div></div></div><div class="col-sm-6 col-xl-4"><div class="s-card team-stat h-100"><span class="team-stat-icon" style="background:#fff2e7;color:#b35a16"><i class="bi bi-person-dash"></i></span><div><strong>{{ formateurs_inactifs }}</strong><small>Comptes suspendus</small></div></div></div></div>
-<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3"><div class="d-flex flex-wrap align-items-center gap-2"><h2 class="s-card-title mb-0 me-2">Comptes formateurs</h2><button type="button" class="team-filter active" data-list="#liste-formateurs" data-filter="">Tous</button><button type="button" class="team-filter" data-list="#liste-formateurs" data-filter="actif">Actifs</button><button type="button" class="team-filter" data-list="#liste-formateurs" data-filter="inactif">Suspendus</button></div><div class="position-relative" style="width:min(100%,340px)"><i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-secondary"></i><input class="s-input ps-5" type="search" data-list="#liste-formateurs" data-search placeholder="Rechercher un formateur…" aria-label="Rechercher un formateur"></div></div>
-<div class="row g-3" id="liste-formateurs" data-empty="#aucun-formateur">
-{% for formateur in formateurs %}<div class="col-md-6 col-xl-4 team-person" data-status="{% if formateur.actif %}actif{% else %}inactif{% endif %}"><article class="s-card trainer-card s-card-pad h-100"><div class="d-flex align-items-start justify-content-between gap-3"><div class="d-flex align-items-center gap-3"><span class="trainer-avatar">{{ formateur.prenom|first|upper }}{{ formateur.nom|first|upper }}</span><div class="min-w-0"><h3 class="h6 fw-bold mb-1">{{ formateur.prenom }} {{ formateur.nom }}</h3><span class="s-badge {% if formateur.actif %}b-actif{% else %}b-en_cours{% endif %}">{% if formateur.actif %}Actif{% else %}Suspendu{% endif %}</span></div></div><a class="btn-icon-s" href="{% url 'admin_formateur_detail' formateur.pk %}#access" aria-label="Préparer le partage WhatsApp des accès" title="Réinitialiser et partager l’accès"><i class="bi bi-whatsapp"></i></a></div><div class="border-top mt-3 pt-3 small trainer-contact"><div class="d-flex gap-2 mb-2"><i class="bi bi-envelope text-primary"></i><span>{{ formateur.email }}</span></div><div class="d-flex gap-2"><i class="bi bi-whatsapp text-success"></i><span>{{ formateur.telephone|default:'Téléphone non renseigné' }}</span></div></div><div class="border-top mt-3 pt-3"><div class="eyebrow-s mb-2">Formations assignées</div><div class="d-flex flex-wrap gap-1">{% for formation in formateur.formations.all %}<span class="s-badge b-en_cours">{{ formation.nom }}</span>{% empty %}<span class="small text-secondary">Aucune formation assignée</span>{% endfor %}</div></div><div class="d-grid gap-2 mt-3"><a class="btn-s btn-primary-s w-100" href="{% url 'admin_formateur_detail' formateur.pk %}"><i class="bi bi-sliders me-1"></i>Gérer le profil</a><a class="btn-s btn-soft-s w-100" href="{% url 'admin_formateur_detail' formateur.pk %}#access"><i class="bi bi-whatsapp me-1"></i>Préparer / renouveler son accès WhatsApp</a></div></article></div>{% empty %}<div class="col-12"><div class="s-card s-card-pad text-center"><i class="bi bi-person-video3 fs-2 text-primary"></i><h3 class="h5 mt-3">Aucun formateur enregistré</h3><p class="text-secondary mb-0">Créez un compte pour commencer à organiser votre équipe pédagogique.</p></div></div>
-{% endfor %}</div><div class="empty-s" id="aucun-formateur" hidden>Aucun formateur ne correspond à cette recherche.</div>
-</main></div></div>
-<div class="modal fade" id="addFormateurModal" tabindex="-1" aria-labelledby="addFormateurTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
-    <div class="modal-content border-0 rounded-4 overflow-hidden">
-      <div class="modal-header border-0 px-4 px-lg-5 pt-4">
-        <div><span class="eyebrow-s">Nouvel accès pédagogique</span><h2 class="modal-title fs-4 fw-bold" id="addFormateurTitle">Créer un formateur</h2><p class="text-secondary small mb-0">Les identifiants seront créés et pourront être partagés sur WhatsApp.</p></div>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+<!doctype html>
+<html lang="fr">
+  <head>
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#335cec" />
+    <title>Formateurs | SAREF Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
+    <style>
+      .trainer-portrait {
+        position: relative;
+        width: 64px;
+        height: 68px;
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+        overflow: hidden;
+        border: 1px solid #cfdaff;
+        border-radius: 20px;
+        background: linear-gradient(145deg, #f4f7ff, #dce6ff);
+        color: #335cec;
+      }
+      .trainer-portrait > i {
+        font-size: 2.4rem;
+        transform: translateY(5px);
+      }
+      .trainer-portrait b {
+        position: absolute;
+        right: 3px;
+        bottom: 3px;
+        display: grid;
+        place-items: center;
+        min-width: 24px;
+        height: 24px;
+        padding: 0 4px;
+        border: 2px solid #fff;
+        border-radius: 9px;
+        background: #335cec;
+        color: #fff;
+        font-size: 0.62rem;
+        letter-spacing: 0.02em;
+      }
+      .trainer-card {
+        transition:
+          transform 0.2s ease,
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
+        border: 1px solid #e8ebf3;
+      }
+      .trainer-card:hover {
+        transform: translateY(-3px);
+        border-color: var(--blue-200);
+        box-shadow: 0 14px 32px rgba(24, 45, 100, 0.09);
+      }
+      .trainer-card-demo:hover {
+        transform: none;
+        border-color: #e8ebf3;
+        box-shadow: 0 5px 18px rgba(22, 36, 82, 0.035);
+      }
+      .credential-note {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 15px 18px;
+        border: 1px solid #f3dfaa;
+        border-radius: 14px;
+        background: #fffaf0;
+      }
+      .message-preview {
+        white-space: pre-wrap;
+        min-height: 100px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #f8fafc;
+        font-size: 0.85rem;
+      }
+      .team-stat {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 17px 20px;
+      }
+      .team-stat-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 13px;
+        display: grid;
+        place-items: center;
+        background: #eef2ff;
+        color: #334db7;
+        font-size: 1.15rem;
+      }
+      .team-stat strong {
+        display: block;
+        font-size: 1.35rem;
+        line-height: 1.2;
+        color: #172554;
+      }
+      .team-stat small {
+        color: #68738a;
+      }
+      .team-filter {
+        border: 1px solid #e4e8f1;
+        background: #fff;
+        color: #45516b;
+        border-radius: 999px;
+        padding: 7px 13px;
+        font-size: 0.84rem;
+        font-weight: 600;
+      }
+      .team-filter.active {
+        background: #1c3382;
+        border-color: #1c3382;
+        color: #fff;
+      }
+      .trainer-contact {
+        overflow-wrap: anywhere;
+      }
+      .trainer-card .btn-icon-s {
+        flex: 0 0 auto;
+      }
+    </style>
+  </head>
+  <body class="espace espace-admin">
+    <div class="app">
+      {% include 'partials/sidebar_admin.html' %}
+      <div class="app-col">
+        {% include 'partials/admin_topbar.html' %}
+        <main class="app-main">
+          <div class="page-head">
+            <div>
+              <span class="eyebrow-s">Équipe pédagogique</span>
+              <h1 class="page-title">Formateurs</h1>
+              <p class="page-sub">
+                Consultez leurs coordonnées, leurs formations et l’état de leur
+                accès.
+              </p>
+            </div>
+            <button
+              class="btn-s btn-primary-s"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#addFormateurModal"
+            >
+              <i class="bi bi-person-plus me-1"></i>
+              Nouveau formateur
+            </button>
+          </div>
+          {% for message in messages %}
+          <div
+            class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %} alert-dismissible fade show"
+            role="alert"
+          >
+            {{ message }}
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Fermer"
+            ></button>
+          </div>
+          {% endfor %} {% if created_access %}
+          <section class="s-card s-card-pad mb-4 border-success">
+            <div
+              class="d-flex flex-wrap justify-content-between align-items-center gap-3"
+            >
+              <div>
+                <span class="eyebrow-s text-success">
+                  Compte prêt à transmettre
+                </span>
+                <h2 class="h5 fw-bold mb-1">{{ created_access.name }}</h2>
+                <p class="small text-secondary mb-0">
+                  Identifiant : {{ created_access.email }} · Mot de passe
+                  provisoire :
+                  <strong>{{ created_access.password }}</strong>
+                </p>
+              </div>
+              {% if created_access.whatsapp_url %}
+              <a
+                class="btn-s btn-primary-s"
+                href="{{ created_access.whatsapp_url }}"
+                target="_blank"
+                rel="noopener"
+              >
+                <i class="bi bi-whatsapp me-1"></i>
+                Partager sur WhatsApp
+              </a>
+              {% else %}
+              <span class="small text-secondary">
+                Ajoutez un numéro avec indicatif pays pour WhatsApp.
+              </span>
+              {% endif %}
+            </div>
+          </section>
+          {% endif %}
+          <div class="credential-note mb-4">
+            <i class="bi bi-shield-lock text-warning fs-5"></i>
+            <div>
+              <b>Les mots de passe ne sont pas consultables.</b>
+              <div class="small text-secondary">
+                Réinitialisez l’accès pour créer un nouveau mot de passe
+                provisoire, puis transmettez-le au formateur.
+              </div>
+            </div>
+          </div>
+          <div class="row g-3 mb-4">
+            <div class="col-sm-6 col-xl-4">
+              <div class="s-card team-stat h-100">
+                <span class="team-stat-icon"><i class="bi bi-people"></i></span>
+                <div>
+                  <strong>{{ formateurs|length }}</strong>
+                  <small>Formateurs enregistrés</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-4">
+              <div class="s-card team-stat h-100">
+                <span
+                  class="team-stat-icon"
+                  style="background: #e8f7ef; color: #17834d"
+                >
+                  <i class="bi bi-person-check"></i>
+                </span>
+                <div>
+                  <strong>{{ formateurs_actifs }}</strong>
+                  <small>Comptes actifs</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-4">
+              <div class="s-card team-stat h-100">
+                <span
+                  class="team-stat-icon"
+                  style="background: #fff2e7; color: #b35a16"
+                >
+                  <i class="bi bi-person-dash"></i>
+                </span>
+                <div>
+                  <strong>{{ formateurs_inactifs }}</strong>
+                  <small>Comptes suspendus</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3"
+          >
+            <div class="d-flex flex-wrap align-items-center gap-2">
+              <h2 class="s-card-title mb-0 me-2">Comptes formateurs</h2>
+              <button
+                type="button"
+                class="team-filter active"
+                data-list="#liste-formateurs"
+                data-filter=""
+              >
+                Tous
+              </button>
+              <button
+                type="button"
+                class="team-filter"
+                data-list="#liste-formateurs"
+                data-filter="actif"
+              >
+                Actifs
+              </button>
+              <button
+                type="button"
+                class="team-filter"
+                data-list="#liste-formateurs"
+                data-filter="inactif"
+              >
+                Suspendus
+              </button>
+            </div>
+            <div class="position-relative" style="width: min(100%, 340px)">
+              <i
+                class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-secondary"
+              ></i>
+              <input
+                class="s-input ps-5"
+                type="search"
+                data-list="#liste-formateurs"
+                data-search
+                placeholder="Rechercher un formateur…"
+                aria-label="Rechercher un formateur"
+              />
+            </div>
+          </div>
+          <div
+            class="row g-3"
+            id="liste-formateurs"
+            data-empty="#aucun-formateur"
+          >
+            {% for formateur in formateurs %}
+            <div
+              class="col-md-6 col-xl-4 team-person"
+              data-status="{% if formateur.actif %}actif{% else %}inactif{% endif %}"
+            >
+              <article class="s-card trainer-card s-card-pad h-100">
+                <div
+                  class="d-flex align-items-start justify-content-between gap-3"
+                >
+                  <div class="d-flex align-items-center gap-3">
+                    <span class="trainer-portrait" aria-hidden="true">
+                      <i class="bi bi-person-video3"></i>
+                      <b>
+                        {{ formateur.prenom|first|upper }}{{
+                        formateur.nom|first|upper }}
+                      </b>
+                    </span>
+                    <div class="min-w-0">
+                      <h3 class="h6 fw-bold mb-1">
+                        {{ formateur.prenom }} {{ formateur.nom }}
+                      </h3>
+                      <span
+                        class="s-badge {% if formateur.actif %}b-actif{% else %}b-en_cours{% endif %}"
+                      >
+                        {% if formateur.actif %}Actif{% else %}Suspendu{% endif
+                        %}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="border-top mt-3 pt-3 small trainer-contact">
+                  <div class="d-flex gap-2 mb-2">
+                    <i class="bi bi-envelope text-primary"></i>
+                    <span>{{ formateur.email }}</span>
+                  </div>
+                  <div class="d-flex gap-2">
+                    <i class="bi bi-whatsapp text-success"></i>
+                    <span>
+                      {{ formateur.telephone|default:'Téléphone non renseigné'
+                      }}
+                    </span>
+                  </div>
+                </div>
+                <div class="border-top mt-3 pt-3">
+                  <div class="eyebrow-s mb-2">Formations assignées</div>
+                  <div class="d-flex flex-wrap gap-1">
+                    {% for formation in formateur.formations.all %}
+                    <span class="s-badge b-en_cours">{{ formation.nom }}</span>
+                    {% empty %}
+                    <span class="small text-secondary">
+                      Aucune formation assignée
+                    </span>
+                    {% endfor %}
+                  </div>
+                </div>
+                <div class="d-grid gap-2 mt-3">
+                  <a
+                    class="btn-s btn-primary-s w-100"
+                    href="{% url 'admin_formateur_detail' formateur.pk %}"
+                  >
+                    <i class="bi bi-sliders me-1"></i>
+                    Gérer le profil
+                  </a>
+                  <a
+                    class="btn-s btn-soft-s w-100"
+                    href="{% url 'admin_formateur_detail' formateur.pk %}#access"
+                  >
+                    <i class="bi bi-whatsapp me-1"></i>
+                    Préparer / renouveler son accès WhatsApp
+                  </a>
+                </div>
+              </article>
+            </div>
+            {% empty %}
+            <div class="col-md-6 col-xl-4">
+              <article
+                class="s-card trainer-card trainer-card-demo s-card-pad h-100"
+              >
+                <div class="d-flex align-items-center gap-3">
+                  <span class="trainer-portrait" aria-hidden="true">
+                    <i class="bi bi-person-video3"></i>
+                    <b>01</b>
+                  </span>
+                  <div>
+                    <h3 class="h6 fw-bold mt-2 mb-0">Formateur en design</h3>
+                  </div>
+                </div>
+                <div class="border-top mt-3 pt-3">
+                  <div class="eyebrow-s mb-2">Spécialité attribuée</div>
+                  <span class="s-badge b-en_cours">Design graphique</span>
+                </div>
+                <p class="small text-secondary mt-3">
+                  Formateur actif dans l’équipe pédagogique.
+                </p>
+                <a
+                  class="btn-s btn-primary-s btn-sm-s w-100 mt-auto"
+                  href="{% url 'admin_formateur_detail' 1 %}"
+                >
+                  <i class="bi bi-sliders me-1"></i>
+                  Gérer le profil
+                </a>
+              </article>
+            </div>
+            <div class="col-md-6 col-xl-4">
+              <article
+                class="s-card trainer-card trainer-card-demo s-card-pad h-100"
+              >
+                <div class="d-flex align-items-center gap-3">
+                  <span class="trainer-portrait" aria-hidden="true">
+                    <i class="bi bi-person-video3"></i>
+                    <b>02</b>
+                  </span>
+                  <div>
+                    <h3 class="h6 fw-bold mt-2 mb-0">
+                      Formateur en développement
+                    </h3>
+                  </div>
+                </div>
+                <div class="border-top mt-3 pt-3">
+                  <div class="eyebrow-s mb-2">Spécialité attribuée</div>
+                  <span class="s-badge b-en_cours">Développement Web</span>
+                </div>
+                <p class="small text-secondary mt-3">
+                  Formateur actif dans l’équipe pédagogique.
+                </p>
+                <a
+                  class="btn-s btn-primary-s btn-sm-s w-100 mt-auto"
+                  href="{% url 'admin_formateur_detail' 1 %}"
+                >
+                  <i class="bi bi-sliders me-1"></i>
+                  Gérer le profil
+                </a>
+              </article>
+            </div>
+            <div class="col-md-6 col-xl-4">
+              <article
+                class="s-card trainer-card trainer-card-demo s-card-pad h-100"
+              >
+                <div class="d-flex align-items-center gap-3">
+                  <span class="trainer-portrait" aria-hidden="true">
+                    <i class="bi bi-person-video3"></i>
+                    <b>03</b>
+                  </span>
+                  <div>
+                    <h3 class="h6 fw-bold mt-2 mb-0">
+                      Formatrice en communication
+                    </h3>
+                  </div>
+                </div>
+                <div class="border-top mt-3 pt-3">
+                  <div class="eyebrow-s mb-2">Spécialité attribuée</div>
+                  <span class="s-badge b-en_cours">Marketing digital</span>
+                </div>
+                <p class="small text-secondary mt-3">
+                  Formateur actif dans l’équipe pédagogique.
+                </p>
+                <a
+                  class="btn-s btn-primary-s btn-sm-s w-100 mt-auto"
+                  href="{% url 'admin_formateur_detail' 1 %}"
+                >
+                  <i class="bi bi-sliders me-1"></i>
+                  Gérer le profil
+                </a>
+              </article>
+            </div>
+            {% endfor %}
+          </div>
+          <div class="empty-s" id="aucun-formateur" hidden>
+            Aucun formateur ne correspond à cette recherche.
+          </div>
+        </main>
       </div>
-      <form method="post" action="{% url 'admin_formateurs' %}" id="newFormateurForm">
-        {% csrf_token %}<input type="hidden" name="action" value="create_formateur"><input type="hidden" id="newName" value="">
-        <div class="modal-body px-4 px-lg-5 pt-2"><div class="row g-4">
-          <div class="col-lg-7"><section class="s-card s-card-pad h-100"><h3 class="s-card-title mb-3">Informations du formateur</h3><div class="row g-3">
-            <div class="col-md-6"><label for="newPrenom" class="s-label">Prénom</label><input class="s-input" id="newPrenom" name="prenom" value="{{ creation_data.prenom|default:'' }}" autocomplete="given-name" required></div>
-            <div class="col-md-6"><label for="newNom" class="s-label">Nom</label><input class="s-input" id="newNom" name="nom" value="{{ creation_data.nom|default:'' }}" autocomplete="family-name" required></div>
-            <div class="col-md-6"><label for="newEmail" class="s-label">Email de connexion</label><input class="s-input" id="newEmail" name="email" type="email" value="{{ creation_data.email|default:'' }}" autocomplete="email" required><div class="form-text">Cette adresse servira aussi d’identifiant.</div></div>
-            <div class="col-md-6"><label for="newPhone" class="s-label">Téléphone WhatsApp</label><input class="s-input" id="newPhone" name="telephone" type="tel" value="{{ creation_data.telephone|default:'' }}" placeholder="+229 01 00 00 00 00" autocomplete="tel" required></div>
-            <div class="col-12"><label for="newFormation" class="s-label">Formations à attribuer</label><select class="form-select s-input" id="newFormation" name="formations" multiple size="4" required>{% for formation in formations %}<option value="{{ formation.pk }}" {% if formation.pk|stringformat:'s' in creation_data.formations %}selected{% endif %}>{{ formation.nom }}</option>{% endfor %}</select><div class="form-text">Utilisez Ctrl (Windows) ou Cmd (Mac) pour sélectionner plusieurs formations.</div></div>
-            <div class="col-12"><label for="newPassword" class="s-label">Mot de passe provisoire</label><div class="input-group"><input class="form-control s-input" id="newPassword" name="password" type="text" minlength="8" autocomplete="new-password" placeholder="Saisir ou générer un mot de passe" required><button class="btn-s btn-line-s" type="button" data-gen-pass="#newPassword"><i class="bi bi-shuffle me-1"></i>Générer</button></div><div class="form-text">Le formateur devra choisir un nouveau mot de passe à sa première connexion.</div></div>
-          </div></section></div>
-          <div class="col-lg-5"><section class="s-card s-card-pad h-100" style="background:#f8faff"><div class="d-flex align-items-center gap-2 mb-2"><span class="team-stat-icon" style="background:#e8f7ef;color:#17834d"><i class="bi bi-whatsapp"></i></span><div><h3 class="s-card-title mb-0">Partager les identifiants</h3><small class="text-secondary">Aperçu actualisé automatiquement</small></div></div><div class="message-preview mt-3" id="newMessage" aria-live="polite"></div><p class="small text-secondary mt-2 mb-0">WhatsApp s’ouvrira avec un message prérempli. Tu pourras le vérifier et l’envoyer.</p></section></div>
-        </div></div>
-        <div class="modal-footer border-0 px-4 px-lg-5 pb-4 d-flex flex-wrap justify-content-between gap-2"><button type="button" class="btn-s btn-line-s" data-bs-dismiss="modal">Annuler</button><div class="d-flex flex-wrap align-items-center gap-2"><span class="small text-secondary">WhatsApp sera activé après l’enregistrement.</span><button class="btn-s btn-primary-s" type="submit"><i class="bi bi-person-check me-1"></i>Créer le compte</button></div></div>
-      </form>
     </div>
-  </div>
-</div>
-<div class="modal fade" id="accessModal" tabindex="-1" aria-labelledby="accessTitle" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 rounded-4"><div class="modal-header border-0 px-4 pt-4"><div><h2 class="modal-title fs-5 fw-bold" id="accessTitle">Réinitialiser les accès</h2><p class="text-secondary small mb-0">Définissez un mot de passe provisoire à transmettre au formateur.</p></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div><div class="modal-body px-4"><form data-wa data-wa-name="#accessName" data-wa-email="#accessEmail" data-wa-pass="#accessPassword" data-wa-phone="#accessPhone" data-wa-preview="#accessMessage" data-wa-link="#accessWhatsApp"><label class="s-label" for="accessPassword">Mot de passe provisoire</label><div class="d-flex gap-2"><input id="accessPassword" class="s-input" type="text" autocomplete="new-password"><button class="btn-s btn-line-s" type="button" data-gen-pass="#accessPassword" aria-label="Générer un mot de passe"><i class="bi bi-shuffle"></i></button></div><div class="row g-2 mt-2"><div class="col-md-4"><label class="s-label" for="accessName">Formateur</label><input id="accessName" class="s-input" readonly></div><div class="col-md-4"><label class="s-label" for="accessEmail">Identifiant</label><input id="accessEmail" class="s-input" readonly></div><div class="col-md-4"><label class="s-label" for="accessPhone">WhatsApp</label><input id="accessPhone" class="s-input" readonly></div></div><label class="s-label mt-3" for="accessMessage">Message à transmettre</label><div id="accessMessage" class="message-preview" aria-live="polite"></div></form><p class="small text-secondary mt-3 mb-0">WhatsApp s’ouvrira avec le message prérempli.</p></div><div class="modal-footer border-0 px-4 pb-4"><a id="accessWhatsApp" class="btn-s btn-primary-s" href="#" target="_blank" rel="noopener" aria-disabled="true"><i class="bi bi-whatsapp me-1"></i>Ouvrir WhatsApp</a></div></div></div></div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><script src="{% static 'js/espace.js' %}" defer></script><script>
-document.querySelectorAll('[data-bs-target="#accessModal"]').forEach(function(button){button.addEventListener('click',function(){document.getElementById('accessName').value=button.dataset.name||'';document.getElementById('accessEmail').value=button.dataset.email||'';document.getElementById('accessPhone').value=button.dataset.phone||'';document.getElementById('accessPassword').value='';});});
-var firstName=document.getElementById('newPrenom'),lastName=document.getElementById('newNom'),newEmail=document.getElementById('newEmail'),newPhone=document.getElementById('newPhone'),newPassword=document.getElementById('newPassword'),newMessage=document.getElementById('newMessage');function updateNewPreview(){var name=(firstName.value+' '+lastName.value).trim()||'…';newMessage.textContent='Bonjour '+name+', voici vos accès à l’espace formateur SAREF Academy.\nLien : '+location.origin+'/connexion/\nIdentifiant : '+(newEmail.value||'(adresse email)')+'\nMot de passe provisoire : '+(newPassword.value||'(à définir)')+'\nConnectez-vous puis changez-le à votre première connexion.';}[firstName,lastName,newEmail,newPhone,newPassword].forEach(function(field){field.addEventListener('input',updateNewPreview);});updateNewPreview();{% if creation_data %}bootstrap.Modal.getOrCreateInstance(document.getElementById('addFormateurModal')).show();{% endif %}
-</script></body></html>
+    <div
+      class="modal fade"
+      id="addFormateurModal"
+      tabindex="-1"
+      aria-labelledby="addFormateurTitle"
+      aria-hidden="true"
+    >
+      <div
+        class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable"
+      >
+        <div class="modal-content border-0 rounded-4 overflow-hidden">
+          <div class="modal-header border-0 px-4 px-lg-5 pt-4">
+            <div>
+              <span class="eyebrow-s">Nouvel accès pédagogique</span>
+              <h2 class="modal-title fs-4 fw-bold" id="addFormateurTitle">
+                Créer un formateur
+              </h2>
+              <p class="text-secondary small mb-0">
+                Les identifiants seront créés et pourront être partagés sur
+                WhatsApp.
+              </p>
+            </div>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Fermer"
+            ></button>
+          </div>
+          <form
+            method="post"
+            action="{% url 'admin_formateurs' %}"
+            id="newFormateurForm"
+          >
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create_formateur" />
+            <input type="hidden" id="newName" value="" />
+            <div class="modal-body px-4 px-lg-5 pt-2">
+              <div class="row g-4">
+                <div class="col-lg-7">
+                  <section class="s-card s-card-pad h-100">
+                    <h3 class="s-card-title mb-3">Informations du formateur</h3>
+                    <div class="row g-3">
+                      <div class="col-md-6">
+                        <label for="newPrenom" class="s-label">Prénom</label>
+                        <input
+                          class="s-input"
+                          id="newPrenom"
+                          name="prenom"
+                          value="{{ creation_data.prenom|default:'' }}"
+                          autocomplete="given-name"
+                          required
+                        />
+                      </div>
+                      <div class="col-md-6">
+                        <label for="newNom" class="s-label">Nom</label>
+                        <input
+                          class="s-input"
+                          id="newNom"
+                          name="nom"
+                          value="{{ creation_data.nom|default:'' }}"
+                          autocomplete="family-name"
+                          required
+                        />
+                      </div>
+                      <div class="col-md-6">
+                        <label for="newEmail" class="s-label">
+                          Email de connexion
+                        </label>
+                        <input
+                          class="s-input"
+                          id="newEmail"
+                          name="email"
+                          type="email"
+                          value="{{ creation_data.email|default:'' }}"
+                          autocomplete="email"
+                          required
+                        />
+                        <div class="form-text">
+                          Cette adresse servira aussi d’identifiant.
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="newPhone" class="s-label">
+                          Téléphone WhatsApp
+                        </label>
+                        <input
+                          class="s-input"
+                          id="newPhone"
+                          name="telephone"
+                          type="tel"
+                          value="{{ creation_data.telephone|default:'' }}"
+                          placeholder="+229 01 00 00 00 00"
+                          autocomplete="tel"
+                          required
+                        />
+                      </div>
+                      <div class="col-12">
+                        <label for="newFormation" class="s-label">
+                          Formation à attribuer
+                        </label>
+                        <select
+                          class="form-select s-input"
+                          id="newFormation"
+                          name="formations"
+                          required
+                        >
+                          <option value="" selected disabled>
+                            Choisir une formation existante
+                          </option>
+                          {% for formation in formations %}
+                          <option value="{{ formation.pk }}">
+                            {{ formation.nom }}{% if formation.statut %} · {{
+                            formation.get_statut_display }}{% endif %}
+                          </option>
+                          {% empty %}
+                          <option value="" disabled>
+                            Aucune formation enregistrée
+                          </option>
+                          {% endfor %}
+                        </select>
+                        <div class="form-text">
+                          La liste reprend les formations enregistrées dans le
+                          catalogue.
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <label for="newPassword" class="s-label">
+                          Mot de passe provisoire
+                        </label>
+                        <div class="input-group">
+                          <input
+                            class="form-control s-input"
+                            id="newPassword"
+                            name="password"
+                            type="text"
+                            minlength="8"
+                            autocomplete="new-password"
+                            placeholder="Saisir ou générer un mot de passe"
+                            required
+                          />
+                          <button
+                            class="btn-s btn-line-s"
+                            type="button"
+                            data-gen-pass="#newPassword"
+                          >
+                            <i class="bi bi-shuffle me-1"></i>
+                            Générer
+                          </button>
+                        </div>
+                        <div class="form-text">
+                          Le formateur devra choisir un nouveau mot de passe à
+                          sa première connexion.
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+                <div class="col-lg-5">
+                  <section
+                    class="s-card s-card-pad h-100"
+                    style="background: #f8faff"
+                  >
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                      <span
+                        class="team-stat-icon"
+                        style="background: #e8f7ef; color: #17834d"
+                      >
+                        <i class="bi bi-whatsapp"></i>
+                      </span>
+                      <div>
+                        <h3 class="s-card-title mb-0">
+                          Partager les identifiants
+                        </h3>
+                        <small class="text-secondary">
+                          Aperçu actualisé automatiquement
+                        </small>
+                      </div>
+                    </div>
+                    <div
+                      class="message-preview mt-3"
+                      id="newMessage"
+                      aria-live="polite"
+                    ></div>
+                    <p class="small text-secondary mt-2 mb-0">
+                      WhatsApp s’ouvrira avec un message prérempli. Tu pourras
+                      le vérifier et l’envoyer.
+                    </p>
+                  </section>
+                </div>
+              </div>
+            </div>
+            <div
+              class="modal-footer border-0 px-4 px-lg-5 pb-4 d-flex flex-wrap justify-content-between gap-2"
+            >
+              <button
+                type="button"
+                class="btn-s btn-line-s"
+                data-bs-dismiss="modal"
+              >
+                Annuler
+              </button>
+              <div class="d-flex flex-wrap align-items-center gap-2">
+                <span class="small text-secondary">
+                  WhatsApp sera activé après l’enregistrement.
+                </span>
+                <button class="btn-s btn-primary-s" type="submit">
+                  <i class="bi bi-person-check me-1"></i>
+                  Créer le compte
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal fade"
+      id="accessModal"
+      tabindex="-1"
+      aria-labelledby="accessTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4">
+          <div class="modal-header border-0 px-4 pt-4">
+            <div>
+              <h2 class="modal-title fs-5 fw-bold" id="accessTitle">
+                Réinitialiser les accès
+              </h2>
+              <p class="text-secondary small mb-0">
+                Définissez un mot de passe provisoire à transmettre au
+                formateur.
+              </p>
+            </div>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Fermer"
+            ></button>
+          </div>
+          <div class="modal-body px-4">
+            <form
+              data-wa
+              data-wa-name="#accessName"
+              data-wa-email="#accessEmail"
+              data-wa-pass="#accessPassword"
+              data-wa-phone="#accessPhone"
+              data-wa-preview="#accessMessage"
+              data-wa-link="#accessWhatsApp"
+            >
+              <label class="s-label" for="accessPassword">
+                Mot de passe provisoire
+              </label>
+              <div class="d-flex gap-2">
+                <input
+                  id="accessPassword"
+                  class="s-input"
+                  type="text"
+                  autocomplete="new-password"
+                />
+                <button
+                  class="btn-s btn-line-s"
+                  type="button"
+                  data-gen-pass="#accessPassword"
+                  aria-label="Générer un mot de passe"
+                >
+                  <i class="bi bi-shuffle"></i>
+                </button>
+              </div>
+              <div class="row g-2 mt-2">
+                <div class="col-md-4">
+                  <label class="s-label" for="accessName">Formateur</label>
+                  <input id="accessName" class="s-input" readonly />
+                </div>
+                <div class="col-md-4">
+                  <label class="s-label" for="accessEmail">Identifiant</label>
+                  <input id="accessEmail" class="s-input" readonly />
+                </div>
+                <div class="col-md-4">
+                  <label class="s-label" for="accessPhone">WhatsApp</label>
+                  <input id="accessPhone" class="s-input" readonly />
+                </div>
+              </div>
+              <label class="s-label mt-3" for="accessMessage">
+                Message à transmettre
+              </label>
+              <div
+                id="accessMessage"
+                class="message-preview"
+                aria-live="polite"
+              ></div>
+            </form>
+            <p class="small text-secondary mt-3 mb-0">
+              WhatsApp s’ouvrira avec le message prérempli.
+            </p>
+          </div>
+          <div class="modal-footer border-0 px-4 pb-4">
+            <a
+              id="accessWhatsApp"
+              class="btn-s btn-primary-s"
+              href="#"
+              target="_blank"
+              rel="noopener"
+              aria-disabled="true"
+            >
+              <i class="bi bi-whatsapp me-1"></i>
+              Ouvrir WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/espace.js' %}" defer></script>
+    <script>
+      document.querySelectorAll('[data-bs-target="#accessModal"]').forEach(function(button){button.addEventListener('click',function(){document.getElementById('accessName').value=button.dataset.name||'';document.getElementById('accessEmail').value=button.dataset.email||'';document.getElementById('accessPhone').value=button.dataset.phone||'';document.getElementById('accessPassword').value='';});});
+      var firstName=document.getElementById('newPrenom'),lastName=document.getElementById('newNom'),newEmail=document.getElementById('newEmail'),newPhone=document.getElementById('newPhone'),newPassword=document.getElementById('newPassword'),newMessage=document.getElementById('newMessage');function updateNewPreview(){var name=(firstName.value+' '+lastName.value).trim()||'…';newMessage.textContent='Bonjour '+name+', voici vos accès à l’espace formateur SAREF Academy.\nLien : '+location.origin+'/connexion/\nIdentifiant : '+(newEmail.value||'(adresse email)')+'\nMot de passe provisoire : '+(newPassword.value||'(à définir)')+'\nConnectez-vous puis changez-le à votre première connexion.';}[firstName,lastName,newEmail,newPhone,newPassword].forEach(function(field){field.addEventListener('input',updateNewPreview);});updateNewPreview();{% if creation_data %}bootstrap.Modal.getOrCreateInstance(document.getElementById('addFormateurModal')).show();{% endif %}
+    </script>
+  </body>
+</html>

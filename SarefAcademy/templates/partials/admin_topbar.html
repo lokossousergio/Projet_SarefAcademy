@@ -1,7 +1,45 @@
 <header class="topbar topbar-app topbar-admin">
-  <button class="btn-icon-s d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Ouvrir le menu"><i class="bi bi-list fs-5"></i></button>
-  <div class="topbar-title"><small>SAREF ACADEMY · ADMINISTRATION</small><strong>{% with page=request.resolver_match.url_name %}{% if page == 'admin_dashboard' %}Tableau de bord{% elif page == 'admin_candidatures' %}Candidatures{% elif page == 'admin_candidature_detail' %}Détail de candidature{% elif page == 'admin_apprenants' %}Apprenants{% elif page == 'admin_apprenant_detail' %}Dossier apprenant{% elif page == 'admin_resultats' %}Résultats et attestations{% elif page == 'admin_finance' %}Finance{% elif page == 'admin_organisation' %}Organisation{% elif page == 'admin_formations' %}Formations et modules{% elif page == 'admin_formation_detail' %}Programme de formation{% elif page == 'admin_formateurs' %}Équipe pédagogique{% elif page == 'admin_formateur_detail' %}Fiche formateur{% elif page == 'admin_vagues' %}Vagues et années{% elif page == 'admin_vague_archive' %}Archives de vague{% elif page == 'admin_parametres' %}Paramètres{% elif page == 'admin_chapitre_detail' %}Ressource pédagogique{% else %}Espace de gestion{% endif %}{% endwith %}</strong></div>
+  <button
+    class="btn-icon-s d-lg-none"
+    type="button"
+    data-bs-toggle="offcanvas"
+    data-bs-target="#sidebar"
+    aria-label="Ouvrir le menu"
+  >
+    <i class="bi bi-list fs-5"></i>
+  </button>
+  <div class="topbar-title">
+    <small>SAREF ACADEMY · ADMINISTRATION</small>
+    <strong>
+      {% with page=request.resolver_match.url_name %}{% if page ==
+      'admin_dashboard' %}Tableau de bord{% elif page == 'admin_candidatures'
+      %}Candidatures{% elif page == 'admin_candidature_detail' %}Détail de
+      candidature{% elif page == 'admin_apprenants' %}Apprenants{% elif page ==
+      'admin_apprenant_detail' %}Dossier apprenant{% elif page ==
+      'admin_resultats' %}Résultats et attestations{% elif page ==
+      'admin_finance' %}Finance{% elif page == 'admin_organisation'
+      %}Organisation{% elif page == 'admin_formations' %}Formations et modules{%
+      elif page == 'admin_formation_detail' %}Programme de formation{% elif page
+      == 'admin_formateurs' %}Équipe pédagogique{% elif page ==
+      'admin_formateur_detail' %}Fiche formateur{% elif page == 'admin_vagues'
+      %}Vagues et années{% elif page == 'admin_vague_archive' %}Archives de
+      vague{% elif page == 'admin_parametres' %}Paramètres{% elif page ==
+      'admin_chapitre_detail' %}Ressource pédagogique{% else %}Espace de
+      gestion{% endif %}{% endwith %}
+    </strong>
+  </div>
   <span class="tb-spacer"></span>
-  <span class="topbar-state"><i class="bi bi-shield-check"></i><span>Session sécurisée</span></span>
-  <div class="tb-user"><span class="avatar">{{ request.user.first_name|first|upper|default:"A" }}</span><span class="d-none d-md-block"><b>{{ request.user.get_full_name|default:"Administration" }}</b><small>Administrateur</small></span></div>
+  <span class="topbar-state">
+    <i class="bi bi-shield-check"></i>
+    <span>Session sécurisée</span>
+  </span>
+  <div class="tb-user">
+    <span class="avatar">
+      {{ request.user.first_name|first|upper|default:"A" }}
+    </span>
+    <span class="d-none d-md-block">
+      <b>{{ request.user.get_full_name|default:"Administration" }}</b>
+      <small>Administrateur</small>
+    </span>
+  </div>
 </header>

@@ -1,56 +1,354 @@
 {% load static %}
 <!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#335cec">
-  <title>Formations &amp; modules | SAREF Academy</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/espace.css' %}">
-</head>
-<body class="espace espace-admin">
-  <div class="app">
-    {% include 'partials/sidebar_admin.html' %}
-    <div class="app-col">
-      {% include 'partials/admin_topbar.html' %}
-      <main class="app-main">
-        <div class="page-head">
-          <div><span class="eyebrow-s">Catalogue pédagogique</span><h1 class="page-title">Formations &amp; modules</h1><p class="page-sub">Consultez les programmes et gérez les modules de chaque formation.</p></div>
-          <button class="btn-s btn-primary-s" type="button" data-bs-toggle="modal" data-bs-target="#nouvelle"><i class="bi bi-plus-lg me-1"></i>Nouvelle formation</button>
-        </div>
-        <nav class="pill-tabs mb-3" aria-label="Filtrer les formations">
-          <a class="pill active" href="?statut=" data-list="#liste-formations" data-filter="">Toutes</a>
-          <a class="pill" href="?statut=active" data-list="#liste-formations" data-filter="active">Actives</a>
-          <a class="pill" href="?statut=brouillon" data-list="#liste-formations" data-filter="brouillon">Brouillons</a>
-          <a class="pill" href="?statut=archivee" data-list="#liste-formations" data-filter="archivee">Archivées</a>
-        </nav>
-        <div class="d-flex justify-content-end mb-3"><div class="position-relative" style="width:min(100%,340px)"><i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-secondary"></i><input class="s-input ps-5" type="search" data-list="#liste-formations" data-search placeholder="Rechercher une formation…" aria-label="Rechercher une formation"></div></div>
-        <div class="row g-3" id="liste-formations" data-empty="#formations-vides">
-          {% for formation in formations %}
-          <div class="col-md-6 col-xl-4" data-status="{{ formation.statut }}"><article class="s-card overflow-hidden h-100 hover-lift reveal">
-            <div class="cover {% cycle 'c1' 'c2' 'c3' 'c4' 'c5' %}"><i class="bi {% cycle 'bi-code-slash' 'bi-palette' 'bi-megaphone' 'bi-camera-video' 'bi-cpu' %}"></i></div>
-            <div class="course-body d-flex flex-column"><div class="d-flex justify-content-between align-items-center"><span class="s-badge {% if formation.statut == 'active' %}b-actif{% elif formation.statut == 'brouillon' %}b-brouillon{% else %}b-archive{% endif %}">{{ formation.get_statut_display }}</span><span class="small text-secondary">{{ formation.duree }} mois</span></div>
-              <h2 class="h5 mt-2">{{ formation.nom }}</h2><p class="small text-secondary">{{ formation.description|default:"Description à compléter."|truncatewords:20 }}</p>
-              <div class="course-meta mb-3"><span><i class="bi bi-cash"></i>{{ formation.prix }} FCFA</span><span><i class="bi bi-layers"></i>{{ formation.nb_tranches }} tranches</span></div>
-              <div class="d-flex justify-content-between small text-secondary mb-3"><span>{{ formation.modules.count }} module(s)</span><span>{{ formation.candidats.count }} candidature(s)</span></div>
-              <a class="btn-s btn-primary-s w-100 mt-auto" href="{% url 'admin_formation_detail' formation.pk %}">Gérer le programme <i class="bi bi-arrow-right ms-1"></i></a>
+  <head>
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#335cec" />
+    <title>Formations &amp; modules | SAREF Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
+  </head>
+  <body class="espace espace-admin">
+    <div class="app">
+      {% include 'partials/sidebar_admin.html' %}
+      <div class="app-col">
+        {% include 'partials/admin_topbar.html' %}
+        <main class="app-main">
+          <div class="page-head">
+            <div>
+              <span class="eyebrow-s">Catalogue pédagogique</span>
+              <h1 class="page-title">Formations &amp; modules</h1>
+              <p class="page-sub">
+                Consultez les programmes et gérez les modules de chaque
+                formation.
+              </p>
             </div>
-          </article></div>
-          {% empty %}
-          <div class="col-md-6 col-xl-4" data-status="active"><article class="s-card overflow-hidden h-100 hover-lift reveal"><div class="cover c1"><i class="bi bi-code-slash"></i></div><div class="course-body d-flex flex-column"><div class="d-flex justify-content-between align-items-center"><span class="s-badge b-actif">Active</span><span class="small text-secondary">4 mois</span></div><h2 class="h5 mt-2">Développement Web — démonstration</h2><p class="small text-secondary">Parcours pour découvrir la création de sites web.</p><div class="course-meta mb-3"><span><i class="bi bi-cash"></i>120 000 FCFA</span><span><i class="bi bi-layers"></i>3 tranches</span></div><div class="d-flex justify-content-between small text-secondary mb-3"><span>3 modules · 6 chapitres</span><span>1 candidature</span></div><a class="btn-s btn-primary-s w-100 mt-auto" href="{% url 'admin_formation_detail' 1 %}">Gérer le programme <i class="bi bi-arrow-right ms-1"></i></a></div></article></div>
-          <div class="col-md-6 col-xl-4" data-status="active"><article class="s-card overflow-hidden h-100 hover-lift reveal"><div class="cover c3"><i class="bi bi-megaphone"></i></div><div class="course-body d-flex flex-column"><div class="d-flex justify-content-between align-items-center"><span class="s-badge b-actif">Active</span><span class="small text-secondary">3 mois</span></div><h2 class="h5 mt-2">Marketing Digital — démonstration</h2><p class="small text-secondary">Exemple de formation en marketing numérique.</p><div class="course-meta mb-3"><span><i class="bi bi-cash"></i>90 000 FCFA</span><span><i class="bi bi-layers"></i>3 tranches</span></div><div class="d-flex justify-content-between small text-secondary mb-3"><span>3 modules · 4 chapitres</span><span>1 candidature</span></div><a class="btn-s btn-primary-s w-100 mt-auto" href="{% url 'admin_formation_detail' 2 %}">Gérer le programme <i class="bi bi-arrow-right ms-1"></i></a></div></article></div>
-          {% endfor %}
-        </div>
-        <div class="empty-s" id="formations-vides" hidden>Aucune formation ne correspond à ce filtre.</div>
-      </main>
+            <button
+              class="btn-s btn-primary-s"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#nouvelle"
+            >
+              <i class="bi bi-plus-lg me-1"></i>
+              Nouvelle formation
+            </button>
+          </div>
+          <nav class="pill-tabs mb-3" aria-label="Filtrer les formations">
+            <a
+              class="pill active"
+              href="?statut="
+              data-list="#liste-formations"
+              data-filter=""
+            >
+              Toutes
+            </a>
+            <a
+              class="pill"
+              href="?statut=active"
+              data-list="#liste-formations"
+              data-filter="active"
+            >
+              Actives
+            </a>
+            <a
+              class="pill"
+              href="?statut=brouillon"
+              data-list="#liste-formations"
+              data-filter="brouillon"
+            >
+              Brouillons
+            </a>
+            <a
+              class="pill"
+              href="?statut=archivee"
+              data-list="#liste-formations"
+              data-filter="archivee"
+            >
+              Archivées
+            </a>
+          </nav>
+          <div class="d-flex justify-content-end mb-3">
+            <div class="position-relative" style="width: min(100%, 340px)">
+              <i
+                class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-secondary"
+              ></i>
+              <input
+                class="s-input ps-5"
+                type="search"
+                data-list="#liste-formations"
+                data-search
+                placeholder="Rechercher une formation…"
+                aria-label="Rechercher une formation"
+              />
+            </div>
+          </div>
+          <div
+            class="row g-3"
+            id="liste-formations"
+            data-empty="#formations-vides"
+          >
+            {% for formation in formations %}
+            <div class="col-md-6 col-xl-4" data-status="{{ formation.statut }}">
+              <article class="s-card overflow-hidden h-100 hover-lift reveal">
+                <div class="cover {% cycle 'c1' 'c2' 'c3' 'c4' 'c5' %}">
+                  <i
+                    class="bi {% cycle 'bi-code-slash' 'bi-palette' 'bi-megaphone' 'bi-camera-video' 'bi-cpu' %}"
+                  ></i>
+                </div>
+                <div class="course-body d-flex flex-column">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <span
+                      class="s-badge {% if formation.statut == 'active' %}b-actif{% elif formation.statut == 'brouillon' %}b-brouillon{% else %}b-archive{% endif %}"
+                    >
+                      {{ formation.get_statut_display }}
+                    </span>
+                    <span class="small text-secondary">
+                      {{ formation.duree }} mois
+                    </span>
+                  </div>
+                  <h2 class="h5 mt-2">{{ formation.nom }}</h2>
+                  <p class="small text-secondary">
+                    {{ formation.description|default:"Description à
+                    compléter."|truncatewords:20 }}
+                  </p>
+                  <div class="course-meta mb-3">
+                    <span>
+                      <i class="bi bi-cash"></i>
+                      {{ formation.prix }} FCFA
+                    </span>
+                    <span>
+                      <i class="bi bi-layers"></i>
+                      {{ formation.nb_tranches }} tranches
+                    </span>
+                  </div>
+                  <div
+                    class="d-flex justify-content-between small text-secondary mb-3"
+                  >
+                    <span>{{ formation.modules.count }} module(s)</span>
+                    <span>{{ formation.candidats.count }} candidature(s)</span>
+                  </div>
+                  <a
+                    class="btn-s btn-primary-s w-100 mt-auto"
+                    href="{% url 'admin_formation_detail' formation.pk %}"
+                  >
+                    Gérer le programme
+                    <i class="bi bi-arrow-right ms-1"></i>
+                  </a>
+                </div>
+              </article>
+            </div>
+            {% empty %}
+            <div class="col-md-6 col-xl-4" data-status="active">
+              <article class="s-card overflow-hidden h-100 hover-lift reveal">
+                <div class="cover c1"><i class="bi bi-code-slash"></i></div>
+                <div class="course-body d-flex flex-column">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <span class="s-badge b-actif">Active</span>
+                    <span class="small text-secondary">4 mois</span>
+                  </div>
+                  <h2 class="h5 mt-2">Développement Web</h2>
+                  <p class="small text-secondary">
+                    Parcours pour découvrir la création de sites web.
+                  </p>
+                  <div class="course-meta mb-3">
+                    <span>
+                      <i class="bi bi-cash"></i>
+                      120 000 FCFA
+                    </span>
+                    <span>
+                      <i class="bi bi-layers"></i>
+                      3 tranches
+                    </span>
+                  </div>
+                  <div
+                    class="d-flex justify-content-between small text-secondary mb-3"
+                  >
+                    <span>3 modules · 6 chapitres</span>
+                    <span>1 candidature</span>
+                  </div>
+                  <a
+                    class="btn-s btn-primary-s w-100 mt-auto"
+                    href="{% url 'admin_formation_detail' 1 %}"
+                  >
+                    Gérer le programme
+                    <i class="bi bi-arrow-right ms-1"></i>
+                  </a>
+                </div>
+              </article>
+            </div>
+            <div class="col-md-6 col-xl-4" data-status="active">
+              <article class="s-card overflow-hidden h-100 hover-lift reveal">
+                <div class="cover c3"><i class="bi bi-megaphone"></i></div>
+                <div class="course-body d-flex flex-column">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <span class="s-badge b-actif">Active</span>
+                    <span class="small text-secondary">3 mois</span>
+                  </div>
+                  <h2 class="h5 mt-2">Marketing Digital</h2>
+                  <p class="small text-secondary">
+                    Parcours consacré au marketing numérique.
+                  </p>
+                  <div class="course-meta mb-3">
+                    <span>
+                      <i class="bi bi-cash"></i>
+                      90 000 FCFA
+                    </span>
+                    <span>
+                      <i class="bi bi-layers"></i>
+                      3 tranches
+                    </span>
+                  </div>
+                  <div
+                    class="d-flex justify-content-between small text-secondary mb-3"
+                  >
+                    <span>3 modules · 4 chapitres</span>
+                    <span>1 candidature</span>
+                  </div>
+                  <a
+                    class="btn-s btn-primary-s w-100 mt-auto"
+                    href="{% url 'admin_formation_detail' 2 %}"
+                  >
+                    Gérer le programme
+                    <i class="bi bi-arrow-right ms-1"></i>
+                  </a>
+                </div>
+              </article>
+            </div>
+            {% endfor %}
+          </div>
+          <div class="empty-s" id="formations-vides" hidden>
+            Aucune formation ne correspond à ce filtre.
+          </div>
+        </main>
+      </div>
     </div>
-  </div>
-  <div class="modal fade" id="nouvelle" tabindex="-1" aria-labelledby="nouvelle-t" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-lg"><form method="post" class="modal-content" style="border-radius:20px;border:0">{% csrf_token %}
-    <div class="modal-header border-0 pb-0"><h2 class="modal-title fs-5 fw-bold" id="nouvelle-t"><span class="stat-icon me-2"><i class="bi bi-mortarboard"></i></span>Nouvelle formation</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
-    <div class="modal-body"><div class="row g-3"><div class="col-12"><label class="s-label" for="nom">Nom de la formation</label><input class="s-input" id="nom" name="nom" placeholder="Ex. Développement Web" required></div><div class="col-md-4"><label class="s-label" for="duree">Durée (mois)</label><input class="s-input" id="duree" name="duree" type="number" min="1" required></div><div class="col-md-4"><label class="s-label" for="prix">Prix total (FCFA)</label><input class="s-input" id="prix" name="prix" type="number" min="0" required></div><div class="col-md-4"><label class="s-label" for="nb_tranches">Nombre de tranches</label><input class="s-input" id="nb_tranches" name="nb_tranches" type="number" min="1" value="3" required></div><div class="col-12"><label class="s-label" for="description">Description</label><textarea class="s-input" id="description" name="description" rows="3"></textarea></div></div></div>
-    <div class="modal-footer border-0 pt-0"><button type="button" class="btn-s btn-line-s" data-bs-dismiss="modal">Annuler</button><button type="submit" class="btn-s btn-primary-s">Créer la formation</button></div>
-  </form></div></div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><script src="{% static 'js/espace.js' %}" defer></script>
-</body>
+    <div
+      class="modal fade"
+      id="nouvelle"
+      tabindex="-1"
+      aria-labelledby="nouvelle-t"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <form
+          method="post"
+          class="modal-content"
+          style="border-radius: 20px; border: 0"
+        >
+          {% csrf_token %}
+          <div class="modal-header border-0 pb-0">
+            <h2 class="modal-title fs-5 fw-bold" id="nouvelle-t">
+              <span class="stat-icon me-2">
+                <i class="bi bi-mortarboard"></i>
+              </span>
+              Nouvelle formation
+            </h2>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Fermer"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="s-label" for="nom">Nom de la formation</label>
+                <input
+                  class="s-input"
+                  id="nom"
+                  name="nom"
+                  placeholder="Ex. Développement Web"
+                  required
+                />
+              </div>
+              <div class="col-md-4">
+                <label class="s-label" for="duree">Durée (mois)</label>
+                <input
+                  class="s-input"
+                  id="duree"
+                  name="duree"
+                  type="number"
+                  min="1"
+                  required
+                />
+              </div>
+              <div class="col-md-4">
+                <label class="s-label" for="prix">Prix total (FCFA)</label>
+                <input
+                  class="s-input"
+                  id="prix"
+                  name="prix"
+                  type="number"
+                  min="0"
+                  required
+                />
+              </div>
+              <div class="col-md-4">
+                <label class="s-label" for="nb_tranches">
+                  Nombre de tranches
+                </label>
+                <input
+                  class="s-input"
+                  id="nb_tranches"
+                  name="nb_tranches"
+                  type="number"
+                  min="1"
+                  value="3"
+                  required
+                />
+              </div>
+              <div class="col-12">
+                <label class="s-label" for="description">Description</label>
+                <textarea
+                  class="s-input"
+                  id="description"
+                  name="description"
+                  rows="3"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer border-0 pt-0">
+            <button
+              type="button"
+              class="btn-s btn-line-s"
+              data-bs-dismiss="modal"
+            >
+              Annuler
+            </button>
+            <button type="submit" class="btn-s btn-primary-s">
+              Créer la formation
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/espace.js' %}" defer></script>
+  </body>
 </html>

@@ -1,7 +1,286 @@
 {% load static %}
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mes formations | SAREF Academy</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"><link rel="stylesheet" href="{% static 'css/espace.css' %}"></head>
-<body class="espace espace-apprenant"><div class="app">{% include 'partials/sidebar_apprenant.html' %}<div class="app-col">{% include 'partials/apprenant_topbar.html' %}<main class="app-main"><div class="page-head"><div><span class="eyebrow-s">Votre parcours</span><h1 class="page-title">Mes formations</h1><p class="page-sub">Suivez vos candidatures et ouvrez les programmes accessibles.</p></div><a class="btn-s btn-primary-s" href="{% url 'candidature' %}"><i class="bi bi-plus-lg me-1"></i>Nouvelle candidature</a></div>
-<div class="row g-3 mb-4"><div class="col-sm-4"><div class="s-card stat"><span class="stat-label">Candidatures</span><div class="stat-value">{{ candidatures|length }}</div></div></div><div class="col-sm-4"><div class="s-card stat"><span class="stat-label">Acceptées</span><div class="stat-value">{{ nb_candidatures_acceptees }}</div></div></div><div class="col-sm-4"><div class="s-card stat"><span class="stat-label">En attente</span><div class="stat-value">{{ nb_candidatures_en_attente }}</div></div></div></div>
-<div class="d-flex justify-content-between align-items-end gap-3 mb-3"><div><h2 class="s-card-title mb-1">Mes candidatures</h2><p class="small text-secondary mb-0">Les accès aux cours s’activent après acceptation.</p></div></div><div class="row g-3 mb-5">{% for candidat in candidatures %}<div class="col-lg-6"><article class="s-card s-card-pad h-100"><div class="d-flex justify-content-between align-items-start gap-3 mb-3"><div><span class="eyebrow-s">{{ candidat.configVague.nom }}</span><h3 class="h5 fw-bold mb-1">{{ candidat.formation.nom }}</h3><small class="text-secondary">Déposée le {{ candidat.date_candidature|date:"d/m/Y" }}</small></div><span class="s-badge {% if candidat.statut == 'accepte' %}b-actif{% elif candidat.statut == 'refuse' %}b-refuse{% else %}b-attente{% endif %}">{{ candidat.get_statut_display }}</span></div><p class="small text-secondary">{{ candidat.formation.description|default:"Programme de formation SAREF Academy."|truncatewords:24 }}</p><div class="d-flex flex-wrap justify-content-between align-items-center gap-2 border-top pt-3"><span class="small text-secondary">{{ candidat.formation.duree }} mois · {{ candidat.formation.prix }} FCFA · {{ candidat.formation.modules.count }} module(s)</span>{% if candidat.statut == 'accepte' %}<a class="btn-s btn-primary-s btn-sm-s" href="{% url 'apprenant_formation_detail' candidat.pk %}">Ouvrir la formation <i class="bi bi-arrow-right ms-1"></i></a>{% else %}<span class="small text-secondary"><i class="bi bi-lock me-1"></i>Accès au programme en attente</span>{% endif %}</div></article></div>{% empty %}<div class="col-12"><section class="s-card s-card-pad text-center py-5"><span class="stat-icon mx-auto mb-3"><i class="bi bi-mortarboard"></i></span><h2 class="h5">Aucune candidature enregistrée</h2><p class="text-secondary">Choisissez une formation pour commencer votre parcours.</p><a class="btn-s btn-primary-s" href="{% url 'candidature' %}">Découvrir les formations</a></section></div>{% endfor %}</div>
-<div class="d-flex justify-content-between align-items-end gap-3 mb-3"><div><h2 class="s-card-title mb-1">Formations disponibles</h2><p class="small text-secondary mb-0">Les programmes actifs auxquels vous n’avez pas encore postulé.</p></div></div><div class="row g-3">{% for formation in formations_disponibles %}<div class="col-md-6 col-xl-4"><article class="s-card overflow-hidden h-100"><div class="cover c{% cycle '1' '2' '3' '4' '5' %}"><i class="bi bi-mortarboard"></i></div><div class="course-body"><span class="s-badge b-actif">{{ formation.get_statut_display }}</span><h3 class="h5 mt-2">{{ formation.nom }}</h3><p class="small text-secondary">{{ formation.description|default:"Formation proposée par SAREF Academy."|truncatewords:18 }}</p><div class="course-meta mb-3"><span><i class="bi bi-clock"></i>{{ formation.duree }} mois</span><span><i class="bi bi-cash"></i>{{ formation.prix }} FCFA</span></div><a class="btn-s btn-line-s w-100" href="{% url 'candidature' %}">Postuler</a></div></article></div>{% empty %}<div class="col-12"><p class="small text-secondary">Vous avez consulté toutes les formations actuellement proposées.</p></div>{% endfor %}</div>
-</main></div></div><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><script src="{% static 'js/espace.js' %}" defer></script></body></html>
+<!doctype html>
+<html lang="fr">
+  <head>
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Mes formations | SAREF Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
+  </head>
+  <body class="espace espace-apprenant">
+    <div class="app">
+      {% include 'partials/sidebar_apprenant.html' %}
+      <div class="app-col">
+        {% include 'partials/apprenant_topbar.html' %}
+        <main class="app-main">
+          <div class="page-head">
+            <div>
+              <span class="eyebrow-s">Votre parcours</span>
+              <h1 class="page-title">Mes formations</h1>
+              <p class="page-sub">
+                Suivez vos candidatures et ouvrez les programmes accessibles.
+              </p>
+            </div>
+            <a class="btn-s btn-primary-s" href="{% url 'candidature' %}">
+              <i class="bi bi-plus-lg me-1"></i>
+              Nouvelle candidature
+            </a>
+          </div>
+          <div
+            class="d-flex justify-content-between align-items-end gap-3 mb-3"
+          >
+            <div>
+              <h2 class="s-card-title mb-1">Mes candidatures</h2>
+              <p class="small text-secondary mb-0">
+                Les accès aux cours s’activent après acceptation.
+              </p>
+            </div>
+          </div>
+          <div class="row g-4 mb-5">
+            {% for candidat in candidatures %}
+            <div class="col-md-6">
+              <article class="s-card course-card h-100 overflow-hidden">
+                <div
+                  class="course-cover learner-course-cover {% cycle 'c1' 'c2' 'c3' 'c4' 'c5' %}"
+                  style="
+                    --course-cover-image: url(&quot;{% static &quot;img/apercu-cours.jpg&quot; %}&quot;);
+                  "
+                >
+                  <span class="course-cover-icon">
+                    <i
+                      class="bi {% cycle 'bi-code-slash' 'bi-palette' 'bi-megaphone' 'bi-camera-video' 'bi-archive' %}"
+                    ></i>
+                  </span>
+                  <span class="course-cover-title">
+                    {{ candidat.formation.nom }}
+                  </span>
+                  <span
+                    class="s-badge {% if candidat.statut == 'accepte' %}b-actif{% elif candidat.statut == 'refuse' %}b-refuse{% else %}b-attente{% endif %}"
+                  >
+                    {{ candidat.get_statut_display }}
+                  </span>
+                  <small>{{ candidat.configVague.nom }}</small>
+                </div>
+                <div class="course-body d-flex flex-column">
+                  <div class="course-kicker">
+                    <i class="bi bi-calendar3"></i>
+                    Déposée le {{ candidat.date_candidature|date:"d/m/Y" }}
+                  </div>
+                  <h3 class="h5 fw-bold mt-2 mb-2">
+                    {{ candidat.formation.nom }}
+                  </h3>
+                  <p class="small text-secondary flex-grow-1">
+                    {{ candidat.formation.description|default:"Programme de
+                    formation SAREF Academy."|truncatewords:24 }}
+                  </p>
+                  <div class="course-meta mb-3">
+                    <span>
+                      <i class="bi bi-clock"></i>
+                      {{ candidat.formation.duree }} mois
+                    </span>
+                    <span>
+                      <i class="bi bi-journals"></i>
+                      {{ candidat.formation.modules.count }} module(s)
+                    </span>
+                    <span>
+                      <i class="bi bi-cash"></i>
+                      {{ candidat.formation.prix }} FCFA
+                    </span>
+                  </div>
+                  {% if candidat.statut == 'accepte' %}
+                  <a
+                    class="btn-s btn-primary-s w-100"
+                    href="{% url 'apprenant_formation_detail' candidat.pk %}"
+                  >
+                    Voir le programme
+                    <i class="bi bi-arrow-right ms-1"></i>
+                  </a>
+                  {% else %}
+                  <div class="course-locked">
+                    <i class="bi bi-lock-fill"></i>
+                    Accès au programme en attente
+                  </div>
+                  {% endif %}
+                </div>
+              </article>
+            </div>
+            {% empty %}
+            <div class="col-md-6">
+              <article class="s-card course-card h-100 overflow-hidden">
+                <div
+                  class="course-cover learner-course-cover c1"
+                  style="
+                    --course-cover-image: url(&quot;{% static &quot;img/apercu-cours.jpg&quot; %}&quot;);
+                  "
+                >
+                  <span class="course-cover-icon">
+                    <i class="bi bi-code-slash"></i>
+                  </span>
+                  <span class="course-cover-title">Développement Web</span>
+                  <span class="s-badge b-actif">Accès ouvert</span>
+                  <small>Parcours numérique</small>
+                </div>
+                <div class="course-body d-flex flex-column">
+                  <div class="course-kicker">
+                    <i class="bi bi-stars"></i>
+                    Formation active
+                  </div>
+                  <h3 class="h5 fw-bold mt-2">Développement Web</h3>
+                  <p class="small text-secondary flex-grow-1">
+                    Découvrez les bases du Web, HTML, CSS et JavaScript à
+                    travers un programme en modules.
+                  </p>
+                  <div class="course-meta mb-3">
+                    <span>
+                      <i class="bi bi-clock"></i>
+                      4 mois
+                    </span>
+                    <span>
+                      <i class="bi bi-journals"></i>
+                      3 modules
+                    </span>
+                    <span>
+                      <i class="bi bi-cash"></i>
+                      120 000 FCFA
+                    </span>
+                  </div>
+                  <a
+                    class="btn-s btn-primary-s w-100"
+                    href="{% url 'apprenant_formation_detail' 1 %}"
+                  >
+                    Voir les modules
+                    <i class="bi bi-arrow-right ms-1"></i>
+                  </a>
+                </div>
+              </article>
+            </div>
+            <div class="col-md-6">
+              <article class="s-card course-card h-100 overflow-hidden">
+                <div
+                  class="course-cover learner-course-cover c3"
+                  style="
+                    --course-cover-image: url(&quot;{% static &quot;img/apercu-cours.jpg&quot; %}&quot;);
+                  "
+                >
+                  <span class="course-cover-icon">
+                    <i class="bi bi-megaphone"></i>
+                  </span>
+                  <span class="course-cover-title">Marketing digital</span>
+                  <span class="s-badge b-actif">Accès ouvert</span>
+                  <small>Parcours numérique</small>
+                </div>
+                <div class="course-body d-flex flex-column">
+                  <div class="course-kicker">
+                    <i class="bi bi-stars"></i>
+                    Formation active
+                  </div>
+                  <h3 class="h5 fw-bold mt-2">Marketing digital</h3>
+                  <p class="small text-secondary flex-grow-1">
+                    Explorez la stratégie de contenu, les réseaux sociaux et la
+                    mesure des résultats.
+                  </p>
+                  <div class="course-meta mb-3">
+                    <span>
+                      <i class="bi bi-clock"></i>
+                      3 mois
+                    </span>
+                    <span>
+                      <i class="bi bi-journals"></i>
+                      3 modules
+                    </span>
+                    <span>
+                      <i class="bi bi-cash"></i>
+                      90 000 FCFA
+                    </span>
+                  </div>
+                  <a
+                    class="btn-s btn-primary-s w-100"
+                    href="{% url 'apprenant_formation_detail' 2 %}"
+                  >
+                    Voir les modules
+                    <i class="bi bi-arrow-right ms-1"></i>
+                  </a>
+                </div>
+              </article>
+            </div>
+            {% endfor %}
+          </div>
+          <div
+            class="d-flex justify-content-between align-items-end gap-3 mb-3"
+          >
+            <div>
+              <h2 class="s-card-title mb-1">Formations disponibles</h2>
+              <p class="small text-secondary mb-0">
+                Les programmes actifs auxquels vous n’avez pas encore postulé.
+              </p>
+            </div>
+          </div>
+          <div class="row g-3">
+            {% for formation in formations_disponibles %}
+            <div class="col-md-6 col-xl-4">
+              <article class="s-card overflow-hidden h-100">
+                <div class="cover c{% cycle '1' '2' '3' '4' '5' %}">
+                  <i class="bi bi-mortarboard"></i>
+                </div>
+                <div class="course-body">
+                  <span class="s-badge b-actif">
+                    {{ formation.get_statut_display }}
+                  </span>
+                  <h3 class="h5 mt-2">{{ formation.nom }}</h3>
+                  <p class="small text-secondary">
+                    {{ formation.description|default:"Formation proposée par
+                    SAREF Academy."|truncatewords:18 }}
+                  </p>
+                  <div class="course-meta mb-3">
+                    <span>
+                      <i class="bi bi-clock"></i>
+                      {{ formation.duree }} mois
+                    </span>
+                    <span>
+                      <i class="bi bi-cash"></i>
+                      {{ formation.prix }} FCFA
+                    </span>
+                  </div>
+                  <a
+                    class="btn-s btn-line-s w-100"
+                    href="{% url 'candidature' %}"
+                  >
+                    Postuler
+                  </a>
+                </div>
+              </article>
+            </div>
+            {% empty %}
+            <div class="col-12">
+              <p class="small text-secondary">
+                Aucune autre formation n’est actuellement ouverte aux
+                candidatures.
+              </p>
+            </div>
+            {% endfor %}
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/espace.js' %}" defer></script>
+  </body>
+</html>

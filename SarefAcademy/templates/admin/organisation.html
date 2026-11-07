@@ -2,6 +2,11 @@
 <!doctype html>
 <html lang="fr">
   <head>
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}"
+    />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#335cec" />
@@ -22,13 +27,194 @@
     />
     <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
     <style>
-      .org-intro{position:relative;overflow:hidden;padding:28px 32px;border-radius:22px;background:linear-gradient(120deg,#17295f,#2846a1 70%,#4264cf);color:#fff;box-shadow:0 16px 38px rgba(27,48,111,.16)}
-      .org-intro:after{content:"";position:absolute;width:260px;height:260px;right:-54px;top:-120px;border:1px solid rgba(255,255,255,.16);border-radius:50%;box-shadow:0 0 0 28px rgba(255,255,255,.035),0 0 0 58px rgba(255,255,255,.025)}
-      .org-intro>*{position:relative;z-index:1}.org-intro .eyebrow-s{color:#cdd8ff}.org-intro .page-sub{color:#e1e8ff;max-width:620px}.org-kicker{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.12);font-size:.76rem;font-weight:600;letter-spacing:.02em}
-      .org-stat{height:100%;padding:19px 21px;border:1px solid #e8ebf3;border-radius:17px;background:#fff;box-shadow:0 5px 18px rgba(22,36,82,.035)}.org-stat-top{display:flex;align-items:center;justify-content:space-between;color:#69748c;font-size:.82rem;font-weight:600}.org-stat-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:#edf1ff;color:#334db7;font-size:1.1rem}.org-stat-value{margin-top:13px;color:#172554;font-size:1.8rem;line-height:1.1;font-weight:700}.org-stat-note{margin-top:6px;color:#778198;font-size:.78rem}
-      .org-section-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:30px 0 14px}.org-section-title h2{margin:0;color:#172554;font-size:1.1rem;font-weight:700}.org-section-title p{margin:4px 0 0;color:#748097;font-size:.84rem}
-      .org-step{height:100%;padding:19px;border:1px solid #e8ebf3;border-radius:17px;background:#fff;box-shadow:0 5px 18px rgba(22,36,82,.035);transition:transform .2s,border-color .2s,box-shadow .2s}.org-step:hover{transform:translateY(-3px);border-color:#cbd5ff;box-shadow:0 14px 28px rgba(24,45,100,.08)}.org-step-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.org-step-num{display:grid;place-items:center;width:38px;height:38px;border-radius:13px;background:#edf1ff;color:#334db7;font-weight:700}.org-step-icon{color:#425bb8;font-size:1.2rem}.org-step h3{min-height:42px;margin:0 0 7px;font-size:.97rem;font-weight:700;color:#202d4e}.org-step p{min-height:60px;margin:0 0 17px;color:#758097;font-size:.82rem;line-height:1.6}.org-flow{display:flex;align-items:center;gap:8px;margin:15px 0 20px;color:#e3e8f5}.org-flow span{width:8px;height:8px;border-radius:50%;background:#b8c5f5}.org-flow i{color:#91a3db;font-size:.8rem}.org-course-name{min-width:190px}.org-course-name small{display:block;margin-top:4px;color:#78839a}
-      @media(max-width:575.98px){.org-intro{padding:23px 20px}.org-intro .btn-s{width:100%}.org-section-title{align-items:start;flex-direction:column}}
+      .org-intro {
+        position: relative;
+        overflow: hidden;
+        padding: 28px 32px;
+        border-radius: 22px;
+        background: linear-gradient(120deg, #17295f, #2846a1 70%, #4264cf);
+        color: #fff;
+        box-shadow: 0 16px 38px rgba(27, 48, 111, 0.16);
+      }
+      .org-intro:after {
+        content: "";
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        right: -54px;
+        top: -120px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 50%;
+        box-shadow:
+          0 0 0 28px rgba(255, 255, 255, 0.035),
+          0 0 0 58px rgba(255, 255, 255, 0.025);
+      }
+      .org-intro > * {
+        position: relative;
+        z-index: 1;
+      }
+      .org-intro .eyebrow-s {
+        color: #cdd8ff;
+      }
+      .org-intro .page-sub {
+        color: #e1e8ff;
+        max-width: 620px;
+      }
+      .org-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 11px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        font-size: 0.76rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+      .org-stat {
+        height: 100%;
+        padding: 19px 21px;
+        border: 1px solid #e8ebf3;
+        border-radius: 17px;
+        background: #fff;
+        box-shadow: 0 5px 18px rgba(22, 36, 82, 0.035);
+      }
+      .org-stat-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #69748c;
+        font-size: 0.82rem;
+        font-weight: 600;
+      }
+      .org-stat-icon {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        background: #edf1ff;
+        color: #334db7;
+        font-size: 1.1rem;
+      }
+      .org-stat-value {
+        margin-top: 13px;
+        color: #172554;
+        font-size: 1.8rem;
+        line-height: 1.1;
+        font-weight: 700;
+      }
+      .org-stat-note {
+        margin-top: 6px;
+        color: #778198;
+        font-size: 0.78rem;
+      }
+      .org-section-title {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 16px;
+        margin: 30px 0 14px;
+      }
+      .org-section-title h2 {
+        margin: 0;
+        color: #172554;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+      .org-section-title p {
+        margin: 4px 0 0;
+        color: #748097;
+        font-size: 0.84rem;
+      }
+      .org-step {
+        height: 100%;
+        padding: 19px;
+        border: 1px solid #e8ebf3;
+        border-radius: 17px;
+        background: #fff;
+        box-shadow: 0 5px 18px rgba(22, 36, 82, 0.035);
+        transition:
+          transform 0.2s,
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+      .org-step:hover {
+        transform: translateY(-3px);
+        border-color: #cbd5ff;
+        box-shadow: 0 14px 28px rgba(24, 45, 100, 0.08);
+      }
+      .org-step-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+      .org-step-num {
+        display: grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 13px;
+        background: #edf1ff;
+        color: #334db7;
+        font-weight: 700;
+      }
+      .org-step-icon {
+        color: #425bb8;
+        font-size: 1.2rem;
+      }
+      .org-step h3 {
+        min-height: 42px;
+        margin: 0 0 7px;
+        font-size: 0.97rem;
+        font-weight: 700;
+        color: #202d4e;
+      }
+      .org-step p {
+        min-height: 60px;
+        margin: 0 0 17px;
+        color: #758097;
+        font-size: 0.82rem;
+        line-height: 1.6;
+      }
+      .org-flow {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 15px 0 20px;
+        color: #e3e8f5;
+      }
+      .org-flow span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #b8c5f5;
+      }
+      .org-flow i {
+        color: #91a3db;
+        font-size: 0.8rem;
+      }
+      .org-course-name {
+        min-width: 190px;
+      }
+      .org-course-name small {
+        display: block;
+        margin-top: 4px;
+        color: #78839a;
+      }
+      @media (max-width: 575.98px) {
+        .org-intro {
+          padding: 23px 20px;
+        }
+        .org-intro .btn-s {
+          width: 100%;
+        }
+        .org-section-title {
+          align-items: start;
+          flex-direction: column;
+        }
+      }
     </style>
     <script>
       document.documentElement.classList.add("js");
@@ -40,21 +226,114 @@
       <div class="app-col">
         {% include 'partials/admin_topbar.html' %}
         <main class="app-main">
-          <section class="org-intro mb-4"><span class="org-kicker"><i class="bi bi-diagram-3"></i>Vue d’ensemble pédagogique</span><div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mt-3"><div><h1 class="h2 fw-bold mb-2">Organisation</h1><p class="page-sub mb-0">Préparez vos vagues, construisez vos formations et rendez les contenus accessibles au bon moment.</p></div><a class="btn-s btn-light" href="{% url 'admin_formations' %}"><i class="bi bi-plus-lg me-1"></i>Voir les formations</a></div></section>
+          <section class="page-head org-intro mb-4">
+            <div>
+              <span class="org-kicker">
+                <i class="bi bi-diagram-3"></i>
+                Vue d’ensemble pédagogique
+              </span>
+              <h1 class="page-title mt-3 mb-2">Organisation</h1>
+              <p class="page-sub mb-0">
+                Préparez vos vagues, construisez vos formations et rendez les
+                contenus accessibles au bon moment.
+              </p>
+            </div>
+          </section>
           <div class="row g-3 mb-4">
-            <div class="col-sm-6 col-xl-3"><div class="org-stat"><div class="org-stat-top"><span>Formations</span><span class="org-stat-icon"><i class="bi bi-mortarboard"></i></span></div><div class="org-stat-value">{{ nombre_formations }}</div><div class="org-stat-note">{{ nombre_formations_actives }} actives · {{ nombre_formations_brouillon }} brouillons</div></div></div>
-            <div class="col-sm-6 col-xl-3"><div class="org-stat"><div class="org-stat-top"><span>Formateurs</span><span class="org-stat-icon" style="background:#e8f7ef;color:#17834d"><i class="bi bi-person-video3"></i></span></div><div class="org-stat-value">{{ nombre_formateurs }}</div><div class="org-stat-note">{{ nombre_formateurs_affectes }} affectés à une formation</div></div></div>
-            <div class="col-sm-6 col-xl-3"><div class="org-stat"><div class="org-stat-top"><span>Modules</span><span class="org-stat-icon" style="background:#fff3e8;color:#b35a16"><i class="bi bi-collection"></i></span></div><div class="org-stat-value">{{ nombre_modules }}</div><div class="org-stat-note">dans les formations enregistrées</div></div></div>
-            <div class="col-sm-6 col-xl-3"><div class="org-stat"><div class="org-stat-top"><span>Chapitres</span><span class="org-stat-icon" style="background:#f1eefe;color:#7444b5"><i class="bi bi-play-btn"></i></span></div><div class="org-stat-value">{{ nombre_chapitres }}</div><div class="org-stat-note">avec leurs ressources pédagogiques</div></div></div>
+            <div class="col-sm-6 col-xl-3">
+              <div class="org-stat">
+                <div class="org-stat-top">
+                  <span>Formations</span>
+                  <span class="org-stat-icon">
+                    <i class="bi bi-mortarboard"></i>
+                  </span>
+                </div>
+                <div class="org-stat-value">{{ nombre_formations }}</div>
+                <div class="org-stat-note">
+                  {{ nombre_formations_actives }} actives · {{
+                  nombre_formations_brouillon }} brouillons
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+              <div class="org-stat">
+                <div class="org-stat-top">
+                  <span>Formateurs</span>
+                  <span
+                    class="org-stat-icon"
+                    style="background: #e8f7ef; color: #17834d"
+                  >
+                    <i class="bi bi-person-video3"></i>
+                  </span>
+                </div>
+                <div class="org-stat-value">{{ nombre_formateurs }}</div>
+                <div class="org-stat-note">
+                  {{ nombre_formateurs_affectes }} affectés à une formation
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+              <div class="org-stat">
+                <div class="org-stat-top">
+                  <span>Modules</span>
+                  <span
+                    class="org-stat-icon"
+                    style="background: #fff3e8; color: #b35a16"
+                  >
+                    <i class="bi bi-collection"></i>
+                  </span>
+                </div>
+                <div class="org-stat-value">{{ nombre_modules }}</div>
+                <div class="org-stat-note">
+                  dans les formations enregistrées
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+              <div class="org-stat">
+                <div class="org-stat-top">
+                  <span>Chapitres</span>
+                  <span
+                    class="org-stat-icon"
+                    style="background: #f1eefe; color: #7444b5"
+                  >
+                    <i class="bi bi-play-btn"></i>
+                  </span>
+                </div>
+                <div class="org-stat-value">{{ nombre_chapitres }}</div>
+                <div class="org-stat-note">
+                  avec leurs ressources pédagogiques
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="org-section-title"><div><h2>Parcours de mise en place</h2><p>Suivez ces étapes pour publier une formation complète.</p></div><span class="org-kicker" style="background:#eef2ff;color:#334db7"><i class="bi bi-check2-circle"></i>5 étapes</span></div>
-          <div class="org-flow" aria-hidden="true"><span></span><i class="bi bi-chevron-right"></i><span></span><i class="bi bi-chevron-right"></i><span></span><i class="bi bi-chevron-right"></i><span></span><i class="bi bi-chevron-right"></i><span></span></div>
+          <div class="org-section-title">
+            <div>
+              <h2>Parcours de mise en place</h2>
+              <p>Suivez ces étapes pour publier une formation complète.</p>
+            </div>
+            <span
+              class="org-kicker"
+              style="background: #eef2ff; color: #334db7"
+            >
+              <i class="bi bi-check2-circle"></i>
+              5 étapes
+            </span>
+          </div>
+          <div class="org-flow" aria-hidden="true">
+            <span></span>
+            <i class="bi bi-chevron-right"></i>
+            <span></span>
+            <i class="bi bi-chevron-right"></i>
+            <span></span>
+            <i class="bi bi-chevron-right"></i>
+            <span></span>
+            <i class="bi bi-chevron-right"></i>
+            <span></span>
+          </div>
           <div class="row g-3 mb-4">
             <div class="col-md-6 col-xl-4">
-              <div
-                class="org-step reveal"
-                style="--d: 0s"
-              >
+              <div class="org-step reveal" style="--d: 0s">
                 <div class="d-flex justify-content-between mb-3">
                   <span class="stat-icon"><i class="bi bi-calendar3"></i></span>
                   <span class="eyebrow-s m-0">Étape 1</span>
@@ -74,10 +353,7 @@
               </div>
             </div>
             <div class="col-md-6 col-xl-4">
-              <div
-                class="org-step reveal"
-                style="--d: 0.07s"
-              >
+              <div class="org-step reveal" style="--d: 0.07s">
                 <div class="d-flex justify-content-between mb-3">
                   <span class="stat-icon">
                     <i class="bi bi-mortarboard"></i>
@@ -98,10 +374,7 @@
               </div>
             </div>
             <div class="col-md-6 col-xl-4">
-              <div
-                class="org-step reveal"
-                style="--d: 0.14s"
-              >
+              <div class="org-step reveal" style="--d: 0.14s">
                 <div class="d-flex justify-content-between mb-3">
                   <span class="stat-icon"><i class="bi bi-list-ol"></i></span>
                   <span class="eyebrow-s m-0">Étape 3</span>
@@ -121,10 +394,7 @@
               </div>
             </div>
             <div class="col-md-6 col-xl-4">
-              <div
-                class="org-step reveal"
-                style="--d: 0.21000000000000002s"
-              >
+              <div class="org-step reveal" style="--d: 0.21000000000000002s">
                 <div class="d-flex justify-content-between mb-3">
                   <span class="stat-icon">
                     <i class="bi bi-person-check"></i>
@@ -145,10 +415,7 @@
               </div>
             </div>
             <div class="col-md-6 col-xl-4">
-              <div
-                class="org-step reveal"
-                style="--d: 0.28s"
-              >
+              <div class="org-step reveal" style="--d: 0.28s">
                 <div class="d-flex justify-content-between mb-3">
                   <span class="stat-icon"><i class="bi bi-toggle-on"></i></span>
                   <span class="eyebrow-s m-0">Étape 5</span>
@@ -168,7 +435,18 @@
               </div>
             </div>
           </div>
-          <div class="org-section-title"><div><h2>Programmes enregistrés</h2><p>État d’avancement des formations et affectation des formateurs.</p></div><a class="btn-s btn-line-s" href="{% url 'admin_formations' %}">Toutes les formations <i class="bi bi-arrow-right ms-1"></i></a></div>
+          <div class="org-section-title">
+            <div>
+              <h2>Programmes enregistrés</h2>
+              <p>
+                État d’avancement des formations et affectation des formateurs.
+              </p>
+            </div>
+            <a class="btn-s btn-line-s" href="{% url 'admin_formations' %}">
+              Toutes les formations
+              <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+          </div>
           <div class="s-card overflow-hidden reveal">
             <div class="table-responsive">
               <table class="s-table">
@@ -182,13 +460,70 @@
                   </tr>
                 </thead>
                 <tbody>
-                  {% for formation in formations %}<tr>
-                    <td class="org-course-name"><b>{{ formation.nom }}</b><small>{{ formation.duree }} mois · {{ formation.prix }} FCFA</small></td>
-                    <td><span class="fw-semibold">{{ formation.modules.count }}</span><span class="text-secondary"> modules · </span><span class="fw-semibold">{{ formation.nombre_chapitres }}</span><span class="text-secondary"> chapitres</span></td>
-                    <td>{% for formateur in formation.formateurs.all %}<span class="d-block">{{ formateur.prenom }} {{ formateur.nom }}</span>{% empty %}<span class="text-secondary">Non attribué</span>{% endfor %}</td>
-                    <td><span class="s-badge {% if formation.statut == 'active' %}b-active{% elif formation.statut == 'brouillon' %}b-brouillon{% else %}b-archive{% endif %}">{{ formation.get_statut_display }}</span></td>
-                    <td><a class="btn-icon-s" href="{% url 'admin_formation_detail' formation.pk %}" aria-label="Gérer {{ formation.nom }}"><i class="bi bi-arrow-up-right"></i></a></td>
-                  </tr>{% empty %}<tr><td colspan="5" class="text-center py-5"><i class="bi bi-journals fs-3 text-primary d-block mb-2"></i><strong>Aucune formation enregistrée</strong><small class="d-block text-secondary mt-1">Créez une formation pour commencer à organiser votre programme.</small><a class="btn-s btn-primary-s mt-3" href="{% url 'admin_formations' %}">Créer une formation</a></td></tr>{% endfor %}
+                  {% for formation in formations %}
+                  <tr>
+                    <td class="org-course-name">
+                      <b>{{ formation.nom }}</b>
+                      <small>
+                        {{ formation.duree }} mois · {{ formation.prix }} FCFA
+                      </small>
+                    </td>
+                    <td>
+                      <span class="fw-semibold">
+                        {{ formation.modules.count }}
+                      </span>
+                      <span class="text-secondary">modules ·</span>
+                      <span class="fw-semibold">
+                        {{ formation.nombre_chapitres }}
+                      </span>
+                      <span class="text-secondary">chapitres</span>
+                    </td>
+                    <td>
+                      {% for formateur in formation.formateurs.all %}
+                      <span class="d-block">
+                        {{ formateur.prenom }} {{ formateur.nom }}
+                      </span>
+                      {% empty %}
+                      <span class="text-secondary">Non attribué</span>
+                      {% endfor %}
+                    </td>
+                    <td>
+                      <span
+                        class="s-badge {% if formation.statut == 'active' %}b-active{% elif formation.statut == 'brouillon' %}b-brouillon{% else %}b-archive{% endif %}"
+                      >
+                        {{ formation.get_statut_display }}
+                      </span>
+                    </td>
+                    <td>
+                      <a
+                        class="btn-icon-s"
+                        href="{% url 'admin_formation_detail' formation.pk %}"
+                        aria-label="Gérer {{ formation.nom }}"
+                      >
+                        <i class="bi bi-arrow-up-right"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="5" class="text-center py-5">
+                      <i
+                        class="bi bi-journals fs-3 text-primary d-block mb-2"
+                      ></i>
+                      <strong>Aucune formation enregistrée</strong>
+                      <small class="d-block text-secondary mt-1">
+                        Créez une formation pour commencer à organiser votre
+                        programme.
+                      </small>
+                      <a
+                        class="btn-s btn-primary-s mt-3"
+                        href="{% url 'admin_formations' %}"
+                      >
+                        Créer une formation
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
                 </tbody>
               </table>
             </div>

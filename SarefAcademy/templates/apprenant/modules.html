@@ -1,5 +1,150 @@
 {% load static %}
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mes modules | SAREF Academy</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"><link rel="stylesheet" href="{% static 'css/espace.css' %}"></head>
-<body class="espace espace-apprenant"><div class="app">{% include 'partials/sidebar_apprenant.html' %}<div class="app-col">{% include 'partials/apprenant_topbar.html' %}<main class="app-main"><div class="page-head"><div><span class="eyebrow-s">Vos cours</span><h1 class="page-title">Mes modules</h1><p class="page-sub">Retrouvez les chapitres publiés et ceux encore en préparation.</p></div><a class="btn-s btn-line-s" href="{% url 'apprenant_formations' %}"><i class="bi bi-arrow-left me-1"></i>Mes formations</a></div>
-{% for module in modules %}<section class="s-card overflow-hidden mb-4"><div class="s-card-head px-4 py-3 border-bottom d-flex justify-content-between align-items-center gap-3"><div><span class="eyebrow-s">{{ module.formation.nom }} · Module {{ module.ordre }}</span><h2 class="s-card-title mb-0">{{ module.titre }}</h2>{% if module.description %}<small class="text-secondary">{{ module.description }}</small>{% endif %}</div><span class="s-badge {% if module.formation_id in formations_acceptees and module.est_active %}b-actif{% else %}b-brouillon{% endif %}">{% if module.formation_id in formations_acceptees and module.est_active %}Disponible{% else %}En préparation{% endif %}</span></div><div class="list-group list-group-flush">{% for chapitre in module.chapitres.all %}<div class="list-group-item d-flex align-items-center gap-3 py-3"><span class="stat-icon"><i class="bi {% if chapitre.est_active and module.est_active and module.formation_id in formations_acceptees %}bi-play-circle{% else %}bi-lock{% endif %}"></i></span><span class="flex-grow-1"><b class="d-block">{{ chapitre.ordre }}. {{ chapitre.nom }}</b><small class="text-secondary">{{ chapitre.duree }} min{% if chapitre.description %} · {{ chapitre.description|truncatewords:12 }}{% endif %}</small></span><span class="d-flex gap-2">{% if chapitre.support_video_url %}<i class="bi bi-camera-video-fill text-success" title="Vidéo"></i>{% endif %}{% if chapitre.support_pdf %}<i class="bi bi-file-earmark-pdf-fill text-danger" title="PDF"></i>{% endif %}</span>{% if chapitre.est_active and module.est_active and module.formation_id in formations_acceptees %}<a class="btn-s btn-primary-s btn-sm-s" href="{% url 'apprenant_module_detail' module.pk %}?chapitre={{ chapitre.pk }}">Ouvrir</a>{% else %}<span class="s-badge b-brouillon">Verrouillé</span>{% endif %}</div>{% empty %}<div class="p-4 text-secondary small">Les chapitres de ce module sont en préparation.</div>{% endfor %}</div></section>{% empty %}<section class="s-card s-card-pad text-center py-5"><span class="stat-icon mx-auto mb-3"><i class="bi bi-journals"></i></span><h2 class="h5">Les modules apparaîtront ici</h2><p class="text-secondary">Une fois votre candidature acceptée, vous retrouverez ici les cours de vos formations.</p><a class="btn-s btn-primary-s" href="{% url 'apprenant_formations' %}">Voir mes candidatures</a></section>{% endfor %}
-</main></div></div><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><script src="{% static 'js/espace.js' %}" defer></script></body></html>
+<!doctype html>
+<html lang="fr">
+  <head>
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Mes modules | SAREF Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
+  </head>
+  <body class="espace espace-apprenant">
+    <div class="app">
+      {% include 'partials/sidebar_apprenant.html' %}
+      <div class="app-col">
+        {% include 'partials/apprenant_topbar.html' %}
+        <main class="app-main">
+          <div class="page-head">
+            <div>
+              <span class="eyebrow-s">Vos cours</span>
+              <h1 class="page-title">Mes modules</h1>
+              <p class="page-sub">
+                Retrouvez les chapitres publiés et ceux encore en préparation.
+              </p>
+            </div>
+            <a class="btn-s btn-line-s" href="{% url 'apprenant_formations' %}">
+              <i class="bi bi-arrow-left me-1"></i>
+              Mes formations
+            </a>
+          </div>
+          {% for module in modules %}
+          <section class="s-card module-accordion mb-3">
+            <button
+              class="module-accordion-head"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#student-module-{{ module.pk }}"
+              aria-expanded="false"
+              aria-controls="student-module-{{ module.pk }}"
+            >
+              <span class="acc-num">{{ module.ordre }}</span>
+              <span class="module-accordion-title">
+                <small>
+                  {{ module.formation.nom }} · MODULE {{ module.ordre }} · {{
+                  module.chapitres.count }} chapitre(s)
+                </small>
+                <b>{{ module.titre }}</b>
+                {% if module.description %}
+                <span>{{ module.description|truncatewords:16 }}</span>
+                {% endif %}
+              </span>
+              <span
+                class="s-badge {% if module.formation_id in formations_acceptees and module.est_active %}b-actif{% else %}b-brouillon{% endif %}"
+              >
+                {% if module.formation_id in formations_acceptees and
+                module.est_active %}Disponible{% else %}En préparation{% endif
+                %}
+              </span>
+              <i class="bi bi-chevron-down module-chevron"></i>
+            </button>
+            <div id="student-module-{{ module.pk }}" class="collapse">
+              <div class="module-chapters">
+                {% for chapitre in module.chapitres.all %}
+                <div class="module-chapter">
+                  <span class="chapter-index">
+                    <i
+                      class="bi {% if chapitre.est_active and module.est_active and module.formation_id in formations_acceptees %}bi-play-fill{% else %}bi-lock-fill{% endif %}"
+                    ></i>
+                  </span>
+                  <span class="module-chapter-title">
+                    <b>{{ chapitre.ordre }}. {{ chapitre.nom }}</b>
+                    <small>
+                      {{ chapitre.duree }} min{% if chapitre.description %} · {{
+                      chapitre.description|truncatewords:12 }}{% endif %}
+                    </small>
+                  </span>
+                  <span class="chapter-resources">
+                    {% if chapitre.support_video_url %}
+                    <i
+                      class="bi bi-camera-video-fill text-success"
+                      title="Vidéo"
+                    ></i>
+                    {% endif %}{% if chapitre.support_pdf %}
+                    <i
+                      class="bi bi-file-earmark-pdf-fill text-danger"
+                      title="PDF"
+                    ></i>
+                    {% endif %}
+                  </span>
+                  {% if chapitre.est_active and module.est_active and
+                  module.formation_id in formations_acceptees %}
+                  <a
+                    class="btn-s btn-primary-s btn-sm-s"
+                    href="{% url 'apprenant_module_detail' module.pk %}?chapitre={{ chapitre.pk }}"
+                  >
+                    Ouvrir
+                  </a>
+                  {% else %}
+                  <span class="s-badge b-brouillon">Verrouillé</span>
+                  {% endif %}
+                </div>
+                {% empty %}
+                <div class="p-4 text-secondary small">
+                  Les chapitres de ce module sont en préparation.
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </section>
+          {% empty %}
+          <section class="s-card s-card-pad text-center py-5">
+            <span class="stat-icon mx-auto mb-3">
+              <i class="bi bi-journals"></i>
+            </span>
+            <h2 class="h5">Les modules apparaîtront ici</h2>
+            <p class="text-secondary">
+              Une fois votre candidature acceptée, vous retrouverez ici les
+              cours de vos formations.
+            </p>
+            <a
+              class="btn-s btn-primary-s"
+              href="{% url 'apprenant_formations' %}"
+            >
+              Voir mes candidatures
+            </a>
+          </section>
+          {% endfor %}
+        </main>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/espace.js' %}" defer></script>
+  </body>
+</html>

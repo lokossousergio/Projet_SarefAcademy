@@ -1,9 +1,265 @@
 {% load static %}
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{% if formation %}{{ formation.nom }}{% else %}Formation{% endif %} | SAREF Academy</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"><link rel="stylesheet" href="{% static 'css/espace.css' %}"></head>
-<body class="espace espace-apprenant"><div class="app">{% include 'partials/sidebar_apprenant.html' %}<div class="app-col">{% include 'partials/apprenant_topbar.html' %}<main class="app-main">
-{% if candidat %}<nav class="crumb"><a href="{% url 'apprenant_formations' %}">Mes formations</a> / {{ formation.nom }}</nav><section class="hero mb-4"><div class="row align-items-center g-4"><div class="col-lg-8"><div class="d-flex flex-wrap gap-2 mb-3"><span class="hero-chip {% if candidat.statut == 'accepte' %}light{% endif %}"><i class="bi {% if candidat.statut == 'accepte' %}bi-check-circle-fill{% else %}bi-hourglass-split{% endif %}"></i>{{ candidat.get_statut_display }}</span><span class="hero-chip"><i class="bi bi-calendar3"></i>{{ candidat.configVague.nom }}</span><span class="hero-chip"><i class="bi bi-clock"></i>{{ formation.duree }} mois</span></div><h1 class="h2 fw-bold">{{ formation.nom }}</h1><p>{{ formation.description|default:"Votre programme de formation SAREF Academy." }}</p>{% if candidat.statut == 'accepte' %}<a class="btn-s btn-light-s" href="{% url 'apprenant_modules' %}"><i class="bi bi-play-fill me-1"></i>Accéder aux modules</a>{% else %}<span class="small"><i class="bi bi-lock me-1"></i>Les cours seront ouverts après acceptation de la candidature.</span>{% endif %}</div><div class="col-lg-4"><div class="bg-white bg-opacity-10 p-3 rounded-4"><div class="small">Progression pédagogique</div><div class="fs-2 fw-bold">{{ progression }}%</div><div class="progress"><div class="progress-bar" style="width:{{ progression }}%"></div></div><small>{{ chapitres_termines|length }} sur {{ nb_chapitres }} chapitres terminés</small></div></div></div></section>
-<div class="row g-4"><div class="col-xl-8"><div class="d-flex justify-content-between align-items-end mb-3"><div><span class="eyebrow-s">Programme détaillé</span><h2 class="s-card-title mb-0">Modules et chapitres</h2></div><span class="small text-secondary">{{ modules|length }} module(s)</span></div>
-{% for module in modules %}<section class="s-card overflow-hidden mb-3"><div class="s-card-head px-4 py-3 border-bottom d-flex justify-content-between align-items-center gap-3"><div><span class="eyebrow-s">Module {{ module.ordre }}</span><h3 class="s-card-title mb-0">{{ module.titre }}</h3>{% if module.description %}<small class="text-secondary">{{ module.description }}</small>{% endif %}</div><span class="s-badge {% if candidat.statut == 'accepte' and module.est_active %}b-actif{% else %}b-brouillon{% endif %}">{% if candidat.statut == 'accepte' and module.est_active %}Disponible{% else %}En préparation{% endif %}</span></div><div class="list-group list-group-flush">{% for chapitre in module.chapitres.all %}<div class="list-group-item d-flex align-items-center gap-3 py-3"><span class="acc-num">{{ chapitre.ordre }}</span><span class="flex-grow-1"><b class="d-block">{{ chapitre.nom }}</b><small class="text-secondary">{{ chapitre.duree }} min{% if chapitre.description %} · {{ chapitre.description|truncatewords:12 }}{% endif %}</small></span><span class="d-flex gap-2">{% if chapitre.support_video_url %}<i class="bi bi-camera-video text-success" title="Vidéo"></i>{% endif %}{% if chapitre.support_pdf %}<i class="bi bi-file-earmark-pdf text-danger" title="PDF"></i>{% endif %}</span>{% if candidat.statut == 'accepte' and module.est_active and chapitre.est_active %}<a class="btn-s btn-primary-s btn-sm-s" href="{% url 'apprenant_module_detail' module.pk %}?chapitre={{ chapitre.pk }}">Ouvrir</a>{% else %}<span class="s-badge b-brouillon">{% if candidat.statut != 'accepte' %}Verrouillé{% else %}En préparation{% endif %}</span>{% endif %}</div>{% empty %}<div class="p-4 small text-secondary">Les chapitres de ce module sont en cours de préparation.</div>{% endfor %}</div></section>{% empty %}<section class="s-card s-card-pad text-center py-5"><i class="bi bi-journals fs-2 text-primary"></i><h3 class="h5 mt-3">Le programme arrive bientôt</h3><p class="text-secondary mb-0">Les modules seront affichés ici dès leur création.</p></section>{% endfor %}
-</div><aside class="col-xl-4"><section class="s-card s-card-pad mb-4"><span class="eyebrow-s">Détails de la formation</span><div class="info-row"><span>Durée</span><b>{{ formation.duree }} mois</b></div><div class="info-row"><span>Frais de formation</span><b>{{ formation.prix }} FCFA</b></div><div class="info-row"><span>Modules</span><b>{{ modules|length }}</b></div><div class="info-row"><span>Candidature</span><b>{{ candidat.get_statut_display }}</b></div></section><section class="s-card s-card-pad mb-4"><span class="eyebrow-s">Équipe pédagogique</span><h2 class="s-card-title mt-1">Formateur(s)</h2>{% for formateur in formation.formateurs.all %}<div class="d-flex align-items-center gap-3 border-top py-3"><span class="avatar avatar-md">{{ formateur.prenom|first|upper }}{{ formateur.nom|first|upper }}</span><div><b>{{ formateur.prenom }} {{ formateur.nom }}</b><small class="d-block text-secondary">Formateur</small></div></div>{% empty %}<p class="small text-secondary mb-0">L’équipe pédagogique sera affichée dès son affectation.</p>{% endfor %}</section><a class="btn-s btn-line-s w-100" href="{% url 'apprenant_paiements' %}"><i class="bi bi-credit-card me-1"></i>Consulter mes paiements</a></aside></div>
-{% else %}<section class="s-card s-card-pad text-center py-5"><h1 class="h4">Formation introuvable</h1><p class="text-secondary">Aucune candidature correspondante n’est liée à votre espace.</p><a class="btn-s btn-primary-s" href="{% url 'apprenant_formations' %}">Retour à mes formations</a></section>{% endif %}
-</main></div></div><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><script src="{% static 'js/espace.js' %}" defer></script></body></html>
+<!doctype html>
+<html lang="fr">
+  <head>
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>
+      {% if formation %}{{ formation.nom }}{% else %}Formation{% endif %} |
+      SAREF Academy
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
+  </head>
+  <body class="espace espace-apprenant">
+    <div class="app">
+      {% include 'partials/sidebar_apprenant.html' %}
+      <div class="app-col">
+        {% include 'partials/apprenant_topbar.html' %}
+        <main class="app-main">
+          {% if candidat %}
+          <nav class="crumb">
+            <a href="{% url 'apprenant_formations' %}">Mes formations</a>
+            / {{ formation.nom }}
+          </nav>
+          <section class="hero mb-4">
+            <div class="row align-items-center g-4">
+              <div class="col-lg-8">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                  <span
+                    class="hero-chip {% if candidat.statut == 'accepte' %}light{% endif %}"
+                  >
+                    <i
+                      class="bi {% if candidat.statut == 'accepte' %}bi-check-circle-fill{% else %}bi-hourglass-split{% endif %}"
+                    ></i>
+                    {{ candidat.get_statut_display }}
+                  </span>
+                  <span class="hero-chip">
+                    <i class="bi bi-calendar3"></i>
+                    {{ candidat.configVague.nom }}
+                  </span>
+                  <span class="hero-chip">
+                    <i class="bi bi-clock"></i>
+                    {{ formation.duree }} mois
+                  </span>
+                </div>
+                <h1 class="h2 fw-bold">{{ formation.nom }}</h1>
+                <p>
+                  {{ formation.description|default:"Votre programme de formation
+                  SAREF Academy." }}
+                </p>
+                {% if candidat.statut == 'accepte' %}
+                <a class="btn-s btn-light-s" href="#programme">
+                  <i class="bi bi-play-fill me-1"></i>
+                  Accéder aux modules
+                </a>
+                {% else %}
+                <span class="small">
+                  <i class="bi bi-lock me-1"></i>
+                  Les cours seront ouverts après acceptation de la candidature.
+                </span>
+                {% endif %}
+              </div>
+              <div class="col-lg-4">
+                <div class="bg-white bg-opacity-10 p-3 rounded-4">
+                  <div class="small">Progression pédagogique</div>
+                  <div class="fs-2 fw-bold">{{ progression }}%</div>
+                  <div class="progress">
+                    <div
+                      class="progress-bar"
+                      style="width:{{ progression }}%"
+                    ></div>
+                  </div>
+                  <small>
+                    {{ chapitres_termines|length }} sur {{ nb_chapitres }}
+                    chapitres terminés
+                  </small>
+                </div>
+              </div>
+            </div>
+          </section>
+          <div class="row g-4">
+            <div class="col-xl-8" id="programme">
+              <div class="d-flex justify-content-between align-items-end mb-3">
+                <div>
+                  <span class="eyebrow-s">Programme détaillé</span>
+                  <h2 class="s-card-title mb-0">Modules et chapitres</h2>
+                </div>
+                <span class="small text-secondary">
+                  {{ modules|length }} module(s)
+                </span>
+              </div>
+              {% for module in modules %}
+              <article
+                class="acc-item {% if candidat.statut == 'accepte' and module.est_active %}done{% else %}locked{% endif %} reveal"
+              >
+                <button
+                  class="acc-head"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#student-module-{{ module.pk }}"
+                  aria-expanded="false"
+                  aria-controls="student-module-{{ module.pk }}"
+                >
+                  <span class="acc-num">{{ module.ordre }}</span>
+                  <span class="acc-title">
+                    <b>{{ module.titre }}</b>
+                    <small>
+                      {{ module.chapitres.count }} chapitre(s){% if
+                      module.description %} · {{
+                      module.description|truncatewords:12 }}{% endif %}
+                    </small>
+                  </span>
+                  <span
+                    class="s-badge {% if candidat.statut == 'accepte' and module.est_active %}b-active{% else %}b-brouillon{% endif %}"
+                  >
+                    {% if candidat.statut != 'accepte' %}
+                    <i class="bi bi-lock-fill me-1"></i>
+                    Candidature en attente{% elif module.est_active %}
+                    <i class="bi bi-unlock me-1"></i>
+                    Disponible{% else %}
+                    <i class="bi bi-lock-fill me-1"></i>
+                    Verrouillé{% endif %}
+                  </span>
+                  <i class="bi bi-chevron-down acc-chevron"></i>
+                </button>
+                <div
+                  id="student-module-{{ module.pk }}"
+                  class="collapse acc-body"
+                >
+                  {% for chapitre in module.chapitres.all %}
+                  <div class="chap">
+                    <i
+                      class="bi {% if chapitre.est_active and module.est_active and candidat.statut == 'accepte' %}bi-play-circle t-blue{% else %}bi-lock text-secondary{% endif %} ci"
+                    ></i>
+                    <span>Ch. {{ chapitre.ordre }} : {{ chapitre.nom }}</span>
+                    <span
+                      class="ms-auto d-flex flex-wrap align-items-center gap-2"
+                    >
+                      <span class="small text-secondary">
+                        {% if chapitre.support_video_url %}
+                        <i class="bi bi-camera-video me-1"></i>
+                        Vidéo{% endif %}{% if chapitre.support_pdf %} ·
+                        <i class="bi bi-file-earmark-pdf me-1"></i>
+                        PDF{% endif %}{% if chapitre.duree %} · {{
+                        chapitre.duree }} min{% endif %}
+                      </span>
+                      {% if candidat.statut == 'accepte' and module.est_active
+                      and chapitre.est_active %}
+                      <a
+                        class="btn-s btn-primary-s btn-sm-s"
+                        href="{% url 'apprenant_module_detail' module.pk %}?chapitre={{ chapitre.pk }}"
+                      >
+                        <i class="bi bi-play-fill"></i>
+                        Ouvrir le cours
+                      </a>
+                      {% else %}
+                      <span class="s-badge b-brouillon">
+                        {% if candidat.statut != 'accepte' or not
+                        module.est_active %}Verrouillé{% else %}Contenu non
+                        publié{% endif %}
+                      </span>
+                      {% endif %}
+                    </span>
+                  </div>
+                  {% empty %}
+                  <div class="chap text-secondary">
+                    <i class="bi bi-info-circle ci"></i>
+                    <span>Les chapitres de ce module sont en préparation.</span>
+                  </div>
+                  {% endfor %}
+                </div>
+              </article>
+              {% empty %}
+              <section class="s-card s-card-pad text-center py-5">
+                <i class="bi bi-journals fs-2 text-primary"></i>
+                <h3 class="h5 mt-3">Le programme arrive bientôt</h3>
+                <p class="text-secondary mb-0">
+                  Les modules seront affichés ici dès leur création.
+                </p>
+              </section>
+              {% endfor %}
+            </div>
+            <aside class="col-xl-4">
+              <section class="s-card s-card-pad mb-4">
+                <span class="eyebrow-s">Détails de la formation</span>
+                <div class="info-row">
+                  <span>Durée</span>
+                  <b>{{ formation.duree }} mois</b>
+                </div>
+                <div class="info-row">
+                  <span>Frais de formation</span>
+                  <b>{{ formation.prix }} FCFA</b>
+                </div>
+                <div class="info-row">
+                  <span>Modules</span>
+                  <b>{{ modules|length }}</b>
+                </div>
+                <div class="info-row">
+                  <span>Candidature</span>
+                  <b>{{ candidat.get_statut_display }}</b>
+                </div>
+              </section>
+              <section class="s-card s-card-pad mb-4">
+                <span class="eyebrow-s">Équipe pédagogique</span>
+                <h2 class="s-card-title mt-1">Formateur(s)</h2>
+                {% for formateur in formation.formateurs.all %}
+                <div class="d-flex align-items-center gap-3 border-top py-3">
+                  <span class="avatar avatar-md">
+                    {{ formateur.prenom|first|upper }}{{
+                    formateur.nom|first|upper }}
+                  </span>
+                  <div>
+                    <b>{{ formateur.prenom }} {{ formateur.nom }}</b>
+                    <small class="d-block text-secondary">Formateur</small>
+                  </div>
+                </div>
+                {% empty %}
+                <p class="small text-secondary mb-0">
+                  L’équipe pédagogique sera affichée dès son affectation.
+                </p>
+                {% endfor %}
+              </section>
+              <a
+                class="btn-s btn-line-s w-100"
+                href="{% url 'apprenant_paiements' %}"
+              >
+                <i class="bi bi-credit-card me-1"></i>
+                Consulter mes paiements
+              </a>
+            </aside>
+          </div>
+          {% else %} {% if request.resolver_match.kwargs.pk == 2 %} {% with
+          demo_title="Marketing digital" demo_desc="Explorez la stratégie de
+          contenu, les réseaux sociaux et la mesure des résultats."
+          demo_duration="3" demo_price="90 000" %} {% include
+          "apprenant/formation_demo_detail.html" %} {% endwith %} {% else %} {%
+          with demo_title="Développement Web" demo_desc="Découvrez les bases du
+          Web, HTML, CSS et JavaScript à travers un programme progressif."
+          demo_duration="4" demo_price="120 000" %} {% include
+          "apprenant/formation_demo_detail.html" %} {% endwith %} {% endif %} {%
+          endif %}
+        </main>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/espace.js' %}" defer></script>
+  </body>
+</html>

@@ -1,7 +1,42 @@
 <header class="topbar topbar-app topbar-formateur">
-  <button class="btn-icon-s d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Ouvrir le menu"><i class="bi bi-list fs-5"></i></button>
-  <div class="topbar-title"><small>SAREF ACADEMY · ESPACE FORMATEUR</small><strong>{% with page=request.resolver_match.url_name %}{% if page == 'formateur_dashboard' %}Tableau de bord{% elif page == 'formateur_formations' %}Mes formations{% elif page == 'formateur_formation_detail' %}Programme de formation{% elif page == 'formateur_apprenants' %}Mes apprenants{% elif page == 'formateur_module' or page == 'formateur_module_modifier' or page == 'formateur_module_ajouter' %}Gestion des modules{% elif page == 'formateur_chapitre_detail' or page == 'formateur_chapitre_ajouter' %}Gestion des chapitres{% elif page == 'changer_mot_de_passe' %}Sécurité du compte{% else %}Espace pédagogique{% endif %}{% endwith %}</strong></div>
+  <button
+    class="btn-icon-s d-lg-none"
+    type="button"
+    data-bs-toggle="offcanvas"
+    data-bs-target="#sidebar"
+    aria-label="Ouvrir le menu"
+  >
+    <i class="bi bi-list fs-5"></i>
+  </button>
+  <div class="topbar-title">
+    <small>SAREF ACADEMY · ESPACE FORMATEUR</small>
+    <strong>
+      {% with page=request.resolver_match.url_name %}{% if page ==
+      'formateur_dashboard' %}Tableau de bord{% elif page ==
+      'formateur_formations' %}Mes formations{% elif page ==
+      'formateur_formation_detail' %}Programme de formation{% elif page ==
+      'formateur_apprenants' %}Mes apprenants{% elif page == 'formateur_module'
+      or page == 'formateur_module_modifier' or page ==
+      'formateur_module_ajouter' %}Gestion des modules{% elif page ==
+      'formateur_chapitre_detail' or page == 'formateur_chapitre_ajouter'
+      %}Gestion des chapitres{% elif page == 'changer_mot_de_passe' %}Sécurité
+      du compte{% else %}Espace pédagogique{% endif %}{% endwith %}
+    </strong>
+  </div>
   <span class="tb-spacer"></span>
-  <span class="topbar-state"><i class="bi bi-mortarboard"></i><span>{% if formateur %}{{ formateur.formations.count }} formation{{ formateur.formations.count|pluralize }}{% else %}Espace pédagogique{% endif %}</span></span>
-  <div class="tb-user"><span class="avatar">{{ formateur.prenom|first|upper|default:"F" }}</span><span class="d-none d-md-block"><b>{{ formateur.prenom|default:"Formateur" }} {{ formateur.nom }}</b><small>Compte formateur</small></span></div>
+  <span class="topbar-state">
+    <i class="bi bi-mortarboard"></i>
+    <span>
+      {% if formateur %}{{ formateur.formations.count }} formation{{
+      formateur.formations.count|pluralize }}{% else %}Espace pédagogique{%
+      endif %}
+    </span>
+  </span>
+  <div class="tb-user">
+    <span class="avatar">{{ formateur.prenom|first|upper|default:"F" }}</span>
+    <span class="d-none d-md-block">
+      <b>{{ formateur.prenom|default:"Formateur" }} {{ formateur.nom }}</b>
+      <small>Compte formateur</small>
+    </span>
+  </div>
 </header>

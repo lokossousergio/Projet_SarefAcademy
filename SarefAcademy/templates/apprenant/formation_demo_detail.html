@@ -1,0 +1,97 @@
+<nav class="crumb">
+  <a href="{% url 'apprenant_formations' %}">Mes formations</a>
+  / {{ demo_title }}
+</nav>
+<section class="hero mb-4">
+  <div class="row align-items-center g-4">
+    <div class="col-lg-8">
+      <div class="d-flex flex-wrap gap-2 mb-3">
+        <span class="hero-chip light">
+          <i class="bi bi-check-circle-fill"></i>
+          Accès ouvert
+        </span>
+        <span class="hero-chip">
+          <i class="bi bi-calendar3"></i>
+          Vague 2026-A
+        </span>
+        <span class="hero-chip">
+          <i class="bi bi-clock"></i>
+          {{ demo_duration }} mois
+        </span>
+      </div>
+      <h1 class="h2 fw-bold">{{ demo_title }}</h1>
+      <p>{{ demo_desc }}</p>
+      <a class="btn-s btn-light-s" href="#demo-programme">
+        <i class="bi bi-chevron-down me-1"></i>
+        Parcourir le programme
+      </a>
+    </div>
+    <div class="col-lg-4">
+      <div class="bg-white bg-opacity-10 p-3 rounded-4">
+        <div class="small">Votre parcours</div>
+        <div class="fs-5 fw-bold mt-2">Formation active</div>
+        <small>Votre accès aux ressources est activé.</small>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="row g-4">
+  <div class="col-xl-8" id="demo-programme">
+    <div class="d-flex justify-content-between align-items-end mb-3">
+      <div>
+        <span class="eyebrow-s">Programme détaillé</span>
+        <h2 class="s-card-title mb-0">Modules et chapitres</h2>
+      </div>
+      <span class="small text-secondary">3 modules</span>
+    </div>
+    {% if demo_title == 'Marketing digital' %} {% with prefix='mkt'
+    m1='Introduction au marketing numérique' d1='Découvrir les bases et les
+    principaux canaux.' c1='Les fondamentaux du marketing digital'
+    c2='Identifier son audience' m2='Réseaux sociaux et contenu' d2='Construire
+    une présence éditoriale cohérente.' c3='Choisir ses plateformes' c4='Créer
+    un calendrier éditorial' m3='Mesurer ses résultats' d3='Lire les indicateurs
+    et ajuster sa stratégie.' c5='Indicateurs clés' c6='Lire un tableau de bord'
+    %}{% include 'apprenant/formation_demo_modules.html' %}{% endwith %} {% else
+    %} {% with prefix='web' m1='Les bases du Web' d1='Comprendre le navigateur
+    et préparer son environnement.' c1='Comment fonctionne le Web ?'
+    c2='Préparer son environnement de travail' m2='HTML et structure des pages'
+    d2='Créer des pages claires et accessibles.' c3='Les balises essentielles'
+    c4='Créer une page complète' m3='CSS et mise en forme' d3='Donner une
+    identité visuelle à ses pages.' c5='Sélecteurs et couleurs' c6='Mise en page
+    responsive' %}{% include 'apprenant/formation_demo_modules.html' %}{%
+    endwith %} {% endif %}
+    <p class="small text-secondary mt-3">
+      <i class="bi bi-info-circle me-1"></i>
+      Chaque module indique les chapitres publiés et les ressources accessibles.
+    </p>
+  </div>
+  <aside class="col-xl-4">
+    <section class="s-card s-card-pad mb-4">
+      <span class="eyebrow-s">Détails de la formation</span>
+      <div class="info-row">
+        <span>Durée</span>
+        <b>{{ demo_duration }} mois</b>
+      </div>
+      <div class="info-row">
+        <span>Frais de formation</span>
+        <b>{{ demo_price }} FCFA</b>
+      </div>
+      <div class="info-row">
+        <span>Modules</span>
+        <b>3</b>
+      </div>
+      <div class="info-row">
+        <span>Accès</span>
+        <b>Parcours ouvert</b>
+      </div>
+    </section>
+    <section class="s-card s-card-pad">
+      <span class="eyebrow-s">Parcours</span>
+      <h2 class="s-card-title mt-1">Apprenez à votre rythme</h2>
+      <p class="small text-secondary mb-0">
+        Ouvrez chaque module pour consulter les chapitres et leurs ressources.
+        Les modules verrouillés restent visibles avec leur statut.
+      </p>
+    </section>
+  </aside>
+</div>

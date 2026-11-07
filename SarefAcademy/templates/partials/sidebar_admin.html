@@ -1,23 +1,133 @@
-<aside class="sidebar sidebar-admin offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="Navigation administrateur">
-  <div class="d-flex justify-content-end d-lg-none p-3 pb-0"><button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Fermer le menu"></button></div>
+{% load static %}
+<aside
+  class="sidebar sidebar-admin offcanvas-lg offcanvas-start"
+  id="sidebar"
+  tabindex="-1"
+  aria-label="Navigation administrateur"
+>
+  <div class="d-flex justify-content-end d-lg-none p-3 pb-0">
+    <button
+      type="button"
+      class="btn-close btn-close-white"
+      data-bs-dismiss="offcanvas"
+      data-bs-target="#sidebar"
+      aria-label="Fermer le menu"
+    ></button>
+  </div>
   <div class="offcanvas-body sidebar-inner">
-    <a class="brand" href="{% url 'admin_dashboard' %}"><span class="avatar">SA</span><div><b>SAREF Academy</b><small>ESPACE ADMIN</small></div></a>
+    <a class="brand" href="{% url 'admin_dashboard' %}">
+      <span class="brand-mark">
+        <img
+          src="{% static 'images/saref-mark.png' %}"
+          alt="Symbole SAREF Academy"
+        />
+      </span>
+      <div>
+        <b>SAREF Academy</b>
+        <small>ESPACE ADMIN</small>
+      </div>
+    </a>
     <nav class="d-grid gap-1" aria-label="Menu principal">
       <div class="nav-cap">PILOTAGE</div>
-      <a class="navitem {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}" href="{% url 'admin_dashboard' %}"><i class="bi bi-grid-1x2"></i>Tableau de bord</a>
-      <a class="navitem {% if request.resolver_match.url_name == 'admin_candidatures' or request.resolver_match.url_name == 'admin_candidature_detail' %}active{% endif %}" href="{% url 'admin_candidatures' %}"><i class="bi bi-clipboard-check"></i>Candidatures</a>
-      <a class="navitem {% if request.resolver_match.url_name == 'admin_apprenants' or request.resolver_match.url_name == 'admin_apprenant_detail' %}active{% endif %}" href="{% url 'admin_apprenants' %}"><i class="bi bi-people"></i>Apprenants</a>
-      <a class="navitem {% if request.resolver_match.url_name == 'admin_resultats' %}active{% endif %}" href="{% url 'admin_resultats' %}"><i class="bi bi-award"></i>Résultats &amp; attestations</a>
+      <a
+        class="navitem {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}"
+        href="{% url 'admin_dashboard' %}"
+      >
+        <i class="bi bi-grid-1x2"></i>
+        Tableau de bord
+      </a>
+      <a
+        class="navitem {% if request.resolver_match.url_name == 'admin_candidatures' or request.resolver_match.url_name == 'admin_candidature_detail' %}active{% endif %}"
+        href="{% url 'admin_candidatures' %}"
+      >
+        <i class="bi bi-clipboard-check"></i>
+        Candidatures
+      </a>
+      <a
+        class="navitem {% if request.resolver_match.url_name == 'admin_apprenants' or request.resolver_match.url_name == 'admin_apprenant_detail' %}active{% endif %}"
+        href="{% url 'admin_apprenants' %}"
+      >
+        <i class="bi bi-people"></i>
+        Apprenants
+      </a>
+      <a
+        class="navitem {% if request.resolver_match.url_name == 'admin_resultats' %}active{% endif %}"
+        href="{% url 'admin_resultats' %}"
+      >
+        <i class="bi bi-award"></i>
+        Résultats &amp; attestations
+      </a>
       <div class="nav-cap">PÉDAGOGIE</div>
-      <a class="navitem {% if request.resolver_match.url_name == 'admin_formations' or request.resolver_match.url_name == 'admin_formation_detail' or request.resolver_match.url_name == 'admin_chapitre_detail' %}active{% endif %}" href="{% url 'admin_formations' %}"><i class="bi bi-mortarboard"></i>Formations &amp; modules</a>
-      <a class="navitem {% if request.resolver_match.url_name == 'admin_formateurs' %}active{% endif %}" href="{% url 'admin_formateurs' %}"><i class="bi bi-person-video3"></i>Formateurs</a>
-      <a class="navitem {% if request.resolver_match.url_name == 'admin_organisation' %}active{% endif %}" href="{% url 'admin_organisation' %}"><i class="bi bi-diagram-3"></i>Organisation</a>
+      <a
+        class="navitem {% if request.resolver_match.url_name == 'admin_formations' or request.resolver_match.url_name == 'admin_formation_detail' or request.resolver_match.url_name == 'admin_chapitre_detail' %}active{% endif %}"
+        href="{% url 'admin_formations' %}"
+      >
+        <i class="bi bi-mortarboard"></i>
+        Formations &amp; modules
+      </a>
+      <a
+        class="navitem {% if request.resolver_match.url_name == 'admin_formateurs' %}active{% endif %}"
+        href="{% url 'admin_formateurs' %}"
+      >
+        <i class="bi bi-person-video3"></i>
+        Formateurs
+      </a>
+      <a
+        class="navitem {% if request.resolver_match.url_name == 'admin_organisation' %}active{% endif %}"
+        href="{% url 'admin_organisation' %}"
+      >
+        <i class="bi bi-diagram-3"></i>
+        Organisation
+      </a>
       <div class="nav-cap">GESTION</div>
-      <a class="navitem {% if request.resolver_match.url_name == 'admin_finance' %}active{% endif %}" href="{% url 'admin_finance' %}"><i class="bi bi-cash-coin"></i>Finance</a>
-      <a class="navitem {% if request.resolver_match.url_name == 'admin_vagues' or request.resolver_match.url_name == 'admin_vague_archive' %}active{% endif %}" href="{% url 'admin_vagues' %}"><i class="bi bi-folder2"></i>Vagues &amp; années</a>
-      <a class="navitem {% if request.resolver_match.url_name == 'admin_configuration_vague' or request.resolver_match.url_name == 'admin_configuration_initiale' %}active{% endif %}" href="{% url 'admin_configuration_vague' %}"><i class="bi bi-calendar2-plus"></i>Configurer une vague</a>
-      <a class="navitem {% if request.resolver_match.url_name == 'admin_parametres' %}active{% endif %}" href="{% url 'admin_parametres' %}"><i class="bi bi-gear"></i>Paramètres</a>
+      <a
+        class="navitem {% if request.resolver_match.url_name == 'admin_finance' %}active{% endif %}"
+        href="{% url 'admin_finance' %}"
+      >
+        <i class="bi bi-cash-coin"></i>
+        Finance
+      </a>
+      <a
+        class="navitem {% if request.resolver_match.url_name == 'admin_vagues' or request.resolver_match.url_name == 'admin_vague_archive' %}active{% endif %}"
+        href="{% url 'admin_vagues' %}"
+      >
+        <i class="bi bi-folder2"></i>
+        Vagues &amp; années
+      </a>
+      <a
+        class="navitem {% if request.resolver_match.url_name == 'admin_configuration_vague' or request.resolver_match.url_name == 'admin_configuration_initiale' %}active{% endif %}"
+        href="{% url 'admin_configuration_vague' %}"
+      >
+        <i class="bi bi-calendar2-plus"></i>
+        Configurer une vague
+      </a>
+      <a
+        class="navitem {% if request.resolver_match.url_name == 'admin_parametres' %}active{% endif %}"
+        href="{% url 'admin_parametres' %}"
+      >
+        <i class="bi bi-gear"></i>
+        Paramètres
+      </a>
     </nav>
-    <div class="sidebar-user"><span class="avatar avatar-md">{{ request.user.first_name|first|upper|default:"A" }}</span><div class="who"><b>{{ request.user.get_full_name|default:"Administration" }}</b><small>Administrateur</small></div><form method="post" action="{% url 'deconnexion' %}">{% csrf_token %}<button class="logout" type="submit" aria-label="Se déconnecter" title="Se déconnecter"><i class="bi bi-box-arrow-right"></i></button></form></div>
+    <div class="sidebar-user">
+      <span class="avatar avatar-md">
+        {{ request.user.first_name|first|upper|default:"A" }}
+      </span>
+      <div class="who">
+        <b>{{ request.user.get_full_name|default:"Administration" }}</b>
+        <small>Administrateur</small>
+      </div>
+      <form method="post" action="{% url 'deconnexion' %}">
+        {% csrf_token %}
+        <button
+          class="logout"
+          type="submit"
+          aria-label="Se déconnecter"
+          title="Se déconnecter"
+        >
+          <i class="bi bi-box-arrow-right"></i>
+        </button>
+      </form>
+    </div>
   </div>
 </aside>

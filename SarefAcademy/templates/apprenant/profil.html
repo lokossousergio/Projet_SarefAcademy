@@ -1,5 +1,413 @@
 {% load static %}
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mon profil | SAREF Academy</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"><link rel="stylesheet" href="{% static 'css/espace.css' %}"></head>
-<body class="espace espace-apprenant"><div class="app">{% include 'partials/sidebar_apprenant.html' %}<div class="app-col">{% include 'partials/apprenant_topbar.html' %}<main class="app-main"><div class="page-head"><div><span class="eyebrow-s">Mon compte</span><h1 class="page-title">Mon profil</h1><p class="page-sub">Les informations enregistrées pour votre parcours de formation.</p></div><a class="btn-s btn-line-s" href="{% url 'apprenant_parametres' %}"><i class="bi bi-gear me-1"></i>Paramètres</a></div>
-<div class="row g-4"><aside class="col-lg-4"><section class="s-card s-card-pad text-center"><span class="avatar avatar-xl mx-auto mb-3">{{ etudiant.prenom|first|upper }}{{ etudiant.nom|first|upper }}</span><h2 class="h5 fw-bold">{{ etudiant.prenom }} {{ etudiant.nom }}</h2><p class="small text-secondary mb-3">Apprenant SAREF Academy</p><span class="s-badge b-actif">Profil enregistré</span><hr class="divider-s"><div class="info-row"><span>Candidatures</span><b>{{ candidatures|length }}</b></div><div class="info-row"><span>Formations acceptées</span><b>{{ nb_formations_suivies }}</b></div><div class="info-row"><span>Membre depuis</span><b>{{ etudiant.date_inscription|date:"d/m/Y" }}</b></div></section></aside><div class="col-lg-8"><section class="s-card s-card-pad mb-4"><div class="d-flex justify-content-between align-items-start gap-3 mb-3"><div><span class="eyebrow-s">Informations personnelles</span><h2 class="s-card-title mt-1">Coordonnées et études</h2></div><i class="bi bi-person-vcard fs-3 text-primary"></i></div><div class="meta-grid"><div><span>Prénom</span><b>{{ etudiant.prenom }}</b></div><div><span>Nom</span><b>{{ etudiant.nom }}</b></div><div><span>Adresse e-mail</span><b>{{ etudiant.email }}</b></div><div><span>Téléphone / WhatsApp</span><b>{{ etudiant.telephone }}</b></div><div><span>Niveau d’études</span><b>{{ etudiant.niveau_etudes }}</b></div></div></section><section class="s-card s-card-pad"><span class="eyebrow-s">Mon parcours</span><h2 class="s-card-title mt-1 mb-3">Formations associées</h2>{% for candidat in candidatures %}<div class="d-flex justify-content-between align-items-center flex-wrap gap-3 border-top py-3"><div><b>{{ candidat.formation.nom }}</b><small class="d-block text-secondary">{{ candidat.configVague.nom }} · {{ candidat.date_candidature|date:"d/m/Y" }}</small></div><span class="s-badge {% if candidat.statut == 'accepte' %}b-actif{% elif candidat.statut == 'refuse' %}b-refuse{% else %}b-attente{% endif %}">{{ candidat.get_statut_display }}</span></div>{% empty %}<p class="text-secondary mb-0">Aucune candidature n’est encore liée à votre profil.</p>{% endfor %}</section></div></div>
-</main></div></div><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><script src="{% static 'js/espace.js' %}" defer></script></body></html>
+<!doctype html>
+<html lang="fr">
+  <head>
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mon profil | SAREF Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
+  </head>
+  <body class="espace espace-apprenant">
+    <div class="app">
+      {% include 'partials/sidebar_apprenant.html' %}
+      <div class="app-col">
+        {% include 'partials/apprenant_topbar.html' %}
+        <main class="app-main">
+          <div class="page-head">
+            <div>
+              <span class="eyebrow-s">Mon compte</span>
+              <h1 class="page-title">Mon profil</h1>
+              <p class="page-sub">
+                Consultez et modifiez vos coordonnées, votre mot de passe et la
+                sécurité de votre compte.
+              </p>
+            </div>
+            <a class="btn-s btn-line-s" href="{% url 'apprenant_parametres' %}">
+              <i class="bi bi-gear me-1"></i>
+              Paramètres
+            </a>
+          </div>
+          <div
+            class="alert alert-info d-none"
+            id="profileNotice"
+            role="status"
+          ></div>
+          <div class="row g-4">
+            <aside class="col-lg-4">
+              <section class="s-card s-card-pad text-center h-100">
+                <span
+                  class="avatar avatar-xl mx-auto mb-3"
+                  id="profileInitials"
+                >
+                  {% if etudiant.prenom %}{{ etudiant.prenom|first|upper }}{%
+                  elif request.user.is_authenticated %}{{
+                  request.user.etudiant.prenom|default:request.user.first_name|first|upper|default:'A'
+                  }}{% else %}A{% endif %}{% if etudiant.nom %}{{
+                  etudiant.nom|first|upper }}{% elif
+                  request.user.is_authenticated %}{{
+                  request.user.etudiant.nom|default:request.user.last_name|first|upper|default:'K'
+                  }}{% else %}K{% endif %}
+                </span>
+                <h2 class="h5 fw-bold" id="profileDisplayName">
+                  {% if etudiant.prenom %}{{ etudiant.prenom }}{% elif
+                  request.user.is_authenticated %}{{
+                  request.user.etudiant.prenom|default:request.user.first_name|default:'Aïcha'
+                  }}{% else %}Aïcha{% endif %} {% if etudiant.nom %}{{
+                  etudiant.nom }}{% elif request.user.is_authenticated %}{{
+                  request.user.etudiant.nom|default:request.user.last_name|default:'Kora'
+                  }}{% else %}Kora{% endif %}
+                </h2>
+                <p class="small text-secondary mb-3">Apprenant SAREF Academy</p>
+                <span class="s-badge b-actif">Compte apprenant</span>
+                <hr class="divider-s" />
+                <div class="info-row">
+                  <span>Candidatures</span>
+                  <b>
+                    {% if candidatures %}{{ candidatures|length }}{% elif
+                    request.user.is_authenticated %}{{
+                    request.user.etudiant.candidats.count|default:'0' }}{% else
+                    %}0{% endif %}
+                  </b>
+                </div>
+                <div class="info-row">
+                  <span>Membre depuis</span>
+                  <b>
+                    {% if etudiant.date_inscription %}{{
+                    etudiant.date_inscription|date:'d/m/Y' }}{% elif
+                    request.user.is_authenticated %}{{
+                    request.user.etudiant.date_inscription|date:'d/m/Y'|default:'—'
+                    }}{% else %}—{% endif %}
+                  </b>
+                </div>
+              </section>
+            </aside>
+            <div class="col-lg-8">
+              <section class="s-card s-card-pad mb-4">
+                <div
+                  class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4"
+                >
+                  <div>
+                    <span class="eyebrow-s">Informations personnelles</span>
+                    <h2 class="s-card-title mt-1 mb-0">
+                      Coordonnées et études
+                    </h2>
+                  </div>
+                  <button
+                    class="btn-s btn-line-s"
+                    id="editProfile"
+                    type="button"
+                  >
+                    <i class="bi bi-pencil me-1"></i>
+                    Modifier mes informations
+                  </button>
+                </div>
+                <form id="profileForm" class="row g-3">
+                  <div class="col-md-6">
+                    <label class="s-label" for="firstName">Prénom</label>
+                    <input
+                      class="s-input profile-field"
+                      id="firstName"
+                      name="prenom"
+                      value="{% if etudiant.prenom %}{{ etudiant.prenom }}{% elif request.user.is_authenticated %}{{ request.user.etudiant.prenom|default:request.user.first_name|default:'Aïcha' }}{% else %}Aïcha{% endif %}"
+                      readonly
+                    />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="s-label" for="lastName">Nom</label>
+                    <input
+                      class="s-input profile-field"
+                      id="lastName"
+                      name="nom"
+                      value="{% if etudiant.nom %}{{ etudiant.nom }}{% elif request.user.is_authenticated %}{{ request.user.etudiant.nom|default:request.user.last_name|default:'Kora' }}{% else %}Kora{% endif %}"
+                      readonly
+                    />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="s-label" for="profileEmail">
+                      Adresse e-mail
+                    </label>
+                    <input
+                      class="s-input profile-field"
+                      id="profileEmail"
+                      name="email"
+                      type="email"
+                      value="{% if etudiant.email %}{{ etudiant.email }}{% elif request.user.is_authenticated %}{{ request.user.etudiant.email|default:request.user.email }}{% else %}aicha.kora@gmail.com{% endif %}"
+                      readonly
+                    />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="s-label" for="profilePhone">
+                      Téléphone / WhatsApp
+                    </label>
+                    <input
+                      class="s-input profile-field"
+                      id="profilePhone"
+                      name="telephone"
+                      type="tel"
+                      value="{% if etudiant.telephone %}{{ etudiant.telephone }}{% elif request.user.is_authenticated %}{{ request.user.etudiant.telephone|default:'+229 97 00 00 00' }}{% else %}+229 97 00 00 00{% endif %}"
+                      readonly
+                    />
+                  </div>
+                  <div class="col-12">
+                    <label class="s-label" for="profileLevel">
+                      Niveau d’études
+                    </label>
+                    <input
+                      class="s-input profile-field"
+                      id="profileLevel"
+                      name="niveau_etudes"
+                      value="{% if etudiant.niveau_etudes %}{{ etudiant.niveau_etudes }}{% elif request.user.is_authenticated %}{{ request.user.etudiant.niveau_etudes|default:'Études supérieures' }}{% else %}Études supérieures{% endif %}"
+                      readonly
+                    />
+                  </div>
+                  <div class="col-12 d-none" id="profileActions">
+                    <div class="d-flex justify-content-end gap-2">
+                      <button
+                        class="btn-s btn-line-s"
+                        type="button"
+                        id="cancelProfile"
+                      >
+                        Annuler
+                      </button>
+                      <button class="btn-s btn-primary-s" type="submit">
+                        <i class="bi bi-check2 me-1"></i>
+                        Enregistrer les modifications
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </section>
+              <section class="s-card s-card-pad mb-4">
+                <span class="eyebrow-s">Sécurité</span>
+                <h2 class="s-card-title mt-1 mb-3">Mot de passe</h2>
+                <form id="passwordForm" class="row g-3">
+                  <div class="col-12">
+                    <label class="s-label" for="currentPassword">
+                      Mot de passe actuel
+                    </label>
+                    <input
+                      class="s-input"
+                      id="currentPassword"
+                      type="password"
+                      autocomplete="current-password"
+                      placeholder="Saisissez votre mot de passe actuel"
+                      required
+                    />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="s-label" for="newPassword">
+                      Nouveau mot de passe
+                    </label>
+                    <input
+                      class="s-input"
+                      id="newPassword"
+                      type="password"
+                      autocomplete="new-password"
+                      placeholder="8 caractères minimum"
+                      minlength="8"
+                      required
+                    />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="s-label" for="confirmPassword">
+                      Confirmer le nouveau mot de passe
+                    </label>
+                    <input
+                      class="s-input"
+                      id="confirmPassword"
+                      type="password"
+                      autocomplete="new-password"
+                      placeholder="Répétez le nouveau mot de passe"
+                      minlength="8"
+                      required
+                    />
+                  </div>
+                  <div class="col-12 d-flex justify-content-end">
+                    <button class="btn-s btn-primary-s" type="submit">
+                      <i class="bi bi-shield-lock me-1"></i>
+                      Mettre à jour le mot de passe
+                    </button>
+                  </div>
+                </form>
+              </section>
+              <section class="s-card s-card-pad border-danger-subtle">
+                <span class="eyebrow-s text-danger">Zone sensible</span>
+                <h2 class="s-card-title mt-1">Supprimer mon compte</h2>
+                <p class="small text-secondary">
+                  La suppression du compte entraîne la perte de l’accès à vos
+                  formations, candidatures et informations de suivi.
+                </p>
+                <button
+                  class="btn-s btn-outline-danger-s"
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#deleteAccountModal"
+                >
+                  <i class="bi bi-trash3 me-1"></i>
+                  Demander la suppression du compte
+                </button>
+              </section>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <div
+      class="modal fade"
+      id="deleteAccountModal"
+      tabindex="-1"
+      aria-labelledby="deleteAccountTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4">
+          <div class="modal-header border-0">
+            <h2
+              class="modal-title fs-5 fw-bold text-danger"
+              id="deleteAccountTitle"
+            >
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              Confirmer la suppression
+            </h2>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Fermer"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Cette demande concerne votre compte apprenant et les données liées
+              à celui-ci.
+            </p>
+            <label class="s-label" for="deleteConfirmation">
+              Saisissez
+              <b>SUPPRIMER</b>
+              pour confirmer
+            </label>
+            <input class="s-input" id="deleteConfirmation" autocomplete="off" />
+          </div>
+          <div class="modal-footer border-0">
+            <button
+              type="button"
+              class="btn-s btn-line-s"
+              data-bs-dismiss="modal"
+            >
+              Annuler
+            </button>
+            <button
+              type="button"
+              class="btn-s btn-outline-danger-s"
+              id="confirmDelete"
+              disabled
+            >
+              Confirmer la suppression
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/espace.js' %}" defer></script>
+    <script>
+      (function () {
+        var form = document.getElementById("profileForm"),
+          fields = form.querySelectorAll(".profile-field"),
+          actions = document.getElementById("profileActions"),
+          notice = document.getElementById("profileNotice"),
+          edit = document.getElementById("editProfile");
+        function message(text) {
+          notice.textContent = text;
+          notice.classList.remove("d-none");
+          notice.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        function setEditing(value) {
+          fields.forEach(function (field) {
+            field.readOnly = !value;
+          });
+          actions.classList.toggle("d-none", !value);
+          edit.classList.toggle("d-none", value);
+          if (value) fields[0].focus();
+        }
+        edit.addEventListener("click", function () {
+          setEditing(true);
+        });
+        document
+          .getElementById("cancelProfile")
+          .addEventListener("click", function () {
+            form.reset();
+            setEditing(false);
+          });
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          document.getElementById("profileDisplayName").textContent =
+            document.getElementById("firstName").value +
+            " " +
+            document.getElementById("lastName").value;
+          var first = document
+              .getElementById("firstName")
+              .value.trim()
+              .charAt(0),
+            last = document.getElementById("lastName").value.trim().charAt(0);
+          document.getElementById("profileInitials").textContent = (
+            first + last
+          ).toUpperCase();
+          setEditing(false);
+          message("Les champs ont été mis à jour dans cet aperçu.");
+        });
+        document
+          .getElementById("passwordForm")
+          .addEventListener("submit", function (event) {
+            event.preventDefault();
+            var a = document.getElementById("newPassword"),
+              b = document.getElementById("confirmPassword");
+            if (a.value !== b.value) {
+              b.setCustomValidity("Les mots de passe ne correspondent pas.");
+              b.reportValidity();
+              return;
+            }
+            b.setCustomValidity("");
+            message(
+              "Le changement de mot de passe nécessite le service de compte ; aucun mot de passe n’a été modifié.",
+            );
+            this.reset();
+          });
+        var deleteInput = document.getElementById("deleteConfirmation"),
+          deleteButton = document.getElementById("confirmDelete");
+        deleteInput.addEventListener("input", function () {
+          deleteButton.disabled = deleteInput.value.trim() !== "SUPPRIMER";
+        });
+        deleteButton.addEventListener("click", function () {
+          message(
+            "La suppression nécessite un traitement serveur ; le compte n’a pas été supprimé.",
+          );
+          bootstrap.Modal.getInstance(
+            document.getElementById("deleteAccountModal"),
+          ).hide();
+          deleteInput.value = "";
+          deleteButton.disabled = true;
+        });
+      })();
+    </script>
+    <script></script>
+  </body>
+</html>

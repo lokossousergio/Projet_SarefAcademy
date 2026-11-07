@@ -2,6 +2,11 @@
 <!doctype html>
 <html lang="fr">
   <head>
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}"
+    />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#335cec" />
@@ -31,130 +36,641 @@
       <div class="app-col">
         {% include 'partials/admin_topbar.html' %}
         <main class="app-main">
-          <div class="page-head">
-            <div>
-              <h1 class="page-title">Vagues &amp; années académiques</h1>
-              <p class="page-sub">
-                Gérez la cohorte en cours et consultez les archives en lecture
-                seule.
-              </p>
-            </div>
-            <div class="d-flex flex-wrap gap-2">
-              <button
-                class="btn-s btn-primary-s"
-                type="button"
-                data-bs-toggle="modal"
-                data-bs-target="#nv"
-              >
-                <i class="bi bi-plus-lg"></i>
-                Nouvelle vague
-              </button>
-            </div>
-          </div>
-          <section class="hero mb-3" aria-labelledby="vc">
-            <div
-              class="d-flex flex-wrap justify-content-between align-items-start gap-3"
-            >
+          <section class="s-card s-card-pad wave-picker mb-4" id="wavePicker">
+            <div class="wave-section-head">
               <div>
-                <span class="hero-chip">
-                  <span class="chip-vague p-0 bg-transparent h-auto">
-                    <span class="live"></span>
-                  </span>
-                  Vague en cours
-                </span>
-                <h2 id="vc" class="mt-3 mb-1">Vague 2026-A</h2>
-                <p class="mb-0">
-                  Année académique 2025-2026 · du 1 sept. 2026 au 31 déc. 2026
+                <span class="eyebrow-s">Gestion des cohortes</span>
+                <h1 class="s-card-title mb-1">Choisir une vague</h1>
+                <p class="small text-secondary mb-0">
+                  Sélectionnez la vague à consulter pour ouvrir ses candidatures
+                  et son suivi.
                 </p>
               </div>
-              <button
-                class="btn-s btn-light-s"
-                type="button"
-                data-bs-toggle="modal"
-                data-bs-target="#arch"
-              >
-                <i class="bi bi-archive"></i>
-                Archiver la vague
-              </button>
+              <span class="stat-icon">
+                <i class="bi bi-calendar2-week"></i>
+              </span>
             </div>
             <div class="row g-3 mt-2">
-              <div class="col-6 col-md-3">
-                <div class="opacity-75 small">Candidats</div>
-                <div class="fs-3 fw-bold" data-count="224">224</div>
+              <div class="col-md-4">
+                <button
+                  class="wave-choice"
+                  type="button"
+                  data-wave-select
+                  data-name="Vague 2026-A"
+                  data-period="Année académique 2025-2026 · du 1 sept. au 31 déc. 2026"
+                  data-candidates="224"
+                  data-accepted="187"
+                  data-courses="3"
+                  data-revenue="41,2 M FCFA"
+                  data-status="En cours"
+                >
+                  <span class="wave-choice-top">
+                    <i class="bi bi-calendar-check"></i>
+                    <span class="s-badge b-actif">En cours</span>
+                  </span>
+                  <b>Vague 2026-A</b>
+                  <small>Septembre – décembre 2026</small>
+                </button>
               </div>
-              <div class="col-6 col-md-3">
-                <div class="opacity-75 small">Acceptés</div>
-                <div class="fs-3 fw-bold" data-count="187">187</div>
+              <div class="col-md-4">
+                <button
+                  class="wave-choice"
+                  type="button"
+                  data-wave-select
+                  data-name="Vague 2025-B"
+                  data-period="Année académique 2024-2025 · du 1 févr. au 31 mai 2025"
+                  data-candidates="198"
+                  data-accepted="165"
+                  data-courses="3"
+                  data-revenue="38,4 M FCFA"
+                  data-status="Archivée"
+                >
+                  <span class="wave-choice-top">
+                    <i class="bi bi-archive"></i>
+                    <span class="s-badge b-archive">Archivée</span>
+                  </span>
+                  <b>Vague 2025-B</b>
+                  <small>Février – mai 2025</small>
+                </button>
               </div>
-              <div class="col-6 col-md-3">
-                <div class="opacity-75 small">Formations actives</div>
-                <div class="fs-3 fw-bold" data-count="3">3</div>
-              </div>
-              <div class="col-6 col-md-3">
-                <div class="opacity-75 small">Encaissé</div>
-                <div class="fs-3 fw-bold">41,2 M FCFA</div>
+              <div class="col-md-4">
+                <button
+                  class="wave-choice"
+                  type="button"
+                  data-wave-select
+                  data-name="Vague 2025-A"
+                  data-period="Année académique 2024-2025 · du 1 sept. 2024 au 31 janv. 2025"
+                  data-candidates="171"
+                  data-accepted="140"
+                  data-courses="3"
+                  data-revenue="31,9 M FCFA"
+                  data-status="Archivée"
+                >
+                  <span class="wave-choice-top">
+                    <i class="bi bi-archive"></i>
+                    <span class="s-badge b-archive">Archivée</span>
+                  </span>
+                  <b>Vague 2025-A</b>
+                  <small>Septembre 2024 – janvier 2025</small>
+                </button>
               </div>
             </div>
+            <p class="wave-selection-note small text-secondary mb-0 mt-3">
+              <i class="bi bi-info-circle me-1"></i>
+              Dossiers et activités de la vague sélectionnée.
+            </p>
           </section>
-          <div class="s-card overflow-hidden mt-3 reveal">
-            <div class="s-card-head px-4 pt-4">
-              <h2 class="s-card-title">Toutes les vagues</h2>
-            </div>
-            <div class="table-responsive">
-              <table class="s-table">
-                <thead>
-                  <tr>
-                    <th>Vague</th>
-                    <th>Période</th>
-                    <th>Candidats</th>
-                    <th>Acceptés</th>
-                    <th>Encaissé</th>
-                    <th>Statut</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><b>Vague 2026-A</b></td>
-                    <td>1 sept. 2026 → 31 déc. 2026</td>
-                    <td>224</td>
-                    <td>187</td>
-                    <td>41,2 M FCFA</td>
-                    <td><span class="s-badge b-en_cours">En cours</span></td>
-                    <td class="text-end">
-                      <a class="link-s" href="{% url 'admin_dashboard' %}">
-                        Ouvrir
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><b>Vague 2025-B</b></td>
-                    <td>1 févr. 2025 → 31 mai 2025</td>
-                    <td>198</td>
-                    <td>165</td>
-                    <td>38,4 M FCFA</td>
-                    <td><span class="s-badge b-archive">Archivée</span></td>
-                    <td class="text-end">
-                      <a class="link-s" href="/gestion/vagues/2/archive/">
-                        Consulter
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><b>Vague 2025-A</b></td>
-                    <td>1 sept. 2024 → 31 janv. 2025</td>
-                    <td>171</td>
-                    <td>140</td>
-                    <td>31,9 M FCFA</td>
-                    <td><span class="s-badge b-archive">Archivée</span></td>
-                    <td class="text-end">
-                      <a class="link-s" href="/gestion/vagues/3/archive/">
-                        Consulter
-                      </a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+          <div id="waveDetails" class="d-none">
+            <section class="hero wave-current mb-3" aria-labelledby="vc">
+              <div
+                class="d-flex flex-wrap justify-content-between align-items-start gap-3"
+              >
+                <div>
+                  <span class="hero-chip">
+                    <i class="bi bi-diagram-3"></i>
+                    Gestion académique
+                  </span>
+                  <h1 class="h2 fw-bold text-white mt-3 mb-2">
+                    Vagues &amp; années académiques
+                  </h1>
+                  <p class="mb-3">
+                    Gérez la cohorte en cours et consultez les archives.
+                  </p>
+                  <span class="hero-chip">
+                    <span class="chip-vague p-0 bg-transparent h-auto">
+                      <span class="live"></span>
+                    </span>
+                    <span id="waveStatus">Vague en cours</span>
+                  </span>
+                  <h2 id="vc" class="mt-3 mb-1">Vague 2026-A</h2>
+                  <p class="mb-0" id="wavePeriod">
+                    Année académique 2025-2026 · du 1 sept. au 31 déc. 2026
+                  </p>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <button
+                    class="btn-s btn-light-s"
+                    type="button"
+                    data-wave-back
+                  >
+                    <i class="bi bi-arrow-left"></i>
+                    Changer de vague
+                  </button>
+                  <button
+                    class="btn-s btn-light-s"
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#nv"
+                  >
+                    <i class="bi bi-plus-lg"></i>
+                    Nouvelle vague
+                  </button>
+                  <button
+                    class="btn-s btn-light-s"
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#arch"
+                  >
+                    <i class="bi bi-archive"></i>
+                    Archiver la vague
+                  </button>
+                </div>
+              </div>
+              <div class="row g-3 mt-2 wave-metrics">
+                <div class="col-6 col-md-3">
+                  <div class="wave-stat">
+                    <span><i class="bi bi-people"></i></span>
+                    <div>
+                      <small>Candidats</small>
+                      <b id="waveCandidates" data-count="224">224</b>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="wave-stat">
+                    <span><i class="bi bi-person-check"></i></span>
+                    <div>
+                      <small>Acceptés</small>
+                      <b id="waveAccepted" data-count="187">187</b>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="wave-stat">
+                    <span><i class="bi bi-mortarboard"></i></span>
+                    <div>
+                      <small>Formations actives</small>
+                      <b id="waveCourses" data-count="3">3</b>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="wave-stat">
+                    <span><i class="bi bi-cash-stack"></i></span>
+                    <div>
+                      <small>Encaissé</small>
+                      <b id="waveRevenue">41,2 M FCFA</b>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section class="s-card s-card-pad wave-management mb-4">
+              <div class="wave-section-head">
+                <div>
+                  <span class="eyebrow-s">Suivi de la cohorte</span>
+                  <h2 class="s-card-title mb-1">Candidatures et apprenants</h2>
+                  <p class="small text-secondary mb-0">
+                    Consultez les demandes reçues, puis les apprenants qui ont
+                    commencé leur formation.
+                  </p>
+                </div>
+                <span class="s-badge b-en_cours">
+                  <i class="bi bi-calendar-check"></i>
+                  <span id="waveTableName">Vague 2026-A</span>
+                </span>
+              </div>
+              <div
+                class="wave-tabs mt-4"
+                role="tablist"
+                aria-label="Dossiers de la vague"
+              >
+                <button
+                  class="wave-tab active"
+                  type="button"
+                  role="tab"
+                  aria-selected="true"
+                  data-wave-tab="applicants"
+                >
+                  <i class="bi bi-inbox"></i>
+                  Candidatures
+                  <span>4</span>
+                </button>
+                <button
+                  class="wave-tab"
+                  type="button"
+                  role="tab"
+                  aria-selected="false"
+                  data-wave-tab="students"
+                >
+                  <i class="bi bi-mortarboard"></i>
+                  Apprenants en formation
+                  <span>3</span>
+                </button>
+              </div>
+              <div class="wave-toolbar">
+                <div class="search-box">
+                  <i class="bi bi-search"></i>
+                  <input
+                    class="s-input"
+                    id="waveSearch"
+                    type="search"
+                    placeholder="Rechercher un nom ou une formation"
+                    aria-label="Rechercher dans la vague"
+                  />
+                </div>
+                <select
+                  class="s-input wave-course-filter"
+                  id="waveCourseFilter"
+                  aria-label="Filtrer par formation"
+                >
+                  <option value="">Toutes les formations</option>
+                  <option value="web">Développement Web</option>
+                  <option value="marketing">Marketing Digital</option>
+                </select>
+              </div>
+              <div class="wave-panel" id="applicantsPanel" role="tabpanel">
+                <div class="table-responsive">
+                  <table class="s-table wave-table">
+                    <thead>
+                      <tr>
+                        <th>Candidat</th>
+                        <th>Formation demandée</th>
+                        <th>Statut</th>
+                        <th>Date de candidature</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        data-wave-record
+                        data-course="web"
+                        data-name="aicha kora developpement web"
+                        data-panel="applicants"
+                      >
+                        <td>
+                          <div class="wave-person">
+                            <span class="avatar">AK</span>
+                            <span>
+                              <b>Aïcha Kora</b>
+                              <small>aicha.mensah@gmail.com</small>
+                            </span>
+                          </div>
+                        </td>
+                        <td>Développement Web</td>
+                        <td><span class="s-badge b-actif">Acceptée</span></td>
+                        <td>12 septembre 2026</td>
+                        <td>
+                          <button
+                            class="btn-s btn-line-s btn-sm-s"
+                            type="button"
+                            data-candidate-detail
+                            data-name="Aïcha Kora"
+                            data-email="aicha.mensah@gmail.com"
+                            data-course="Développement Web"
+                            data-status="Acceptée"
+                            data-finance="360 000 FCFA payés · 90 000 FCFA restants"
+                            data-certificate="En cours de formation"
+                          >
+                            Dossier
+                            <i class="bi bi-arrow-up-right"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr
+                        data-wave-record
+                        data-course="web"
+                        data-name="mariam bello developpement web"
+                        data-panel="applicants"
+                      >
+                        <td>
+                          <div class="wave-person">
+                            <span class="avatar">MB</span>
+                            <span>
+                              <b>Mariam Bello</b>
+                              <small>mariam.bello@gmail.com</small>
+                            </span>
+                          </div>
+                        </td>
+                        <td>Développement Web</td>
+                        <td><span class="s-badge b-actif">Acceptée</span></td>
+                        <td>15 septembre 2026</td>
+                        <td>
+                          <button
+                            class="btn-s btn-line-s btn-sm-s"
+                            type="button"
+                            data-candidate-detail
+                            data-name="Mariam Bello"
+                            data-email="mariam.bello@gmail.com"
+                            data-course="Développement Web"
+                            data-status="Acceptée"
+                            data-finance="300 000 FCFA payés · 150 000 FCFA restants"
+                            data-certificate="En cours de formation"
+                          >
+                            Dossier
+                            <i class="bi bi-arrow-up-right"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr
+                        data-wave-record
+                        data-course="marketing"
+                        data-name="jonas koffi marketing digital"
+                        data-panel="applicants"
+                      >
+                        <td>
+                          <div class="wave-person">
+                            <span class="avatar">JK</span>
+                            <span>
+                              <b>Jonas Koffi</b>
+                              <small>jonas.koffi@gmail.com</small>
+                            </span>
+                          </div>
+                        </td>
+                        <td>Marketing Digital</td>
+                        <td><span class="s-badge b-actif">Acceptée</span></td>
+                        <td>20 septembre 2026</td>
+                        <td>
+                          <button
+                            class="btn-s btn-line-s btn-sm-s"
+                            type="button"
+                            data-candidate-detail
+                            data-name="Jonas Koffi"
+                            data-email="jonas.koffi@gmail.com"
+                            data-course="Marketing Digital"
+                            data-status="Acceptée"
+                            data-finance="280 000 FCFA payés · Solde réglé"
+                            data-certificate="Attestation en préparation"
+                          >
+                            Dossier
+                            <i class="bi bi-arrow-up-right"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr
+                        data-wave-record
+                        data-course="marketing"
+                        data-name="fatou sow marketing digital"
+                        data-panel="applicants"
+                      >
+                        <td>
+                          <div class="wave-person">
+                            <span class="avatar">FS</span>
+                            <span>
+                              <b>Fatou Sow</b>
+                              <small>fatou.sow@gmail.com</small>
+                            </span>
+                          </div>
+                        </td>
+                        <td>Marketing Digital</td>
+                        <td>
+                          <span class="s-badge b-attente">En attente</span>
+                        </td>
+                        <td>24 septembre 2026</td>
+                        <td>
+                          <button
+                            class="btn-s btn-line-s btn-sm-s"
+                            type="button"
+                            data-candidate-detail
+                            data-name="Fatou Sow"
+                            data-email="fatou.sow@gmail.com"
+                            data-course="Marketing Digital"
+                            data-status="En attente"
+                            data-finance="Aucun paiement enregistré"
+                            data-certificate="Non éligible"
+                          >
+                            Dossier
+                            <i class="bi bi-arrow-up-right"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p
+                  class="wave-no-results small text-secondary text-center py-4 d-none"
+                >
+                  Aucune candidature ne correspond à ces filtres.
+                </p>
+              </div>
+              <div class="wave-panel d-none" id="studentsPanel" role="tabpanel">
+                <div class="table-responsive">
+                  <table class="s-table wave-table">
+                    <thead>
+                      <tr>
+                        <th>Apprenant</th>
+                        <th>Formation suivie</th>
+                        <th>Statut de suivi</th>
+                        <th>Finance</th>
+                        <th>Attestation</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        data-wave-record
+                        data-course="web"
+                        data-name="aicha kora developpement web"
+                        data-panel="students"
+                      >
+                        <td>
+                          <div class="wave-person">
+                            <span class="avatar">AK</span>
+                            <span>
+                              <b>Aïcha Kora</b>
+                              <small>aicha.mensah@gmail.com</small>
+                            </span>
+                          </div>
+                        </td>
+                        <td>Développement Web</td>
+                        <td>
+                          <span class="s-badge b-actif">
+                            Formation démarrée
+                          </span>
+                        </td>
+                        <td>
+                          <span class="s-badge b-partiel">Solde : 90 000</span>
+                        </td>
+                        <td>
+                          <span class="s-badge b-en_cours">En cours</span>
+                        </td>
+                        <td>
+                          <button
+                            class="btn-s btn-line-s btn-sm-s"
+                            type="button"
+                            data-candidate-detail
+                            data-name="Aïcha Kora"
+                            data-email="aicha.mensah@gmail.com"
+                            data-course="Développement Web"
+                            data-status="Apprenante"
+                            data-finance="360 000 FCFA payés · 90 000 FCFA restants"
+                            data-certificate="En cours de formation"
+                          >
+                            Dossier
+                            <i class="bi bi-arrow-up-right"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr
+                        data-wave-record
+                        data-course="web"
+                        data-name="mariam bello developpement web"
+                        data-panel="students"
+                      >
+                        <td>
+                          <div class="wave-person">
+                            <span class="avatar">MB</span>
+                            <span>
+                              <b>Mariam Bello</b>
+                              <small>mariam.bello@gmail.com</small>
+                            </span>
+                          </div>
+                        </td>
+                        <td>Développement Web</td>
+                        <td>
+                          <span class="s-badge b-actif">
+                            Formation démarrée
+                          </span>
+                        </td>
+                        <td>
+                          <span class="s-badge b-partiel">Solde : 150 000</span>
+                        </td>
+                        <td>
+                          <span class="s-badge b-en_cours">En cours</span>
+                        </td>
+                        <td>
+                          <button
+                            class="btn-s btn-line-s btn-sm-s"
+                            type="button"
+                            data-candidate-detail
+                            data-name="Mariam Bello"
+                            data-email="mariam.bello@gmail.com"
+                            data-course="Développement Web"
+                            data-status="Apprenante"
+                            data-finance="300 000 FCFA payés · 150 000 FCFA restants"
+                            data-certificate="En cours de formation"
+                          >
+                            Dossier
+                            <i class="bi bi-arrow-up-right"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr
+                        data-wave-record
+                        data-course="marketing"
+                        data-name="jonas koffi marketing digital"
+                        data-panel="students"
+                      >
+                        <td>
+                          <div class="wave-person">
+                            <span class="avatar">JK</span>
+                            <span>
+                              <b>Jonas Koffi</b>
+                              <small>jonas.koffi@gmail.com</small>
+                            </span>
+                          </div>
+                        </td>
+                        <td>Marketing Digital</td>
+                        <td>
+                          <span class="s-badge b-actif">
+                            Formation démarrée
+                          </span>
+                        </td>
+                        <td><span class="s-badge b-solde">Soldé</span></td>
+                        <td>
+                          <span class="s-badge b-en_cours">En préparation</span>
+                        </td>
+                        <td>
+                          <button
+                            class="btn-s btn-line-s btn-sm-s"
+                            type="button"
+                            data-candidate-detail
+                            data-name="Jonas Koffi"
+                            data-email="jonas.koffi@gmail.com"
+                            data-course="Marketing Digital"
+                            data-status="Apprenant"
+                            data-finance="280 000 FCFA payés · Solde réglé"
+                            data-certificate="Attestation en préparation"
+                          >
+                            Dossier
+                            <i class="bi bi-arrow-up-right"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p
+                  class="wave-no-results small text-secondary text-center py-4 d-none"
+                >
+                  Aucun apprenant ne correspond à ces filtres.
+                </p>
+              </div>
+            </section>
+          </div>
+          <div
+            class="modal fade"
+            id="waveCandidateModal"
+            tabindex="-1"
+            aria-labelledby="waveCandidateTitle"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+              <div class="modal-content border-0 rounded-4">
+                <div class="modal-header border-0 px-4 pt-4">
+                  <div>
+                    <span class="eyebrow-s">Dossier de la vague · aperçu</span>
+                    <h2
+                      class="modal-title fs-4 fw-bold"
+                      id="waveCandidateTitle"
+                    >
+                      Dossier apprenant
+                    </h2>
+                    <p
+                      id="waveCandidateEmail"
+                      class="small text-secondary mb-0"
+                    ></p>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Fermer"
+                  ></button>
+                </div>
+                <div class="modal-body px-4">
+                  <div class="row g-3">
+                    <div class="col-sm-6">
+                      <div class="wave-detail-item">
+                        <small>Formation</small>
+                        <b id="waveCandidateCourse"></b>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="wave-detail-item">
+                        <small>Statut dans la vague</small>
+                        <b id="waveCandidateStatus"></b>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="wave-detail-item">
+                        <small>Situation financière</small>
+                        <b id="waveCandidateFinance"></b>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="wave-detail-item">
+                        <small>Attestation</small>
+                        <b id="waveCandidateCertificate"></b>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="small text-secondary mt-3 mb-0">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Ce dossier regroupe la formation, les paiements et
+                    l’attestation de l’apprenant.
+                  </p>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                  <button
+                    class="btn-s btn-line-s"
+                    type="button"
+                    data-bs-dismiss="modal"
+                  >
+                    Fermer
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <div
@@ -343,6 +859,100 @@
         </main>
       </div>
     </div>
+    <script>
+      document
+        .querySelectorAll("[data-wave-select]")
+        .forEach(function (choice) {
+          choice.addEventListener("click", function () {
+            document.getElementById("vc").textContent = choice.dataset.name;
+            document.getElementById("waveTableName").textContent =
+              choice.dataset.name;
+            document.getElementById("wavePeriod").textContent =
+              choice.dataset.period;
+            document.getElementById("waveCandidates").textContent =
+              choice.dataset.candidates;
+            document.getElementById("waveAccepted").textContent =
+              choice.dataset.accepted;
+            document.getElementById("waveCourses").textContent =
+              choice.dataset.courses;
+            document.getElementById("waveRevenue").textContent =
+              choice.dataset.revenue;
+            document.getElementById("waveStatus").textContent =
+              choice.dataset.status === "En cours"
+                ? "Vague en cours"
+                : "Vague archivée";
+            document.getElementById("wavePicker").classList.add("d-none");
+            document.getElementById("waveDetails").classList.remove("d-none");
+          });
+        });
+      document.querySelectorAll("[data-wave-back]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          document.getElementById("waveDetails").classList.add("d-none");
+          document.getElementById("wavePicker").classList.remove("d-none");
+        });
+      });
+      document.querySelectorAll("[data-wave-tab]").forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          document.querySelectorAll("[data-wave-tab]").forEach(function (item) {
+            item.classList.toggle("active", item === tab);
+            item.setAttribute("aria-selected", item === tab ? "true" : "false");
+          });
+          document
+            .getElementById("applicantsPanel")
+            .classList.toggle("d-none", tab.dataset.waveTab !== "applicants");
+          document
+            .getElementById("studentsPanel")
+            .classList.toggle("d-none", tab.dataset.waveTab !== "students");
+          filterWaveRows();
+        });
+      });
+      var waveSearch = document.getElementById("waveSearch"),
+        waveCourse = document.getElementById("waveCourseFilter");
+      function filterWaveRows() {
+        var panel = document
+            .getElementById("applicantsPanel")
+            .classList.contains("d-none")
+            ? "students"
+            : "applicants",
+          query = (waveSearch.value || "").toLocaleLowerCase("fr"),
+          course = waveCourse.value,
+          visible = 0;
+        document.querySelectorAll("[data-wave-record]").forEach(function (row) {
+          var show =
+            row.dataset.panel === panel &&
+            row.dataset.name.indexOf(query) !== -1 &&
+            (!course || row.dataset.course === course);
+          row.classList.toggle("d-none", !show);
+          if (show) visible++;
+        });
+        document.querySelectorAll(".wave-no-results").forEach(function (note) {
+          note.classList.toggle("d-none", visible > 0);
+        });
+      }
+      waveSearch.addEventListener("input", filterWaveRows);
+      waveCourse.addEventListener("change", filterWaveRows);
+      document
+        .querySelectorAll("[data-candidate-detail]")
+        .forEach(function (button) {
+          button.addEventListener("click", function () {
+            document.getElementById("waveCandidateTitle").textContent =
+              button.dataset.name;
+            document.getElementById("waveCandidateEmail").textContent =
+              button.dataset.email;
+            document.getElementById("waveCandidateCourse").textContent =
+              button.dataset.course;
+            document.getElementById("waveCandidateStatus").textContent =
+              button.dataset.status;
+            document.getElementById("waveCandidateFinance").textContent =
+              button.dataset.finance;
+            document.getElementById("waveCandidateCertificate").textContent =
+              button.dataset.certificate;
+            bootstrap.Modal.getOrCreateInstance(
+              document.getElementById("waveCandidateModal"),
+            ).show();
+          });
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/espace.js' %}" defer></script>
   </body>

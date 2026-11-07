@@ -1,0 +1,416 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+  <head>
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      {% if chapitre %}{{ chapitre.nom }}{% else %}Chapitre de formation{% endif
+      %} | SAREF Academy
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
+    <style>
+      .chapter-player {
+        width: 100%;
+        min-height: 300px;
+        border: 0;
+        border-radius: 16px;
+        background: #0f172a;
+      }
+      .chapter-info {
+        display: grid;
+        gap: 0.35rem;
+        padding: 1rem;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #fbfcff;
+      }
+      .chapter-info small {
+        color: var(--ink-mute);
+        font-size: 10px;
+      }
+      .chapter-info b {
+        overflow-wrap: anywhere;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body class="espace espace-apprenant">
+    <div class="app">
+      {% include 'partials/sidebar_apprenant.html' %}
+      <div class="app-col">
+        {% include 'partials/apprenant_topbar.html' %}
+        <main class="app-main">
+          {% if chapitre %}
+          <nav class="crumb">
+            <a href="{% url 'apprenant_formations' %}">Mes formations</a>
+            / {{ chapitre.modules.formation.nom }} / {{ chapitre.modules.titre
+            }}
+          </nav>
+          <section class="hero mb-4">
+            <div
+              class="d-flex flex-wrap justify-content-between align-items-center gap-3"
+            >
+              <div>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                  <span class="hero-chip light">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Chapitre publié
+                  </span>
+                  <span class="hero-chip">
+                    <i class="bi bi-journals"></i>
+                    {{ chapitre.modules.titre }}
+                  </span>
+                  <span class="hero-chip">
+                    <i class="bi bi-clock"></i>
+                    {{ chapitre.duree }} min
+                  </span>
+                </div>
+                <h1 class="h2 fw-bold mb-2">{{ chapitre.nom }}</h1>
+                <p class="mb-0">
+                  {{ chapitre.description|default:"Consultez la vidéo, les
+                  supports et les informations de ce chapitre." }}
+                </p>
+              </div>
+              <a
+                class="btn-s btn-light-s"
+                href="{% url 'apprenant_formation_detail' chapitre.modules.formation_id %}#programme"
+              >
+                <i class="bi bi-arrow-left me-1"></i>
+                Retour au programme
+              </a>
+            </div>
+          </section>
+          <div class="row g-4">
+            <div class="col-xl-8">
+              {% if chapitre.support_video_url %}
+              <section class="s-card s-card-pad mb-4">
+                <div
+                  class="d-flex justify-content-between align-items-center gap-2 mb-3"
+                >
+                  <h2 class="s-card-title mb-0">
+                    <i class="bi bi-play-circle text-primary me-2"></i>
+                    Vidéo du chapitre
+                  </h2>
+                  <span class="s-badge b-actif">Disponible</span>
+                </div>
+                <div class="ratio ratio-16x9">
+                  <iframe
+                    class="chapter-player"
+                    src="{{ chapitre.support_video_url }}"
+                    title="Vidéo : {{ chapitre.nom }}"
+                    allow="
+                      accelerometer;
+                      autoplay;
+                      clipboard-write;
+                      encrypted-media;
+                      gyroscope;
+                      picture-in-picture;
+                      web-share;
+                    "
+                    allowfullscreen
+                    loading="lazy"
+                  ></iframe>
+                </div>
+              </section>
+              {% endif %} {% if chapitre.support_pdf %}
+              <section class="s-card s-card-pad mb-4">
+                <span class="eyebrow-s">Ressource pédagogique</span>
+                <h2 class="s-card-title mt-1 mb-3">Support PDF</h2>
+                <div class="file-row">
+                  <span class="file-row-icon">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                  </span>
+                  <span class="file-row-name">
+                    {{ chapitre.support_pdf.name|cut:"documents/" }}
+                  </span>
+                  <a
+                    class="btn-s btn-line-s btn-sm-s"
+                    href="{{ chapitre.support_pdf.url }}"
+                    download
+                  >
+                    <i class="bi bi-download me-1"></i>
+                    Télécharger
+                  </a>
+                </div>
+              </section>
+              {% endif %} {% if not chapitre.support_video_url and not
+              chapitre.support_pdf %}
+              <section class="s-card s-card-pad">
+                <i class="bi bi-hourglass-split fs-2 text-primary"></i>
+                <h2 class="h5 mt-3">Ressources en préparation</h2>
+                <p class="text-secondary mb-0">
+                  Ce chapitre est publié. Les ressources seront ajoutées
+                  prochainement.
+                </p>
+              </section>
+              {% endif %}
+              <section class="s-card s-card-pad">
+                <span class="eyebrow-s">À propos du chapitre</span>
+                <h2 class="s-card-title mt-1">Informations pédagogiques</h2>
+                <p class="text-secondary mb-0">
+                  {{ chapitre.description|default:"Suivez les ressources dans
+                  l’ordre et revenez au programme pour continuer votre
+                  formation." }}
+                </p>
+              </section>
+            </div>
+            <aside class="col-xl-4">
+              <section class="s-card s-card-pad mb-4">
+                <span class="eyebrow-s">Fiche du chapitre</span>
+                <h2 class="s-card-title mt-1 mb-3">{{ chapitre.nom }}</h2>
+                <div class="info-row">
+                  <span>Formation</span>
+                  <b>{{ chapitre.modules.formation.nom }}</b>
+                </div>
+                <div class="info-row">
+                  <span>Module</span>
+                  <b>{{ chapitre.modules.titre }}</b>
+                </div>
+                <div class="info-row">
+                  <span>Numéro</span>
+                  <b>Chapitre {{ chapitre.ordre }}</b>
+                </div>
+                <div class="info-row">
+                  <span>Durée estimée</span>
+                  <b>{{ chapitre.duree }} minutes</b>
+                </div>
+                <div class="info-row">
+                  <span>Statut</span>
+                  <span class="s-badge b-actif">Publié</span>
+                </div>
+              </section>
+              <section class="s-card s-card-pad">
+                <span class="eyebrow-s">Règles d’accès</span>
+                <p class="small text-secondary mb-0">
+                  Les ressources affichées sont celles publiées par votre
+                  gestionnaire ou votre formateur. Vous pouvez les consulter et
+                  télécharger les supports disponibles.
+                </p>
+              </section>
+            </aside>
+          </div>
+          {% elif request.GET.formation == 'web' or request.GET.formation ==
+          'mkt' %} {% with demo_formation=request.GET.formation
+          demo_module=request.GET.module demo_chapter=request.GET.chapitre %} {%
+          if demo_chapter == '1' and demo_module == '1' or demo_chapter == '1'
+          and demo_module == '2' %}
+          <nav class="crumb">
+            <a href="{% url 'apprenant_formations' %}">Mes formations</a>
+            /
+            <a
+              href="{% if demo_formation == 'mkt' %}{% url 'apprenant_formation_detail' 2 %}{% else %}{% url 'apprenant_formation_detail' 1 %}{% endif %}"
+            >
+              {% if demo_formation == 'mkt' %}Marketing digital{% else
+              %}Développement Web{% endif %}
+            </a>
+            / Chapitre
+          </nav>
+          <section class="hero mb-4">
+            <div
+              class="d-flex flex-wrap justify-content-between align-items-center gap-3"
+            >
+              <div>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                  <span class="hero-chip light">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Chapitre publié
+                  </span>
+                  <span class="hero-chip">
+                    <i class="bi bi-journals"></i>
+                    {% if demo_module == '1' %}{% if demo_formation == 'mkt'
+                    %}Introduction au marketing numérique{% else %}Les bases du
+                    Web{% endif %}{% else %}{% if demo_formation == 'mkt'
+                    %}Réseaux sociaux et contenu{% else %}HTML et structure des
+                    pages{% endif %}{% endif %}
+                  </span>
+                  <span class="hero-chip">
+                    <i class="bi bi-clock"></i>
+                    {% if demo_module == '1' %}20{% else %}22{% endif %} min
+                  </span>
+                </div>
+                <h1 class="h2 fw-bold mb-2">
+                  {% if demo_formation == 'mkt' %}{% if demo_module == '1' %}Les
+                  fondamentaux du marketing digital{% else %}Choisir ses
+                  plateformes{% endif %}{% else %}{% if demo_module == '1'
+                  %}Comment fonctionne le Web ?{% else %}Les balises
+                  essentielles{% endif %}{% endif %}
+                </h1>
+                <p class="mb-0">
+                  Consultez les ressources mises à disposition par l’équipe
+                  pédagogique.
+                </p>
+              </div>
+              <a
+                class="btn-s btn-light-s"
+                href="{% if demo_formation == 'mkt' %}{% url 'apprenant_formation_detail' 2 %}{% else %}{% url 'apprenant_formation_detail' 1 %}{% endif %}#demo-programme"
+              >
+                <i class="bi bi-arrow-left me-1"></i>
+                Retour aux modules
+              </a>
+            </div>
+          </section>
+          <div class="row g-4">
+            <div class="col-xl-8">
+              <section class="s-card s-card-pad mb-4">
+                <div
+                  class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3"
+                >
+                  <div>
+                    <span class="eyebrow-s">Ressource vidéo</span>
+                    <h2 class="s-card-title mt-1 mb-0">Vidéo du chapitre</h2>
+                  </div>
+                  <span class="s-badge b-actif">Disponible</span>
+                </div>
+                <div class="ratio ratio-16x9">
+                  <iframe
+                    class="chapter-player"
+                    src="https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ"
+                    title="Vidéo du chapitre"
+                    allow="
+                      accelerometer;
+                      autoplay;
+                      clipboard-write;
+                      encrypted-media;
+                      gyroscope;
+                      picture-in-picture;
+                    "
+                    allowfullscreen
+                    loading="lazy"
+                  ></iframe>
+                </div>
+              </section>
+              <section class="s-card s-card-pad mb-4">
+                <span class="eyebrow-s">Ressource pédagogique</span>
+                <h2 class="s-card-title mt-1 mb-3">Support PDF</h2>
+                <div class="file-row">
+                  <span class="file-row-icon">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                  </span>
+                  <span class="file-row-name">support-cours-web.pdf</span>
+                  <a
+                    class="btn-s btn-line-s btn-sm-s"
+                    href="{% static 'documents/support-cours-web.pdf' %}"
+                    download
+                  >
+                    <i class="bi bi-download me-1"></i>
+                    Télécharger
+                  </a>
+                </div>
+              </section>
+              <section class="s-card s-card-pad">
+                <span class="eyebrow-s">À propos du chapitre</span>
+                <h2 class="s-card-title mt-1">Informations pédagogiques</h2>
+                <p class="text-secondary mb-0">
+                  {% if demo_formation == 'mkt' %}Découvrez les notions
+                  essentielles et les outils présentés dans ce chapitre de
+                  marketing digital.{% else %}Découvrez les notions essentielles
+                  et les concepts présentés dans ce chapitre de développement
+                  Web.{% endif %}
+                </p>
+              </section>
+            </div>
+            <aside class="col-xl-4">
+              <section class="s-card s-card-pad mb-4">
+                <span class="eyebrow-s">Fiche du chapitre</span>
+                <h2 class="s-card-title mt-1 mb-3">
+                  {% if demo_formation == 'mkt' %}{% if demo_module == '1' %}Les
+                  fondamentaux du marketing digital{% else %}Choisir ses
+                  plateformes{% endif %}{% else %}{% if demo_module == '1'
+                  %}Comment fonctionne le Web ?{% else %}Les balises
+                  essentielles{% endif %}{% endif %}
+                </h2>
+                <div class="info-row">
+                  <span>Formation</span>
+                  <b>
+                    {% if demo_formation == 'mkt' %}Marketing digital{% else
+                    %}Développement Web{% endif %}
+                  </b>
+                </div>
+                <div class="info-row">
+                  <span>Module</span>
+                  <b>{% if demo_module == '1' %}1{% else %}2{% endif %}</b>
+                </div>
+                <div class="info-row">
+                  <span>Durée</span>
+                  <b>
+                    {% if demo_module == '1' %}20{% else %}22{% endif %} min
+                  </b>
+                </div>
+                <div class="info-row">
+                  <span>Statut du chapitre</span>
+                  <span class="s-badge b-actif">Publié</span>
+                </div>
+                <div class="info-row">
+                  <span>Ressources</span>
+                  <b>Vidéo et PDF</b>
+                </div>
+              </section>
+              <section class="s-card s-card-pad">
+                <span class="eyebrow-s">Consultation</span>
+                <p class="small text-secondary mb-0">
+                  Cette page est en lecture seule. Les ressources sont préparées
+                  et publiées par l’équipe pédagogique.
+                </p>
+              </section>
+            </aside>
+          </div>
+          {% else %}
+          <section class="s-card s-card-pad text-center py-5">
+            <span class="stat-icon mx-auto mb-3">
+              <i class="bi bi-lock"></i>
+            </span>
+            <h1 class="h4">Ce chapitre est verrouillé</h1>
+            <p class="text-secondary">
+              Le gestionnaire ou le formateur ne l’a pas encore publié.
+            </p>
+            <a
+              class="btn-s btn-primary-s"
+              href="{% if demo_formation == 'mkt' %}{% url 'apprenant_formation_detail' 2 %}{% else %}{% url 'apprenant_formation_detail' 1 %}{% endif %}"
+            >
+              <i class="bi bi-arrow-left me-1"></i>
+              Retour aux modules
+            </a>
+          </section>
+          {% endif %} {% endwith %} {% else %}
+          <section class="s-card s-card-pad text-center py-5">
+            <span class="stat-icon mx-auto mb-3">
+              <i class="bi bi-journals"></i>
+            </span>
+            <h1 class="h4">Chapitre indisponible</h1>
+            <p class="text-secondary">
+              Ce chapitre n’est pas rattaché à une formation accessible.
+            </p>
+            <a
+              class="btn-s btn-primary-s"
+              href="{% url 'apprenant_formations' %}"
+            >
+              Retour à mes formations
+            </a>
+          </section>
+          {% endif %}
+        </main>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/espace.js' %}" defer></script>
+  </body>
+</html>

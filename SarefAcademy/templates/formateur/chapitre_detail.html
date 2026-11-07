@@ -2,31 +2,353 @@
 <!doctype html>
 <html lang="fr">
   <head>
-    <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ chapitre.nom|default:"Chapitre" }} | Espace formateur</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" /><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" /><link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" /><link rel="stylesheet" href="{% static 'css/espace.css' %}" />
-    <style>.content-frame{width:100%;min-height:360px;border:0;border-radius:16px;background:#f1f5f9}.chapter-editor .form-label{font-weight:600;font-size:.9rem}.chapter-editor .form-control{border-radius:10px}.chapter-state{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px}</style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
+    <style>
+      .content-frame {
+        width: 100%;
+        min-height: 360px;
+        border: 0;
+        border-radius: 16px;
+        background: #f1f5f9;
+      }
+      .chapter-editor .form-label {
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+      .chapter-editor .form-control {
+        border-radius: 10px;
+      }
+      .chapter-state {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+      }
+    </style>
   </head>
-  <body class="espace espace-formateur"><div class="app">
-    {% include 'partials/sidebar_formateur.html' %}
-    <div class="app-col">{% include 'partials/formateur_topbar.html' %}
-      <main class="app-main">
-        <nav class="crumb" aria-label="Fil d'Ariane"><a href="{% url 'formateur_formations' %}">Mes formations</a> / {{ module.titre|default:"Les bases du Web" }} / {{ chapitre.nom|default:"Comment fonctionne le Web ?" }}</nav>
-        <div class="page-head"><div><span class="eyebrow-s">{{ module.titre|default:"Les bases du Web" }}</span><h1 class="page-title">{{ chapitre.nom|default:"Comment fonctionne le Web ?" }}</h1><p class="page-sub mb-0">Préparez le contenu et vérifiez l’aperçu avant de le rendre visible aux apprenants.</p></div><a class="btn-s btn-line-s" href="{% url 'formateur_formations' %}"><i class="bi bi-arrow-left me-1"></i>Mes formations</a></div>
-        <div class="row g-4"><div class="col-xl-8">
-          <section class="s-card s-card-pad mb-4"><div class="d-flex align-items-center justify-content-between mb-3"><h2 class="s-card-title mb-0">Aperçu apprenant</h2><span class="s-badge {% if chapitre.est_active %}b-actif{% else %}b-en_cours{% endif %}">{% if chapitre.est_active %}Actif{% else %}Brouillon{% endif %}</span></div>
-            {% if chapitre.support_video_url or not chapitre %}<div class="ratio ratio-16x9 mb-3"><iframe class="content-frame" src="{{ chapitre.support_video_url|default:'https://www.youtube.com/embed/aqz-KE-bpKQ' }}" title="Vidéo : {{ chapitre.nom|default:'Comment fonctionne le Web ?' }}" allowfullscreen loading="lazy"></iframe></div><a class="small" href="{{ chapitre.support_video_url|default:'https://www.youtube.com/embed/aqz-KE-bpKQ' }}" target="_blank" rel="noopener">Ouvrir la vidéo dans un nouvel onglet</a>{% else %}<div class="chapter-state p-4 text-center mb-3"><i class="bi bi-camera-video fs-3 text-primary"></i><p class="mb-0 mt-2 text-secondary">Ajoutez une vidéo pour afficher son aperçu ici.</p></div>{% endif %}
-            {% if chapitre.support_pdf %}<h3 class="h6 fw-bold mt-4">Support PDF</h3><iframe class="content-frame" src="{{ chapitre.support_pdf.url }}#view=FitH" title="Support PDF : {{ chapitre.nom }}" loading="lazy"></iframe><a class="btn-s btn-line-s mt-3" href="{{ chapitre.support_pdf.url }}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1"></i>Ouvrir le PDF</a>{% elif not chapitre %}<h3 class="h6 fw-bold mt-4">Support PDF · exemple enregistré</h3><iframe class="content-frame" src="/media/documents/support-demo-saref.pdf#view=FitH" title="Support PDF de démonstration" loading="lazy"></iframe><a class="btn-s btn-line-s mt-3" href="/media/documents/support-demo-saref.pdf" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1"></i>Ouvrir le PDF</a>{% else %}<div class="chapter-state p-3 mt-3 text-secondary"><i class="bi bi-file-earmark-pdf me-2"></i>Ajoutez le support PDF pour le consulter sur cette page.</div>{% endif %}
-          </section>
-          <section class="s-card s-card-pad"><h2 class="s-card-title mb-3">Informations du chapitre</h2><p class="small text-secondary">L’interface est prête. L’enregistrement réel sera raccordé aux vues pendant la phase backend.</p><form method="post" enctype="multipart/form-data" class="chapter-editor">{% csrf_token %}<div class="row g-3">
-            <div class="col-md-8"><label class="form-label" for="nom">Titre du chapitre</label><input class="form-control" id="nom" name="nom" maxlength="100" value="{{ chapitre.nom|default:'Comment fonctionne le Web ?' }}" required></div><div class="col-md-4"><label class="form-label" for="duree">Durée (minutes)</label><input class="form-control" id="duree" name="duree" type="number" min="1" value="{{ chapitre.duree|default:'12' }}" required></div>
-            <div class="col-12"><label class="form-label" for="description">Résumé et objectifs pédagogiques</label><textarea class="form-control" id="description" name="description" rows="4">{{ chapitre.description|default:'Comprendre le rôle du navigateur, du serveur et des échanges HTTP.' }}</textarea></div>
-            <div class="col-12"><label class="form-label" for="support_video_url">Lien intégrable de la vidéo</label><input class="form-control" id="support_video_url" name="support_video_url" type="url" maxlength="500" value="{{ chapitre.support_video_url|default:'https://www.youtube.com/embed/aqz-KE-bpKQ' }}" placeholder="https://…"><div class="form-text">Utilisez un lien de type intégration (YouTube /embed ou Google Drive /preview) pour l’aperçu sur cette page.</div></div>
-            <div class="col-12"><label class="form-label" for="support_pdf">Support PDF</label><input class="form-control" id="support_pdf" name="support_pdf" type="file" accept="application/pdf"><div class="form-text">{% if chapitre.support_pdf %}Un PDF est actuellement associé au chapitre.{% else %}Sélectionnez un fichier PDF.{% endif %}</div></div>
-            <div class="col-12"><div class="chapter-state p-3 d-flex align-items-center justify-content-between gap-3"><div><b>Publier pour les apprenants</b><div class="small text-secondary">Vous pouvez désactiver le chapitre à tout moment.</div></div><div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" id="est_active" name="est_active" value="1" {% if chapitre.est_active or not chapitre %}checked{% endif %}><label class="visually-hidden" for="est_active">Chapitre actif</label></div></div></div>
-          </div><div class="d-flex justify-content-end mt-4"><button class="btn-s btn-primary-s" type="submit"><i class="bi bi-save me-1"></i>Enregistrer</button></div></form></section>
-        </div><aside class="col-xl-4"><section class="s-card s-card-pad mb-4"><p class="eyebrow-s">Statut du chapitre</p><p class="text-secondary small">Les apprenants voient les ressources du chapitre lorsqu’il est activé. Vérifiez la vidéo et le PDF avant publication.</p><div class="info-row"><span>Module</span><b>{{ module.titre|default:"—" }}</b></div><div class="info-row"><span>Ordre</span><b>{{ chapitre.ordre|default:"—" }}</b></div><div class="info-row"><span>Durée</span><b>{% if chapitre.duree %}{{ chapitre.duree }} min{% else %}—{% endif %}</b></div></section><section class="s-card s-card-pad"><h2 class="s-card-title mb-3">Chapitres du module</h2>{% for item in chapitres %}<a class="chap-nav-item {% if item.pk == chapitre.pk %}active{% endif %}" href="{% url 'formateur_chapitre_detail' formation_id item.pk %}"><span class="chap-nav-num">{{ item.ordre }}</span><span class="flex-grow-1">{{ item.nom }}</span><span class="badge {% if item.est_active %}text-bg-success{% else %}text-bg-secondary{% endif %}">{% if item.est_active %}Actif{% else %}Brouillon{% endif %}</span></a>{% empty %}<p class="text-secondary small mb-0">La liste des chapitres apparaîtra ici une fois les données transmises par la vue.</p>{% endfor %}</section></aside></div>
-      </main>
-    </div></div><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><script src="{% static 'js/espace.js' %}" defer></script></body>
+  <body class="espace espace-formateur">
+    <div class="app">
+      {% include 'partials/sidebar_formateur.html' %}
+      <div class="app-col">
+        {% include 'partials/formateur_topbar.html' %}
+        <main class="app-main">
+          <nav class="crumb" aria-label="Fil d'Ariane">
+            <a href="{% url 'formateur_formations' %}">Mes formations</a>
+            / {{ module.titre|default:"Les bases du Web" }} / {{
+            chapitre.nom|default:"Comment fonctionne le Web ?" }}
+          </nav>
+          <div class="page-head">
+            <div>
+              <span class="eyebrow-s">
+                {{ module.titre|default:"Les bases du Web" }}
+              </span>
+              <h1 class="page-title">
+                {{ chapitre.nom|default:"Comment fonctionne le Web ?" }}
+              </h1>
+              <p class="page-sub mb-0">
+                Préparez le contenu et vérifiez l’aperçu avant de le rendre
+                visible aux apprenants.
+              </p>
+            </div>
+            <a class="btn-s btn-line-s" href="{% url 'formateur_formations' %}">
+              <i class="bi bi-arrow-left me-1"></i>
+              Mes formations
+            </a>
+          </div>
+          <div class="row g-4">
+            <div class="col-xl-8">
+              <section class="s-card s-card-pad mb-4">
+                <div
+                  class="d-flex align-items-center justify-content-between mb-3"
+                >
+                  <h2 class="s-card-title mb-0">Aperçu apprenant</h2>
+                  <span
+                    class="s-badge {% if chapitre.est_active %}b-actif{% else %}b-en_cours{% endif %}"
+                  >
+                    {% if chapitre.est_active %}Actif{% else %}Brouillon{% endif
+                    %}
+                  </span>
+                </div>
+                {% if chapitre.support_video_url or not chapitre %}
+                <div class="ratio ratio-16x9 mb-3">
+                  <iframe
+                    class="content-frame"
+                    src="{{ chapitre.support_video_url|default:'https://www.youtube.com/embed/aqz-KE-bpKQ' }}"
+                    title="Vidéo : {{ chapitre.nom|default:'Comment fonctionne le Web ?' }}"
+                    allowfullscreen
+                    loading="lazy"
+                  ></iframe>
+                </div>
+                <a
+                  class="small"
+                  href="{{ chapitre.support_video_url|default:'https://www.youtube.com/embed/aqz-KE-bpKQ' }}"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Ouvrir la vidéo dans un nouvel onglet
+                </a>
+                {% else %}
+                <div class="chapter-state p-4 text-center mb-3">
+                  <i class="bi bi-camera-video fs-3 text-primary"></i>
+                  <p class="mb-0 mt-2 text-secondary">
+                    Ajoutez une vidéo pour afficher son aperçu ici.
+                  </p>
+                </div>
+                {% endif %} {% if chapitre.support_pdf %}
+                <h3 class="h6 fw-bold mt-4">Support PDF</h3>
+                <div class="file-row">
+                  <span class="file-row-icon">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                  </span>
+                  <a
+                    class="file-row-name"
+                    href="{{ chapitre.support_pdf.url }}"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    {{ chapitre.support_pdf.name|cut:"documents/" }}
+                  </a>
+                  <a
+                    class="btn-s btn-line-s btn-sm-s"
+                    href="{{ chapitre.support_pdf.url }}"
+                    download
+                  >
+                    <i class="bi bi-download me-1"></i>
+                    Télécharger le PDF
+                  </a>
+                </div>
+                {% elif not chapitre %}
+                <h3 class="h6 fw-bold mt-4">Support PDF</h3>
+                <div class="file-row">
+                  <span class="file-row-icon">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                  </span>
+                  <a
+                    class="file-row-name"
+                    href="{% static 'documents/support-cours-demo.pdf' %}"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    support-cours-demo.pdf
+                  </a>
+                  <a
+                    class="btn-s btn-line-s btn-sm-s"
+                    href="{% static 'documents/support-cours-demo.pdf' %}"
+                    download
+                  >
+                    <i class="bi bi-download me-1"></i>
+                    Télécharger le PDF
+                  </a>
+                </div>
+                {% else %}
+                <div class="chapter-state p-3 mt-3 text-secondary">
+                  <i class="bi bi-file-earmark-pdf me-2"></i>
+                  Aucun support PDF associé à ce chapitre.
+                </div>
+                {% endif %}
+              </section>
+              <section class="s-card s-card-pad">
+                <h2 class="s-card-title mb-3">Informations du chapitre</h2>
+                <p class="small text-secondary">
+                  L’interface est prête. L’enregistrement réel sera raccordé aux
+                  vues pendant la phase backend.
+                </p>
+                <form
+                  method="post"
+                  enctype="multipart/form-data"
+                  class="chapter-editor"
+                >
+                  {% csrf_token %}
+                  <div class="row g-3">
+                    <div class="col-md-8">
+                      <label class="form-label" for="nom">
+                        Titre du chapitre
+                      </label>
+                      <input
+                        class="form-control"
+                        id="nom"
+                        name="nom"
+                        maxlength="100"
+                        value="{{ chapitre.nom|default:'Comment fonctionne le Web ?' }}"
+                        required
+                      />
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label" for="duree">
+                        Durée (minutes)
+                      </label>
+                      <input
+                        class="form-control"
+                        id="duree"
+                        name="duree"
+                        type="number"
+                        min="1"
+                        value="{{ chapitre.duree|default:'12' }}"
+                        required
+                      />
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label" for="description">
+                        Résumé et objectifs pédagogiques
+                      </label>
+                      <textarea
+                        class="form-control"
+                        id="description"
+                        name="description"
+                        rows="4"
+                      >
+{{ chapitre.description|default:'Comprendre le rôle du navigateur, du serveur et des échanges HTTP.' }}</textarea>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label" for="support_video_url">
+                        Lien intégrable de la vidéo
+                      </label>
+                      <input
+                        class="form-control"
+                        id="support_video_url"
+                        name="support_video_url"
+                        type="url"
+                        maxlength="500"
+                        value="{{ chapitre.support_video_url|default:'https://www.youtube.com/embed/aqz-KE-bpKQ' }}"
+                        placeholder="https://…"
+                      />
+                      <div class="form-text">
+                        Utilisez un lien de type intégration (YouTube /embed ou
+                        Google Drive /preview) pour l’aperçu sur cette page.
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label" for="support_pdf">
+                        Support PDF
+                      </label>
+                      <input
+                        class="form-control"
+                        id="support_pdf"
+                        name="support_pdf"
+                        type="file"
+                        accept="application/pdf"
+                      />
+                      <div class="form-text">
+                        {% if chapitre.support_pdf %}Un PDF est actuellement
+                        associé au chapitre.{% else %}Sélectionnez un fichier
+                        PDF.{% endif %}
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div
+                        class="chapter-state p-3 d-flex align-items-center justify-content-between gap-3"
+                      >
+                        <div>
+                          <b>Publier pour les apprenants</b>
+                          <div class="small text-secondary">
+                            Vous pouvez désactiver le chapitre à tout moment.
+                          </div>
+                        </div>
+                        <div class="form-check form-switch">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            role="switch"
+                            id="est_active"
+                            name="est_active"
+                            value="1"
+                            {%
+                            if
+                            chapitre.est_active
+                            or
+                            not
+                            chapitre
+                            %}checked{%
+                            endif
+                            %}
+                          />
+                          <label class="visually-hidden" for="est_active">
+                            Chapitre actif
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-end mt-4">
+                    <button class="btn-s btn-primary-s" type="submit">
+                      <i class="bi bi-save me-1"></i>
+                      Enregistrer
+                    </button>
+                  </div>
+                </form>
+              </section>
+            </div>
+            <aside class="col-xl-4">
+              <section class="s-card s-card-pad mb-4">
+                <p class="eyebrow-s">Statut du chapitre</p>
+                <p class="text-secondary small">
+                  Les apprenants voient les ressources du chapitre lorsqu’il est
+                  activé. Vérifiez la vidéo et le PDF avant publication.
+                </p>
+                <div class="info-row">
+                  <span>Module</span>
+                  <b>{{ module.titre|default:"—" }}</b>
+                </div>
+                <div class="info-row">
+                  <span>Ordre</span>
+                  <b>{{ chapitre.ordre|default:"—" }}</b>
+                </div>
+                <div class="info-row">
+                  <span>Durée</span>
+                  <b>
+                    {% if chapitre.duree %}{{ chapitre.duree }} min{% else %}—{%
+                    endif %}
+                  </b>
+                </div>
+              </section>
+              <section class="s-card s-card-pad">
+                <h2 class="s-card-title mb-3">Chapitres du module</h2>
+                {% for item in chapitres %}
+                <a
+                  class="chap-nav-item {% if item.pk == chapitre.pk %}active{% endif %}"
+                  href="{% url 'formateur_chapitre_detail' formation_id item.pk %}"
+                >
+                  <span class="chap-nav-num">{{ item.ordre }}</span>
+                  <span class="flex-grow-1">{{ item.nom }}</span>
+                  <span
+                    class="badge {% if item.est_active %}text-bg-success{% else %}text-bg-secondary{% endif %}"
+                  >
+                    {% if item.est_active %}Actif{% else %}Brouillon{% endif %}
+                  </span>
+                </a>
+                {% empty %}
+                <p class="text-secondary small mb-0">
+                  La liste des chapitres apparaîtra ici une fois les données
+                  transmises par la vue.
+                </p>
+                {% endfor %}
+              </section>
+            </aside>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/espace.js' %}" defer></script>
+  </body>
 </html>

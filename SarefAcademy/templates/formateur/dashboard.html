@@ -2,13 +2,27 @@
 <!doctype html>
 <html lang="fr">
   <head>
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}"
+    />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tableau de bord formateur | SAREF Academy</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
   </head>
   <body class="espace espace-formateur">
@@ -17,44 +31,162 @@
       <div class="app-col">
         {% include 'partials/formateur_topbar.html' %}
         <main class="app-main">
-          <div class="page-head">
-            <div><span class="eyebrow-s">Espace pédagogique</span><h1 class="page-title">Bonjour, {{ formateur.prenom|default:"Marie" }}</h1><p class="page-sub">Retrouvez vos formations, modules et chapitres à mettre à jour.</p></div>
-            <a class="btn-s btn-primary-s" href="{% url 'formateur_formations' %}"><i class="bi bi-pencil-square me-1"></i>Gérer mes contenus</a>
-          </div>
           <section class="hero mb-4">
-            <div class="row align-items-center g-3"><div class="col-lg-8"><span class="hero-chip"><i class="bi bi-person-badge"></i>Bienvenue dans votre espace formateur</span><h2 class="fs-3 fw-bold text-white mt-3">{{ formateur.prenom|default:"Marie" }} {{ formateur.nom|default:"Hounkpe" }}</h2><p class="text-white-50 mb-3">Gérez vos formations et accompagnez vos apprenants depuis un seul espace.</p><div class="d-flex flex-wrap gap-3 small text-white-50"><span><i class="bi bi-envelope me-1"></i>{{ formateur.email|default:"marie.demo@example.com" }}</span><span><i class="bi bi-telephone me-1"></i>{{ formateur.telephone|default:"+229 90 00 00 03" }}</span></div></div><div class="col-lg-4 d-flex justify-content-lg-end"><div class="text-center text-white p-3 rounded-4" style="background:rgba(255,255,255,.12);min-width:160px"><div class="fs-2 fw-bold">{{ formateur.formations.count|default:"2" }}</div><div class="small opacity-75">Formation(s) assignée(s)</div></div></div></div>
+            <div class="row align-items-center g-3">
+              <div class="col-lg-8">
+                <span class="hero-chip">
+                  <i class="bi bi-person-badge"></i>
+                  Bienvenue dans votre espace formateur
+                </span>
+                <h2 class="fs-3 fw-bold text-white mt-3">
+                  {{ formateur.prenom|default:"Marie" }} {{
+                  formateur.nom|default:"Hounkpe" }}
+                </h2>
+                <p class="text-white-50 mb-3">
+                  Gérez vos formations et accompagnez vos apprenants depuis un
+                  seul espace.
+                </p>
+                <div class="d-flex flex-wrap gap-3 small text-white-50">
+                  <span>
+                    <i class="bi bi-envelope me-1"></i>
+                    {{ formateur.email|default:"marie.hounkpe@gmail.com" }}
+                  </span>
+                  <span>
+                    <i class="bi bi-telephone me-1"></i>
+                    {{ formateur.telephone|default:"+229 90 00 00 03" }}
+                  </span>
+                </div>
+              </div>
+              <div class="col-lg-4 d-flex justify-content-lg-end">
+                <div
+                  class="text-center text-white p-3 rounded-4"
+                  style="
+                    background: rgba(255, 255, 255, 0.12);
+                    min-width: 160px;
+                  "
+                >
+                  <div class="fs-2 fw-bold">
+                    {{ formateur.formations.count|default:"2" }}
+                  </div>
+                  <div class="small opacity-75">Formation(s) assignée(s)</div>
+                </div>
+              </div>
+            </div>
           </section>
-          <div class="row g-3 mb-4">
-            <div class="col-sm-6 col-xl-3"><div class="s-card stat"><div class="stat-top"><span class="stat-label">Formations assignées</span><span class="stat-icon"><i class="bi bi-mortarboard"></i></span></div><div class="stat-value">{{ formateur.formations.count|default:"2" }}</div><div class="stat-sub">Formations liées au profil</div></div></div>
-            <div class="col-sm-6 col-xl-3"><div class="s-card stat"><div class="stat-top"><span class="stat-label">Modules</span><span class="stat-icon green"><i class="bi bi-journals"></i></span></div><div class="stat-value">{{ nb_modules|default:"1" }}</div><div class="stat-sub">Exemple enregistré</div></div></div>
-            <div class="col-sm-6 col-xl-3"><div class="s-card stat"><div class="stat-top"><span class="stat-label">Chapitres actifs</span><span class="stat-icon amber"><i class="bi bi-play-circle"></i></span></div><div class="stat-value">{{ nb_chapitres_actifs|default:"1" }}</div><div class="stat-sub">Visibles aux apprenants</div></div></div>
-            <div class="col-sm-6 col-xl-3"><div class="s-card stat"><div class="stat-top"><span class="stat-label">À compléter</span><span class="stat-icon"><i class="bi bi-file-earmark-plus"></i></span></div><div class="stat-value">{{ nb_chapitres_sans_ressource|default:"1" }}</div><div class="stat-sub">Exemple : chapitre brouillon</div></div></div>
-          </div>
           <div class="row g-4">
             <div class="col-xl-8">
               <section class="s-card overflow-hidden">
-                <div class="s-card-head px-4 py-3 border-bottom d-flex justify-content-between align-items-center"><h2 class="s-card-title mb-0">Modules et chapitres</h2><a class="link-s" href="{% url 'formateur_formations' %}">Gérer les contenus →</a></div>
-                <div class="table-responsive"><table class="s-table"><thead><tr><th>Module</th><th>Chapitres</th><th>État</th><th></th></tr></thead><tbody>
-                  {% for module in modules %}<tr><td><b>{{ module.titre }}</b><small>{{ module.description }}</small></td><td>{{ module.chapitres.count }}</td><td>{% if module.est_active %}<span class="s-badge b-actif">Actif</span>{% else %}<span class="s-badge b-en_cours">Brouillon</span>{% endif %}</td><td class="text-end"><a class="btn-s btn-soft-s btn-sm-s" href="{% url 'formateur_module' module.pk %}">Ouvrir</a></td></tr>{% empty %}
-                  <tr><td><b>Les bases du Web</b><small>Premiers pas avec les pages et les navigateurs · exemple enregistré</small></td><td>2 chapitres</td><td><span class="s-badge b-actif">Actif</span></td><td class="text-end"><a class="btn-s btn-soft-s btn-sm-s" href="{% url 'formateur_module' 1 %}">Ouvrir</a></td></tr>
-                  {% endfor %}
-                </tbody></table></div>
-              </section>
-              <section class="s-card s-card-pad mt-4"><div class="s-card-head"><h2 class="s-card-title">Chapitres du module · exemple</h2><a class="link-s" href="{% url 'formateur_chapitre_detail' 1 1 %}">Éditer le chapitre →</a></div>
-                {% for module in modules %}{% for chapitre in module.chapitres.all %}<a class="chap-nav-item" href="{% url 'formateur_chapitre_detail' module.formation.pk chapitre.pk %}"><span class="chap-nav-num">{{ chapitre.ordre }}</span><span class="flex-grow-1">{{ chapitre.nom }}</span><span class="s-badge {% if chapitre.est_active %}b-actif{% else %}b-en_cours{% endif %}">{% if chapitre.est_active %}Actif{% else %}Brouillon{% endif %}</span></a>{% empty %}<p class="text-secondary small">Aucun chapitre enregistré.</p>{% endfor %}{% empty %}
-                <a class="chap-nav-item" href="{% url 'formateur_chapitre_detail' 1 1 %}"><span class="chap-nav-num">1</span><span class="flex-grow-1"><b>Comment fonctionne le Web ?</b><small class="d-block text-secondary">12 min · vidéo et PDF ajoutés</small></span><span class="s-badge b-actif">Actif</span></a>
-                <div class="chap-nav-item"><span class="chap-nav-num">2</span><span class="flex-grow-1"><b>Préparer son environnement de travail</b><small class="d-block text-secondary">18 min · contenu à compléter</small></span><span class="s-badge b-en_cours">Brouillon</span></div>
-                {% endfor %}
+                <div
+                  class="s-card-head px-4 py-3 border-bottom d-flex justify-content-between align-items-center"
+                >
+                  <h2 class="s-card-title mb-0">Modules et chapitres</h2>
+                  <a class="link-s" href="{% url 'formateur_formations' %}">
+                    Gérer les contenus →
+                  </a>
+                </div>
+                <div class="table-responsive">
+                  <table class="s-table">
+                    <thead>
+                      <tr>
+                        <th>Module</th>
+                        <th>Chapitres</th>
+                        <th>État</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for module in modules %}
+                      <tr>
+                        <td>
+                          <b>{{ module.titre }}</b>
+                          <small>{{ module.description }}</small>
+                        </td>
+                        <td>{{ module.chapitres.count }}</td>
+                        <td>
+                          {% if module.est_active %}
+                          <span class="s-badge b-actif">Actif</span>
+                          {% else %}
+                          <span class="s-badge b-en_cours">Brouillon</span>
+                          {% endif %}
+                        </td>
+                        <td class="text-end">
+                          <a
+                            class="btn-s btn-soft-s btn-sm-s"
+                            href="{% url 'formateur_module' module.pk %}"
+                          >
+                            Ouvrir
+                          </a>
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td>
+                          <b>Les bases du Web</b>
+                          <small>
+                            Premiers pas avec les pages et les navigateurs ·
+                            formation active
+                          </small>
+                        </td>
+                        <td>2 chapitres</td>
+                        <td><span class="s-badge b-actif">Actif</span></td>
+                        <td class="text-end">
+                          <a
+                            class="btn-s btn-soft-s btn-sm-s"
+                            href="{% url 'formateur_module' 1 %}"
+                          >
+                            Ouvrir
+                          </a>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
               </section>
             </div>
             <aside class="col-xl-4">
-              <section class="s-card s-card-pad mb-4"><h2 class="s-card-title mb-3">Mes apprenants</h2><div class="display-5 fw-bold text-primary">{{ nb_apprenants|default:"1" }}</div><div class="border-top pt-3 mt-3"><b>Aïcha Mensah</b><small class="d-block text-secondary">aicha.demo@example.com · candidature acceptée</small></div><a class="btn-s btn-line-s w-100 mt-3" href="{% url 'formateur_apprenants' %}">Voir la liste</a></section>
-              <section class="s-card s-card-pad"><h2 class="s-card-title mb-2">À vérifier</h2><p class="small text-secondary">Complétez le titre, le résumé, la vidéo et le PDF avant d’activer un chapitre.</p><a class="btn-s btn-primary-s w-100" href="{% url 'formateur_chapitre_detail' 1 2 %}"><i class="bi bi-pencil me-1"></i>Compléter le chapitre brouillon</a></section>
+              <section class="s-card s-card-pad">
+                <span class="eyebrow-s">Espace pédagogique</span>
+                <h2 class="s-card-title mt-1 mb-3">Accès rapide</h2>
+                <div class="d-grid gap-2">
+                  <a
+                    class="btn-s btn-soft-s justify-content-between"
+                    href="{% url 'formateur_formations' %}"
+                  >
+                    <span>
+                      <i class="bi bi-mortarboard me-2"></i>
+                      Mes formations
+                    </span>
+                    <i class="bi bi-arrow-right"></i>
+                  </a>
+                  <a
+                    class="btn-s btn-soft-s justify-content-between"
+                    href="{% url 'formateur_apprenants' %}"
+                  >
+                    <span>
+                      <i class="bi bi-people me-2"></i>
+                      Mes apprenants
+                    </span>
+                    <i class="bi bi-arrow-right"></i>
+                  </a>
+                  <a
+                    class="btn-s btn-soft-s justify-content-between"
+                    href="{% url 'formateur_module_ajouter' %}"
+                  >
+                    <span>
+                      <i class="bi bi-plus-circle me-2"></i>
+                      Ajouter un module
+                    </span>
+                    <i class="bi bi-arrow-right"></i>
+                  </a>
+                </div>
+              </section>
             </aside>
           </div>
         </main>
       </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><script src="{% static 'js/espace.js' %}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/espace.js' %}" defer></script>
   </body>
 </html>

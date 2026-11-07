@@ -1,16 +1,71 @@
-<aside class="sidebar sidebar-apprenant offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="Navigation apprenant">
-  <div class="d-flex justify-content-end d-lg-none p-3 pb-0"><button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Fermer le menu"></button></div>
+{% load static %}
+<aside
+  class="sidebar sidebar-apprenant offcanvas-lg offcanvas-start"
+  id="sidebar"
+  tabindex="-1"
+  aria-label="Navigation apprenant"
+>
+  <div class="d-flex justify-content-end d-lg-none p-3 pb-0">
+    <button
+      type="button"
+      class="btn-close btn-close-white"
+      data-bs-dismiss="offcanvas"
+      data-bs-target="#sidebar"
+      aria-label="Fermer le menu"
+    ></button>
+  </div>
   <div class="offcanvas-body sidebar-inner">
-    <a class="brand" href="{% url 'apprenant_dashboard' %}"><span class="avatar">SA</span><div><b>SAREF Academy</b><small>ESPACE APPRENANT</small></div></a>
+    <a class="brand" href="{% url 'apprenant_dashboard' %}">
+      <span class="brand-mark">
+        <img
+          src="{% static 'images/saref-mark.png' %}"
+          alt="Symbole SAREF Academy"
+        />
+      </span>
+      <div>
+        <b>SAREF Academy</b>
+        <small>ESPACE APPRENANT</small>
+      </div>
+    </a>
     <nav class="d-grid gap-1 mt-4" aria-label="Menu principal">
-      <a class="navitem {% if active_page == 'dashboard' %}active{% endif %}" href="{% url 'apprenant_dashboard' %}"><i class="bi bi-grid-1x2"></i>Tableau de bord</a>
-      <a class="navitem {% if active_page == 'formations' or active_page == 'formation_detail' %}active{% endif %}" href="{% url 'apprenant_formations' %}"><i class="bi bi-mortarboard"></i>Mes formations</a>
-      <a class="navitem {% if active_page == 'modules' or active_page == 'module_detail' %}active{% endif %}" href="{% url 'apprenant_modules' %}"><i class="bi bi-journals"></i>Mes modules</a>
-      <a class="navitem {% if active_page == 'paiements' %}active{% endif %}" href="{% url 'apprenant_paiements' %}"><i class="bi bi-credit-card"></i>Paiements</a>
+      <a
+        class="navitem {% if request.resolver_match.url_name == 'apprenant_dashboard' %}active{% endif %}"
+        href="{% url 'apprenant_dashboard' %}"
+      >
+        <i class="bi bi-grid-1x2"></i>
+        Tableau de bord
+      </a>
+      <a
+        class="navitem {% if request.resolver_match.url_name == 'apprenant_formations' or request.resolver_match.url_name == 'apprenant_formation_detail' %}active{% endif %}"
+        href="{% url 'apprenant_formations' %}"
+      >
+        <i class="bi bi-mortarboard"></i>
+        Mes formations
+      </a>
+      <a
+        class="navitem {% if request.resolver_match.url_name == 'apprenant_paiements' %}active{% endif %}"
+        href="{% url 'apprenant_paiements' %}"
+      >
+        <i class="bi bi-credit-card"></i>
+        Paiements
+      </a>
       <div class="nav-cap">MON COMPTE</div>
-      <a class="navitem {% if active_page == 'profil' %}active{% endif %}" href="{% url 'apprenant_profil' %}"><i class="bi bi-person"></i>Mon profil</a>
-      <a class="navitem {% if active_page == 'parametres' %}active{% endif %}" href="{% url 'apprenant_parametres' %}"><i class="bi bi-gear"></i>Paramètres</a>
+      <a
+        class="navitem {% if request.resolver_match.url_name == 'apprenant_profil' %}active{% endif %}"
+        href="{% url 'apprenant_profil' %}"
+      >
+        <i class="bi bi-person"></i>
+        Mon profil
+      </a>
     </nav>
-    <div class="sidebar-user mt-auto"><span class="avatar avatar-md">{{ etudiant.prenom|first|upper|default:"A" }}</span><div class="who"><b>{{ etudiant.prenom|default:"Apprenant" }} {{ etudiant.nom }}</b><small>Apprenant</small></div></div>
+    <div class="sidebar-user mt-auto">
+      <span class="avatar avatar-md">
+        {{ etudiant.prenom|first|upper|default:"A" }}
+      </span>
+      <div class="who">
+        <b>{{ etudiant.prenom|default:"Apprenant" }} {{ etudiant.nom }}</b>
+        <small>Apprenant</small>
+      </div>
+    </div>
   </div>
 </aside>
