@@ -1,0 +1,201 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Connexion à votre espace | SAREF Academy</title>
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}"
+    />
+    <!-- Polices Google et icônes FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Sora:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}" />
+  </head>
+  <body>
+    <!-- =====================================================
+       STRUCTURE IDENTIQUE À LA PAGE CANDIDATURE
+       Panneau gauche : Identité visuelle SAREF
+       Panneau droit  : Formulaire de connexion propre
+       ===================================================== -->
+    <main class="login-page">
+      <!-- PANNEAU GAUCHE (Hero visuel SAREF) -->
+      <section class="login-brand">
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+        <div class="brand-content">
+          <!-- Logo SAREF -->
+          <div class="brand-logo-wrap">
+            <img
+              src="{% static 'images/logo-saref.jpeg' %}"
+              alt="Logo Saref Academy"
+            />
+          </div>
+          <span class="brand-badge">
+            <i class="fa-solid fa-shield-halved"></i>
+            Portail pédagogique &amp; d'administration
+          </span>
+          <h1 class="brand-name">Accédez à votre espace SAREF Academy</h1>
+          <p class="brand-copy">
+            Connectez-vous pour piloter vos sessions, consulter les apprenants
+            ou gérer la configuration académique.
+          </p>
+          <!-- Avantages / Rôles -->
+          <ul class="auth-perks">
+            <li>
+              <i class="fa-solid fa-user-tie"></i>
+              <span>
+                <strong>Espace Formateur :</strong>
+                Suivez vos formations, modules et chapitres
+              </span>
+            </li>
+            <li>
+              <i class="fa-solid fa-gear"></i>
+              <span>
+                <strong>Espace Administration :</strong>
+                Configuration de vague et pilotage global
+              </span>
+            </li>
+            <li>
+              <i class="fa-solid fa-graduation-cap"></i>
+              <span>
+                <strong>Espace Apprenant :</strong>
+                Accédez directement à vos cours et progressions
+              </span>
+            </li>
+          </ul>
+        </div>
+      </section>
+      <!-- PANNEAU DROIT (Formulaire de connexion formateur & admin) -->
+      <section class="login-area">
+          <form
+            class="login-form auth-form"
+            method="post"
+            action="{% url 'connexion' %}"
+          >
+            {% csrf_token %}
+            {% for message in messages %}<div class="alert alert-danger py-2 small" role="alert">{{ message }}</div>{% endfor %}
+            <p class="login-eyebrow">
+              <i class="fa-solid fa-lock me-1"></i>
+              Espace Sécurisé
+            </p>
+            <h2 class="login-title">Bon retour parmi nous</h2>
+            <p class="login-subtitle">
+              Renseignez vos identifiants pour accéder à votre espace de
+              travail.
+            </p>
+            <!-- Sélecteur de profil (Formateur / Administrateur) -->
+            <div class="mb-3">
+              <label class="form-label" for="role_select">Vous êtes</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fa-solid fa-users-gear"></i>
+                </span>
+                <select id="role_select" class="form-control" name="role">
+                  <option value="admin">Administrateur SAREF</option>
+                  <option value="formateur">Formateur</option>
+                </select>
+              </div>
+            </div>
+            <!-- Champ Email / Identifiant -->
+            <div class="mb-3">
+              <label for="email" class="form-label">
+                Adresse email ou identifiant
+              </label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fa-regular fa-envelope"></i>
+                </span>
+                <input
+                  id="email"
+                  name="email"
+                  type="text"
+                  class="form-control"
+                  placeholder="nom@sarefacademy.com"
+                  required
+                />
+              </div>
+            </div>
+            <!-- Champ Mot de passe avec toggle visibilité -->
+            <div class="mb-4">
+              <label for="password" class="form-label">Mot de passe</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fa-solid fa-lock"></i>
+                </span>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  class="form-control"
+                  placeholder="Votre mot de passe"
+                  required
+                />
+                <button
+                  class="btn password-toggle"
+                  type="button"
+                  id="togglePassword"
+                  aria-label="Afficher ou masquer le mot de passe"
+                >
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <!-- Bouton de soumission : passe à la configuration vague -->
+            <button
+              type="submit"
+              class="btn login-submit d-flex align-items-center justify-content-center gap-2"
+            >
+              <span>Se connecter</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            <!-- Liens rapides / retour accueil -->
+            <div
+              class="d-flex justify-content-between align-items-center mt-3 pt-2"
+            >
+              <a
+                href="{% url 'index' %}"
+                class="small text-decoration-none text-muted"
+              >
+                <i class="fa-solid fa-house me-1"></i>
+                Retour au site
+              </a>
+              <span class="small text-muted">Accès sécurisé pour équipe et formateurs</span>
+            </div>
+            <p class="login-footer mt-4">
+              <i class="fa-solid fa-circle-info me-1"></i>
+              Étape 1/2 : Vous accéderez ensuite à la configuration de la vague.
+            </p>
+          </form>
+      </section>
+    </main>
+    <!-- Script d'affichage/masquage du mot de passe -->
+    <script>
+      const passwordInput = document.getElementById("password");
+      const passwordToggle = document.getElementById("togglePassword");
+
+      passwordToggle.addEventListener("click", () => {
+        const isPassword = passwordInput.type === "password";
+        passwordInput.type = isPassword ? "text" : "password";
+        passwordToggle.querySelector("i").className = isPassword
+          ? "fa-regular fa-eye-slash"
+          : "fa-regular fa-eye";
+      });
+    </script>
+  </body>
+</html>

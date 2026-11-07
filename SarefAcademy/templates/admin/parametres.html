@@ -1,77 +1,466 @@
+{% load static %}
 <!doctype html>
 <html lang="fr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#335cec">
-<title>Paramètres | SAREF Academy</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-<link rel="stylesheet" href="/static/css/espace.css">
-<script>document.documentElement.classList.add('js')</script>
-</head>
-<body class="espace espace-admin">
-<div class="app">
-<aside class="sidebar sidebar-admin offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="Navigation administrateur">
-<div class="offcanvas-body sidebar-inner">
-<div class="d-flex justify-content-end d-lg-none mb-2"><button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Fermer"></button></div>
-<a class="brand" href="/gestion/"><svg width="36" height="36" viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#fff"/><path d="M13 26c0 2.9 2.6 4.6 6 4.6 4 0 6.3-2 6.3-4.7 0-2.9-2.7-4-6.1-4.9-3.1-.8-4.7-1.6-4.7-3.4 0-1.5 1.4-2.8 3.7-2.8 2 0 3.4 1 3.8 2.7" stroke="#335cec" stroke-width="2.3" stroke-linecap="round" fill="none"/></svg><div><b>SAREF Academy</b><small>ESPACE ADMIN</small></div></a>
-<nav class="d-grid gap-1" aria-label="Menu principal">
-<div class="nav-cap" style="margin-top:0">PILOTAGE</div>
-<a class="navitem" href="/gestion/"><i class="bi bi-grid-1x2"></i>Tableau de bord</a>
-<a class="navitem" href="/gestion/candidatures/"><i class="bi bi-clipboard-check"></i>Candidatures<span class="count">23</span></a>
-<a class="navitem" href="/gestion/apprenants/"><i class="bi bi-people"></i>Apprenants</a>
-<a class="navitem" href="/gestion/resultats/"><i class="bi bi-award"></i>Résultats &amp; attestations</a>
-<div class="nav-cap">PÉDAGOGIE</div>
-<a class="navitem" href="/gestion/formations/"><i class="bi bi-mortarboard"></i>Formations &amp; modules</a>
-<a class="navitem" href="/gestion/formateurs/"><i class="bi bi-person-video3"></i>Formateurs</a>
-<a class="navitem" href="/gestion/organisation/"><i class="bi bi-diagram-3"></i>Organisation</a>
-<div class="nav-cap">GESTION</div>
-<a class="navitem" href="/gestion/finance/"><i class="bi bi-cash-coin"></i>Finance</a>
-<a class="navitem" href="/gestion/vagues/"><i class="bi bi-folder2"></i>Vagues &amp; années</a>
-<a class="navitem active" href="/gestion/parametres/" aria-current="page"><i class="bi bi-gear"></i>Paramètres</a>
-</nav>
-<div class="sidebar-user"><span class="avatar avatar-md">SA</span><div class="who"><b>Samuel Adjovi</b><small>Administrateur</small></div>
-<form method="post" action="/deconnexion/"><button class="logout" type="submit" aria-label="Se déconnecter" title="Se déconnecter"><i class="bi bi-box-arrow-right"></i></button></form></div>
-</div></aside>
-<div class="app-col">
-<header class="topbar">
-<button class="btn-icon-s d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Ouvrir le menu"><i class="bi bi-list fs-5"></i></button>
-<form class="tb-search" role="search" action="/gestion/candidatures/"><i class="bi bi-search"></i><input type="search" name="q" placeholder="Rechercher un candidat, une formation…" aria-label="Rechercher"></form>
-<span class="tb-spacer"></span>
-<a class="chip-vague" href="/gestion/vagues/"><span class="live"></span>Vague 2026-A <em>en cours</em></a>
-<div class="dropdown"><button class="btn-icon-s" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notifications"><i class="bi bi-bell"></i><span class="dot"></span></button><div class="dropdown-menu dropdown-menu-end notif-menu p-0"><div class="notif-head"><span>Notifications</span><a class="link-s" href="#">Tout marquer comme lu</a></div><a class="notif-item new" href="/gestion/candidatures/"><i class="bi bi-clipboard-check"></i><span>5 nouvelles candidatures à traiter<small>Il y a 12 min</small></span></a><a class="notif-item new" href="/gestion/finance/"><i class="bi bi-cash-coin"></i><span>Paiement en retard : Serge Dansou<small>Il y a 2 h</small></span></a><a class="notif-item " href="/gestion/formations/1/"><i class="bi bi-play-circle"></i><span>Module 4 prêt à être activé après le meet<small>Hier</small></span></a></div></div>
-<div class="tb-user"><span class="avatar ">SA</span><span class="d-none d-md-block"><b>Samuel A.</b><small>Admin</small></span></div>
-</header>
-<main class="app-main">
-<div class="page-head"><div><h1 class="page-title">Paramètres</h1><p class="page-sub">Configuration générale de la plateforme</p></div><div class="d-flex flex-wrap gap-2"></div></div><div class="row g-3"><div class="col-lg-3"><div class="s-card s-card-pad nav nav-s reveal" role="tablist" aria-orientation="vertical">
-<button class="nav-link active" data-bs-toggle="pill" data-bs-target="#p-general" type="button" role="tab"><i class="bi bi-building"></i>Général</button>
-<button class="nav-link" data-bs-toggle="pill" data-bs-target="#p-cand" type="button" role="tab"><i class="bi bi-clipboard-check"></i>Candidatures</button>
-<button class="nav-link" data-bs-toggle="pill" data-bs-target="#p-pay" type="button" role="tab"><i class="bi bi-cash-coin"></i>Paiements</button>
-<button class="nav-link" data-bs-toggle="pill" data-bs-target="#p-notif" type="button" role="tab"><i class="bi bi-bell"></i>Notifications</button>
-<button class="nav-link" data-bs-toggle="pill" data-bs-target="#p-secu" type="button" role="tab"><i class="bi bi-shield-lock"></i>Sécurité</button></div></div>
-<div class="col-lg-9"><form method="post" class="tab-content">
-<div class="tab-pane fade show active" id="p-general" role="tabpanel"><div class="s-card s-card-pad"><h2 class="s-card-title">Informations de la plateforme</h2><div class="row g-3">
-<div class="col-md-6"><label class="s-label" for="nom">Nom de la plateforme</label><input id="nom" name="nom" type="text" class="s-input" placeholder="" value="SAREF Academy" ></div><div class="col-md-6"><label class="s-label" for="email">E-mail de contact</label><input id="email" name="email" type="email" class="s-input" placeholder="" value="contact@sarefacademy.com" ></div><div class="col-md-6"><label class="s-label" for="whatsapp">Numéro WhatsApp du support</label><input id="whatsapp" name="whatsapp" type="tel" class="s-input" placeholder="" value="+229 97 00 00 00" ></div><div class="col-md-6"><label class="s-label" for="site">Site web</label><input id="site" name="site" type="url" class="s-input" placeholder="" value="https://sarefacademy.com" ></div>
-<div class="col-12"><label class="s-label" for="d">Description courte</label><textarea id="d" name="description" class="s-input" rows="3">Plateforme de formation en ligne combinant sessions live et contenus de rattrapage.</textarea></div></div><button class="btn-s btn-primary-s mt-3" type="submit">Enregistrer</button></div></div>
-<div class="tab-pane fade" id="p-cand" role="tabpanel"><div class="s-card s-card-pad"><h2 class="s-card-title mb-0">Règles de candidature</h2>
-<div class="setting-row"><div><b>Candidatures multiples autorisées</b><small>Un apprenant peut postuler à plusieurs formations, une seule fois par formation et par vague.</small></div><div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" role="switch" aria-label="Candidatures multiples autorisées" checked></div></div><div class="setting-row"><div><b>Invitation WhatsApp automatique</b><small>Le lien du groupe est affiché dans l'espace dès la candidature.</small></div><div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" role="switch" aria-label="Invitation WhatsApp automatique" checked></div></div><div class="setting-row"><div><b>Photo de profil obligatoire</b><small>Champ photo_profils du formulaire de candidature.</small></div><div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" role="switch" aria-label="Photo de profil obligatoire"></div></div>
-<div class="setting-row"><div><b>Longueur maximale du motif</b><small>Limite appliquée au champ motif_inscription.</small></div><input class="s-input" style="width:110px" type="number" value="255" aria-label="Longueur maximale"></div><button class="btn-s btn-primary-s mt-3" type="submit">Enregistrer</button></div></div>
-<div class="tab-pane fade" id="p-pay" role="tabpanel"><div class="s-card s-card-pad"><h2 class="s-card-title mb-0">Paiements par tranches</h2>
-<div class="setting-row"><div><b>Nombre de tranches par défaut</b><small>Utilisé à la création d'une formation.</small></div><select class="s-input form-select" style="width:150px" aria-label="Tranches"><option>3 tranches</option><option>2 tranches</option><option>4 tranches</option></select></div>
-<div class="setting-row"><div><b>Délai entre deux tranches</b><small>En jours.</small></div><input class="s-input" style="width:110px" type="number" value="30" aria-label="Délai"></div>
-<div class="setting-row"><div><b>Blocage automatique si impayé</b><small>Suspend l'accès aux modules après le délai de grâce.</small></div><div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" role="switch" aria-label="Blocage automatique si impayé" checked></div></div><div class="setting-row"><div><b>Délai de grâce</b><small>Jours après l'échéance avant blocage.</small></div><input class="s-input" style="width:110px" type="number" value="15" aria-label="Délai de grâce"></div>
-<div class="setting-row"><div><b>Devise</b><small>Affichée dans toute la plateforme.</small></div><select class="s-input form-select" style="width:150px" aria-label="Devise"><option>FCFA</option><option>EUR</option></select></div><button class="btn-s btn-primary-s mt-3" type="submit">Enregistrer</button></div></div>
-<div class="tab-pane fade" id="p-notif" role="tabpanel"><div class="s-card s-card-pad"><h2 class="s-card-title mb-0">Notifications</h2>
-<div class="setting-row"><div><b>Changement de statut de candidature</b><small>E-mail et notification dans l'espace de l'apprenant.</small></div><div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" role="switch" aria-label="Changement de statut de candidature" checked></div></div><div class="setting-row"><div><b>Activation d'un module</b><small>Prévenir les apprenants quand un contenu devient disponible.</small></div><div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" role="switch" aria-label="Activation d'un module" checked></div></div><div class="setting-row"><div><b>Rappel d'échéance de paiement</b><small>3 jours avant la date prévue.</small></div><div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" role="switch" aria-label="Rappel d'échéance de paiement" checked></div></div><div class="setting-row"><div><b>Résumé quotidien pour l'équipe</b><small>E-mail chaque matin à 8h00.</small></div><div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" role="switch" aria-label="Résumé quotidien pour l'équipe"></div></div><button class="btn-s btn-primary-s mt-3" type="submit">Enregistrer</button></div></div>
-<div class="tab-pane fade" id="p-secu" role="tabpanel"><div class="s-card s-card-pad"><h2 class="s-card-title">Mot de passe administrateur</h2><div class="row g-3">
-<div class="col-md-12"><label class="s-label" for="old">Mot de passe actuel <span class="t-red">*</span></label><input id="old" name="old" type="password" class="s-input" placeholder="••••••••" required ></div><div class="col-md-6"><label class="s-label" for="new1">Nouveau mot de passe <span class="t-red">*</span></label><input id="new1" name="new1" type="password" class="s-input" placeholder="••••••••" required ></div><div class="col-md-6"><label class="s-label" for="new2">Confirmation <span class="t-red">*</span></label><input id="new2" name="new2" type="password" class="s-input" placeholder="••••••••" required ></div></div><button class="btn-s btn-primary-s mt-3" type="submit">Mettre à jour</button></div></div>
-</form></div></div>
-</main></div></div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/static/js/espace.js" defer></script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#335cec" />
+    <title>Paramètres | SAREF Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
+  </head>
+  <body class="espace espace-admin">
+    <div class="app">
+      {% include 'partials/sidebar_admin.html' %}
+      <div class="app-col">
+        {% include 'partials/admin_topbar.html' %}
+        <main class="app-main">
+          <div class="page-head">
+            <div>
+              <h1 class="page-title">Paramètres</h1>
+              <p class="page-sub">Configuration générale de la plateforme</p>
+            </div>
+            <div class="d-flex flex-wrap gap-2"></div>
+          </div>
+          <div class="row g-3">
+            <div class="col-lg-3">
+              <div
+                class="s-card s-card-pad nav nav-s reveal"
+                role="tablist"
+                aria-orientation="vertical"
+              >
+                <button
+                  class="nav-link active"
+                  data-bs-toggle="pill"
+                  data-bs-target="#p-general"
+                  type="button"
+                  role="tab"
+                >
+                  <i class="bi bi-building"></i>
+                  Général
+                </button>
+                <button
+                  class="nav-link"
+                  data-bs-toggle="pill"
+                  data-bs-target="#p-cand"
+                  type="button"
+                  role="tab"
+                >
+                  <i class="bi bi-clipboard-check"></i>
+                  Candidatures
+                </button>
+                <button
+                  class="nav-link"
+                  data-bs-toggle="pill"
+                  data-bs-target="#p-pay"
+                  type="button"
+                  role="tab"
+                >
+                  <i class="bi bi-cash-coin"></i>
+                  Paiements
+                </button>
+                <button
+                  class="nav-link"
+                  data-bs-toggle="pill"
+                  data-bs-target="#p-notif"
+                  type="button"
+                  role="tab"
+                >
+                  <i class="bi bi-bell"></i>
+                  Notifications
+                </button>
+                <button
+                  class="nav-link"
+                  data-bs-toggle="pill"
+                  data-bs-target="#p-secu"
+                  type="button"
+                  role="tab"
+                >
+                  <i class="bi bi-shield-lock"></i>
+                  Sécurité
+                </button>
+              </div>
+            </div>
+            <div class="col-lg-9">
+              <form method="post" class="tab-content">
+                <div
+                  class="tab-pane fade show active"
+                  id="p-general"
+                  role="tabpanel"
+                >
+                  <div class="s-card s-card-pad">
+                    <h2 class="s-card-title">Informations de la plateforme</h2>
+                    <div class="row g-3">
+                      <div class="col-md-6">
+                        <label class="s-label" for="nom">
+                          Nom de la plateforme
+                        </label>
+                        <input
+                          id="nom"
+                          name="nom"
+                          type="text"
+                          class="s-input"
+                          placeholder=""
+                          value="SAREF Academy"
+                        />
+                      </div>
+                      <div class="col-md-6">
+                        <label class="s-label" for="email">
+                          E-mail de contact
+                        </label>
+                        <input
+                          id="email"
+                          name="email"
+                          type="email"
+                          class="s-input"
+                          placeholder=""
+                          value="contact@sarefacademy.com"
+                        />
+                      </div>
+                      <div class="col-md-6">
+                        <label class="s-label" for="whatsapp">
+                          Numéro WhatsApp du support
+                        </label>
+                        <input
+                          id="whatsapp"
+                          name="whatsapp"
+                          type="tel"
+                          class="s-input"
+                          placeholder=""
+                          value="+229 97 00 00 00"
+                        />
+                      </div>
+                      <div class="col-md-6">
+                        <label class="s-label" for="site">Site web</label>
+                        <input
+                          id="site"
+                          name="site"
+                          type="url"
+                          class="s-input"
+                          placeholder=""
+                          value="https://sarefacademy.com"
+                        />
+                      </div>
+                      <div class="col-12">
+                        <label class="s-label" for="d">
+                          Description courte
+                        </label>
+                        <textarea
+                          id="d"
+                          name="description"
+                          class="s-input"
+                          rows="3"
+                        >
+Plateforme de formation en ligne combinant sessions live et contenus de rattrapage.</textarea>
+                      </div>
+                    </div>
+                    <button class="btn-s btn-primary-s mt-3" type="submit">
+                      Enregistrer
+                    </button>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="p-cand" role="tabpanel">
+                  <div class="s-card s-card-pad">
+                    <h2 class="s-card-title mb-0">Règles de candidature</h2>
+                    <div class="setting-row">
+                      <div>
+                        <b>Candidatures multiples autorisées</b>
+                        <small>
+                          Un apprenant peut postuler à plusieurs formations, une
+                          seule fois par formation et par vague.
+                        </small>
+                      </div>
+                      <div class="form-check form-switch m-0">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          role="switch"
+                          aria-label="Candidatures multiples autorisées"
+                          checked
+                        />
+                      </div>
+                    </div>
+                    <div class="setting-row">
+                      <div>
+                        <b>Invitation WhatsApp automatique</b>
+                        <small>
+                          Le lien du groupe est affiché dans l'espace dès la
+                          candidature.
+                        </small>
+                      </div>
+                      <div class="form-check form-switch m-0">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          role="switch"
+                          aria-label="Invitation WhatsApp automatique"
+                          checked
+                        />
+                      </div>
+                    </div>
+                    <div class="setting-row">
+                      <div>
+                        <b>Photo de profil obligatoire</b>
+                        <small>
+                          Champ photo_profils du formulaire de candidature.
+                        </small>
+                      </div>
+                      <div class="form-check form-switch m-0">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          role="switch"
+                          aria-label="Photo de profil obligatoire"
+                        />
+                      </div>
+                    </div>
+                    <div class="setting-row">
+                      <div>
+                        <b>Longueur maximale du motif</b>
+                        <small>
+                          Limite appliquée au champ motif_inscription.
+                        </small>
+                      </div>
+                      <input
+                        class="s-input"
+                        style="width: 110px"
+                        type="number"
+                        value="255"
+                        aria-label="Longueur maximale"
+                      />
+                    </div>
+                    <button class="btn-s btn-primary-s mt-3" type="submit">
+                      Enregistrer
+                    </button>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="p-pay" role="tabpanel">
+                  <div class="s-card s-card-pad">
+                    <h2 class="s-card-title mb-0">Paiements par tranches</h2>
+                    <div class="setting-row">
+                      <div>
+                        <b>Nombre de tranches par défaut</b>
+                        <small>Utilisé à la création d'une formation.</small>
+                      </div>
+                      <select
+                        class="s-input form-select"
+                        style="width: 150px"
+                        aria-label="Tranches"
+                      >
+                        <option>3 tranches</option>
+                        <option>2 tranches</option>
+                        <option>4 tranches</option>
+                      </select>
+                    </div>
+                    <div class="setting-row">
+                      <div>
+                        <b>Délai entre deux tranches</b>
+                        <small>En jours.</small>
+                      </div>
+                      <input
+                        class="s-input"
+                        style="width: 110px"
+                        type="number"
+                        value="30"
+                        aria-label="Délai"
+                      />
+                    </div>
+                    <div class="setting-row">
+                      <div>
+                        <b>Blocage automatique si impayé</b>
+                        <small>
+                          Suspend l'accès aux modules après le délai de grâce.
+                        </small>
+                      </div>
+                      <div class="form-check form-switch m-0">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          role="switch"
+                          aria-label="Blocage automatique si impayé"
+                          checked
+                        />
+                      </div>
+                    </div>
+                    <div class="setting-row">
+                      <div>
+                        <b>Délai de grâce</b>
+                        <small>Jours après l'échéance avant blocage.</small>
+                      </div>
+                      <input
+                        class="s-input"
+                        style="width: 110px"
+                        type="number"
+                        value="15"
+                        aria-label="Délai de grâce"
+                      />
+                    </div>
+                    <div class="setting-row">
+                      <div>
+                        <b>Devise</b>
+                        <small>Affichée dans toute la plateforme.</small>
+                      </div>
+                      <select
+                        class="s-input form-select"
+                        style="width: 150px"
+                        aria-label="Devise"
+                      >
+                        <option>FCFA</option>
+                        <option>EUR</option>
+                      </select>
+                    </div>
+                    <button class="btn-s btn-primary-s mt-3" type="submit">
+                      Enregistrer
+                    </button>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="p-notif" role="tabpanel">
+                  <div class="s-card s-card-pad">
+                    <h2 class="s-card-title mb-0">Notifications</h2>
+                    <div class="setting-row">
+                      <div>
+                        <b>Changement de statut de candidature</b>
+                        <small>
+                          E-mail et notification dans l'espace de l'apprenant.
+                        </small>
+                      </div>
+                      <div class="form-check form-switch m-0">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          role="switch"
+                          aria-label="Changement de statut de candidature"
+                          checked
+                        />
+                      </div>
+                    </div>
+                    <div class="setting-row">
+                      <div>
+                        <b>Activation d'un module</b>
+                        <small>
+                          Prévenir les apprenants quand un contenu devient
+                          disponible.
+                        </small>
+                      </div>
+                      <div class="form-check form-switch m-0">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          role="switch"
+                          aria-label="Activation d'un module"
+                          checked
+                        />
+                      </div>
+                    </div>
+                    <div class="setting-row">
+                      <div>
+                        <b>Rappel d'échéance de paiement</b>
+                        <small>3 jours avant la date prévue.</small>
+                      </div>
+                      <div class="form-check form-switch m-0">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          role="switch"
+                          aria-label="Rappel d'échéance de paiement"
+                          checked
+                        />
+                      </div>
+                    </div>
+                    <div class="setting-row">
+                      <div>
+                        <b>Résumé quotidien pour l'équipe</b>
+                        <small>E-mail chaque matin à 8h00.</small>
+                      </div>
+                      <div class="form-check form-switch m-0">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          role="switch"
+                          aria-label="Résumé quotidien pour l'équipe"
+                        />
+                      </div>
+                    </div>
+                    <button class="btn-s btn-primary-s mt-3" type="submit">
+                      Enregistrer
+                    </button>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="p-secu" role="tabpanel">
+                  <div class="s-card s-card-pad">
+                    <h2 class="s-card-title">Mot de passe administrateur</h2>
+                    <div class="row g-3">
+                      <div class="col-md-12">
+                        <label class="s-label" for="old">
+                          Mot de passe actuel
+                          <span class="t-red">*</span>
+                        </label>
+                        <input
+                          id="old"
+                          name="old"
+                          type="password"
+                          class="s-input"
+                          placeholder="••••••••"
+                          required
+                        />
+                      </div>
+                      <div class="col-md-6">
+                        <label class="s-label" for="new1">
+                          Nouveau mot de passe
+                          <span class="t-red">*</span>
+                        </label>
+                        <input
+                          id="new1"
+                          name="new1"
+                          type="password"
+                          class="s-input"
+                          placeholder="••••••••"
+                          required
+                        />
+                      </div>
+                      <div class="col-md-6">
+                        <label class="s-label" for="new2">
+                          Confirmation
+                          <span class="t-red">*</span>
+                        </label>
+                        <input
+                          id="new2"
+                          name="new2"
+                          type="password"
+                          class="s-input"
+                          placeholder="••••••••"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <button class="btn-s btn-primary-s mt-3" type="submit">
+                      Mettre à jour
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/espace.js' %}" defer></script>
+  </body>
 </html>

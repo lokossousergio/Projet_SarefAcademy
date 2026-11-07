@@ -97,6 +97,14 @@ body.espace { font-size: .875rem; -webkit-font-smoothing: antialiased; backgroun
 .tb-user { display: flex; align-items: center; gap: 10px; padding: 3px 12px 3px 3px; border: 1px solid var(--line); border-radius: 999px; background: #fff; }
 .tb-user b { display: block; font-size: 12.5px; line-height: 1.2; }
 .tb-user small { color: var(--ink-mute); font-size: 11px; }
+.topbar-app { min-height: 76px; gap: 1rem; background: linear-gradient(100deg, #fff 0%, #f7f9ff 72%, #f1f5ff 100%); box-shadow: 0 5px 18px rgb(22 36 82 / .035); }
+.topbar-title { display: flex; flex-direction: column; gap: 3px; min-width: 0; line-height: 1.2; }
+.topbar-title small { color: var(--ink-mute); font-size: 9px; font-weight: 700; letter-spacing: .11em; }
+.topbar-title strong { color: #172554; font-size: 15px; font-weight: 700; }
+.topbar-state { display: inline-flex; align-items: center; gap: 8px; padding: 9px 12px; border: 1px solid #e4e9f6; border-radius: 999px; background: #fff; color: #53617d; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.topbar-state i { color: var(--brand-blue); font-size: 14px; }
+.topbar-app .tb-user { padding-right: 13px; box-shadow: 0 2px 7px rgb(22 36 82 / .035); }
+@media (max-width: 575.98px) { .topbar-app { min-height: 66px; gap: .65rem; } .topbar-title small { font-size: 8px; } .topbar-title strong { font-size: 13px; } .topbar-state { width: 36px; height: 36px; justify-content: center; padding: 0; } .topbar-state span { display: none; } .topbar-state i { font-size: 15px; } }
 .btn-icon-s { position: relative; width: 42px; height: 42px; padding: 0; display: inline-grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: #fff; color: var(--ink-soft); font-size: 1.05rem; transition: all .2s var(--ease); cursor: pointer; }
 .btn-icon-s:hover { color: var(--brand-blue); border-color: var(--blue-200); transform: translateY(-1px); }
 .btn-icon-s .dot { position: absolute; top: 9px; right: 10px; width: 9px; height: 9px; border-radius: 50%; background: var(--logo-green); border: 2px solid #fff; }
@@ -110,10 +118,23 @@ body.espace { font-size: .875rem; -webkit-font-smoothing: antialiased; backgroun
 
 /* ===== MENU LATÉRAL ===== */
 .sidebar { --bs-offcanvas-width: 276px; --bs-offcanvas-bg: transparent; --bs-offcanvas-color: inherit; --bs-offcanvas-border-width: 0; }
-@media (min-width: 992px) { .sidebar { flex: 0 0 262px; width: 262px; position: sticky; top: 0; height: 100vh; } }
+@media (min-width: 992px) {
+  .sidebar { flex: 0 0 262px; width: 262px; position: sticky; top: 0; height: 100vh; }
+  /* Bootstrap sets width:auto and a transparent background on .offcanvas-lg. */
+  .sidebar.offcanvas-lg { display: block !important; visibility: visible !important; transform: none !important; position: sticky !important; inset: auto !important; flex: 0 0 262px !important; width: 262px !important; max-width: 262px !important; height: 100vh !important; }
+  .sidebar.offcanvas-lg > .offcanvas-body { display: flex !important; flex-direction: column; height: 100%; overflow-y: auto; }
+}
 .sidebar-inner { display: flex; flex-direction: column; height: 100%; padding: 22px 16px; overflow-y: auto; scrollbar-width: thin; }
 .sidebar-admin { background: radial-gradient(150% 110% at 0% 0%, var(--blue-800) 0%, var(--blue-900) 38%, var(--blue-950) 100%); color: #fff; }
 .sidebar-apprenant { background: linear-gradient(190deg, var(--brand-blue) 0%, var(--blue-700) 52%, var(--blue-900) 100%); color: #fff; }
+.sidebar-formateur { background: radial-gradient(150% 110% at 0% 0%, var(--blue-800) 0%, var(--blue-900) 38%, var(--blue-950) 100%); color: #fff; }
+.espace-formateur .sidebar-formateur,
+.espace-formateur .sidebar-formateur > .offcanvas-body,
+.espace-formateur .sidebar-formateur .sidebar-inner { background: radial-gradient(150% 110% at 0% 0%, var(--blue-800) 0%, var(--blue-900) 38%, var(--blue-950) 100%) !important; color: #fff !important; }
+@media (min-width: 992px) {
+  .sidebar.offcanvas-lg.sidebar-admin { background: radial-gradient(150% 110% at 0% 0%, var(--blue-800) 0%, var(--blue-900) 38%, var(--blue-950) 100%) !important; color: #fff !important; }
+  .sidebar.offcanvas-lg.sidebar-formateur { background: radial-gradient(150% 110% at 0% 0%, var(--blue-800) 0%, var(--blue-900) 38%, var(--blue-950) 100%) !important; color: #fff !important; }
+}
 .brand { display: flex; align-items: center; gap: 11px; padding: 0 8px; margin-bottom: 26px; color: inherit; }
 .brand:hover { color: inherit; }
 .brand b { font-size: 16px; font-weight: 700; line-height: 1.2; letter-spacing: -.01em; }

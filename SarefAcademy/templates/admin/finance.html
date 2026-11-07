@@ -1,71 +1,542 @@
+{% load static %}
 <!doctype html>
 <html lang="fr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#335cec">
-<title>Finance | SAREF Academy</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-<link rel="stylesheet" href="/static/css/espace.css">
-<script>document.documentElement.classList.add('js')</script>
-</head>
-<body class="espace espace-admin">
-<div class="app">
-<aside class="sidebar sidebar-admin offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="Navigation administrateur">
-<div class="offcanvas-body sidebar-inner">
-<div class="d-flex justify-content-end d-lg-none mb-2"><button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Fermer"></button></div>
-<a class="brand" href="/gestion/"><svg width="36" height="36" viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#fff"/><path d="M13 26c0 2.9 2.6 4.6 6 4.6 4 0 6.3-2 6.3-4.7 0-2.9-2.7-4-6.1-4.9-3.1-.8-4.7-1.6-4.7-3.4 0-1.5 1.4-2.8 3.7-2.8 2 0 3.4 1 3.8 2.7" stroke="#335cec" stroke-width="2.3" stroke-linecap="round" fill="none"/></svg><div><b>SAREF Academy</b><small>ESPACE ADMIN</small></div></a>
-<nav class="d-grid gap-1" aria-label="Menu principal">
-<div class="nav-cap" style="margin-top:0">PILOTAGE</div>
-<a class="navitem" href="/gestion/"><i class="bi bi-grid-1x2"></i>Tableau de bord</a>
-<a class="navitem" href="/gestion/candidatures/"><i class="bi bi-clipboard-check"></i>Candidatures<span class="count">23</span></a>
-<a class="navitem" href="/gestion/apprenants/"><i class="bi bi-people"></i>Apprenants</a>
-<a class="navitem" href="/gestion/resultats/"><i class="bi bi-award"></i>Résultats &amp; attestations</a>
-<div class="nav-cap">PÉDAGOGIE</div>
-<a class="navitem" href="/gestion/formations/"><i class="bi bi-mortarboard"></i>Formations &amp; modules</a>
-<a class="navitem" href="/gestion/formateurs/"><i class="bi bi-person-video3"></i>Formateurs</a>
-<a class="navitem" href="/gestion/organisation/"><i class="bi bi-diagram-3"></i>Organisation</a>
-<div class="nav-cap">GESTION</div>
-<a class="navitem active" href="/gestion/finance/" aria-current="page"><i class="bi bi-cash-coin"></i>Finance</a>
-<a class="navitem" href="/gestion/vagues/"><i class="bi bi-folder2"></i>Vagues &amp; années</a>
-<a class="navitem" href="/gestion/parametres/"><i class="bi bi-gear"></i>Paramètres</a>
-</nav>
-<div class="sidebar-user"><span class="avatar avatar-md">SA</span><div class="who"><b>Samuel Adjovi</b><small>Administrateur</small></div>
-<form method="post" action="/deconnexion/"><button class="logout" type="submit" aria-label="Se déconnecter" title="Se déconnecter"><i class="bi bi-box-arrow-right"></i></button></form></div>
-</div></aside>
-<div class="app-col">
-<header class="topbar">
-<button class="btn-icon-s d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Ouvrir le menu"><i class="bi bi-list fs-5"></i></button>
-<form class="tb-search" role="search" action="/gestion/candidatures/"><i class="bi bi-search"></i><input type="search" name="q" placeholder="Rechercher un candidat, une formation…" aria-label="Rechercher"></form>
-<span class="tb-spacer"></span>
-<a class="chip-vague" href="/gestion/vagues/"><span class="live"></span>Vague 2026-A <em>en cours</em></a>
-<div class="dropdown"><button class="btn-icon-s" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notifications"><i class="bi bi-bell"></i><span class="dot"></span></button><div class="dropdown-menu dropdown-menu-end notif-menu p-0"><div class="notif-head"><span>Notifications</span><a class="link-s" href="#">Tout marquer comme lu</a></div><a class="notif-item new" href="/gestion/candidatures/"><i class="bi bi-clipboard-check"></i><span>5 nouvelles candidatures à traiter<small>Il y a 12 min</small></span></a><a class="notif-item new" href="/gestion/finance/"><i class="bi bi-cash-coin"></i><span>Paiement en retard : Serge Dansou<small>Il y a 2 h</small></span></a><a class="notif-item " href="/gestion/formations/1/"><i class="bi bi-play-circle"></i><span>Module 4 prêt à être activé après le meet<small>Hier</small></span></a></div></div>
-<div class="tb-user"><span class="avatar ">SA</span><span class="d-none d-md-block"><b>Samuel A.</b><small>Admin</small></span></div>
-</header>
-<main class="app-main">
-<div class="page-head"><div><h1 class="page-title">Finance — Paiements par tranches</h1><p class="page-sub">Saisie manuelle des règlements · Vague 2026-A</p></div><div class="d-flex flex-wrap gap-2"><a class="btn-s btn-line-s" href="#"><i class="bi bi-download"></i>Exporter</a><button class="btn-s btn-primary-s" type="button" data-bs-toggle="modal" data-bs-target="#paiement"><i class="bi bi-plus-lg"></i>Enregistrer un paiement</button></div></div><div class="row g-3 mb-3">
-<div class="col-6 col-xl-3"><div class="s-card stat hover-lift reveal" style="--d:0s"><div class="stat-top"><span class="stat-label">Total encaissé</span><span class="stat-icon green"><i class="bi bi-cash-stack"></i></span></div><div class="stat-value"><span data-count="41.2" data-suffix=" M FCFA" data-dec="1">41,2 M</span></div><div class="stat-sub">FCFA · vague en cours</div></div></div>
-<div class="col-6 col-xl-3"><div class="s-card stat hover-lift reveal" style="--d:0.07s"><div class="stat-top"><span class="stat-label">Reste à payer</span><span class="stat-icon amber"><i class="bi bi-hourglass-split"></i></span></div><div class="stat-value"><span data-count="11.8" data-suffix=" M FCFA" data-dec="1">11,8 M</span></div><div class="stat-sub">FCFA attendus</div></div></div>
-<div class="col-6 col-xl-3"><div class="s-card stat hover-lift reveal" style="--d:0.14s"><div class="stat-top"><span class="stat-label">Apprenants soldés</span><span class="stat-icon "><i class="bi bi-patch-check"></i></span></div><div class="stat-value"><span data-count="142" data-suffix="" data-dec="0">142</span></div><div class="stat-sub">sur 187 acceptés</div></div></div>
-<div class="col-6 col-xl-3"><div class="s-card stat hover-lift reveal" style="--d:0.21s"><div class="stat-top"><span class="stat-label">En retard de paiement</span><span class="stat-icon red"><i class="bi bi-exclamation-triangle"></i></span></div><div class="stat-value"><span data-count="9" data-suffix="" data-dec="0">9</span></div><div class="stat-sub">à relancer</div></div></div></div>
-<h2 class="s-card-title">Plans de paiement</h2><div class="row g-3 mb-4"><div class="col-md-4"><div class="s-card s-card-pad hover-lift reveal" style="--d:0.0s"><span class="eyebrow-s">Développement Web</span><div class="fs-4 fw-bold">450 000 <small class="fs-6 text-secondary fw-normal">FCFA</small></div><div class="small text-secondary">3 tranches de 150 000 FCFA</div></div></div><div class="col-md-4"><div class="s-card s-card-pad hover-lift reveal" style="--d:0.08s"><span class="eyebrow-s">UI/UX Design</span><div class="fs-4 fw-bold">300 000 <small class="fs-6 text-secondary fw-normal">FCFA</small></div><div class="small text-secondary">3 tranches de 100 000 FCFA</div></div></div><div class="col-md-4"><div class="s-card s-card-pad hover-lift reveal" style="--d:0.16s"><span class="eyebrow-s">Marketing Digital</span><div class="fs-4 fw-bold">280 000 <small class="fs-6 text-secondary fw-normal">FCFA</small></div><div class="small text-secondary">2 tranches de 140 000 FCFA</div></div></div></div>
-<form method="get" class="s-card toolbar reveal"><nav class="pill-tabs " aria-label="Filtrer"><a class="pill active" href="?statut=" data-list="#t-fin" data-filter="">Tous<span class="n">187</span></a><a class="pill" href="?statut=a_jour" data-list="#t-fin" data-filter="a_jour">À jour<span class="n">36</span></a><a class="pill" href="?statut=en_retard" data-list="#t-fin" data-filter="en_retard">En retard<span class="n">9</span></a><a class="pill" href="?statut=solde" data-list="#t-fin" data-filter="solde">Soldés<span class="n">142</span></a></nav>
-<div class="search-box ms-lg-auto" style="max-width:18rem"><i class="bi bi-search"></i><label class="visually-hidden" for="q">Rechercher</label><input id="q" name="q" type="search" class="s-input" placeholder="Rechercher un apprenant…" data-list="#t-fin" data-search></div></form>
-<div class="s-card overflow-hidden reveal"><div class="table-responsive"><table class="s-table " id="t-fin" data-empty="#vide-t-fin"><thead><tr><th>Apprenant</th><th>Formation</th><th>Montant total</th><th>Payé</th><th>Reste</th><th>Avancement</th><th>Statut</th><th></th></tr></thead><tbody>
-<tr data-status="a_jour"><td><div class="user-cell"><span class="avatar ">AK</span><b>Aïcha Kora</b></div></td><td>Développement Web Full-Stack</td><td>450 000</td><td class="t-green fw-semibold">300 000</td><td>150 000</td><td style="min-width:120px"><div class="s-progress " role="progressbar" aria-valuenow="67" aria-valuemin="0" aria-valuemax="100"><span style="--w:67%"></span></div></td><td><span class="s-badge b-a_jour">À jour</span></td><td class="text-end"><a class="link-s" href="/gestion/apprenants/1/">Historique</a></td></tr><tr data-status="solde"><td><div class="user-cell"><span class="avatar ">JK</span><b>Jonas Koffi</b></div></td><td>Développement Web Full-Stack</td><td>450 000</td><td class="t-green fw-semibold">450 000</td><td>0</td><td style="min-width:120px"><div class="s-progress green" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"><span style="--w:100%"></span></div></td><td><span class="s-badge b-solde">Soldé</span></td><td class="text-end"><a class="link-s" href="/gestion/apprenants/2/">Historique</a></td></tr><tr data-status="en_retard"><td><div class="user-cell"><span class="avatar ">PT</span><b>Pauline Towa</b></div></td><td>UI/UX Design</td><td>300 000</td><td class="t-green fw-semibold">100 000</td><td>200 000</td><td style="min-width:120px"><div class="s-progress " role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"><span style="--w:33%"></span></div></td><td><span class="s-badge b-en_retard">En retard</span></td><td class="text-end"><a class="link-s" href="/gestion/apprenants/3/">Historique</a></td></tr><tr data-status="solde"><td><div class="user-cell"><span class="avatar ">NB</span><b>Nadège Biaou</b></div></td><td>Marketing Digital</td><td>280 000</td><td class="t-green fw-semibold">280 000</td><td>0</td><td style="min-width:120px"><div class="s-progress green" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"><span style="--w:100%"></span></div></td><td><span class="s-badge b-solde">Soldé</span></td><td class="text-end"><a class="link-s" href="/gestion/apprenants/4/">Historique</a></td></tr><tr data-status="en_retard"><td><div class="user-cell"><span class="avatar ">SD</span><b>Serge Dansou</b></div></td><td>Développement Web Full-Stack</td><td>450 000</td><td class="t-green fw-semibold">150 000</td><td>300 000</td><td style="min-width:120px"><div class="s-progress " role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"><span style="--w:33%"></span></div></td><td><span class="s-badge b-en_retard">En retard</span></td><td class="text-end"><a class="link-s" href="/gestion/apprenants/5/">Historique</a></td></tr><tr data-status="a_jour"><td><div class="user-cell"><span class="avatar ">SH</span><b>Sandra Houngbo</b></div></td><td>UI/UX Design</td><td>300 000</td><td class="t-green fw-semibold">200 000</td><td>100 000</td><td style="min-width:120px"><div class="s-progress " role="progressbar" aria-valuenow="67" aria-valuemin="0" aria-valuemax="100"><span style="--w:67%"></span></div></td><td><span class="s-badge b-a_jour">À jour</span></td><td class="text-end"><a class="link-s" href="/gestion/apprenants/6/">Historique</a></td></tr><tr data-status="a_jour"><td><div class="user-cell"><span class="avatar ">IS</span><b>Ibrahim Salami</b></div></td><td>Marketing Digital</td><td>280 000</td><td class="t-green fw-semibold">140 000</td><td>140 000</td><td style="min-width:120px"><div class="s-progress " role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"><span style="--w:50%"></span></div></td><td><span class="s-badge b-a_jour">À jour</span></td><td class="text-end"><a class="link-s" href="/gestion/apprenants/7/">Historique</a></td></tr><tr data-status="solde"><td><div class="user-cell"><span class="avatar ">GT</span><b>Grâce Tokpanou</b></div></td><td>Développement Web Full-Stack</td><td>450 000</td><td class="t-green fw-semibold">450 000</td><td>0</td><td style="min-width:120px"><div class="s-progress green" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"><span style="--w:100%"></span></div></td><td><span class="s-badge b-solde">Soldé</span></td><td class="text-end"><a class="link-s" href="/gestion/apprenants/8/">Historique</a></td></tr>
-</tbody></table></div><div class="empty-s" id="vide-t-fin" hidden><i class="bi bi-search fs-3 d-block mb-2"></i>Aucun résultat pour ce filtre.</div><div class="table-foot"><span>Affichage 1–8 sur 187</span><nav class="pager" aria-label="Pagination"><span class="off">← Précédent</span><span class="on" aria-current="page">1</span><a href="?page=2">2</a><a href="?page=3">3</a><span>…</span><a href="?page=19">19</a><a href="?page=2">Suivant →</a></nav></div></div>
-<div class="modal fade" id="paiement" tabindex="-1" aria-labelledby="paiement-t" aria-hidden="true">
-<div class="modal-dialog modal-dialog-centered modal-lg"><form method="post" enctype="multipart/form-data" class="modal-content" style="border-radius:20px;border:0">
-<div class="modal-header border-0 pb-0"><h2 class="modal-title fs-5 fw-bold d-flex align-items-center" id="paiement-t"><span class="stat-icon me-2"><i class="bi bi-cash-coin"></i></span>Enregistrer un paiement</h2>
-<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
-<div class="modal-body"><div class="row g-3"><div class="col-12"><label class="s-label" for="candidats">Apprenant <span class="t-red">*</span></label><select id="candidats" name="candidats" class="s-input form-select"><option>Aïcha Kora — Développement Web Full-Stack</option><option>Pauline Towa — UI/UX Design</option><option>Serge Dansou — Développement Web Full-Stack</option></select></div><div class="col-md-4"><label class="s-label" for="tranche">Tranche n° <span class="t-red">*</span></label><select id="tranche" name="tranche" class="s-input form-select"><option>Tranche 1</option><option>Tranche 2</option><option>Tranche 3</option></select></div><div class="col-md-4"><label class="s-label" for="montant">Montant (FCFA) <span class="t-red">*</span></label><input id="montant" name="montant" type="number" class="s-input" placeholder="150000" required ></div><div class="col-md-4"><label class="s-label" for="mode">Mode de paiement <span class="t-red">*</span></label><select id="mode" name="mode" class="s-input form-select"><option>Mobile Money</option><option>Espèces</option><option>Virement</option></select></div><div class="col-md-6"><label class="s-label" for="date">Date du paiement <span class="t-red">*</span></label><input id="date" name="date" type="date" class="s-input" placeholder="" required ></div><div class="col-md-6"><label class="s-label">Formation et vague</label><input class="s-input" value="Auto : formation de la candidature · 2026-A" disabled></div></div></div>
-<div class="modal-footer border-0 pt-0"><button type="button" class="btn-s btn-line-s" data-bs-dismiss="modal">Annuler</button><button type="submit" class="btn-s btn-primary-s">Enregistrer le paiement</button></div></form></div></div>
-</main></div></div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/static/js/espace.js" defer></script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#335cec" />
+    <title>Finance | SAREF Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
+  </head>
+  <body class="espace espace-admin">
+    <div class="app">
+      {% include 'partials/sidebar_admin.html' %}
+      <div class="app-col">
+        {% include 'partials/admin_topbar.html' %}
+        <main class="app-main">
+          <div class="page-head">
+            <div>
+              <h1 class="page-title">Finance — Paiements par tranches</h1>
+              <p class="page-sub">
+                Saisie manuelle des règlements · Vague 2026-A
+              </p>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+              <a class="btn-s btn-line-s" href="#">
+                <i class="bi bi-download"></i>
+                Exporter
+              </a>
+              <button
+                class="btn-s btn-primary-s"
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#paiement"
+              >
+                <i class="bi bi-plus-lg"></i>
+                Enregistrer un paiement
+              </button>
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-6 col-xl-3">
+              <div class="s-card stat hover-lift reveal" style="--d: 0s">
+                <div class="stat-top">
+                  <span class="stat-label">Total encaissé</span>
+                  <span class="stat-icon green">
+                    <i class="bi bi-cash-stack"></i>
+                  </span>
+                </div>
+                <div class="stat-value">
+                  <span data-count="41.2" data-suffix=" M FCFA" data-dec="1">
+                    41,2 M
+                  </span>
+                </div>
+                <div class="stat-sub">FCFA · vague en cours</div>
+              </div>
+            </div>
+            <div class="col-6 col-xl-3">
+              <div class="s-card stat hover-lift reveal" style="--d: 0.07s">
+                <div class="stat-top">
+                  <span class="stat-label">Reste à payer</span>
+                  <span class="stat-icon amber">
+                    <i class="bi bi-hourglass-split"></i>
+                  </span>
+                </div>
+                <div class="stat-value">
+                  <span data-count="11.8" data-suffix=" M FCFA" data-dec="1">
+                    11,8 M
+                  </span>
+                </div>
+                <div class="stat-sub">FCFA attendus</div>
+              </div>
+            </div>
+            <div class="col-6 col-xl-3">
+              <div class="s-card stat hover-lift reveal" style="--d: 0.14s">
+                <div class="stat-top">
+                  <span class="stat-label">Apprenants soldés</span>
+                  <span class="stat-icon">
+                    <i class="bi bi-patch-check"></i>
+                  </span>
+                </div>
+                <div class="stat-value">
+                  <span data-count="142" data-suffix="" data-dec="0">142</span>
+                </div>
+                <div class="stat-sub">sur 187 acceptés</div>
+              </div>
+            </div>
+            <div class="col-6 col-xl-3">
+              <div class="s-card stat hover-lift reveal" style="--d: 0.21s">
+                <div class="stat-top">
+                  <span class="stat-label">En retard de paiement</span>
+                  <span class="stat-icon red">
+                    <i class="bi bi-exclamation-triangle"></i>
+                  </span>
+                </div>
+                <div class="stat-value">
+                  <span data-count="9" data-suffix="" data-dec="0">9</span>
+                </div>
+                <div class="stat-sub">à relancer</div>
+              </div>
+            </div>
+          </div>
+          <h2 class="s-card-title">Plans de paiement</h2>
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <div class="s-card s-card-pad hover-lift reveal" style="--d: 0s">
+                <span class="eyebrow-s">Développement Web</span>
+                <div class="fs-4 fw-bold">
+                  450 000
+                  <small class="fs-6 text-secondary fw-normal">FCFA</small>
+                </div>
+                <div class="small text-secondary">
+                  3 tranches de 150 000 FCFA
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div
+                class="s-card s-card-pad hover-lift reveal"
+                style="--d: 0.08s"
+              >
+                <span class="eyebrow-s">UI/UX Design</span>
+                <div class="fs-4 fw-bold">
+                  300 000
+                  <small class="fs-6 text-secondary fw-normal">FCFA</small>
+                </div>
+                <div class="small text-secondary">
+                  3 tranches de 100 000 FCFA
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div
+                class="s-card s-card-pad hover-lift reveal"
+                style="--d: 0.16s"
+              >
+                <span class="eyebrow-s">Marketing Digital</span>
+                <div class="fs-4 fw-bold">
+                  280 000
+                  <small class="fs-6 text-secondary fw-normal">FCFA</small>
+                </div>
+                <div class="small text-secondary">
+                  2 tranches de 140 000 FCFA
+                </div>
+              </div>
+            </div>
+          </div>
+          <form method="get" class="s-card toolbar reveal">
+            <nav class="pill-tabs" aria-label="Filtrer">
+              <a
+                class="pill active"
+                href="?statut="
+                data-list="#t-fin"
+                data-filter=""
+              >
+                Tous
+                <span class="n">187</span>
+              </a>
+              <a
+                class="pill"
+                href="?statut=a_jour"
+                data-list="#t-fin"
+                data-filter="a_jour"
+              >
+                À jour
+                <span class="n">36</span>
+              </a>
+              <a
+                class="pill"
+                href="?statut=en_retard"
+                data-list="#t-fin"
+                data-filter="en_retard"
+              >
+                En retard
+                <span class="n">9</span>
+              </a>
+              <a
+                class="pill"
+                href="?statut=solde"
+                data-list="#t-fin"
+                data-filter="solde"
+              >
+                Soldés
+                <span class="n">142</span>
+              </a>
+            </nav>
+            <div class="search-box ms-lg-auto" style="max-width: 18rem">
+              <i class="bi bi-search"></i>
+              <label class="visually-hidden" for="q">Rechercher</label>
+              <input
+                id="q"
+                name="q"
+                type="search"
+                class="s-input"
+                placeholder="Rechercher un apprenant…"
+                data-list="#t-fin"
+                data-search
+              />
+            </div>
+          </form>
+          <div class="s-card overflow-hidden reveal">
+            <div class="table-responsive">
+              <table class="s-table" id="t-fin" data-empty="#vide-t-fin">
+                <thead>
+                  <tr>
+                    <th>Apprenant</th>
+                    <th>Formation</th>
+                    <th>Montant total</th>
+                    <th>Payé</th>
+                    <th>Reste</th>
+                    <th>Taux payé</th>
+                    <th>Statut</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-status="a_jour">
+                    <td>
+                      <div class="user-cell">
+                        <span class="avatar">AK</span>
+                        <b>Aïcha Kora</b>
+                      </div>
+                    </td>
+                    <td>Développement Web Full-Stack</td>
+                    <td>450 000</td>
+                    <td class="t-green fw-semibold">300 000</td>
+                    <td>150 000</td>
+                    <td><span class="fw-semibold text-primary">67%</span></td>
+                    <td><span class="s-badge b-a_jour">À jour</span></td>
+                    <td class="text-end">
+                      <a class="link-s" href="/gestion/apprenants/1/">
+                        Historique
+                      </a>
+                    </td>
+                  </tr>
+                  <tr data-status="solde">
+                    <td>
+                      <div class="user-cell">
+                        <span class="avatar">JK</span>
+                        <b>Jonas Koffi</b>
+                      </div>
+                    </td>
+                    <td>Développement Web Full-Stack</td>
+                    <td>450 000</td>
+                    <td class="t-green fw-semibold">450 000</td>
+                    <td>0</td>
+                    <td><span class="fw-semibold text-success">100%</span></td>
+                    <td><span class="s-badge b-solde">Soldé</span></td>
+                    <td class="text-end">
+                      <a class="link-s" href="/gestion/apprenants/2/">
+                        Historique
+                      </a>
+                    </td>
+                  </tr>
+                  <tr data-status="en_retard">
+                    <td>
+                      <div class="user-cell">
+                        <span class="avatar">PT</span>
+                        <b>Pauline Towa</b>
+                      </div>
+                    </td>
+                    <td>UI/UX Design</td>
+                    <td>300 000</td>
+                    <td class="t-green fw-semibold">100 000</td>
+                    <td>200 000</td>
+                    <td><span class="fw-semibold text-warning">33%</span></td>
+                    <td><span class="s-badge b-en_retard">En retard</span></td>
+                    <td class="text-end">
+                      <a class="link-s" href="/gestion/apprenants/3/">
+                        Historique
+                      </a>
+                    </td>
+                  </tr>
+                  <tr data-status="solde">
+                    <td>
+                      <div class="user-cell">
+                        <span class="avatar">NB</span>
+                        <b>Nadège Biaou</b>
+                      </div>
+                    </td>
+                    <td>Marketing Digital</td>
+                    <td>280 000</td>
+                    <td class="t-green fw-semibold">280 000</td>
+                    <td>0</td>
+                    <td><span class="fw-semibold text-success">100%</span></td>
+                    <td><span class="s-badge b-solde">Soldé</span></td>
+                    <td class="text-end">
+                      <a class="link-s" href="/gestion/apprenants/4/">
+                        Historique
+                      </a>
+                    </td>
+                  </tr>
+                  <tr data-status="en_retard">
+                    <td>
+                      <div class="user-cell">
+                        <span class="avatar">SD</span>
+                        <b>Serge Dansou</b>
+                      </div>
+                    </td>
+                    <td>Développement Web Full-Stack</td>
+                    <td>450 000</td>
+                    <td class="t-green fw-semibold">150 000</td>
+                    <td>300 000</td>
+                    <td><span class="fw-semibold text-warning">33%</span></td>
+                    <td><span class="s-badge b-en_retard">En retard</span></td>
+                    <td class="text-end">
+                      <a class="link-s" href="/gestion/apprenants/5/">
+                        Historique
+                      </a>
+                    </td>
+                  </tr>
+                  <tr data-status="a_jour">
+                    <td>
+                      <div class="user-cell">
+                        <span class="avatar">SH</span>
+                        <b>Sandra Houngbo</b>
+                      </div>
+                    </td>
+                    <td>UI/UX Design</td>
+                    <td>300 000</td>
+                    <td class="t-green fw-semibold">200 000</td>
+                    <td>100 000</td>
+                    <td><span class="fw-semibold text-primary">67%</span></td>
+                    <td><span class="s-badge b-a_jour">À jour</span></td>
+                    <td class="text-end">
+                      <a class="link-s" href="/gestion/apprenants/6/">
+                        Historique
+                      </a>
+                    </td>
+                  </tr>
+                  <tr data-status="a_jour">
+                    <td>
+                      <div class="user-cell">
+                        <span class="avatar">IS</span>
+                        <b>Ibrahim Salami</b>
+                      </div>
+                    </td>
+                    <td>Marketing Digital</td>
+                    <td>280 000</td>
+                    <td class="t-green fw-semibold">140 000</td>
+                    <td>140 000</td>
+                    <td><span class="fw-semibold text-primary">50%</span></td>
+                    <td><span class="s-badge b-a_jour">À jour</span></td>
+                    <td class="text-end">
+                      <a class="link-s" href="/gestion/apprenants/7/">
+                        Historique
+                      </a>
+                    </td>
+                  </tr>
+                  <tr data-status="solde">
+                    <td>
+                      <div class="user-cell">
+                        <span class="avatar">GT</span>
+                        <b>Grâce Tokpanou</b>
+                      </div>
+                    </td>
+                    <td>Développement Web Full-Stack</td>
+                    <td>450 000</td>
+                    <td class="t-green fw-semibold">450 000</td>
+                    <td>0</td>
+                    <td><span class="fw-semibold text-success">100%</span></td>
+                    <td><span class="s-badge b-solde">Soldé</span></td>
+                    <td class="text-end">
+                      <a class="link-s" href="/gestion/apprenants/8/">
+                        Historique
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="empty-s" id="vide-t-fin" hidden>
+              <i class="bi bi-search fs-3 d-block mb-2"></i>
+              Aucun résultat pour ce filtre.
+            </div>
+            <div class="table-foot">
+              <span>Affichage 1–8 sur 187</span>
+              <nav class="pager" aria-label="Pagination">
+                <span class="off">← Précédent</span>
+                <span class="on" aria-current="page">1</span>
+                <a href="?page=2">2</a>
+                <a href="?page=3">3</a>
+                <span>…</span>
+                <a href="?page=19">19</a>
+                <a href="?page=2">Suivant →</a>
+              </nav>
+            </div>
+          </div>
+          <div
+            class="modal fade"
+            id="paiement"
+            tabindex="-1"
+            aria-labelledby="paiement-t"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+              <form
+                method="post"
+                enctype="multipart/form-data"
+                class="modal-content"
+                style="border-radius: 20px; border: 0"
+              >
+                <div class="modal-header border-0 pb-0">
+                  <h2
+                    class="modal-title fs-5 fw-bold d-flex align-items-center"
+                    id="paiement-t"
+                  >
+                    <span class="stat-icon me-2">
+                      <i class="bi bi-cash-coin"></i>
+                    </span>
+                    Enregistrer un paiement
+                  </h2>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Fermer"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row g-3">
+                    <div class="col-12">
+                      <label class="s-label" for="candidats">
+                        Apprenant
+                        <span class="t-red">*</span>
+                      </label>
+                      <select
+                        id="candidats"
+                        name="candidats"
+                        class="s-input form-select"
+                      >
+                        <option>
+                          Aïcha Kora — Développement Web Full-Stack
+                        </option>
+                        <option>Pauline Towa — UI/UX Design</option>
+                        <option>
+                          Serge Dansou — Développement Web Full-Stack
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="s-label" for="tranche">
+                        Tranche n°
+                        <span class="t-red">*</span>
+                      </label>
+                      <select
+                        id="tranche"
+                        name="tranche"
+                        class="s-input form-select"
+                      >
+                        <option>Tranche 1</option>
+                        <option>Tranche 2</option>
+                        <option>Tranche 3</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="s-label" for="montant">
+                        Montant (FCFA)
+                        <span class="t-red">*</span>
+                      </label>
+                      <input
+                        id="montant"
+                        name="montant"
+                        type="number"
+                        class="s-input"
+                        placeholder="150000"
+                        required
+                      />
+                    </div>
+                    <div class="col-md-4">
+                      <label class="s-label" for="mode">
+                        Mode de paiement
+                        <span class="t-red">*</span>
+                      </label>
+                      <select id="mode" name="mode" class="s-input form-select">
+                        <option>Mobile Money</option>
+                        <option>Espèces</option>
+                        <option>Virement</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="s-label" for="date">
+                        Date du paiement
+                        <span class="t-red">*</span>
+                      </label>
+                      <input
+                        id="date"
+                        name="date"
+                        type="date"
+                        class="s-input"
+                        placeholder=""
+                        required
+                      />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="s-label">Formation et vague</label>
+                      <input
+                        class="s-input"
+                        value="Auto : formation de la candidature · 2026-A"
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                  <button
+                    type="button"
+                    class="btn-s btn-line-s"
+                    data-bs-dismiss="modal"
+                  >
+                    Annuler
+                  </button>
+                  <button type="submit" class="btn-s btn-primary-s">
+                    Enregistrer le paiement
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/espace.js' %}" defer></script>
+  </body>
 </html>

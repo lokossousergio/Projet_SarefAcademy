@@ -1,559 +1,541 @@
-from django.shortcuts import redirect, render
-from django.http import HttpResponse
-from .models import Candidats, Admin, Parametre
-
-import requests
-
-from django.http import HttpResponse
 from django.contrib import messages
-# makepassword 
-from django.contrib.auth.hashers import make_password , check_password
 
-from django.core.mail import send_mail
-from django.core.mail import EmailMultiAlternatives
-from django.core.mail import get_connection, EmailMultiAlternatives
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+from django.db import transaction
+from django.shortcuts import get_object_or_404, redirect, render
 
-
-# Create your views here.
-import requests
-from django.shortcuts import render
+from .models import (Candidats, Chapitres, ChapitreTermine, Etudiants, Formateurs,
+                     Formation, Modules, Paiement)
 
 # ============================================================
-# render dacceuil du site 
-def index(request):
-    return render( request , 'index.html')
-# render dacceuil du site 
-def Marketing_digital(request):
-    return render( request , 'formations/formation_marketing_digital.html')
-def Design_graphique(request):
-    return render( request , 'formations/formation_design_graphique.html')
-def Montage_video(request):
-    return render( request , 'formations/formation_montage_video.html')
-def Developpement_web(request):
-    return render( request , 'formations/formation_developpement_web.html')
-def Archivage_numerique(request):
-    return render( request , 'formations/formation_archivage_numerique.html')
-def Journalisme_web(request):
-    return render( request , 'formations/formation_Journalisme_web.html')
+# Site Public & Formations
+# ============================================================
 
+def index(request):
+    return render(request, 'index.html')
+
+def Marketing_digital(request):
+    return render(request, 'formations/formation_marketing_digital.html')
+
+def Design_graphique(request):
+    return render(request, 'formations/formation_design_graphique.html')
+
+def Montage_video(request):
+    return render(request, 'formations/formation_montage_video.html')
+
+def Developpement_web(request):
+    return render(request, 'formations/formation_developpement_web.html')
+
+def Archivage_numerique(request):
+    return render(request, 'formations/formation_archivage_numerique.html')
+
+def Journalisme_web(request):
+    return render(request, 'formations/formation_Journalisme_web.html')
 
 def candidature_formation(request):
-    return render(request, "bourse_postule/candidature.html")
+    return render(request, 'bourse_postule/candidature.html')
 
 def connexion_etudiant(request):
-    return render( request , 'Espace_etudiants/connexion.html')
+    return render(request, 'Espace_etudiants/connexion.html')
 
 def inscription_etudiant(request):
-    return render( request , 'Espace_etudiants/inscription.html')
+    return render(request, 'Espace_etudiants/inscription.html')
 
 def dashboard_etudiant(request):
-    return render( request , 'Espace_etudiants/dashboard.html')
-# =================================================================
+    return render(request, 'Espace_etudiants/dashboard.html')
+
 def bourse_de_formation(request):
-
-
-    if request.method == 'POST':
-        nom_prenom = request.POST.get('nom_prenom', "").strip()
-        email = request.POST.get('email' , "").strip()
-        number = request.POST.get('number', "").strip()
-        niveau_etudes = request.POST.get('niveau_etudes', "").strip()
-        motif_inscription=request.POST.get('reason',"").strip()
-        from django.core.mail import send_mail
-
-   
-        # Create a new user instance
-        users=Candidats.objects.create(nom_prenom=nom_prenom, email=email, number=number, niveau_etudes=niveau_etudes , motif_inscription=motif_inscription)
-        request.session["inscription"]=True
-        nom_prenom = users.nom_prenom  # Get the nom_prenom of the newly created user
-        send_inscription_success_email(request, nom_prenom, users.email)  # Call the email sending function
-     
-        return redirect('inscription_valide')  # Redirect to the index render after successful registration
-
-    param = Parametre.objects.filter(Etat="Actif").first()
-
-    
-        
-
-    return render(request, 'bourse_de_formation.html' , {"param":param})
-
+    return render(request, 'bourse_de_formation.html')
 
 def inscription_valide(request):
-    return render(request , 'info.html')
-
-# =======================================================================
+    return render(request, 'info.html')
 
 def tunel(request):
     return render(request, 'tunel.html')
 
 
-
-
-# ================================================================
-# messages de confirmation envoyer par mail
-from datetime import datetime
-
-from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
-def send_inscription_success_email(request, nom, email):
-    """
-    Envoie l'email de confirmation d'inscription au candidat.
-    Retourne True si l'envoi a réussi, False sinon.
-    """
-
-    annee = datetime.now().year
-
-    subject = "Inscription - Saref Academy"
-    whatsapp_academy = "+229 01 54 15 05 30"
-
-    html_message = f"""
-<div style="padding:20px; font-family:'Segoe UI',Roboto,Arial,sans-serif;">
-    <div style="max-width:520px; margin:auto; background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(49,91,234,0.15);">
-
-        <!-- Header -->
-        <div style="background:#f4f7ff; padding:20px 20px 16px 20px; text-align:center; border-bottom:3px solid #315BEA;">
-            <img src="https://i.postimg.cc/qMHxS6Wg/Whats-App-Image-2026-08-16-at-23-12-49-removebg-preview.png"
-                alt="Saref Academy"
-                style="height:90px; width:auto; object-fit:contain; display:block; margin:0 auto 10px auto; border-radius:8px">
-
-            <p style="margin:0; color:#315BEA; font-size:11px; letter-spacing:4px; text-transform:uppercase; font-weight:600;">
-                Inscription bourse de formation
-            </p>
-        </div>
-
-        <!-- Content -->
-        <div style="padding:32px 24px; text-align:center;">
-
-            <p style="font-size:14px; color:#888; margin:0 0 4px 0;">
-                Bonjour <strong style="color:#315BEA;">{nom}</strong>
-            </p>
-
-            <p style="font-size:19px; color:#111827; font-weight:700; margin:0 0 8px 0; line-height:1.35;">
-                Attention, lisez ceci pour valider
-            </p>
-
-            <p style="font-size:13px; color:#888; margin:0 0 28px 0;">
-                Vous avez postulé avec succès à la bourse de formation en Marketing Digital.
-            </p>
-
-            <!-- Derniere etape -->
-            <div style="background:#EEF2FF; border:1px solid #DDE5FF; border-radius:16px; padding:24px 20px; margin:0 auto 24px auto; max-width:340px; text-align:center;">
-
-                <div style="display:inline-block; background:#fff1e8; color:#ea580c; border-radius:8px; padding:5px 10px; margin:0 0 12px 0; font-size:10px; font-weight:800; letter-spacing:.06em; text-transform:uppercase;">
-                    &#9888; Action requise
-                </div>
-
-                <p style="margin:0 0 6px 0; font-size:15px; font-weight:700; color:#111827;">
-                    Une dernière étape importante
-                </p>
-
-                <p style="margin:0; font-size:13px; color:#475569; line-height:1.6;">
-                    Rejoignez maintenant la <strong style="color:#111827;">chaîne WhatsApp officielle</strong>
-                    de Saref Academy. C'est sur cette chaîne que nous partagerons toutes les informations
-                    importantes concernant votre candidature : prochaines étapes, annonces, dates
-                    importantes et instructions à suivre.
-                    <br><br>
-                    <a href="https://whatsapp.com/channel/0029VbD91sw545uo0Tesap18"
-                       style="color:#315BEA; text-decoration:underline; font-weight:600;">
-                        Cliquez ici pour rejoindre la chaîne WhatsApp
-                    </a>
-                </p>
-
-            </div>
-
-            <!-- Warning -->
-            <div style="background:#fff8e1; border-radius:10px; padding:12px 16px; margin:0 auto; max-width:340px;">
-                <p style="margin:0; font-size:12px; color:#b45309;">
-                    ⏱️ Cette étape est indispensable pour recevoir toutes les informations, ne tardez pas
-                </p>
-            </div>
-
-            <p style="font-size:12px; color:#aaa; margin:20px 0 0 0;">
-                🔒 Vos informations restent strictement confidentielles.
-            </p>
-
-        </div>
-
-        <!-- Divider -->
-        <div style="height:1px; background:linear-gradient(to right, transparent, #cfdcfa, transparent); margin:0 24px;"></div>
-
-        <!-- Footer -->
-        <div style="background:#f4f7ff; padding:20px 24px; text-align:center;">
-            <p style="margin:0 0 6px 0; font-size:13px; font-weight:700; color:#315BEA;">
-                Saref Academy
-            </p>
-
-            <p style="margin:0; font-size:11px; color:#aaa;">
-                © {annee} Tous droits réservés
-                &nbsp;·&nbsp;
-
-                <a href="mailto:Sarefacademy@gmail.com"
-                   style="color:#315BEA; text-decoration:none;">
-                    contact@sarefacademy.com
-                </a>
-            </p>
-        </div>
-
-    </div>
-</div>
-"""
-
-    try:
-
-        response = requests.post(
-            "https://api.brevo.com/v3/smtp/email",
-
-            headers={
-                "accept": "application/json",
-                "api-key": settings.BREVO_API_KEY,
-                "content-type": "application/json",
-            },
-
-            json={
-                "sender": {
-                    "name": settings.BREVO_SENDER_NAME,
-                    "email": settings.BREVO_SENDER_EMAIL,
-                },
-
-                "to": [
-                    {
-                        "email": email,
-                        "name": nom,
-                    }
-                ],
-
-                "subject": subject,
-                "htmlContent": html_message,
-            },
-
-            timeout=20,
-        )
-
-        print("STATUS BREVO :", response.status_code)
-        print("REPONSE BREVO :", response.text)
-
-        if response.ok:
-
-            print(f"[email] Email envoyé avec succès à {email}")
-
-            return True
-
-        else:
-
-            print(
-                f"[email] Erreur Brevo pour {email} : "
-                f"{response.status_code} - {response.text}"
-            )
-
-            return False
-
-    except requests.Timeout:
-
-        print(f"[email] Timeout en envoyant à {email}")
-
-        return False
-
-    except requests.RequestException as e:
-
-        print(f"[email] Erreur réseau Brevo pour {email} : {e}")
-
-        return False
-
-    except Exception as e:
-
-        print(f"[email] Erreur inattendue pour {email} : {e}")
-
-        return False
-    
-# ================Gestion des erreurs=======
-
-def handel404( request , exception):  
-    return render(request , 'error_404.html')
-
-def handel500( request):
-    return render(request , 'error_500.html')
-
-
-# ================================================
-# connexion admin
-def connexion_admin(request):
-    if request.method == 'POST':
-        email = request.POST.get('email',"").strip()
-        password = request.POST.get('password',"").strip()
-        email_wait="sarefacademy@gmail.com"
-        password_wait="uSXL69"
-  
-
-        if email==email_wait and password==password_wait:
-            request.session["Authentifiaction"]=True
-            messages.success( request ,"Bienvenue dans votre espace administrateur")
-            return redirect("admin_dashboard")
-        else:
-            messages.error( request ,"Email ou mot de passe incoreects veuillez ressayer")
-            return redirect('connexion_admin')
-        
-    return render(request, 'connexion_admin.html')
-
-# =======================================================
-
-# administration render dashboad
-def admin_dashboard(request):
-     verify_Authentifiaction=request.session.get("Authentifiaction")
-     print(verify_Authentifiaction)
-     if not verify_Authentifiaction:
-         return redirect('connexion_admin')
-     else:
-
-        from django.utils import timezone
-
-        candidats_tle = Candidats.objects.count()
-
-        candidats_insct_ajdh = Candidats.objects.filter(date_inscription__date=timezone.now().date() ).count()
-        param = Parametre.objects.filter(Etat="Actif").first()
-     
-
-        candidats=Candidats.objects.all().order_by('-id')
-    
-
-        if request.method=="POST":
-            date_ouverture=request.POST.get('date_ouverture')
-            date_fermeture=request.POST.get('date_fermeture')
-            print(date_fermeture)
-            Parametre.objects.create(Date_ouverture_inscription=date_ouverture, Date_cloture_inscription=date_fermeture)
-            
-            return redirect ('admin_dashboard')
-         
-         
-         
-
-        return render(request , 'dashboard.html' ,{"param":param , "candidats":candidats , "nb_candidatures_tle": candidats_tle  , "nb_candidatures_aujourd_hui":candidats_insct_ajdh} )
-
+# ============================================================
+# Connexion & Authentification (Accès direct sans redirection)
 # ============================================================
 
-# suspension de la candidature en cours      
-def suspension_delai_candidature(request):
-    verify_Authentifiaction=request.session.get("Authentifiaction")
-    print(verify_Authentifiaction)
-    if not verify_Authentifiaction:
-         return redirect('connexion_admin')
-    else:
-        if request.method=="POST":
-            Parametre.objects.filter(Etat="Actif").delete()
-            return redirect ('admin_dashboard')     
-        
+def connexion(request):
+    if request.method == 'POST':
+        role = request.POST.get('role', 'formateur')
+        identifiant = request.POST.get('email', '').strip()
+        user = authenticate(request, username=identifiant, password=request.POST.get('password', ''))
+        if user is None:
+            messages.error(request, "Identifiant ou mot de passe incorrect.")
+        elif role == 'formateur':
+            profil = getattr(user, 'profil_formateur', None)
+            if profil is None or not profil.actif:
+                messages.error(request, "Ce compte n’a pas accès à l’espace formateur.")
+            else:
+                login(request, user)
+                if profil.doit_changer_mot_de_passe:
+                    return redirect('changer_mot_de_passe')
+                return redirect('formateur_dashboard')
+        elif user.is_staff or user.is_superuser:
+            login(request, user)
+            return redirect('admin_configuration_vague')
+        else:
+            messages.error(request, "Ce compte n’a pas accès à l’administration.")
+    return render(request, 'connexion.html')
 
-# ==========================================================
+def connexion_admin(request):
+    if request.method == 'POST':
+        user = authenticate(request, username=request.POST.get('email', '').strip(), password=request.POST.get('password', ''))
+        if user and (user.is_staff or user.is_superuser):
+            login(request, user)
+            return redirect('admin_configuration_vague')
+        messages.error(request, "Identifiant ou mot de passe administrateur incorrect.")
+    return render(request, 'connexion_admin.html')
 
-def supprimer_candidat(request , id_user):
-
-    Candidats.objects.filter(id=id_user).delete()
-    return redirect ('admin_dashboard')
-    
-# =====================================================
-
-# deconnexion admin
 def deconnexion(request):
-    request.session.flush()
-    return redirect('connexion_admin')
+    logout(request)
+    return redirect('connexion')
 
-# # ============================================================
-# # views.py
-# from django.http import HttpResponse
-# from django.utils import timezone
-# from reportlab.lib.rendersizes import landscape, A4
-# from reportlab.lib.units import cm
-# from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
-# from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-# from reportlab.lib import colors
-
-
-# def telecharger_pdf_jour(request):
-#     response = HttpResponse(content_type="application/pdf")
-#     response["Content-Disposition"] = 'attachment; filename="Liste_des_candidats_du_jour.pdf"'
-
-#     # Date du jour
-#     aujourdhui = timezone.now().date()
-
-#     # Filtrer les candidats inscrits aujourd'hui
-#     candidats = Candidats.objects.filter(date_inscription__date=aujourdhui)
-
-#     doc = SimpleDocTemplate(
-#         response,
-#         rendersize=landscape(A4),
-#         leftMargin=1.5*cm, rightMargin=1.5*cm, topMargin=1.5*cm, bottomMargin=1.5*cm
-#     )
-
-#     styles = getSampleStyleSheet()
-#     title_style = ParagraphStyle('title', parent=styles['Title'], fontSize=16)
-#     date_style = ParagraphStyle('date', parent=styles['Normal'], fontSize=11, textColor=colors.grey)
-
-#     story = []
-#     story.append(Paragraph("Liste des candidats inscrits aujourd'hui", title_style))
-#     story.append(Paragraph(f"Date : {aujourdhui.strftime('%d/%m/%Y')}", date_style))
-#     story.append(Spacer(1, 14))
-
-#     # En-têtes et données du tableau
-#     headers = [ "N°" ,"Nom & Prénom", "Email", "Numéro", "Niveau d'études" ]
-#     data = [headers]
-#     for c in candidats:
-#         data.append([c.id , c.nom_prenom, c.email, c.number, c.niveau_etudes ])
-
-#     table = Table(data, repeatRows=1)
-#     table.setStyle(TableStyle([
-#         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2c3e50")),
-#         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-#         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-#         ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-#         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#f2f2f2")]),
-#         ('TOPPADDING', (0, 0), (-1, -1), 6),
-#         ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-#     ]))
-
-#     story.append(table)
-#     doc.build(story)
-#     return response
+@login_required(login_url='connexion')
+def changer_mot_de_passe(request):
+    formateur = getattr(request.user, 'profil_formateur', None)
+    if formateur is None:
+        messages.error(request, "Cette page est réservée aux formateurs.")
+        return redirect('connexion')
+    form = PasswordChangeForm(request.user, request.POST or None)
+    for field_name, field in form.fields.items():
+        field.widget.attrs.update({
+            'class': 'form-control',
+            'autocomplete': 'current-password' if field_name == 'old_password' else 'new-password',
+        })
+    if request.method == 'POST' and form.is_valid():
+        user = form.save()
+        update_session_auth_hash(request, user)
+        formateur.doit_changer_mot_de_passe = False
+        formateur.save(update_fields=['doit_changer_mot_de_passe'])
+        messages.success(request, "Votre mot de passe a été modifié.")
+        return redirect('formateur_dashboard')
+    return render(request, 'changer_mot_de_passe.html', {'form': form, 'formateur': formateur})
 
 
+# ============================================================
+# Espace Candidature
+# ============================================================
 
-# # =====================================================
-
-# def telecharger_pdf_all(request):
-#     response = HttpResponse(content_type="application/pdf")
-#     response["Content-Disposition"] = 'attachment; filename="Liste_des_candidats_général_campagne.pdf"'
-
-   
-#     # Filtrer les candidats inscrits aujourd'hui
-#     candidats = Candidats.objects.all()
-
-#     doc = SimpleDocTemplate(
-#         response,
-#         rendersize=landscape(A4),
-#         leftMargin=1.5*cm, rightMargin=1.5*cm, topMargin=1.5*cm, bottomMargin=1.5*cm
-#     )
-
-#     styles = getSampleStyleSheet()
-#     title_style = ParagraphStyle('title', parent=styles['Title'], fontSize=16)
-#     date_style = ParagraphStyle('date', parent=styles['Normal'], fontSize=11, textColor=colors.grey)
-
-#     story = []
-#     story.append(Paragraph("    Liste des candidats  incrits lors de la campagne", title_style))
-
-#     story.append(Spacer(1, 14))
-
-#     # En-têtes et données du tableau
-#     headers = [ "N°" ,"Nom & Prénom", "Email", "Numéro", "Niveau d'études" ]
-#     data = [headers]
-#     for c in candidats:
-#         data.append([ c.id ,c.nom_prenom, c.email, c.number, c.niveau_etudes ])
-
-#     table = Table(data, repeatRows=1)
-#     table.setStyle(TableStyle([
-#         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2c3e50")),
-#         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-#         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-#         ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-#         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#f2f2f2")]),
-#         ('TOPPADDING', (0, 0), (-1, -1), 6),
-#         ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-#     ]))
-
-#     story.append(table)
-#     doc.build(story)
-#     return response
-
- 
-# ===== Candidature (page seule, sans barre de navigation ni pied de page) =====
 def candidature(request):
-    return render(request, "candidature.html")
- 
- 
-# ===== Espace apprenant =====
+    return render(request, 'candidature.html')
+
+
+# ============================================================
+# Espace Formateur
+# ============================================================
+
+def formateur_dashboard(request):
+    formateur = getattr(request.user, 'profil_formateur', None)
+    if formateur is None:
+        return render(request, 'formateur/dashboard.html')
+    formations = formateur.formations.all()
+    modules = Modules.objects.filter(formation__in=formations).select_related('formation').prefetch_related('chapitres')
+    chapitres = Chapitres.objects.filter(modules__formation__in=formations).distinct()
+    return render(request, 'formateur/dashboard.html', {
+        'formateur': formateur,
+        'formations': formations,
+        'modules': modules,
+        'nb_modules': modules.count(),
+        'nb_chapitres_actifs': chapitres.filter(est_active=True).count(),
+        'nb_chapitres_sans_ressource': chapitres.filter(support_video_url__isnull=True, support_pdf='').count(),
+        'nb_apprenants': Candidats.objects.filter(formation__in=formations, statut='accepte').values('etudiant_id').distinct().count(),
+    })
+
+def formateur_formation_detail(request, formation_id=1):
+    formateur = getattr(request.user, 'profil_formateur', None)
+    formation = None
+    modules = Modules.objects.none()
+    if formateur:
+        formation = get_object_or_404(formateur.formations, pk=formation_id)
+        modules = formation.modules.prefetch_related('chapitres').all()
+    return render(request, 'formateur/formation_detail.html', {
+        'formateur': formateur,
+        'formation': formation,
+        'formation_id': formation_id,
+        'modules': modules,
+    })
+
+def formateur_module(request, pk=1):
+    return render(request, 'formateur/module.html', {
+        'pk': pk,
+        'formateur': getattr(request.user, 'profil_formateur', None),
+    })
+
+
+# ============================================================
+# Espace Apprenant
+# ============================================================
+
+def _apprenant_courant(request):
+    etudiant = getattr(request.user, 'etudiant', None)
+    if etudiant:
+        return etudiant
+    return (Etudiants.objects.filter(email='aicha.demo@example.com').first()
+            or Etudiants.objects.order_by('pk').first())
+
+def _candidatures_apprenant(etudiant):
+    if etudiant is None:
+        return Candidats.objects.none()
+    return Candidats.objects.filter(etudiant=etudiant).select_related(
+        'formation', 'configVague'
+    ).prefetch_related('paiements', 'chapitres_termines')
+
 def apprenant_dashboard(request):
-    return render(request, "apprenant/dashboard.html")
- 
- 
+    etudiant = _apprenant_courant(request)
+    candidatures = _candidatures_apprenant(etudiant)
+    candidatures_acceptees = candidatures.filter(statut='accepte')
+    paiements = Paiement.objects.filter(candidats__etudiant=etudiant).select_related('formation').order_by('-date') if etudiant else Paiement.objects.none()
+    chapitres_termines = ChapitreTermine.objects.filter(candidats__etudiant=etudiant).count() if etudiant else 0
+    formations_acceptees = candidatures.filter(statut='accepte').count()
+    return render(request, 'apprenant/dashboard.html', {
+        'etudiant': etudiant,
+        'active_page': 'dashboard',
+        'candidatures': candidatures,
+        'candidatures_acceptees': candidatures_acceptees,
+        'paiements_recents': paiements[:4],
+        'nb_candidatures': candidatures.count(),
+        'nb_formations_acceptees': formations_acceptees,
+        'nb_chapitres_termines': chapitres_termines,
+        'total_paye': sum(paiement.montant for paiement in paiements),
+    })
+
 def apprenant_formations(request):
-    return render(request, "apprenant/formations.html")
- 
- 
-def apprenant_formation_detail(request, pk):
-    # Démo : la page dépend du statut de la candidature. Remplacez ce dictionnaire par le vrai statut
-    # (accepté -> formation_detail, en attente -> formation_detail_attente, terminée -> formation_detail_terminee).
-    pages = {2: "apprenant/formation_detail_attente.html", 3: "apprenant/formation_detail_terminee.html"}
-    return render(request, pages.get(pk, "apprenant/formation_detail.html"))
- 
- 
+    etudiant = _apprenant_courant(request)
+    candidatures = _candidatures_apprenant(etudiant)
+    return render(request, 'apprenant/formations.html', {
+        'etudiant': etudiant,
+        'active_page': 'formations',
+        'candidatures': candidatures,
+        'nb_candidatures_acceptees': candidatures.filter(statut='accepte').count(),
+        'nb_candidatures_en_attente': candidatures.filter(statut='en_attente').count(),
+        'formations_disponibles': Formation.objects.filter(statut='active').exclude(
+            pk__in=candidatures.values('formation_id')
+        ),
+    })
+
+def apprenant_formation_detail(request, pk=1):
+    etudiant = _apprenant_courant(request)
+    candidatures = _candidatures_apprenant(etudiant)
+    candidat = candidatures.filter(pk=pk).first() or candidatures.filter(statut='accepte').first() or candidatures.first()
+    modules = candidat.formation.modules.prefetch_related('chapitres').all() if candidat else Modules.objects.none()
+    chapitres_termines = set(ChapitreTermine.objects.filter(candidats=candidat).values_list('chapitre_id', flat=True)) if candidat else set()
+    total_chapitres = Chapitres.objects.filter(modules__formation=candidat.formation).count() if candidat else 0
+    progression = round(len(chapitres_termines) * 100 / total_chapitres) if total_chapitres else 0
+    return render(request, 'apprenant/formation_detail.html', {
+        'etudiant': etudiant, 'active_page': 'formation_detail', 'candidat': candidat,
+        'formation': candidat.formation if candidat else None,
+        'modules': modules, 'chapitres_termines': chapitres_termines,
+        'progression': progression, 'nb_chapitres': total_chapitres,
+    })
+
 def apprenant_modules(request):
-    return render(request, "apprenant/modules.html")
- 
- 
-def apprenant_module_detail(request, pk):
-    return render(request, "apprenant/module_detail.html")
- 
- 
+    etudiant = _apprenant_courant(request)
+    candidatures = _candidatures_apprenant(etudiant)
+    modules = Modules.objects.filter(formation__candidats__in=candidatures).select_related(
+        'formation'
+    ).prefetch_related('chapitres').distinct()
+    return render(request, 'apprenant/modules.html', {
+        'etudiant': etudiant, 'active_page': 'modules', 'candidatures': candidatures, 'modules': modules,
+        'formations_acceptees': candidatures.filter(statut='accepte').values_list('formation_id', flat=True),
+    })
+
+def apprenant_module_detail(request, pk=1):
+    etudiant = _apprenant_courant(request)
+    candidatures = _candidatures_apprenant(etudiant)
+    module = Modules.objects.filter(pk=pk, formation__candidats__in=candidatures).select_related(
+        'formation'
+    ).prefetch_related('chapitres').first()
+    candidat = candidatures.filter(formation=module.formation).first() if module else None
+    chapter_id = request.GET.get('chapitre')
+    chapitres = module.chapitres.all() if module else Chapitres.objects.none()
+    chapitre = chapitres.filter(pk=chapter_id).first() if chapter_id else None
+    chapitre = chapitre or chapitres.filter(est_active=True).first() or chapitres.first()
+    is_accessible = bool(candidat and candidat.statut == 'accepte' and module and module.est_active)
+    chapitres_termines = set(ChapitreTermine.objects.filter(candidats=candidat).values_list('chapitre_id', flat=True)) if candidat else set()
+    return render(request, 'apprenant/module_detail.html', {
+        'etudiant': etudiant, 'active_page': 'module_detail', 'candidat': candidat, 'module': module,
+        'chapitre': chapitre, 'chapitres': chapitres,
+        'chapitres_termines': chapitres_termines, 'is_accessible': is_accessible,
+        'progression': round(len(chapitres_termines) * 100 / chapitres.count()) if chapitres.count() else 0,
+    })
+
 def apprenant_paiements(request):
-    return render(request, "apprenant/paiements.html")
- 
- 
+    etudiant = _apprenant_courant(request)
+    candidatures = _candidatures_apprenant(etudiant)
+    paiements = Paiement.objects.filter(candidats__in=candidatures).select_related('formation', 'candidats').order_by('-date')
+    total_paye = sum(paiement.montant for paiement in paiements)
+    montant_du = sum(c.formation.prix for c in candidatures.filter(statut='accepte'))
+    return render(request, 'apprenant/paiements.html', {
+        'etudiant': etudiant, 'active_page': 'paiements', 'candidatures': candidatures,
+        'candidatures_acceptees': candidatures.filter(statut='accepte'), 'paiements': paiements,
+        'total_paye': total_paye, 'montant_du': montant_du,
+        'reste_a_payer': max(montant_du - total_paye, 0),
+    })
+
 def apprenant_profil(request):
-    return render(request, "apprenant/profil.html")
- 
- 
+    etudiant = _apprenant_courant(request)
+    candidatures = _candidatures_apprenant(etudiant)
+    return render(request, 'apprenant/profil.html', {
+        'etudiant': etudiant, 'active_page': 'profil', 'candidatures': candidatures,
+        'nb_formations_suivies': candidatures.filter(statut='accepte').count(),
+    })
+
 def apprenant_parametres(request):
-    return render(request, "apprenant/parametres.html")
- 
- 
-# ===== Espace admin =====
+    return render(request, 'apprenant/parametres.html', {
+        'etudiant': _apprenant_courant(request), 'active_page': 'parametres',
+    })
+
+
+# ============================================================
+# Espace Administration
+# ============================================================
+
+def admin_configuration_initiale(request):
+    return render(request, 'admin/configuration_initiale.html')
+
+def admin_configuration_vague(request):
+    return render(request, 'admin/configuration_vague.html')
+
 def admin_dashboard(request):
-    return render(request, "admin/dashboard.html")
- 
- 
+    return render(request, 'admin/dashboard.html')
+
 def admin_candidatures(request):
-    return render(request, "admin/candidatures.html")
- 
- 
-def admin_candidature_detail(request, pk):
-    return render(request, "admin/candidature_detail.html")
- 
- 
+    return render(request, 'admin/candidatures.html')
+
+def admin_candidature_detail(request, pk=1):
+    return render(request, 'admin/candidature_detail.html')
+
 def admin_apprenants(request):
-    return render(request, "admin/apprenants.html")
- 
- 
-def admin_apprenant_detail(request, pk):
-    return render(request, "admin/apprenant_detail.html")
- 
- 
+    return render(request, 'admin/apprenants.html')
+
+def admin_apprenant_detail(request, pk=1):
+    return render(request, 'admin/apprenant_detail.html')
+
 def admin_resultats(request):
-    return render(request, "admin/resultats.html")
- 
- 
+    return render(request, 'admin/resultats.html')
+
 def admin_finance(request):
-    return render(request, "admin/finance.html")
- 
- 
+    return render(request, 'admin/finance.html')
+
 def admin_organisation(request):
-    return render(request, "admin/organisation.html")
- 
- 
+    formations = list(Formation.objects.prefetch_related('modules__chapitres', 'formateurs').all())
+    for formation in formations:
+        formation.nombre_chapitres = sum(module.chapitres.count() for module in formation.modules.all())
+    return render(request, 'admin/organisation.html', {
+        'formations': formations,
+        'nombre_formations': len(formations),
+        'nombre_formations_actives': sum(formation.statut == 'active' for formation in formations),
+        'nombre_formations_brouillon': sum(formation.statut == 'brouillon' for formation in formations),
+        'nombre_formateurs': Formateurs.objects.count(),
+        'nombre_formateurs_affectes': Formateurs.objects.filter(formations__isnull=False).distinct().count(),
+        'nombre_modules': sum(formation.modules.count() for formation in formations),
+        'nombre_chapitres': sum(formation.nombre_chapitres for formation in formations),
+    })
+
 def admin_formations(request):
-    return render(request, "admin/formations.html")
- 
- 
-def admin_formation_detail(request, pk):
-    return render(request, "admin/formation_detail.html")
- 
- 
+    return render(request, 'admin/formations.html')
+
+def admin_formation_detail(request, pk=1):
+    return render(request, 'admin/formation_detail.html')
+
 def admin_formateurs(request):
-    return render(request, "admin/formateurs.html")
- 
- 
+    creation_data = {}
+    created_access = None
+    if request.method == 'POST' and request.POST.get('action') == 'create_formateur':
+        has_creation_error = False
+        creation_data = {
+            'prenom': request.POST.get('prenom', '').strip(),
+            'nom': request.POST.get('nom', '').strip(),
+            'email': request.POST.get('email', '').strip().lower(),
+            'telephone': request.POST.get('telephone', '').strip(),
+            'formations': request.POST.getlist('formations'),
+        }
+        password = request.POST.get('password', '')
+        try:
+            validate_email(creation_data['email'])
+        except ValidationError:
+            messages.error(request, "Saisissez une adresse email valide.")
+            has_creation_error = True
+        if not all((creation_data['prenom'], creation_data['nom'], creation_data['telephone'], password)):
+            messages.error(request, "Complétez tous les champs obligatoires.")
+            has_creation_error = True
+        if len(password) < 8:
+            messages.error(request, "Le mot de passe provisoire doit contenir au moins 8 caractères.")
+            has_creation_error = True
+        User = get_user_model()
+        if User.objects.filter(username=creation_data['email']).exists() or User.objects.filter(email=creation_data['email']).exists() or Formateurs.objects.filter(email=creation_data['email']).exists():
+            messages.error(request, "Cette adresse email est déjà utilisée.")
+            has_creation_error = True
+        selected_formations = list(Formation.objects.filter(pk__in=creation_data['formations']))
+        if len(selected_formations) != len(set(creation_data['formations'])) or not selected_formations:
+            messages.error(request, "Sélectionnez au moins une formation valide.")
+            has_creation_error = True
+        if not has_creation_error:
+            with transaction.atomic():
+                user = User.objects.create_user(
+                    username=creation_data['email'], email=creation_data['email'],
+                    first_name=creation_data['prenom'], last_name=creation_data['nom'],
+                    password=password,
+                )
+                formateur = Formateurs.objects.create(
+                    user=user, prenom=creation_data['prenom'], nom=creation_data['nom'],
+                    email=creation_data['email'], telephone=creation_data['telephone'],
+                    actif=True, doit_changer_mot_de_passe=True,
+                )
+                formateur.formations.set(selected_formations)
+            phone = ''.join(char for char in creation_data['telephone'] if char.isdigit())
+            from urllib.parse import quote
+            message = (
+                f"Bonjour {formateur.prenom} {formateur.nom}, voici vos accès à l’espace formateur SAREF Academy. "
+                f"Lien : {request.build_absolute_uri('/connexion/')} Identifiant : {formateur.email}. "
+                f"Mot de passe provisoire : {password}. Connectez-vous puis changez-le."
+            )
+            created_access = {
+                'name': str(formateur), 'email': formateur.email, 'password': password,
+                'whatsapp_url': f"https://wa.me/{phone}?text={quote(message)}" if phone else '',
+            }
+            creation_data = {}
+            messages.success(request, "Le compte formateur a été créé. Transmettez ses identifiants via WhatsApp.")
+    formateurs = list(Formateurs.objects.prefetch_related('formations').all())
+    return render(request, 'admin/formateurs.html', {
+        'formateurs': formateurs,
+        'formations': Formation.objects.all(),
+        'formateurs_actifs': sum(formateur.actif for formateur in formateurs),
+        'formateurs_inactifs': sum(not formateur.actif for formateur in formateurs),
+        'creation_data': creation_data,
+        'created_access': created_access,
+    })
+
+def admin_formateur_detail(request, pk=1):
+    formateur = get_object_or_404(Formateurs.objects.select_related('user').prefetch_related('formations'), pk=pk)
+    formations = Formation.objects.all()
+    access_to_share = None
+    if request.method == 'POST':
+        share_access = request.POST.get('submit_action') == 'share_access'
+        provisional_password = request.POST.get('password_provisoire', '').strip()
+        if share_access and not provisional_password:
+            messages.error(request, "Saisissez ou générez un mot de passe provisoire avant de préparer le partage WhatsApp.")
+            return render(request, 'admin/formateur_detail.html', {
+                'formateur': formateur, 'formateur_id': formateur.pk, 'formations': formations,
+            })
+        email = request.POST.get('email', '').strip()
+        username_conflict = get_user_model().objects.filter(username=email).exclude(pk=formateur.user_id).exists()
+        email_conflict = Formateurs.objects.filter(email=email).exclude(pk=formateur.pk).exists()
+        if not email or email_conflict or username_conflict:
+            messages.error(request, "Cette adresse email est vide ou déjà utilisée.")
+        else:
+            formateur.prenom = request.POST.get('prenom', '').strip()
+            formateur.nom = request.POST.get('nom', '').strip()
+            formateur.email = email
+            formateur.telephone = request.POST.get('telephone', '').strip()
+            formateur.actif = request.POST.get('actif') == '1'
+            formateur.save()
+            formateur.formations.set(request.POST.getlist('formations'))
+            if formateur.user_id:
+                formateur.user.username = email
+                formateur.user.email = email
+                formateur.user.first_name = formateur.prenom
+                formateur.user.last_name = formateur.nom
+                formateur.user.save(update_fields=['username', 'email', 'first_name', 'last_name'])
+            if provisional_password:
+                User = get_user_model()
+                user = formateur.user or User.objects.create_user(
+                    username=email, email=email, first_name=formateur.prenom, last_name=formateur.nom,
+                    password=provisional_password,
+                )
+                if formateur.user_id:
+                    user.set_password(provisional_password)
+                    user.save(update_fields=['password'])
+                formateur.user = user
+                formateur.doit_changer_mot_de_passe = True
+                formateur.save(update_fields=['user', 'doit_changer_mot_de_passe'])
+                if share_access:
+                    from urllib.parse import quote
+                    phone = ''.join(char for char in formateur.telephone if char.isdigit())
+                    message = (
+                        f"Bonjour {formateur.prenom} {formateur.nom}, voici vos accès à l’espace formateur SAREF Academy. "
+                        f"Lien : {request.build_absolute_uri('/connexion/')} Identifiant : {formateur.email}. "
+                        f"Mot de passe provisoire : {provisional_password}. Connectez-vous puis changez-le."
+                    )
+                    access_to_share = {
+                        'password': provisional_password,
+                        'whatsapp_url': f"https://wa.me/{phone}?text={quote(message)}" if phone else '',
+                    }
+                    messages.success(request, "Le nouveau mot de passe est enregistré. Vous pouvez maintenant partager les identifiants.")
+                else:
+                    messages.success(request, "Le profil est enregistré et un nouveau mot de passe provisoire a été défini.")
+            else:
+                messages.success(request, "Les informations du formateur ont été enregistrées.")
+            if not share_access:
+                return redirect('admin_formateur_detail', pk=formateur.pk)
+    return render(request, 'admin/formateur_detail.html', {
+        'formateur': formateur,
+        'formateur_id': formateur.pk,
+        'formations': formations,
+        'access_to_share': access_to_share,
+    })
+
 def admin_vagues(request):
-    return render(request, "admin/vagues.html")
- 
- 
-def admin_vague_archive(request, pk):
-    return render(request, "admin/vague_archive.html")
- 
- 
+    return render(request, 'admin/vagues.html')
+
+def admin_vague_archive(request, pk=1):
+    return render(request, 'admin/vague_archive.html')
+
 def admin_parametres(request):
-    return render(request, "admin/parametres.html")
+    return render(request, 'admin/parametres.html')
+
+def admin_chapitre_detail(request, formation_id=1, chapitre_id=1):
+    return render(request, 'admin/chapitre_detail.html', {
+        'formation_id': formation_id,
+        'chapitre_id': chapitre_id
+    })
+
+def handel404(request, exception=None):
+    return render(request, 'error_404.html', status=404)
+
+def handel500(request):
+    return render(request, 'error_500.html', status=500)
+
+def formateur_apprenants(request):
+    return render(request, 'formateur/apprenants.html', {
+        'formateur': getattr(request.user, 'profil_formateur', None),
+    })
+
+def formateur_formations(request):
+    formateur = getattr(request.user, 'profil_formateur', None)
+    formations = formateur.formations.all().prefetch_related('modules') if formateur else Formation.objects.none()
+    return render(request, 'formateur/formations.html', {
+        'formateur': formateur,
+        'formations': formations,
+    })
+
+def formateur_module_ajouter(request):
+    # Redirige vers la page module (formulaire d'ajout à intégrer plus tard)
+    return render(request, 'formateur/formations.html', {
+        'formateur': getattr(request.user, 'profil_formateur', None),
+    })
+
+def formateur_module_modifier(request, pk=1):
+    return render(request, 'formateur/formations.html', {'pk': pk, 'formateur': getattr(request.user, 'profil_formateur', None)})
+
+def formateur_module_supprimer(request, pk=1):
+    return render(request, 'formateur/formations.html', {'pk': pk, 'formateur': getattr(request.user, 'profil_formateur', None)})
+
+def formateur_chapitre_ajouter(request):
+    return render(request, 'formateur/formations.html', {
+        'formateur': getattr(request.user, 'profil_formateur', None),
+    })
+
+def formateur_chapitre_detail(request, formation_id=1, chapitre_id=1):
+    return render(request, 'formateur/chapitre_detail.html', {
+        'formateur': getattr(request.user, 'profil_formateur', None),
+        'formation_id': formation_id,
+        'chapitre_id': chapitre_id,
+    })

@@ -1,0 +1,6 @@
+<header class="topbar topbar-app topbar-apprenant">
+  <button class="btn-icon-s d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Ouvrir le menu"><i class="bi bi-list fs-5"></i></button>
+  <div class="topbar-title"><small>SAREF ACADEMY · ESPACE APPRENANT</small><strong>{% with page=request.resolver_match.url_name %}{% if page == 'apprenant_dashboard' %}Mon tableau de bord{% elif page == 'apprenant_formations' %}Mes formations{% elif page == 'apprenant_formation_detail' %}Détail de la formation{% elif page == 'apprenant_modules' %}Mes modules{% elif page == 'apprenant_module_detail' %}Lecteur de cours{% elif page == 'apprenant_paiements' %}Mes paiements{% elif page == 'apprenant_profil' %}Mon profil{% elif page == 'apprenant_parametres' %}Paramètres du compte{% else %}Mon espace{% endif %}{% endwith %}</strong></div>
+  <span class="tb-spacer"></span><span class="topbar-state"><i class="bi bi-person-check"></i><span>Parcours apprenant</span></span>
+  <div class="tb-user"><span class="avatar">{{ etudiant.prenom|first|upper|default:"A" }}</span><span class="d-none d-md-block"><b>{{ etudiant.prenom|default:"Apprenant" }} {{ etudiant.nom }}</b><small>Mon espace</small></span></div>
+</header>

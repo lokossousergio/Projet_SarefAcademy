@@ -23,7 +23,7 @@
       type="image/png"
       href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}"
     />
-    <link href="{% static 'css/formation.css'%}" rel="stylesheet" />
+    <link href="{% static 'css/formation.css' %}" rel="stylesheet" />
     <style>
       /* ===== VARIABLES SAREF ACADEMY ===== */
       :root {
@@ -141,7 +141,6 @@
         background: var(--blue-100);
       }
     </style>
-
     <style>
       .auth-hero {
         position: relative;
@@ -195,7 +194,6 @@
         </div>
       </div>
     </header>
-
     <main class="container auth-main pb-5">
       <div class="row justify-content-center">
         <div class="col-md-10 col-lg-7 col-xl-6">
@@ -206,12 +204,11 @@
               <p class="text-secondary mb-4">
                 Renseignez vos coordonnées pour créer votre .
               </p>
-
               <form class="needs-validation row g-3" novalidate>
                 <div class="col-sm-6">
-                  <label for="nom" class="form-label fw-semibold"
-                    >Nom de famille</label
-                  >
+                  <label for="nom" class="form-label fw-semibold">
+                    Nom de famille
+                  </label>
                   <input
                     type="text"
                     class="form-control"
@@ -222,9 +219,9 @@
                   <div class="invalid-feedback">Ce champ est obligatoire.</div>
                 </div>
                 <div class="col-sm-6">
-                  <label for="prenom" class="form-label fw-semibold"
-                    >Prénom</label
-                  >
+                  <label for="prenom" class="form-label fw-semibold">
+                    Prénom
+                  </label>
                   <input
                     type="text"
                     class="form-control"
@@ -235,9 +232,9 @@
                   <div class="invalid-feedback">Ce champ est obligatoire.</div>
                 </div>
                 <div class="col-12">
-                  <label for="email" class="form-label fw-semibold"
-                    >Adresse e-mail</label
-                  >
+                  <label for="email" class="form-label fw-semibold">
+                    Adresse e-mail
+                  </label>
                   <input
                     type="email"
                     class="form-control"
@@ -250,9 +247,9 @@
                   </div>
                 </div>
                 <div class="col-12">
-                  <label for="tel" class="form-label fw-semibold"
-                    >Téléphone</label
-                  >
+                  <label for="tel" class="form-label fw-semibold">
+                    Téléphone
+                  </label>
                   <input
                     type="tel"
                     class="form-control"
@@ -265,9 +262,9 @@
                   </div>
                 </div>
                 <div class="col-sm-6">
-                  <label for="password" class="form-label fw-semibold"
-                    >Mot de passe</label
-                  >
+                  <label for="password" class="form-label fw-semibold">
+                    Mot de passe
+                  </label>
                   <div class="input-group has-validation">
                     <input
                       type="password"
@@ -291,9 +288,9 @@
                   </div>
                 </div>
                 <div class="col-sm-6">
-                  <label for="password2" class="form-label fw-semibold"
-                    >Confirmer le mot de passe</label
-                  >
+                  <label for="password2" class="form-label fw-semibold">
+                    Confirmer le mot de passe
+                  </label>
                   <div class="input-group has-validation">
                     <input
                       type="password"
@@ -327,9 +324,10 @@
                     <label
                       class="form-check-label small text-secondary"
                       for="cgu"
-                      >J'accepte les conditions d'utilisation et la politique de
-                      confidentialité de Saref Academy.</label
                     >
+                      J'accepte les conditions d'utilisation et la politique de
+                      confidentialité de Saref Academy.
+                    </label>
                     <div class="invalid-feedback">
                       Vous devez accepter les conditions pour continuer.
                     </div>
@@ -341,14 +339,14 @@
                   </button>
                 </div>
               </form>
-
               <p class="text-center text-secondary mt-4 mb-0">
                 Vous avez déjà un compte ?
                 <a
                   href="{% url 'connexion-etudiant' %}"
                   class="fw-semibold text-decoration-none"
-                  >Se connecter</a
                 >
+                  Se connecter
+                </a>
               </p>
             </div>
           </div>

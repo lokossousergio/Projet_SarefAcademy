@@ -23,7 +23,7 @@
       type="image/png"
       href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}"
     />
-    <link href="{% static 'css/formation.css'%}" rel="stylesheet" />
+    <link href="{% static 'css/formation.css' %}" rel="stylesheet" />
     <style>
       /* ===== VARIABLES SAREF ACADEMY ===== */
       :root {
@@ -141,7 +141,6 @@
         background: var(--blue-100);
       }
     </style>
-
     <style>
       .auth-hero {
         position: relative;
@@ -179,7 +178,6 @@
       }
     </style>
   </head>
-
   <body>
     {% include "partials/formations_navbar.html" %}
     <header class="auth-hero">
@@ -196,7 +194,6 @@
         </div>
       </div>
     </header>
-
     <main class="container auth-main pb-5">
       <div class="row justify-content-center">
         <div class="col-md-10 col-lg-6 col-xl-5">
@@ -207,12 +204,11 @@
               <p class="text-secondary mb-4">
                 Connectez-vous pour reprendre votre parcours de formation.
               </p>
-
               <form class="needs-validation" novalidate>
                 <div class="mb-3">
-                  <label for="email" class="form-label fw-semibold"
-                    >Adresse e-mail</label
-                  >
+                  <label for="email" class="form-label fw-semibold">
+                    Adresse e-mail
+                  </label>
                   <input
                     type="email"
                     class="form-control"
@@ -225,9 +221,9 @@
                   </div>
                 </div>
                 <div class="mb-3">
-                  <label for="password" class="form-label fw-semibold"
-                    >Mot de passe</label
-                  >
+                  <label for="password" class="form-label fw-semibold">
+                    Mot de passe
+                  </label>
                   <div class="input-group has-validation">
                     <input
                       type="password"
@@ -259,26 +255,26 @@
                       type="checkbox"
                       id="remember"
                     />
-                    <label class="form-check-label" for="remember"
-                      >Se souvenir de moi</label
-                    >
+                    <label class="form-check-label" for="remember">
+                      Se souvenir de moi
+                    </label>
                   </div>
-                  <a href="#" class="fw-semibold text-decoration-none small"
-                    >Mot de passe oublié ?</a
-                  >
+                  <a href="#" class="fw-semibold text-decoration-none small">
+                    Mot de passe oublié ?
+                  </a>
                 </div>
                 <button type="submit" class="btn btn-primary btn-lg w-100">
                   Se connecter
                 </button>
               </form>
-
               <p class="text-center text-secondary mt-4 mb-0">
                 Vous n’avez pas encore de compte ?
                 <a
                   href="{% url 'inscription-etudiant' %}"
                   class="fw-semibold text-decoration-none"
-                  >Créer un compte</a
                 >
+                  Créer un compte
+                </a>
               </p>
             </div>
           </div>

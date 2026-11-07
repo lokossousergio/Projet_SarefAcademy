@@ -64,4 +64,42 @@
       c.addEventListener('change', function () { state[list.id]['m' + idx] = c.value.trim().toLowerCase(); refresh(list); });
     }
   });
+  // 6) Mots de passe : afficher / masquer, générer un mot de passe aléatoire
+  document.querySelectorAll('[data-toggle-pass]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var i = document.querySelector(btn.dataset.togglePass), show = i.type === 'password';
+      i.type = show ? 'text' : 'password'; btn.innerHTML = '<i class="bi bi-' + (show ? 'eye-slash' : 'eye') + '"></i>';
+    });
+  });
+  document.querySelectorAll('[data-gen-pass]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var i = document.querySelector(btn.dataset.genPass), c = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789', a = new Uint32Array(10);
+      crypto.getRandomValues(a); i.value = Array.from(a, function (x) { return c[x % c.length]; }).join('');
+      i.type = 'text'; i.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  });
+
+  // 7) Message WhatsApp d'identifiants : <div data-wa data-wa-name="#…" data-wa-email="#…" data-wa-pass="#…" data-wa-phone="#…" data-wa-preview="#…" data-wa-link="#…">
+  document.querySelectorAll('[data-wa]').forEach(function (box) {
+    function q(k) { return document.querySelector(box.dataset[k]); }
+    function build() {
+      var name = (q('waName').value || '').trim() || '…', email = (q('waEmail').value || '').trim() || '(e-mail)',
+          pass = q('waPass').value || '', phone = (q('waPhone').value || '').replace(/\D/g, '');
+      var msg = 'Bonjour ' + name + ',\n\nVoici vos accès à l’espace formateur SAREF Academy :\n• Lien : ' + location.origin + '/connexion/\n• Identifiant : ' + email +
+                '\n• Mot de passe provisoire : ' + (pass || '(à générer)') + '\n\nVous choisirez votre propre mot de passe à la première connexion. Merci de ne pas partager ces informations.';
+      q('waPreview').textContent = msg;
+      var a = q('waLink'), ok = !!(pass && phone);
+      a.href = ok ? 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg) : '#';
+      a.setAttribute('aria-disabled', String(!ok));
+    }
+    box.addEventListener('input', build); build();
+  });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = document.querySelector(b.dataset.copy).textContent, o = b.innerHTML;
+      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.resolve()).then(function () {
+        b.innerHTML = '<i class="bi bi-check2"></i>Copié'; setTimeout(function () { b.innerHTML = o; }, 1600);
+      });
+    });
+  });
 })();

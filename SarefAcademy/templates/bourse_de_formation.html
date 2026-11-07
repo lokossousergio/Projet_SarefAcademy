@@ -1,5 +1,4 @@
 {% load static %}
-
 <!doctype html>
 <html lang="fr">
   <head>
@@ -11,7 +10,6 @@
       type="image/png"
       href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}"
     />
-
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -30,7 +28,6 @@
     />
     <link rel="stylesheet" href="{% static 'css/bourse_de_formation.css' %}" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
     <!-- Facebook Pixel Code -->
     <script>
       !(function (f, b, e, v, n, t, s) {
@@ -68,7 +65,6 @@
       />
     </noscript>
     <!-- End Facebook Pixel Code -->
-
     <!-- End Facebook Pixel Code -->
     <style>
       .iti {
@@ -76,7 +72,6 @@
       }
     </style>
   </head>
-
   <body>
     <!-- HERO SECTION -->
     <section class="hero-section text-center">
@@ -86,50 +81,52 @@
           src="{% static 'images/WhatsApp_Image_2026-08-17_at_18.19.27-removebg-preview.png' %}"
           alt="Saref Academy"
         />
-
         <div class="row justify-content-center">
           <div class="col-lg-10">
             <h1 class="hero-title">
               Décrochez une
-              <span class="text-brand-blue">Bourse de Formation</span> d'une
-              valeur de <span class="font-sora">1 500 000 FCFA</span> en
+              <span class="text-brand-blue">Bourse de Formation</span>
+              d'une valeur de
+              <span class="font-sora">1 500 000 FCFA</span>
+              en
               <span class="text-brand-blue">Marketing Digital</span>
             </h1>
           </div>
         </div>
-
         <div class="row justify-content-center mt-4">
           <div class="col-lg-9">
             <p class="hero-description mx-auto">
-              Devenez un <strong>expert du marketing digital</strong> à partir
-              de zéro et décrochez votre <strong>job de rêve</strong> avec un
-              programme de formation complet et pratique.
+              Devenez un
+              <strong>expert du marketing digital</strong>
+              à partir de zéro et décrochez votre
+              <strong>job de rêve</strong>
+              avec un programme de formation complet et pratique.
             </p>
           </div>
         </div>
       </div>
     </section>
-
     <!-- PREMIER FORMULAIRE -->
-
     <section class="form-section" id="postuler">
       <div class="container">
         <div class="saref-form-card">
           <div class="d-flex justify-content-center gap-2 mb-4">
-            <div class="icon-box-small"><i class="fa-solid fa-code"></i></div>
+            <div class="icon-box-small">
+              <i class="fa-solid fa-code"></i>
+            </div>
             <div class="icon-box-small">
               <i class="fa-solid fa-bullhorn"></i>
             </div>
-            <div class="icon-box-small"><i class="fa-solid fa-laptop"></i></div>
+            <div class="icon-box-small">
+              <i class="fa-solid fa-laptop"></i>
+            </div>
           </div>
-
           <h4
             class="text-center mb-4"
             style="line-height: 1.4; font-weight: 700"
           >
             Postulez gratuitement pour obtenir une bourse de formation
           </h4>
-
           <style>
             .deadline-simple {
               display: inline-flex;
@@ -179,7 +176,6 @@
               }
             }
           </style>
-
           {% if param is not None %}
           <div class="text-center">
             <div class="deadline-simple">
@@ -188,29 +184,25 @@
               </div>
               <p class="txt">
                 Clôture des candidatures
-                <strong
-                  >{{ param.Date_cloture_inscription|date:"d F Y à H\h i"
-                  }}</strong
-                >
+                <strong>
+                  {{ param.Date_cloture_inscription|date:"d F Y à H\h i" }}
+                </strong>
               </p>
             </div>
           </div>
-
           {% endif %}
-
           <div class="form-line"></div>
-
           <form
             class="js-application-form"
             novalidate
             method="post"
-            action="{% url 'bourse-de-formation'%}"
+            action="{% url 'bourse-de-formation' %}"
           >
             {% csrf_token %}
             <div class="mb-3">
-              <label class="small text-uppercase mb-1" style="opacity: 0.8"
-                >Nom et prénom *</label
-              >
+              <label class="small text-uppercase mb-1" style="opacity: 0.8">
+                Nom et prénom *
+              </label>
               <input
                 type="text"
                 class="form-control form-input-saref js-fullname"
@@ -220,11 +212,10 @@
               />
               <div class="invalid-feedback">Entrez votre nom et prénom.</div>
             </div>
-
             <div class="mb-3">
-              <label class="small text-uppercase mb-1" style="opacity: 0.8"
-                >Email *</label
-              >
+              <label class="small text-uppercase mb-1" style="opacity: 0.8">
+                Email *
+              </label>
               <input
                 type="email"
                 class="form-control form-input-saref js-email"
@@ -236,7 +227,6 @@
                 Entrez une adresse email valide.
               </div>
             </div>
-
             <div class="mb-3">
               <label
                 for="whatsapp"
@@ -245,7 +235,6 @@
               >
                 Numéro WhatsApp *
               </label>
-
               <input
                 type="tel"
                 name="whatsapp"
@@ -253,19 +242,15 @@
                 class="form-control form-input-saref js-whatsapp"
                 required
               />
-
               <input type="hidden" name="number" class="js-whatsapp-e164" />
-
               <div class="invalid-feedback">
                 Entrez un numéro WhatsApp valide.
               </div>
             </div>
-
             <div class="mb-3">
               <label class="small text-uppercase mb-1" style="opacity: 0.8">
                 Niveau d'étude *
               </label>
-
               <select
                 name="niveau_etudes"
                 class="form-select form-input-saref js-study-level"
@@ -284,17 +269,15 @@
                 <option value="Master">Master</option>
                 <option value="Doctorat">Doctorat</option>
               </select>
-
               <div class="invalid-feedback">
                 Sélectionnez votre niveau d'étude.
               </div>
             </div>
-
             <div class="mb-3">
-              <label class="small text-uppercase mb-1" style="opacity: 0.8"
-                >Pourquoi souhaitez-vous suivre une formation en marketing
-                digital ? *</label
-              >
+              <label class="small text-uppercase mb-1" style="opacity: 0.8">
+                Pourquoi souhaitez-vous suivre une formation en marketing
+                digital ? *
+              </label>
               <textarea
                 class="form-control form-input-saref js-reason"
                 required
@@ -305,7 +288,6 @@
                 Veuillez décrire vos motivations .
               </div>
             </div>
-
             <button type="submit" class="btn-saref-premium btn-click">
               Je postule maintenant
               <div
@@ -321,59 +303,59 @@
               Se termine bientôt - 100% gratuit
             </p>
           </form>
-
           <div class="text-center mt-4">
             <p class="small text-uppercase mb-3" style="letter-spacing: 1px">
               La phase de candidature se termine dans
             </p>
-
             <div
               class="d-flex justify-content-center gap-3 js-countdown"
               data-deadline="{{ param.Date_cloture_inscription|date:'c' }}"
             >
               <div class="timer-circle">
-                <strong class="cd-days">00</strong><span>DYS</span>
+                <strong class="cd-days">00</strong>
+                <span>DYS</span>
               </div>
               <div class="timer-circle">
-                <strong class="cd-hours">00</strong><span>HRS</span>
+                <strong class="cd-hours">00</strong>
+                <span>HRS</span>
               </div>
               <div class="timer-circle">
-                <strong class="cd-min">00</strong><span>MIN</span>
+                <strong class="cd-min">00</strong>
+                <span>MIN</span>
               </div>
               <div class="timer-circle">
-                <strong class="cd-sec">00</strong><span>SEC</span>
+                <strong class="cd-sec">00</strong>
+                <span>SEC</span>
               </div>
             </div>
           </div>
         </div>
       </div>
     </section>
-
     <!-- 50 BOURSES -->
     <section class="section-padding">
       <div class="container">
         <div class="row align-items-center">
           <div class="col-lg-6">
             <h2 class="mb-4">
-              <span class="text-brand-blue">50 bourses de formation </span> en
-              marketing digital disponibles
+              <span class="text-brand-blue">50 bourses de formation</span>
+              en marketing digital disponibles
             </h2>
             <p>
               Êtes-vous un jeune Africain qui cherche à percer dans l'industrie
               du marketing digital mais qui a du mal à accéder à des
-              <span class="text-brand-blue"
-                >opportunités de formation de qualité</span
-              >
+              <span class="text-brand-blue">
+                opportunités de formation de qualité
+              </span>
               abordables ?
             </p>
             <p>
               Notre programme complet fournit aux apprenants les outils et les
               connaissances nécessaires pour devenir des
-              <span class="text-brand-blue">acteurs compétents</span> dans le
-              paysage numérique.
+              <span class="text-brand-blue">acteurs compétents</span>
+              dans le paysage numérique.
             </p>
           </div>
-
           <div class="col-lg-6">
             <img
               src="https://www.wsu.ac.za/images/2025/01/07/regiustration.jpg"
@@ -385,126 +367,116 @@
         </div>
       </div>
     </section>
-
     <!-- COMPETENCES -->
     <section class="container">
       <div class="competences-box">
         <h3 class="mb-4">Compétences à acquérir</h3>
-
         <ul class="competences-list">
           <li>
-            <span class="competence-icon"
-              ><i class="fa-solid fa-bullhorn"></i
-            ></span>
+            <span class="competence-icon">
+              <i class="fa-solid fa-bullhorn"></i>
+            </span>
             Introduction au marketing digital
           </li>
-
           <li>
             <span class="competence-icon"><i class="fa-solid fa-ad"></i></span>
             Publicité Ads
           </li>
-
           <li>
-            <span class="competence-icon"
-              ><i class="fa-solid fa-users"></i
-            ></span>
+            <span class="competence-icon">
+              <i class="fa-solid fa-users"></i>
+            </span>
             Community management
           </li>
-
           <li>
-            <span class="competence-icon"
-              ><i class="fa-solid fa-pen-ruler"></i
-            ></span>
+            <span class="competence-icon">
+              <i class="fa-solid fa-pen-ruler"></i>
+            </span>
             Graphisme
           </li>
-
           <li>
-            <span class="competence-icon"
-              ><i class="fa-solid fa-film"></i
-            ></span>
+            <span class="competence-icon">
+              <i class="fa-solid fa-film"></i>
+            </span>
             Montage vidéo
           </li>
-
           <li>
-            <span class="competence-icon"
-              ><i class="fa-solid fa-robot"></i
-            ></span>
+            <span class="competence-icon">
+              <i class="fa-solid fa-robot"></i>
+            </span>
             Closing et IA
           </li>
-
           <li>
-            <span class="competence-icon"
-              ><i class="fa-solid fa-filter"></i
-            ></span>
+            <span class="competence-icon">
+              <i class="fa-solid fa-filter"></i>
+            </span>
             Funnel building
           </li>
-
           <li>
-            <span class="competence-icon"
-              ><i class="fa-solid fa-magnifying-glass"></i
-            ></span>
+            <span class="competence-icon">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
             SEO et rédaction web
           </li>
-
           <li>
-            <span class="competence-icon"
-              ><i class="fa-brands fa-wordpress"></i
-            ></span>
+            <span class="competence-icon">
+              <i class="fa-brands fa-wordpress"></i>
+            </span>
             Création de site web WordPress
           </li>
         </ul>
       </div>
     </section>
-
     <br />
-
     <div class="cta-postuler">
       <a href="#postuler" class="btn-postuler-anime">
         Postulez maintenant
         <i class="fa-solid fa-arrow-right"></i>
       </a>
     </div>
-
     <!-- EMPLOI -->
     <section class="section-padding">
       <div class="container">
         <div class="row align-items-center">
           <div class="col-lg-6 order-lg-2">
             <h2 class="mb-4">
-              <span class="text-brand-blue">Opportunité d'emploi</span> après la
-              formation
+              <span class="text-brand-blue">Opportunité d'emploi</span>
+              après la formation
             </h2>
             <p>
               Après la formation, nous vous accompagnons dans la recherche d'un
               emploi avec la possibilité de travailler avec
-              <span class="text-brand-blue">nos partenaires européens</span>.
+              <span class="text-brand-blue">nos partenaires européens</span>
+              .
             </p>
-
             <div class="job-tags">
-              <span class="job-tag"
-                ><i class="fa-solid fa-hashtag"></i> Community Manager</span
-              >
-
-              <span class="job-tag"
-                ><i class="fa-solid fa-palette"></i> Web Designer</span
-              >
-              <span class="job-tag"
-                ><i class="fa-solid fa-code"></i> Développeur Web</span
-              >
-              <span class="job-tag"
-                ><i class="fa-solid fa-bullseye"></i> Media Buyer</span
-              >
-              <span class="job-tag"
-                ><i class="fa-solid fa-chart-line"></i> Growth Marketer</span
-              >
-              <span class="job-tag"
-                ><i class="fa-solid fa-diagram-project"></i> Chef de Projet
-                Digital</span
-              >
+              <span class="job-tag">
+                <i class="fa-solid fa-hashtag"></i>
+                Community Manager
+              </span>
+              <span class="job-tag">
+                <i class="fa-solid fa-palette"></i>
+                Web Designer
+              </span>
+              <span class="job-tag">
+                <i class="fa-solid fa-code"></i>
+                Développeur Web
+              </span>
+              <span class="job-tag">
+                <i class="fa-solid fa-bullseye"></i>
+                Media Buyer
+              </span>
+              <span class="job-tag">
+                <i class="fa-solid fa-chart-line"></i>
+                Growth Marketer
+              </span>
+              <span class="job-tag">
+                <i class="fa-solid fa-diagram-project"></i>
+                Chef de Projet Digital
+              </span>
             </div>
             <br />
           </div>
-
           <div class="col-lg-6 order-lg-1">
             <img
               src="https://d27735ao2xxhhe.cloudfront.net/blog/pro/maximizing-your-experience-working-abroad-how-to-make-the-most-of-your-time-as-a-gambian-expat-1000x70065b107bec98821706100670.png"
@@ -523,13 +495,11 @@
         </div>
       </div>
     </section>
-
     <!-- À mettre dans le <head> de ta page si ce n'est pas déjà fait -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
     />
-
     <!-- À mettre dans le <head> de ta page si ce n'est pas déjà fait -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -541,19 +511,19 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
     />
-
     <section class="testimonials-section">
       <div class="container">
         <div class="text-center mb-5">
           <h2>
-            <span class="text-brand-blue">Avis des anciens</span> boursiers
+            <span class="text-brand-blue">Avis des anciens</span>
+            boursiers
           </h2>
           <p class="text-muted">
             Ils ont rejoint la formation et
-            <span class="text-brand-blue">boosté leur carrière</span>.
+            <span class="text-brand-blue">boosté leur carrière</span>
+            .
           </p>
         </div>
-
         <div class="row g-4 justify-content-center">
           <!-- CARD 1 -->
           <div class="col-12 col-md-6 col-lg-4" style="">
@@ -562,35 +532,40 @@
                 class="video-facade"
                 data-video-id="rKeG-plSJl0"
                 style="
-                  background-image: url(&quot;https://img.youtube.com/vi/rKeG-plSJl0/maxresdefault.jpg&quot;);
+                  background-image: url(&quot;
+                                        https://img.youtube.com/vi/rKeG-plSJl0/maxresdefault.jpg&quot;);
                 "
               >
-                <div class="play-btn"><i class="bi bi-play-fill"></i></div>
+                <div class="play-btn">
+                  <i class="bi bi-play-fill"></i>
+                </div>
               </div>
               <div class="card-body">
                 <div class="reviewer d-flex align-items-center mb-2">
-                  <div class="avatar"><i class="bi bi-person-fill"></i></div>
+                  <div class="avatar">
+                    <i class="bi bi-person-fill"></i>
+                  </div>
                   <h5 class="card-title mb-0">Ayémar, Burkina Faso</h5>
                 </div>
-
                 <p class="card-text">
                   Bonjour à tous ! Je suis Gaël, étudiant à la Saref Academy. Je
                   suis la formation depuis mon pays de résidence, le Burkina
                   Faso.
-                  <br /><br />
+                  <br />
+                  <br />
                   Ce qui fait la force de Saref Academy, c'est l'expertise des
                   formateurs. Les modules sur le référencement SEO et la
                   publicité en ligne sont très concrets et directement
                   applicables sur le marché du travail. À la fin de mon
                   parcours, j'ai obtenu un certificat de fin de formation qui
                   m'aide aujourd'hui à décrocher des contrats en freelance.
-                  <br /><br />
+                  <br />
+                  <br />
                   N'hésitez pas à faire l'expérience !
                 </p>
               </div>
             </div>
           </div>
-
           <!-- CARD 2 -->
           <div class="col-12 col-md-6 col-lg-4">
             <div class="card testimonial-card h-100 shadow-sm">
@@ -598,17 +573,21 @@
                 class="video-facade"
                 data-video-id="AKtb-KMgBxg"
                 style="
-                  background-image: url(&quot;https://img.youtube.com/vi/AKtb-KMgBxg/maxresdefault.jpg&quot;);
+                  background-image: url(&quot;
+                                        https://img.youtube.com/vi/AKtb-KMgBxg/maxresdefault.jpg&quot;);
                 "
               >
-                <div class="play-btn"><i class="bi bi-play-fill"></i></div>
+                <div class="play-btn">
+                  <i class="bi bi-play-fill"></i>
+                </div>
               </div>
               <div class="card-body">
                 <div class="reviewer d-flex align-items-center mb-2">
-                  <div class="avatar"><i class="bi bi-person-fill"></i></div>
+                  <div class="avatar">
+                    <i class="bi bi-person-fill"></i>
+                  </div>
                   <h5 class="card-title mb-0">Bérénice, Bénin</h5>
                 </div>
-
                 <p class="card-text">
                   Bonjour à tous. Je suis Bérénice, étudiante à la Saref
                   Academy. Je suis la formation depuis mon pays de résidence le
@@ -616,7 +595,8 @@
                   Saref Academy après avoir vu la publicité sur Facebook. Je
                   recherchais déjà une formation pratique en marketing digital,
                   une formation qui allait me donner les bases de ce domaine.
-                  <br /><br />
+                  <br />
+                  <br />
                   J'ai pour ambition de créer ma propre marque de vêtements, et
                   je voulais apprendre à utiliser le digital pour promouvoir mon
                   activité. La formation est purement pratique, avec des
@@ -626,7 +606,6 @@
               </div>
             </div>
           </div>
-
           <!-- CARD 3 -->
           <div class="col-12 col-md-6 col-lg-4">
             <div class="card testimonial-card h-100 shadow-sm">
@@ -636,24 +615,26 @@
                 class="card-img-top"
                 style="object-fit: cover"
               />
-
               <div class="card-body">
                 <div class="reviewer d-flex align-items-center mb-2">
-                  <div class="avatar"><i class="bi bi-person-fill"></i></div>
+                  <div class="avatar">
+                    <i class="bi bi-person-fill"></i>
+                  </div>
                   <h5 class="card-title mb-0">Joras, Côte d'Ivoire</h5>
                 </div>
-
                 <p class="card-text">
                   Bonjour à vous ! J'espère que vous allez bien ? Je m'appelle
                   Joras, je suis la formation en Marketing digital de Saref
                   Academy depuis mon pays de résidence la Côte d'Ivoire.
-                  <br /><br />
+                  <br />
+                  <br />
                   Cette formation, je peux vous l'assurer, est très pratique.
                   Par exemple, je ne connaissais rien du graphisme et du montage
                   vidéo. Mais aujourd'hui, je suis capable de concevoir des
                   affiches pour les réseaux sociaux et faire des vidéos pour
                   TikTok.
-                  <br /><br />
+                  <br />
+                  <br />
                   Investissez-vous réellement. Cette formation est la meilleure.
                 </p>
               </div>
@@ -662,25 +643,26 @@
         </div>
       </div>
     </section>
-
     <section class="form-section" id="postuler">
       <div class="container">
         <div class="saref-form-card">
           <div class="d-flex justify-content-center gap-2 mb-4">
-            <div class="icon-box-small"><i class="fa-solid fa-code"></i></div>
+            <div class="icon-box-small">
+              <i class="fa-solid fa-code"></i>
+            </div>
             <div class="icon-box-small">
               <i class="fa-solid fa-bullhorn"></i>
             </div>
-            <div class="icon-box-small"><i class="fa-solid fa-laptop"></i></div>
+            <div class="icon-box-small">
+              <i class="fa-solid fa-laptop"></i>
+            </div>
           </div>
-
           <h4
             class="text-center mb-4"
             style="line-height: 1.4; font-weight: 700"
           >
             Postulez gratuitement pour obtenir une bourse de formation
           </h4>
-
           <style>
             .deadline-simple {
               display: inline-flex;
@@ -730,7 +712,6 @@
               }
             }
           </style>
-
           {% if param is not None %}
           <div class="text-center">
             <div class="deadline-simple">
@@ -739,28 +720,25 @@
               </div>
               <p class="txt">
                 Clôture des candidatures
-                <strong
-                  >{{ param.Date_cloture_inscription|date:"d F Y à H\h i"
-                  }}</strong
-                >
+                <strong>
+                  {{ param.Date_cloture_inscription|date:"d F Y à H\h i" }}
+                </strong>
               </p>
             </div>
           </div>
           {% endif %}
-
           <div class="form-line"></div>
-
           <form
             class="js-application-form"
             novalidate
             method="post"
-            action="{% url 'bourse-de-formation'%}"
+            action="{% url 'bourse-de-formation' %}"
           >
             {% csrf_token %}
             <div class="mb-3">
-              <label class="small text-uppercase mb-1" style="opacity: 0.8"
-                >Nom et prénom *</label
-              >
+              <label class="small text-uppercase mb-1" style="opacity: 0.8">
+                Nom et prénom *
+              </label>
               <input
                 type="text"
                 class="form-control form-input-saref js-fullname"
@@ -770,11 +748,10 @@
               />
               <div class="invalid-feedback">Entrez votre nom et prénom.</div>
             </div>
-
             <div class="mb-3">
-              <label class="small text-uppercase mb-1" style="opacity: 0.8"
-                >Email *</label
-              >
+              <label class="small text-uppercase mb-1" style="opacity: 0.8">
+                Email *
+              </label>
               <input
                 type="email"
                 class="form-control form-input-saref js-email"
@@ -786,7 +763,6 @@
                 Entrez une adresse email valide.
               </div>
             </div>
-
             <div class="mb-3">
               <label
                 for="whatsapp"
@@ -795,7 +771,6 @@
               >
                 Numéro WhatsApp *
               </label>
-
               <input
                 type="tel"
                 name="whatsapp"
@@ -803,14 +778,11 @@
                 class="form-control form-input-saref js-whatsapp"
                 required
               />
-
               <input type="hidden" name="number" class="js-whatsapp-e164" />
-
               <div class="invalid-feedback">
                 Entrez un numéro WhatsApp valide.
               </div>
             </div>
-
             <div class="mb-3">
               <label class="small text-uppercase mb-1" style="opacity: 0.8">
                 Niveau d'étude *
@@ -833,17 +805,15 @@
                 <option value="Master">Master</option>
                 <option value="Doctorat">Doctorat</option>
               </select>
-
               <div class="invalid-feedback">
                 Sélectionnez votre niveau d'étude.
               </div>
             </div>
-
             <div class="mb-3">
-              <label class="small text-uppercase mb-1" style="opacity: 0.8"
-                >Pourquoi souhaitez-vous suivre une formation en marketing
-                digital ? *</label
-              >
+              <label class="small text-uppercase mb-1" style="opacity: 0.8">
+                Pourquoi souhaitez-vous suivre une formation en marketing
+                digital ? *
+              </label>
               <textarea
                 class="form-control form-input-saref js-reason"
                 required
@@ -854,7 +824,6 @@
                 Veuillez décrire vos motivations .
               </div>
             </div>
-
             <button type="submit" class="btn-saref-premium btn-click">
               Je postule maintenant
               <div
@@ -870,34 +839,35 @@
               Se termine bientôt - 100% gratuit
             </p>
           </form>
-
           <div class="text-center mt-4">
             <p class="small text-uppercase mb-3" style="letter-spacing: 1px">
               La phase de candidature se termine dans
             </p>
-
             <div
               class="d-flex justify-content-center gap-3 js-countdown"
               data-deadline="{{ param.Date_cloture_inscription|date:'c' }}"
             >
               <div class="timer-circle">
-                <strong class="cd-days">00</strong><span>DYS</span>
+                <strong class="cd-days">00</strong>
+                <span>DYS</span>
               </div>
               <div class="timer-circle">
-                <strong class="cd-hours">00</strong><span>HRS</span>
+                <strong class="cd-hours">00</strong>
+                <span>HRS</span>
               </div>
               <div class="timer-circle">
-                <strong class="cd-min">00</strong><span>MIN</span>
+                <strong class="cd-min">00</strong>
+                <span>MIN</span>
               </div>
               <div class="timer-circle">
-                <strong class="cd-sec">00</strong><span>SEC</span>
+                <strong class="cd-sec">00</strong>
+                <span>SEC</span>
               </div>
             </div>
           </div>
         </div>
       </div>
     </section>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
@@ -1015,7 +985,6 @@
     });
   });
 </script>
-
 <style>
   .iti__dropdown-content,
   .iti__country-list {
@@ -1398,7 +1367,6 @@
     }
   }
 </style>
-
 <!-- A placer juste avant </body>, une seule fois -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -1457,7 +1425,6 @@
     });
   });
 </script>
-
 <!-- controle du bouton si aucune candidature n'est ouverte -->
 <script>
   {% if  param is None %}
@@ -1467,7 +1434,6 @@
       });
   {% endif %}
 </script>
-
 <style>
   .testimonials-section,
   .testimonials-section h2,
@@ -1578,7 +1544,6 @@
     }
   }
 </style>
-
 <script>
   // Repli automatique : si maxresdefault.jpg n'existe pas (fréquent pour les Shorts),
   // on bascule sur hqdefault.jpg qui existe toujours.

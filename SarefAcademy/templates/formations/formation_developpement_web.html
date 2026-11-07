@@ -1,5 +1,4 @@
 {% load static %}
-
 <!doctype html>
 <html lang="fr">
   <head>
@@ -11,7 +10,6 @@
       type="image/png"
       href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}"
     />
-
     <!-- Bootstrap 5.3 + Bootstrap Icons -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -21,7 +19,6 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
       rel="stylesheet"
     />
-
     <!-- Polices : Lexend (titres) + Inter (texte) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -29,9 +26,8 @@
       href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Lexend:wght@600;700;800&display=swap"
       rel="stylesheet"
     />
-
     <!-- CSS personnalisé -->
-    <link href="{% static 'css/formation.css'%}" rel="stylesheet" />
+    <link href="{% static 'css/formation.css' %}" rel="stylesheet" />
   </head>
   <style>
     .hero {
@@ -46,10 +42,8 @@
           center / cover no-repeat;
     }
   </style>
-
   <body id="top" class="formation-page">
     {% include "partials/formations_navbar.html" %}
-
     <!-- ================= HERO ================= -->
     <header class="hero">
       <div class="container-page">
@@ -57,7 +51,6 @@
           <span class="hero-badge">Formation certifiante</span>
           <span class="hero-category">Développement &amp; programmation</span>
         </div>
-
         <h1 class="hero-title">
           Formation professionnelle en Développement web
         </h1>
@@ -66,16 +59,15 @@
           visible par l’utilisateur à la logique serveur, en passant par les
           données, les tests et la mise en ligne.
         </p>
-
         <div
           class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-4"
         >
           <a
             href="{% url 'candidature-formation' %}"
             class="btn-register text-decoration-none"
-            >S'inscrire à la formation</a
           >
-
+            S'inscrire à la formation
+          </a>
           <div class="hero-stats">
             <div>
               <span class="hero-stat-label">Durée</span>
@@ -93,7 +85,6 @@
         </div>
       </div>
     </header>
-
     <main>
       <!-- ================= 3 CARTES ================= -->
       <section class="info-section">
@@ -110,98 +101,114 @@
                 </div>
                 <ul class="check-list">
                   <li>
-                    <span class="check-icon"
-                      ><i class="bi bi-check-circle"></i></span
-                    >Développeur front-end
+                    <span class="check-icon">
+                      <i class="bi bi-check-circle"></i>
+                    </span>
+                    Développeur front-end
                   </li>
                   <li>
-                    <span class="check-icon"
-                      ><i class="bi bi-check-circle"></i></span
-                    >Développeur back-end
+                    <span class="check-icon">
+                      <i class="bi bi-check-circle"></i>
+                    </span>
+                    Développeur back-end
                   </li>
                   <li>
-                    <span class="check-icon"
-                      ><i class="bi bi-check-circle"></i></span
-                    >Développeur web full-stack junior
+                    <span class="check-icon">
+                      <i class="bi bi-check-circle"></i>
+                    </span>
+                    Développeur web full-stack junior
                   </li>
                   <li>
-                    <span class="check-icon"
-                      ><i class="bi bi-check-circle"></i></span
-                    >Intégrateur web
+                    <span class="check-icon">
+                      <i class="bi bi-check-circle"></i>
+                    </span>
+                    Intégrateur web
                   </li>
                   <li>
-                    <span class="check-icon"
-                      ><i class="bi bi-check-circle"></i></span
-                    >Créateur de sites et d’applications web
+                    <span class="check-icon">
+                      <i class="bi bi-check-circle"></i>
+                    </span>
+                    Créateur de sites et d’applications web
                   </li>
                 </ul>
               </article>
             </div>
-
             <!-- Objectifs -->
             <div class="col-12 col-lg-4">
               <article class="info-card h-100">
                 <div class="info-card-header">
-                  <div class="info-card-icon"><i class="bi bi-circle"></i></div>
+                  <div class="info-card-icon">
+                    <i class="bi bi-circle"></i>
+                  </div>
                   <h2 class="info-card-title">Objectifs de la Formation</h2>
                 </div>
                 <ul class="check-list">
                   <li>
-                    <span class="check-icon"
-                      ><i class="bi bi-check-circle"></i></span
-                    >Structurer des pages avec HTML et CSS
+                    <span class="check-icon">
+                      <i class="bi bi-check-circle"></i>
+                    </span>
+                    Structurer des pages avec HTML et CSS
                   </li>
                   <li>
-                    <span class="check-icon"
-                      ><i class="bi bi-check-circle"></i></span
-                    >Créer des interfaces interactives avec JavaScript
+                    <span class="check-icon">
+                      <i class="bi bi-check-circle"></i>
+                    </span>
+                    Créer des interfaces interactives avec JavaScript
                   </li>
                   <li>
-                    <span class="check-icon"
-                      ><i class="bi bi-check-circle"></i></span
-                    >Concevoir la logique serveur et manipuler des données
+                    <span class="check-icon">
+                      <i class="bi bi-check-circle"></i>
+                    </span>
+                    Concevoir la logique serveur et manipuler des données
                   </li>
                   <li>
-                    <span class="check-icon"
-                      ><i class="bi bi-check-circle"></i></span
-                    >Tester, corriger et publier un projet web
+                    <span class="check-icon">
+                      <i class="bi bi-check-circle"></i>
+                    </span>
+                    Tester, corriger et publier un projet web
                   </li>
                 </ul>
               </article>
             </div>
-
             <!-- Contenu -->
             <div class="col-12 col-lg-4">
               <article class="info-card h-100">
                 <div class="info-card-header">
-                  <div class="info-card-icon"><i class="bi bi-book"></i></div>
+                  <div class="info-card-icon">
+                    <i class="bi bi-book"></i>
+                  </div>
                   <h2 class="info-card-title">Contenu de la Formation</h2>
                 </div>
                 <ul class="check-list">
                   <li>
-                    <span class="check-icon"
-                      ><i class="bi bi-check-circle"></i></span
-                    >HTML, CSS et création d’interfaces responsives
+                    <span class="check-icon">
+                      <i class="bi bi-check-circle"></i>
+                    </span>
+                    HTML, CSS et création d’interfaces responsives
                   </li>
                   <li>
-                    <span class="check-icon"
-                      ><i class="bi bi-check-circle"></i></span
-                    >JavaScript et interactions côté navigateur
+                    <span class="check-icon">
+                      <i class="bi bi-check-circle"></i>
+                    </span>
+                    JavaScript et interactions côté navigateur
                   </li>
                   <li>
-                    <span class="check-icon"
-                      ><i class="bi bi-check-circle"></i></span
-                    >Programmation côté serveur et API
+                    <span class="check-icon">
+                      <i class="bi bi-check-circle"></i>
+                    </span>
+                    Programmation côté serveur et API
                   </li>
                   <li>
-                    <span class="check-icon"
-                      ><i class="bi bi-check-circle"></i></span
-                    >Bases de données et gestion de versions
+                    <span class="check-icon">
+                      <i class="bi bi-check-circle"></i>
+                    </span>
+                    Bases de données et gestion de versions
                   </li>
                   <li>
-                    <span class="check-icon"
-                      ><i class="bi bi-check-circle"></i></span
-                    >Réalisation et mise en ligne d’un projet web
+                    <span class="check-icon">
+                      <i class="bi bi-check-circle"></i>
+                    </span>
+                    Réalisation et mise en ligne d’un projet web
                   </li>
                 </ul>
               </article>
@@ -209,7 +216,6 @@
           </div>
         </div>
       </section>
-
       <!-- ================= CTA ================= -->
       <section id="inscription">
         <div class="container-page">
@@ -221,16 +227,13 @@
                   Faites votre inscription maintenant et assurez votre place
                   pour la rentrée académique prochaine.
                 </p>
-
                 <hr class="cta-divider" />
-
                 <span class="cta-price-label">Coût de la formation</span>
                 <div>
                   <span class="cta-price">750 000 FCFA</span>
                   <span class="cta-price-unit">/an</span>
                 </div>
               </div>
-
               <div class="col-12 col-lg-5">
                 <div class="cta-box">
                   <p>
@@ -241,8 +244,9 @@
                   <a
                     href="{% url 'candidature-formation' %}"
                     class="btn-white-cta text-decoration-none"
-                    >S'inscrire à la formation</a
                   >
+                    S'inscrire à la formation
+                  </a>
                 </div>
               </div>
             </div>
@@ -250,9 +254,7 @@
         </div>
       </section>
     </main>
-
     {% include "partials/formations_footer.html" %}
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

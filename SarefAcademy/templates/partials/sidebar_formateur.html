@@ -1,0 +1,15 @@
+<aside class="sidebar sidebar-formateur offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="Navigation formateur" style="background:radial-gradient(150% 110% at 0% 0%, #1c3382 0%, #14255e 38%, #0d173b 100%);color:#fff">
+  <div class="d-flex justify-content-end d-lg-none p-3 pb-0"><button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Fermer le menu"></button></div>
+  <div class="offcanvas-body sidebar-inner" style="background:radial-gradient(150% 110% at 0% 0%, #1c3382 0%, #14255e 38%, #0d173b 100%);color:#fff">
+    <a class="brand" href="{% url 'formateur_dashboard' %}"><span class="avatar">SA</span><div><b>SAREF Academy</b><small>ESPACE FORMATEUR</small></div></a>
+    <nav class="d-grid gap-1" aria-label="Menu principal">
+      <div class="nav-cap">MON ESPACE</div>
+      <a class="navitem {% if request.resolver_match.url_name == 'formateur_dashboard' %}active{% endif %}" href="{% url 'formateur_dashboard' %}"><i class="bi bi-grid-1x2"></i>Tableau de bord</a>
+      <a class="navitem {% if request.resolver_match.url_name == 'formateur_formations' or request.resolver_match.url_name == 'formateur_formation_detail' or request.resolver_match.url_name == 'formateur_module' or request.resolver_match.url_name == 'formateur_module_ajouter' or request.resolver_match.url_name == 'formateur_module_modifier' or request.resolver_match.url_name == 'formateur_chapitre_ajouter' or request.resolver_match.url_name == 'formateur_chapitre_detail' %}active{% endif %}" href="{% url 'formateur_formations' %}"><i class="bi bi-mortarboard"></i>Mes formations &amp; cours</a>
+      <a class="navitem {% if request.resolver_match.url_name == 'formateur_apprenants' %}active{% endif %}" href="{% url 'formateur_apprenants' %}"><i class="bi bi-people"></i>Mes apprenants</a>
+      <div class="nav-cap">COMPTE</div>
+      <a class="navitem {% if request.resolver_match.url_name == 'changer_mot_de_passe' %}active{% endif %}" href="{% url 'changer_mot_de_passe' %}"><i class="bi bi-key"></i>Changer le mot de passe</a>
+    </nav>
+    <div class="sidebar-user"><span class="avatar avatar-md">{{ formateur.prenom|first|upper|default:"M" }}</span><div class="who"><b>{{ formateur.prenom|default:"Marie" }} {{ formateur.nom|default:"Hounkpe" }}</b><small>Formateur</small></div><form method="post" action="{% url 'deconnexion' %}">{% csrf_token %}<button class="logout" type="submit" aria-label="Se déconnecter" title="Se déconnecter"><i class="bi bi-box-arrow-right"></i></button></form></div>
+  </div>
+</aside>

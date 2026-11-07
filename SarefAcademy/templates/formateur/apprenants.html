@@ -1,0 +1,226 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#335cec" />
+    <title>Mes apprenants | SAREF Academy — Formateur</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
+  </head>
+  <body class="espace espace-formateur">
+    <div class="app">
+      <!-- BARRE LATÉRALE FORMATEUR (indépendante de l'admin) -->
+      {% include 'partials/sidebar_formateur.html' %}
+      <div class="app-col">
+        {% include 'partials/formateur_topbar.html' %}
+        <main class="app-main">
+          <div class="page-head">
+            <div>
+              <h1 class="page-title">Mes Apprenants</h1>
+              <p class="page-sub">
+                Suivez l'assiduité, les chapitres validés et les devoirs de vos
+                cohortes.
+              </p>
+            </div>
+            <div class="d-flex gap-2">
+              <span
+                class="badge bg-primary-subtle text-primary border px-3 py-2 d-flex align-items-center"
+              >
+                <i class="bi bi-mortarboard me-1"></i>
+                2 Formations suivies
+              </span>
+            </div>
+          </div>
+          <!-- Filtres par formation -->
+          <div class="pill-tabs mb-4">
+            <button class="pill active" type="button">
+              Toutes mes formations (34 apprenants)
+            </button>
+            <button class="pill" type="button">Développement Web (24)</button>
+            <button class="pill" type="button">Marketing Digital (10)</button>
+          </div>
+          <!-- Tableau des apprenants (SANS BARRE DE PROGRESSION) -->
+          <div class="s-card overflow-hidden">
+            <div
+              class="s-card-head px-4 py-3 border-bottom d-flex justify-content-between align-items-center"
+            >
+              <h2 class="s-card-title m-0">
+                <i class="bi bi-person-lines-fill me-2 text-primary"></i>
+                Cohorte active · Vague 2026-A
+              </h2>
+              <span class="text-secondary small">34 apprenants</span>
+            </div>
+            <div class="table-responsive">
+              <table class="s-table">
+                <thead>
+                  <tr>
+                    <th>Apprenant</th>
+                    <th>Formation suivie</th>
+                    <th>Chapitres validés</th>
+                    <th>Statut</th>
+                    <th class="text-end">Contact WhatsApp</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="avatar">AK</span>
+                        <div>
+                          <b class="d-block">Aïcha Kora</b>
+                          <small class="text-secondary">
+                            aicha.kora@gmail.com
+                          </small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge bg-light text-dark border">
+                        Développement Web Full-Stack
+                      </span>
+                    </td>
+                    <td>
+                      <strong class="text-primary">11</strong>
+                      / 15 chapitres
+                    </td>
+                    <td><span class="s-badge b-admis">Assidue</span></td>
+                    <td class="text-end">
+                      <a
+                        href="https://wa.me/22997000000"
+                        target="_blank"
+                        class="btn-s btn-soft-s btn-sm-s"
+                        title="Écrire sur WhatsApp"
+                      >
+                        <i class="bi bi-whatsapp text-success me-1"></i>
+                        WhatsApp
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="avatar">MB</span>
+                        <div>
+                          <b class="d-block">Mariam Bello</b>
+                          <small class="text-secondary">
+                            mariam.bello@gmail.com
+                          </small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge bg-light text-dark border">
+                        Développement Web Full-Stack
+                      </span>
+                    </td>
+                    <td>
+                      <strong class="text-primary">8</strong>
+                      / 15 chapitres
+                    </td>
+                    <td><span class="s-badge b-en_cours">En cours</span></td>
+                    <td class="text-end">
+                      <a
+                        href="https://wa.me/22997000000"
+                        target="_blank"
+                        class="btn-s btn-soft-s btn-sm-s"
+                        title="Écrire sur WhatsApp"
+                      >
+                        <i class="bi bi-whatsapp text-success me-1"></i>
+                        WhatsApp
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="avatar">JK</span>
+                        <div>
+                          <b class="d-block">Jonas Koffi</b>
+                          <small class="text-secondary">
+                            jonas.koffi@gmail.com
+                          </small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge bg-light text-dark border">
+                        Marketing Digital &amp; Stratégie
+                      </span>
+                    </td>
+                    <td>
+                      <strong class="text-primary">6</strong>
+                      / 10 chapitres
+                    </td>
+                    <td><span class="s-badge b-en_cours">En cours</span></td>
+                    <td class="text-end">
+                      <a
+                        href="https://wa.me/22997000000"
+                        target="_blank"
+                        class="btn-s btn-soft-s btn-sm-s"
+                        title="Écrire sur WhatsApp"
+                      >
+                        <i class="bi bi-whatsapp text-success me-1"></i>
+                        WhatsApp
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="avatar">FS</span>
+                        <div>
+                          <b class="d-block">Fatou Sow</b>
+                          <small class="text-secondary">
+                            fatou.sow@gmail.com
+                          </small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge bg-light text-dark border">
+                        Marketing Digital &amp; Stratégie
+                      </span>
+                    </td>
+                    <td>
+                      <strong class="text-warning">2</strong>
+                      / 10 chapitres
+                    </td>
+                    <td><span class="s-badge b-attente">À relancer</span></td>
+                    <td class="text-end">
+                      <a
+                        href="https://wa.me/22997000000"
+                        target="_blank"
+                        class="btn-s btn-soft-s btn-sm-s"
+                        title="Écrire sur WhatsApp"
+                      >
+                        <i class="bi bi-whatsapp text-success me-1"></i>
+                        WhatsApp
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/espace.js' %}" defer></script>
+  </body>
+</html>
