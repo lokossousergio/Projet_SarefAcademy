@@ -89,13 +89,14 @@
                     <span class="acc-title">
                       <b>{{ module.titre }}</b>
                       <small>
-                        {{ module.chapitres.count }} chapitre(s){% if module.date_session %} · Session {{ module.date_session|date:"d/m/Y" }}{% endif %}
+                        {{ module.chapitres.count }} chapitre(s)
                       </small>
                     </span>
                     <span
                       class="s-badge {% if module.est_active %}b-active{% else %}b-brouillon{% endif %}"
                     >
-                      {% if module.est_active %}Activé{% else %}En préparation{% endif %}
+                      <i class="bi {% if module.est_active %}bi-unlock-fill{% else %}bi-lock-fill{% endif %} me-1" aria-hidden="true"></i>
+                      {% if module.est_active %}Activé{% else %}Désactivé{% endif %}
                     </span>
                     <i class="bi bi-chevron-down acc-chevron"></i>
                   </button>
@@ -105,7 +106,7 @@
                   >
                     {% for chapitre in module.chapitres.all %}
                     <div class="chap">
-                      <i class="bi bi-play-circle ci t-blue"></i>
+                      <i class="bi bi-play-circle ci t-blue" aria-hidden="true"></i>
                       <span>Ch. {{ chapitre.ordre }} : {{ chapitre.nom }}</span>
                       <span class="ms-auto d-flex align-items-center gap-3">
                         <span class="small text-secondary">
@@ -113,7 +114,7 @@
                           <i class="bi bi-camera-video me-1"></i>
                           Vidéo{% endif %}{% if chapitre.support_pdf %} ·
                           <i class="bi bi-file-earmark-pdf me-1"></i>
-                          PDF{% endif %} · {{ chapitre.duree }} min · {% if chapitre.est_active %}Actif{% else %}Brouillon{% endif %}
+                          PDF{% endif %} · {{ chapitre.duree }} min · <i class="bi {% if module.est_active and chapitre.est_active %}bi-unlock-fill{% else %}bi-lock-fill{% endif %} me-1" aria-hidden="true"></i>{% if module.est_active and chapitre.est_active %}Actif{% else %}Inactif{% endif %}
                         </span>
                         <a
                           class="btn-icon-s"
@@ -174,7 +175,7 @@
                       <b>Introduction au marketing numérique</b>
                       <small>Module de démarrage · 0 chapitre</small>
                     </span>
-                    <span class="s-badge b-active">Activé</span>
+                    <span class="s-badge b-active"><i class="bi bi-unlock-fill me-1" aria-hidden="true"></i>Activé</span>
                     <i class="bi bi-chevron-down acc-chevron"></i>
                   </button>
                   <div id="mkt1" class="collapse acc-body show">
@@ -222,7 +223,7 @@
                     >
                       <i class="bi bi-play-circle ci t-blue"></i>
                       <span>Ch. 1 : Choisir ses plateformes</span>
-                      <span class="dur">20 min · Actif</span>
+                      <span class="dur">20 min · <i class="bi bi-unlock-fill me-1" aria-hidden="true"></i>Actif</span>
                       <i class="bi bi-pencil"></i>
                     </a>
                     <a
@@ -231,7 +232,7 @@
                     >
                       <i class="bi bi-play-circle ci t-blue"></i>
                       <span>Ch. 2 : Construire un calendrier éditorial</span>
-                      <span class="dur">25 min · Brouillon</span>
+                      <span class="dur">25 min · <i class="bi bi-lock-fill me-1" aria-hidden="true"></i>Inactif</span>
                       <i class="bi bi-pencil"></i>
                     </a>
                     <div class="acc-foot">
@@ -264,7 +265,7 @@
                       <b>Mesurer ses résultats</b>
                       <small>2 chapitres · contenu à finaliser</small>
                     </span>
-                    <span class="s-badge b-brouillon">Brouillon</span>
+                    <span class="s-badge b-brouillon"><i class="bi bi-lock-fill me-1" aria-hidden="true"></i>Désactivé</span>
                     <i class="bi bi-chevron-down acc-chevron"></i>
                   </button>
                   <div id="mkt3" class="collapse acc-body">
@@ -274,7 +275,7 @@
                     >
                       <i class="bi bi-play-circle ci t-blue"></i>
                       <span>Ch. 1 : Indicateurs clés</span>
-                      <span class="dur">18 min · Brouillon</span>
+                      <span class="dur">18 min · <i class="bi bi-lock-fill me-1" aria-hidden="true"></i>Inactif</span>
                       <i class="bi bi-pencil"></i>
                     </a>
                     <a
@@ -283,7 +284,7 @@
                     >
                       <i class="bi bi-play-circle ci t-blue"></i>
                       <span>Ch. 2 : Lire un tableau de bord</span>
-                      <span class="dur">24 min · Brouillon</span>
+                      <span class="dur">24 min · <i class="bi bi-lock-fill me-1" aria-hidden="true"></i>Inactif</span>
                       <i class="bi bi-pencil"></i>
                     </a>
                     <div class="acc-foot">
@@ -320,7 +321,7 @@
                         2 chapitres · premiers pas avec les navigateurs
                       </small>
                     </span>
-                    <span class="s-badge b-active">Activé</span>
+                    <span class="s-badge b-active"><i class="bi bi-unlock-fill me-1" aria-hidden="true"></i>Activé</span>
                     <i class="bi bi-chevron-down acc-chevron"></i>
                   </button>
                   <div id="web1" class="collapse acc-body show">
@@ -330,7 +331,7 @@
                     >
                       <i class="bi bi-play-circle ci t-blue"></i>
                       <span>Ch. 1 : Comment fonctionne le Web ?</span>
-                      <span class="dur">Vidéo · PDF · 12 min · Actif</span>
+                      <span class="dur">Vidéo · PDF · 12 min · <i class="bi bi-unlock-fill me-1" aria-hidden="true"></i>Actif</span>
                       <i class="bi bi-pencil"></i>
                     </a>
                     <a
@@ -339,7 +340,7 @@
                     >
                       <i class="bi bi-play-circle ci t-blue"></i>
                       <span>Ch. 2 : Préparer son environnement de travail</span>
-                      <span class="dur">18 min · Brouillon</span>
+                      <span class="dur">18 min · <i class="bi bi-lock-fill me-1" aria-hidden="true"></i>Inactif</span>
                       <i class="bi bi-pencil"></i>
                     </a>
                     <div class="acc-foot">
@@ -372,7 +373,7 @@
                       <b>HTML et structure des pages</b>
                       <small>2 chapitres · créer les premières pages</small>
                     </span>
-                    <span class="s-badge b-active">Activé</span>
+                    <span class="s-badge b-active"><i class="bi bi-unlock-fill me-1" aria-hidden="true"></i>Activé</span>
                     <i class="bi bi-chevron-down acc-chevron"></i>
                   </button>
                   <div id="web2" class="collapse acc-body">
@@ -382,7 +383,7 @@
                     >
                       <i class="bi bi-play-circle ci t-blue"></i>
                       <span>Ch. 1 : Les balises essentielles</span>
-                      <span class="dur">25 min · Actif</span>
+                      <span class="dur">25 min · <i class="bi bi-unlock-fill me-1" aria-hidden="true"></i>Actif</span>
                       <i class="bi bi-pencil"></i>
                     </a>
                     <a
@@ -391,7 +392,7 @@
                     >
                       <i class="bi bi-play-circle ci t-blue"></i>
                       <span>Ch. 2 : Créer une page complète</span>
-                      <span class="dur">30 min · Actif</span>
+                      <span class="dur">30 min · <i class="bi bi-unlock-fill me-1" aria-hidden="true"></i>Actif</span>
                       <i class="bi bi-pencil"></i>
                     </a>
                     <div class="acc-foot">
@@ -424,7 +425,7 @@
                       <b>CSS et mise en forme</b>
                       <small>2 chapitres · contenu à préparer</small>
                     </span>
-                    <span class="s-badge b-brouillon">En préparation</span>
+                    <span class="s-badge b-brouillon"><i class="bi bi-lock-fill me-1" aria-hidden="true"></i>Désactivé</span>
                     <i class="bi bi-chevron-down acc-chevron"></i>
                   </button>
                   <div id="web3" class="collapse acc-body">
@@ -434,7 +435,7 @@
                     >
                       <i class="bi bi-play-circle ci t-blue"></i>
                       <span>Ch. 1 : Sélecteurs et couleurs</span>
-                      <span class="dur">22 min · Brouillon</span>
+                      <span class="dur">22 min · <i class="bi bi-lock-fill me-1" aria-hidden="true"></i>Inactif</span>
                       <i class="bi bi-pencil"></i>
                     </a>
                     <a
@@ -443,7 +444,7 @@
                     >
                       <i class="bi bi-play-circle ci t-blue"></i>
                       <span>Ch. 2 : Mise en page responsive</span>
-                      <span class="dur">28 min · Brouillon</span>
+                      <span class="dur">28 min · <i class="bi bi-lock-fill me-1" aria-hidden="true"></i>Inactif</span>
                       <i class="bi bi-pencil"></i>
                     </a>
                     <div class="acc-foot">

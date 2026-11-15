@@ -180,6 +180,7 @@
     </style>
   </head>
   <body>
+    {% include "partials/feedback_modal.html" %}
     {% include "partials/formations_navbar.html" %}
     <header class="auth-hero">
       <div class="container">
@@ -205,7 +206,8 @@
               <p class="text-secondary mb-4">
                 Connectez-vous pour reprendre votre parcours de formation.
               </p>
-              <form class="needs-validation" novalidate>
+              <form class="needs-validation" method="post" novalidate>
+                {% csrf_token %}
                 <div class="mb-3">
                   <label for="email" class="form-label fw-semibold">
                     Adresse e-mail
@@ -214,6 +216,8 @@
                     type="email"
                     class="form-control"
                     id="email"
+                    name="email"
+                    autocomplete="email"
                     placeholder="vous@exemple.com"
                     required
                   />
@@ -230,9 +234,10 @@
                       type="password"
                       class="form-control"
                       id="password"
+                      name="password"
+                      autocomplete="current-password"
                       placeholder="••••••••"
                       required
-                      minlength="8"
                     />
                     <button
                       class="btn btn-outline-primary"
@@ -260,7 +265,7 @@
                       Se souvenir de moi
                     </label>
                   </div>
-                  <a href="#" class="fw-semibold text-decoration-none small">
+                  <a href="{% url 'mot-de-passe-oublie' %}" class="fw-semibold text-decoration-none small">
                     Mot de passe oublié ?
                   </a>
                 </div>
@@ -288,9 +293,12 @@
       // Validation Bootstrap + affichage du mot de passe
       document.querySelectorAll(".needs-validation").forEach((form) => {
         form.addEventListener("submit", (e) => {
+          const email = document.getElementById("email");
+          email.setCustomValidity(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()) ? "" : "Saisissez une adresse e-mail valide.");
           if (!form.checkValidity()) {
             e.preventDefault();
             e.stopPropagation();
+            showFeedbackModal("Saisissez une adresse e-mail valide et un mot de passe correct.");
           }
           form.classList.add("was-validated");
         });

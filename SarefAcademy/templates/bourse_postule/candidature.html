@@ -45,6 +45,7 @@
     <script src="{% static 'js/candidature_formation.js' %}" defer></script>
   </head>
   <body id="top" class="formation-page application-page">
+    {% include "partials/feedback_modal.html" %}
     <main class="application-layout">
       <section class="login-brand application-brand">
         <div class="ring ring-1"></div>
@@ -122,7 +123,9 @@
         </li>
       </ol>
       <div class="content-grid application-content-grid">
-        <form class="application-form" novalidate>
+        {% if vague_courante and formations_disponibles %}
+        <form class="application-form" method="post" action="{% url 'candidature-formation' %}" enctype="multipart/form-data" novalidate>
+          {% csrf_token %}
           <!-- Étape 1 -->
           <section
             class="form-step"
@@ -138,104 +141,25 @@
             </div>
             <fieldset class="course-grid">
               <legend class="visually-hidden">Formation souhaitée</legend>
+              {% for formation in formations_disponibles %}
               <label class="course-option">
                 <input
                   type="radio"
                   name="formation"
-                  value="archivage-numerique"
+                  value="{{ formation.pk }}"
                   required
+                  {% if donnees.formation == formation.pk|stringformat:"s" %}checked{% endif %}
                 />
                 <span class="course-icon" aria-hidden="true">
-                  <i class="bi bi-archive"></i>
+                  <i class="bi bi-mortarboard"></i>
                 </span>
-                <span class="course-label">Archivage numérique</span>
-                <span class="course-hint">Formation certifiante</span>
+                <span class="course-label">{{ formation.nom }}</span>
+                <span class="course-hint">{{ formation.duree }} mois · {{ formation.nb_tranches }} tranche(s)</span>
                 <span class="course-check" aria-hidden="true">
                   <i class="bi bi-check-lg"></i>
                 </span>
               </label>
-              <label class="course-option">
-                <input
-                  type="radio"
-                  name="formation"
-                  value="design-graphique"
-                  required
-                />
-                <span class="course-icon" aria-hidden="true">
-                  <i class="bi bi-palette"></i>
-                </span>
-                <span class="course-label">Design graphique</span>
-                <span class="course-hint">Formation certifiante</span>
-                <span class="course-check" aria-hidden="true">
-                  <i class="bi bi-check-lg"></i>
-                </span>
-              </label>
-              <label class="course-option">
-                <input
-                  type="radio"
-                  name="formation"
-                  value="developpement-web"
-                  required
-                />
-                <span class="course-icon" aria-hidden="true">
-                  <i class="bi bi-code-slash"></i>
-                </span>
-                <span class="course-label">Développement web</span>
-                <span class="course-hint">Formation certifiante</span>
-                <span class="course-check" aria-hidden="true">
-                  <i class="bi bi-check-lg"></i>
-                </span>
-              </label>
-              <label class="course-option">
-                <input
-                  type="radio"
-                  name="formation"
-                  value="journalisme-web"
-                  required
-                />
-                <span class="course-icon" aria-hidden="true">
-                  <i class="bi bi-newspaper"></i>
-                </span>
-                <span class="course-label">Journalisme web</span>
-                <span class="course-hint">Formation certifiante</span>
-                <span class="course-check" aria-hidden="true">
-                  <i class="bi bi-check-lg"></i>
-                </span>
-              </label>
-              <label class="course-option">
-                <input
-                  type="radio"
-                  name="formation"
-                  value="marketing-digital"
-                  required
-                />
-                <span class="course-icon" aria-hidden="true">
-                  <i class="bi bi-graph-up-arrow"></i>
-                </span>
-                <span class="course-label">
-                  Marketing digital et e-commerce
-                </span>
-                <span class="course-hint">Formation certifiante</span>
-                <span class="course-check" aria-hidden="true">
-                  <i class="bi bi-check-lg"></i>
-                </span>
-              </label>
-              <label class="course-option">
-                <input
-                  type="radio"
-                  name="formation"
-                  value="montage-video"
-                  required
-                />
-                <span class="course-icon" aria-hidden="true">
-                  <i class="bi bi-camera-reels"></i>
-                </span>
-                <span class="course-label">Montage vidéo</span>
-                <span class="course-hint">Formation certifiante</span>
-                <span class="course-check" aria-hidden="true">
-                  <i class="bi bi-check-lg"></i>
-                </span>
-              </label>
+              {% endfor %}
             </fieldset>
           </section>
           <!-- Étape 2 -->
@@ -258,19 +182,19 @@
               type="hidden"
               id="candidate-name"
               name="nom_prenom"
-              value="{{ user.get_full_name|default:user.username }}"
+              value="{{ etudiant.prenom }} {{ etudiant.nom }}"
             />
             <input
               type="hidden"
               id="candidate-email"
               name="email"
-              value="{{ user.email }}"
+              value="{{ etudiant.email }}"
             />
             <input
               type="hidden"
               id="candidate-phone"
               name="telephone"
-              value="{{ user.profile.telephone|default:'' }}"
+              value="{{ etudiant.telephone }}"
             />
             <div class="fields-grid">
               <div class="field field-wide">
@@ -283,10 +207,11 @@
                   name="motivation"
                   rows="6"
                   minlength="40"
+                  maxlength="255"
                   required
                   aria-describedby="motivation-note"
                   placeholder="Présentez votre projet et ce que vous souhaitez apprendre…"
-                ></textarea>
+                >{% if donnees %}{{ donnees.motivation }}{% endif %}</textarea>
                 <small class="field-note" id="motivation-note">
                   40 caractères minimum.
                 </small>
@@ -370,10 +295,9 @@
                 <dd id="review-cv">À joindre</dd>
               </div>
             </dl>
-            <p class="local-only-note" role="status" tabindex="-1">
+              <p class="local-only-note" role="status" tabindex="-1">
               <i class="bi bi-info-circle" aria-hidden="true"></i>
-              Le formulaire est une maquette interactive. L’envoi et
-              l’enregistrement en ligne ne sont pas activés.
+              Vérifiez les informations. Votre dossier sera envoyé à l’équipe pédagogique.
             </p>
           </section>
           <div class="form-footer">
@@ -397,11 +321,21 @@
               data-finish
               hidden
             >
-              Terminer la prévisualisation
+              Envoyer ma candidature
             </button>
           </div>
           <p class="required-note">* Champs obligatoires</p>
         </form>
+        {% else %}
+        <div class="alert alert-warning" role="status">
+          <h2 class="h5">Candidature indisponible</h2>
+          {% if not vague_courante %}
+            Aucune vague n’est actuellement en cours. Les candidatures sont fermées.
+          {% else %}
+            Vous avez déjà postulé à toutes les formations actuellement ouvertes.
+          {% endif %}
+        </div>
+        {% endif %}
       </div>
         </div>
       </section>

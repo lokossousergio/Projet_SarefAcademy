@@ -2,6 +2,8 @@
    SAREF Academy — Authentification & Configuration Écran Scindé
    ========================================================================== */
 
+@import url("modal_global.css");
+
 :root {
   --blue: #315bea;
   --blue-dark: #1e3da6;

@@ -471,28 +471,6 @@
         display: block;
         animation: fadeUp 0.3s var(--ease);
       }
-      .success {
-        display: none;
-        text-align: center;
-        max-width: 30rem;
-        margin: 3rem auto;
-      }
-      .success.on {
-        display: block;
-        animation: fadeUp 0.6s var(--ease);
-      }
-      .success .big {
-        display: grid;
-        place-items: center;
-        width: 92px;
-        height: 92px;
-        margin: 0 auto 1.5rem;
-        border-radius: 50%;
-        background: var(--ok-bg);
-        color: var(--ok);
-        font-size: 3rem;
-        animation: pop 0.6s var(--ease);
-      }
       @media (max-width: 991.98px) {
         .cd {
           grid-template-columns: 1fr;
@@ -519,6 +497,7 @@
     </style>
   </head>
   <body class="espace">
+    {% include "partials/feedback_modal.html" %}
     <div class="cd">
       <aside class="cd-side">
         <a
@@ -578,19 +557,22 @@
             Quitter
           </a>
           <span class="small text-secondary d-none d-sm-inline">
-            Aïcha Kora · aicha.kora@mail.com
+            {{ etudiant.prenom }} {{ etudiant.nom }} · {{ etudiant.email }}
           </span>
         </div>
         <div class="cd-prog" aria-hidden="true">
           <span id="bar"></span>
         </div>
+        {% if vague_courante and formations_disponibles %}
         <form
           id="cand"
           method="post"
+          action="{% url 'candidature-formation' %}"
           enctype="multipart/form-data"
           novalidate
           class="d-flex flex-column flex-grow-1"
         >
+          {% csrf_token %}
           <div class="cd-body">
             <ol class="cd-steps" aria-label="Étapes de la candidature">
               <li class="on" data-i="0">
@@ -613,89 +595,55 @@
             <!-- Étape 1 : formation (modèle Candidats.formation) -->
             <section class="step on" data-step="0" aria-labelledby="t0">
               <h2 id="t0">Quelle formation vous attire ?</h2>
-              <p class="text-secondary mb-0">
-                Choisissez une formation. Vous pourrez en choisir d’autres
-                ensuite.
-              </p>
+              <p class="text-secondary mb-0">Choisissez une formation à laquelle vous n’avez pas encore postulé.</p>
               <fieldset class="fgrid">
                 <legend class="visually-hidden">Formation souhaitée</legend>
+                {% for formation in formations_disponibles %}
                 <label class="fcard">
                   <input
                     type="radio"
                     name="formation"
-                    value="montage-video"
-                    data-label="Montage vidéo"
+                    value="{{ formation.pk }}"
+                    data-label="{{ formation.nom }}"
+                    {% if donnees.formation == formation.pk|stringformat:"s" %}checked{% endif %}
+                    required
                   />
-                  <span class="fc-ic"><i class="bi bi-camera-reels"></i></span>
+                  <span class="fc-ic"><i class="bi bi-mortarboard"></i></span>
                   <span class="fc-t">
-                    <b>Montage vidéo</b>
-                    <small>3 mois · 3 tranches</small>
+                    <b>{{ formation.nom }}</b>
+                    <small>{{ formation.duree }} mois · {{ formation.nb_tranches }} tranche(s)</small>
                   </span>
                   <span class="fc-ck"><i class="bi bi-check-lg"></i></span>
                 </label>
+                {% endfor %}
+                {% for formation in formations_deja_choisies %}
                 <label class="fcard">
                   <input
                     type="radio"
                     name="formation"
-                    value="journalisme-web"
-                    data-label="Journalisme web"
+                    value="{{ formation.pk }}"
+                    data-label="{{ formation.nom }}"
+                    disabled
                   />
-                  <span class="fc-ic"><i class="bi bi-newspaper"></i></span>
+                  <span class="fc-ic"><i class="bi bi-lock"></i></span>
                   <span class="fc-t">
-                    <b>Journalisme web</b>
-                    <small>2 mois · 2 tranches</small>
+                    <b>{{ formation.nom }}</b>
+                    <small>Vous avez déjà postulé à cette formation</small>
                   </span>
                   <span class="fc-ck"><i class="bi bi-check-lg"></i></span>
                 </label>
-                <label class="fcard">
-                  <input
-                    type="radio"
-                    name="formation"
-                    value="dev-web"
-                    disabled
-                  />
-                  <span class="fc-ic"><i class="bi bi-code-slash"></i></span>
-                  <span class="fc-t">
-                    <b>Développement Web</b>
-                    <small>Déjà candidaté · vague 2026-A</small>
-                  </span>
-                  <span class="fc-ck"><i class="bi bi-lock"></i></span>
-                </label>
-                <label class="fcard">
-                  <input
-                    type="radio"
-                    name="formation"
-                    value="marketing"
-                    disabled
-                  />
-                  <span class="fc-ic"><i class="bi bi-megaphone"></i></span>
-                  <span class="fc-t">
-                    <b>Marketing Digital</b>
-                    <small>Déjà candidaté · vague 2026-A</small>
-                  </span>
-                  <span class="fc-ck"><i class="bi bi-lock"></i></span>
-                </label>
-                <label class="fcard">
-                  <input type="radio" name="formation" value="ui-ux" disabled />
-                  <span class="fc-ic"><i class="bi bi-palette"></i></span>
-                  <span class="fc-t">
-                    <b>UI/UX Design</b>
-                    <small>Déjà suivie · vague 2025-B</small>
-                  </span>
-                  <span class="fc-ck"><i class="bi bi-lock"></i></span>
-                </label>
+                {% endfor %}
               </fieldset>
-              <input type="hidden" name="configVague" value="2026-A" />
               <div class="vague-note">
                 <i class="bi bi-calendar3"></i>
                 <span>
-                  Votre candidature sera rattachée à la
-                  <b>vague 2026-A</b>
-                  · du 1 sept. au 31 déc. 2026.
+                  Votre candidature sera rattachée à la vague
+                  <b>{{ vague_courante.nom }}</b>
+                  · du {{ vague_courante.date_debut|date:"d/m/Y" }} au {{ vague_courante.date_fin|date:"d/m/Y" }}.
                 </span>
               </div>
             </section>
-            <!-- Étape 2 : profil (modèles Etudiants + Candidats.photo_profils) -->
+            <!-- Étape 2 : profil étudiant -->
             <section class="step" data-step="1" aria-labelledby="t1">
               <h2 id="t1">Complétons votre profil</h2>
               <p class="text-secondary">
@@ -708,7 +656,7 @@
                     id="prenom"
                     name="prenom"
                     class="s-input"
-                    value="Aïcha"
+                    value="{{ etudiant.prenom }}"
                     readonly
                   />
                 </div>
@@ -718,7 +666,7 @@
                     id="nom"
                     name="nom"
                     class="s-input"
-                    value="Kora"
+                    value="{{ etudiant.nom }}"
                     readonly
                   />
                 </div>
@@ -729,7 +677,7 @@
                     name="email"
                     type="email"
                     class="s-input"
-                    value="aicha.kora@mail.com"
+                    value="{{ etudiant.email }}"
                     readonly
                   />
                 </div>
@@ -744,6 +692,7 @@
                     type="tel"
                     class="s-input"
                     placeholder="+229 00 00 00 00"
+                    value="{% if donnees %}{{ donnees.telephone }}{% else %}{{ etudiant.telephone }}{% endif %}"
                     required
                   />
                 </div>
@@ -759,18 +708,13 @@
                     required
                   >
                     <option value="">Choisir…</option>
-                    <option>Baccalauréat</option>
-                    <option>BTS</option>
-                    <option>Licence 1</option>
-                    <option>Licence 2</option>
-                    <option>Licence 3</option>
-                    <option>Master 1</option>
-                    <option>Master 2</option>
-                    <option>Autre</option>
+                    {% for niveau in niveaux_etudes %}
+                    <option value="{{ niveau }}" {% if donnees and donnees.niveau_etudes == niveau %}selected{% elif not donnees and etudiant.niveau_etudes == niveau %}selected{% endif %}>{{ niveau }}</option>
+                    {% endfor %}
                   </select>
                 </div>
                 <div class="col-12">
-                  <label class="s-label" for="photo_profils">
+                  <label class="s-label" for="photo">
                     Photo de profil
                   </label>
                   <div class="photo-row">
@@ -785,14 +729,14 @@
                     </div>
                     <label
                       class="btn-s btn-line-s btn-sm-s mb-0"
-                      for="photo_profils"
+                      for="photo"
                     >
                       <i class="bi bi-upload"></i>
                       Choisir
                     </label>
                     <input
-                      id="photo_profils"
-                      name="photo_profils"
+                      id="photo"
+                      name="photo"
                       type="file"
                       accept="image/*"
                       class="visually-hidden"
@@ -821,7 +765,7 @@
                 required
                 placeholder="Ex : Je souhaite me former pour…"
                 data-counter="#cnt"
-              ></textarea>
+              >{% if donnees %}{{ donnees.motif_inscription }}{% endif %}</textarea>
               <div class="counter">
                 <span>30 caractères minimum</span>
                 <span id="cnt">0 / 255</span>
@@ -861,11 +805,11 @@
                   </div>
                   <div>
                     <dt>Vague</dt>
-                    <dd>2026-A</dd>
+                    <dd>{{ vague_courante.nom }}</dd>
                   </div>
                   <div>
                     <dt>Candidat</dt>
-                    <dd>Aïcha Kora</dd>
+                    <dd>{{ etudiant.prenom }} {{ etudiant.nom }}</dd>
                   </div>
                   <div>
                     <dt>Téléphone</dt>
@@ -905,38 +849,6 @@
             </section>
             <div class="err" id="err" role="alert"></div>
           </div>
-          <!-- Confirmation -->
-          <div class="success" id="success" role="status">
-            <div class="big">
-              <i class="bi bi-check2-circle"></i>
-            </div>
-            <h2 class="fw-bold">Candidature envoyée !</h2>
-            <p class="text-secondary">
-              Merci Aïcha. L’équipe étudie votre dossier. Vous serez notifiée
-              par e-mail et dans votre espace dès qu’une décision sera prise.
-            </p>
-            <div class="d-grid gap-2 mt-4">
-              <a
-                class="btn-s btn-primary-s"
-                href="{% url 'apprenant_formations' %}"
-              >
-                <i class="bi bi-mortarboard"></i>
-                Voir mes formations
-              </a>
-              <a class="btn-s btn-line-s" href="{% url 'candidature-formation' %}">
-                Postuler à une autre formation
-              </a>
-              <a
-                class="btn-s btn-ok-s"
-                href="https://wa.me/22997000000"
-                target="_blank"
-                rel="noopener"
-              >
-                <i class="bi bi-whatsapp"></i>
-                Rejoindre le groupe WhatsApp
-              </a>
-            </div>
-          </div>
           <div class="cd-foot" id="foot">
             <button
               type="button"
@@ -958,14 +870,27 @@
             </button>
           </div>
         </form>
+        {% else %}
+        <div class="alert alert-warning m-4" role="status">
+          <h2 class="h5">Candidature indisponible</h2>
+          {% if not vague_courante %}
+            Aucune vague n’est actuellement en cours. Tu pourras postuler dès qu’une nouvelle vague sera ouverte.
+          {% elif formations_deja_choisies %}
+            Tu as déjà postulé à toutes les formations actuellement ouvertes.
+          {% else %}
+            Aucune formation n’est actuellement ouverte aux candidatures.
+          {% endif %}
+        </div>
+        {% endif %}
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/espace.js' %}" defer></script>
+    {% if vague_courante and formations_disponibles %}
     <script>
       (function () {
-        var form = document.getElementById("cand"),
-          steps = form.querySelectorAll(".step"),
+        var form = document.getElementById("cand");
+        var steps = form.querySelectorAll(".step"),
           dots = form.querySelectorAll(".cd-steps li");
         var bar = document.getElementById("bar"),
           prev = document.getElementById("prevBtn"),
@@ -1010,6 +935,11 @@
               t.focus();
               return false;
             }
+            if (!/^\+?[0-9\s().-]{7,20}$/.test(t.value.trim())) {
+              fail("Saisissez un numéro de téléphone valide.");
+              t.focus();
+              return false;
+            }
             if (!l.value) {
               fail("Sélectionnez votre niveau d’études.");
               l.focus();
@@ -1036,9 +966,9 @@
             form.telephone.value || "—";
           document.getElementById("r-niv").textContent =
             form.niveau_etudes.value || "—";
-          document.getElementById("r-photo").textContent = form.photo_profils
+          document.getElementById("r-photo").textContent = form.photo
             .files.length
-            ? form.photo_profils.files[0].name
+            ? form.photo.files[0].name
             : "Non ajoutée";
           document.getElementById("r-motif").textContent =
             form.motif_inscription.value || "—";
@@ -1054,7 +984,7 @@
             err.classList.remove("on");
           });
         });
-        form.photo_profils.addEventListener("change", function () {
+        form.photo.addEventListener("change", function () {
           var f = this.files[0];
           if (!f) return;
           document.getElementById("prev").innerHTML =
@@ -1070,17 +1000,12 @@
             t.focus();
           });
         });
-        // Démo : affiche l'écran de succès. Pour brancher Django, SUPPRIMEZ ce bloc : le formulaire partira en POST.
+        // Laisse Django enregistrer le dossier après les contrôles du formulaire.
         form.addEventListener("submit", function (e) {
-          e.preventDefault();
-          if (!valid(3)) return;
-          form.querySelector(".cd-body").style.display = "none";
-          document.getElementById("foot").style.display = "none";
-          bar.style.width = "100%";
-          document.getElementById("success").classList.add("on");
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          if (!valid(3)) e.preventDefault();
         });
       })();
     </script>
+    {% endif %}
   </body>
 </html>

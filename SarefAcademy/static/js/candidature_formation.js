@@ -104,7 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
     }
-    document.querySelector(".local-only-note").focus();
+    // Envoie le formulaire à Django après validation de chaque étape.
+    form.requestSubmit();
   });
 
   updateSummary();

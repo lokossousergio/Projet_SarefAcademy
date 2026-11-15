@@ -71,11 +71,6 @@
         border-color: var(--blue-200);
         box-shadow: 0 14px 32px rgba(24, 45, 100, 0.09);
       }
-      .trainer-card-demo:hover {
-        transform: none;
-        border-color: #e8ebf3;
-        box-shadow: 0 5px 18px rgba(22, 36, 82, 0.035);
-      }
       .credential-note {
         display: flex;
         gap: 12px;
@@ -142,6 +137,7 @@
     </style>
   </head>
   <body class="espace espace-admin">
+    {% include "partials/feedback_modal.html" %}
     <div class="app">
       {% include 'partials/sidebar_admin.html' %}
       <div class="app-col">
@@ -166,20 +162,7 @@
               Nouveau formateur
             </button>
           </div>
-          {% for message in messages %}
-          <div
-            class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %} alert-dismissible fade show"
-            role="alert"
-          >
-            {{ message }}
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="alert"
-              aria-label="Fermer"
-            ></button>
-          </div>
-          {% endfor %} {% if created_access %}
+          {% if created_access %}
           <section class="s-card s-card-pad mb-4 border-success">
             <div
               class="d-flex flex-wrap justify-content-between align-items-center gap-3"
@@ -382,96 +365,8 @@
               </article>
             </div>
             {% empty %}
-            <div class="col-md-6 col-xl-4">
-              <article
-                class="s-card trainer-card trainer-card-demo s-card-pad h-100"
-              >
-                <div class="d-flex align-items-center gap-3">
-                  <span class="trainer-portrait" aria-hidden="true">
-                    <i class="bi bi-person-video3"></i>
-                    <b>01</b>
-                  </span>
-                  <div>
-                    <h3 class="h6 fw-bold mt-2 mb-0">Formateur en design</h3>
-                  </div>
-                </div>
-                <div class="border-top mt-3 pt-3">
-                  <div class="eyebrow-s mb-2">Spécialité attribuée</div>
-                  <span class="s-badge b-en_cours">Design graphique</span>
-                </div>
-                <p class="small text-secondary mt-3">
-                  Formateur actif dans l’équipe pédagogique.
-                </p>
-                <a
-                  class="btn-s btn-primary-s btn-sm-s w-100 mt-auto"
-                  href="{% url 'admin_formateur_detail' 1 %}"
-                >
-                  <i class="bi bi-sliders me-1"></i>
-                  Gérer le profil
-                </a>
-              </article>
-            </div>
-            <div class="col-md-6 col-xl-4">
-              <article
-                class="s-card trainer-card trainer-card-demo s-card-pad h-100"
-              >
-                <div class="d-flex align-items-center gap-3">
-                  <span class="trainer-portrait" aria-hidden="true">
-                    <i class="bi bi-person-video3"></i>
-                    <b>02</b>
-                  </span>
-                  <div>
-                    <h3 class="h6 fw-bold mt-2 mb-0">
-                      Formateur en développement
-                    </h3>
-                  </div>
-                </div>
-                <div class="border-top mt-3 pt-3">
-                  <div class="eyebrow-s mb-2">Spécialité attribuée</div>
-                  <span class="s-badge b-en_cours">Développement Web</span>
-                </div>
-                <p class="small text-secondary mt-3">
-                  Formateur actif dans l’équipe pédagogique.
-                </p>
-                <a
-                  class="btn-s btn-primary-s btn-sm-s w-100 mt-auto"
-                  href="{% url 'admin_formateur_detail' 1 %}"
-                >
-                  <i class="bi bi-sliders me-1"></i>
-                  Gérer le profil
-                </a>
-              </article>
-            </div>
-            <div class="col-md-6 col-xl-4">
-              <article
-                class="s-card trainer-card trainer-card-demo s-card-pad h-100"
-              >
-                <div class="d-flex align-items-center gap-3">
-                  <span class="trainer-portrait" aria-hidden="true">
-                    <i class="bi bi-person-video3"></i>
-                    <b>03</b>
-                  </span>
-                  <div>
-                    <h3 class="h6 fw-bold mt-2 mb-0">
-                      Formatrice en communication
-                    </h3>
-                  </div>
-                </div>
-                <div class="border-top mt-3 pt-3">
-                  <div class="eyebrow-s mb-2">Spécialité attribuée</div>
-                  <span class="s-badge b-en_cours">Marketing digital</span>
-                </div>
-                <p class="small text-secondary mt-3">
-                  Formateur actif dans l’équipe pédagogique.
-                </p>
-                <a
-                  class="btn-s btn-primary-s btn-sm-s w-100 mt-auto"
-                  href="{% url 'admin_formateur_detail' 1 %}"
-                >
-                  <i class="bi bi-sliders me-1"></i>
-                  Gérer le profil
-                </a>
-              </article>
+            <div class="col-12">
+              <div class="empty-s">Aucun formateur n’est enregistré pour le moment.</div>
             </div>
             {% endfor %}
           </div>
@@ -514,6 +409,7 @@
             method="post"
             action="{% url 'admin_formateurs' %}"
             id="newFormateurForm"
+            novalidate
           >
             {% csrf_token %}
             <input type="hidden" name="action" value="create_formateur" />
@@ -592,7 +488,7 @@
                             Choisir une formation existante
                           </option>
                           {% for formation in formations %}
-                          <option value="{{ formation.pk }}">
+                          <option value="{{ formation.pk }}" {% if creation_data.formation == formation.pk|stringformat:'s' %}selected{% endif %}>
                             {{ formation.nom }}{% if formation.statut %} · {{ formation.get_statut_display }}{% endif %}
                           </option>
                           {% empty %}
@@ -798,7 +694,12 @@
     <script src="{% static 'js/espace.js' %}" defer></script>
     <script>
       document.querySelectorAll('[data-bs-target="#accessModal"]').forEach(function(button){button.addEventListener('click',function(){document.getElementById('accessName').value=button.dataset.name||'';document.getElementById('accessEmail').value=button.dataset.email||'';document.getElementById('accessPhone').value=button.dataset.phone||'';document.getElementById('accessPassword').value='';});});
-      var firstName=document.getElementById('newPrenom'),lastName=document.getElementById('newNom'),newEmail=document.getElementById('newEmail'),newPhone=document.getElementById('newPhone'),newPassword=document.getElementById('newPassword'),newMessage=document.getElementById('newMessage');function updateNewPreview(){var name=(firstName.value+' '+lastName.value).trim()||'…';newMessage.textContent='Bonjour '+name+', voici vos accès à l’espace formateur SAREF Academy.\nLien : '+location.origin+'/connexion/\nIdentifiant : '+(newEmail.value||'(adresse email)')+'\nMot de passe provisoire : '+(newPassword.value||'(à définir)')+'\nConnectez-vous puis changez-le à votre première connexion.';}[firstName,lastName,newEmail,newPhone,newPassword].forEach(function(field){field.addEventListener('input',updateNewPreview);});updateNewPreview();{% if creation_data %}bootstrap.Modal.getOrCreateInstance(document.getElementById('addFormateurModal')).show();{% endif %}
+      var firstName=document.getElementById('newPrenom'),lastName=document.getElementById('newNom'),newEmail=document.getElementById('newEmail'),newPhone=document.getElementById('newPhone'),newPassword=document.getElementById('newPassword'),newMessage=document.getElementById('newMessage'),newForm=document.getElementById('newFormateurForm'),creationModal=document.getElementById('addFormateurModal');
+      var creationPatterns={name:/^[\p{L}\p{M}][\p{L}\p{M} '-]{1,99}$/u,email:/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,phone:/^\+?[0-9][0-9\s().-]{6,18}$/,password:/^(?=.*[A-Za-z])(?=.*\d).{8,}$/};
+      function updateNewPreview(){var name=(firstName.value+' '+lastName.value).trim()||'…';newMessage.textContent='Bonjour '+name+', voici vos accès à l’espace formateur SAREF Academy.\nLien : '+location.origin+'/connexion/\nIdentifiant : '+(newEmail.value||'(adresse email)')+'\nMot de passe provisoire : '+(newPassword.value||'(à définir)')+'\nConnectez-vous puis changez-le à votre première connexion.';}
+      function showCreationFeedback(message){creationModal.addEventListener('hidden.bs.modal',function onCreationHidden(){creationModal.removeEventListener('hidden.bs.modal',onCreationHidden);var feedback=document.getElementById('feedbackModal');feedback.addEventListener('hidden.bs.modal',function(){bootstrap.Modal.getOrCreateInstance(creationModal).show();},{once:true});window.showFeedbackModal(message,false);},{once:true});bootstrap.Modal.getOrCreateInstance(creationModal).hide();}
+      newForm.addEventListener('submit',function(event){var errors=[],digits=newPhone.value.replace(/\D/g,'');if(!creationPatterns.name.test(firstName.value.trim()))errors.push('Le prénom doit contenir au moins 2 lettres; accents, espaces, apostrophes et tirets sont acceptés.');if(!creationPatterns.name.test(lastName.value.trim()))errors.push('Le nom doit contenir au moins 2 lettres; accents, espaces, apostrophes et tirets sont acceptés.');if(!creationPatterns.email.test(newEmail.value.trim()))errors.push('Saisissez une adresse email valide.');if(!creationPatterns.phone.test(newPhone.value.trim())||digits.length<8||digits.length>15||!/^(?:\+|00)/.test(newPhone.value.trim()))errors.push('Saisissez un numéro international avec indicatif, de 8 à 15 chiffres.');if(!document.getElementById('newFormation').value)errors.push('Choisissez une formation.');if(!creationPatterns.password.test(newPassword.value))errors.push('Le mot de passe doit contenir au moins 8 caractères, une lettre et un chiffre.');if(errors.length){event.preventDefault();showCreationFeedback(errors.join(' '));}});
+      [firstName,lastName,newEmail,newPhone,newPassword].forEach(function(field){field.addEventListener('input',updateNewPreview);});updateNewPreview();{% if creation_data %}var feedbackModal=document.getElementById('feedbackModal');if(feedbackModal&&feedbackModal.dataset.showOnLoad==='true'){feedbackModal.addEventListener('hidden.bs.modal',function(){bootstrap.Modal.getOrCreateInstance(creationModal).show();},{once:true});}else{bootstrap.Modal.getOrCreateInstance(creationModal).show();}{% endif %}
     </script>
   </body>
 </html>

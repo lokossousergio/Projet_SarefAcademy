@@ -74,6 +74,7 @@
     </style>
   </head>
   <body class="espace espace-admin">
+    {% include "partials/feedback_modal.html" %}
     <div class="app">
       {% include 'partials/sidebar_admin.html' %}
       <div class="app-col">
@@ -83,20 +84,7 @@
             <a href="{% url 'admin_formateurs' %}">Formateurs</a>
             / Fiche formateur
           </nav>
-          {% for message in messages %}
-          <div
-            class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show"
-            role="alert"
-          >
-            {{ message }}
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="alert"
-              aria-label="Fermer"
-            ></button>
-          </div>
-          {% endfor %} {% if access_to_share %}
+          {% if access_to_share %}
           <section class="s-card s-card-pad mb-4 border-success">
             <div
               class="d-flex flex-wrap justify-content-between align-items-center gap-3"
@@ -147,7 +135,7 @@
           </div>
           <div class="row g-4">
             <div class="col-xl-8">
-              <form method="post">
+              <form method="post" id="formateurProfileForm" novalidate>
                 {% csrf_token %}
                 <section class="s-card s-card-pad mb-4">
                   <div class="d-flex align-items-center gap-3">
@@ -157,12 +145,12 @@
                     <div class="flex-grow-1 min-w-0">
                       <div class="eyebrow-s">Profil pédagogique</div>
                       <h2 class="h5 fw-bold mb-1">
-                        {{ formateur.prenom|default:"Nom du formateur" }} {{ formateur.nom }}
+                        {{ formateur.prenom }} {{ formateur.nom }}
                       </h2>
                       <span
                         class="s-badge {% if formateur.actif %}b-actif{% else %}b-en_cours{% endif %}"
                       >
-                        {% if formateur.actif %}Compte actif{% elif formateur %}Compte suspendu{% else %}Aperçu du profil{% endif %}
+                        {% if formateur.actif %}Compte actif{% else %}Compte suspendu{% endif %}
                       </span>
                     </div>
                     <i class="bi bi-person-vcard fs-3 text-primary"></i>
@@ -180,7 +168,7 @@
                         class="s-input"
                         id="prenom"
                         name="prenom"
-                        value="{{ formateur.prenom|default:'' }}"
+                        value="{% if form_data %}{{ form_data.prenom }}{% else %}{{ formateur.prenom }}{% endif %}"
                         placeholder="Ex. Aïcha"
                         required
                       />
@@ -191,7 +179,7 @@
                         class="s-input"
                         id="nom"
                         name="nom"
-                        value="{{ formateur.nom|default:'' }}"
+                        value="{% if form_data %}{{ form_data.nom }}{% else %}{{ formateur.nom }}{% endif %}"
                         placeholder="Ex. Hounkpe"
                         required
                       />
@@ -205,7 +193,7 @@
                         id="email"
                         name="email"
                         type="email"
-                        value="{{ formateur.email|default:'' }}"
+                        value="{% if form_data %}{{ form_data.email }}{% else %}{{ formateur.email }}{% endif %}"
                         placeholder="nom@exemple.com"
                         required
                       />
@@ -219,7 +207,7 @@
                         id="telephone"
                         name="telephone"
                         type="tel"
-                        value="{{ formateur.telephone|default:'' }}"
+                        value="{% if form_data %}{{ form_data.telephone }}{% else %}{{ formateur.telephone }}{% endif %}"
                         placeholder="+229 00 00 00 00"
                         required
                       />
@@ -238,25 +226,37 @@
                     </div>
                     <i class="bi bi-mortarboard fs-4 text-primary"></i>
                   </div>
-                  <label class="s-label" for="formations">
+                  <label class="s-label">
                     Sélectionner les formations
                   </label>
-                  <select
-                    class="form-select s-input"
-                    id="formations"
-                    name="formations"
-                    multiple
-                    size="5"
-                  >
+                  <p class="small text-secondary mb-2">
+                    Les formations déjà attribuées restent cochées. Cochez-en
+                    d’autres, puis enregistrez le profil.
+                  </p>
+                  <div class="row g-2">
                     {% for formation in formations %}
-                    <option
-                      value="{{ formation.pk }}"
-                      {% if formation in formateur.formations.all %}selected{% endif %}
-                    >
-                      {{ formation.nom }}
-                    </option>
+                    <div class="col-md-6">
+                      <label
+                        class="d-flex align-items-center gap-2 border rounded-3 p-3 h-100"
+                        for="formation-{{ formation.pk }}"
+                      >
+                        <input
+                          class="form-check-input mt-0"
+                          id="formation-{{ formation.pk }}"
+                          type="checkbox"
+                          name="formations"
+                          value="{{ formation.pk }}"
+                          {% if form_data %}{% if formation.pk|stringformat:'s' in form_data.formations %}checked{% endif %}{% elif formation in formateur.formations.all %}checked{% endif %}
+                        />
+                        <span>{{ formation.nom }}</span>
+                      </label>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 small text-secondary">
+                      Aucune formation n’est encore enregistrée.
+                    </div>
                     {% endfor %}
-                  </select>
+                  </div>
                 </section>
                 <section class="s-card s-card-pad mb-4">
                   <div
@@ -277,7 +277,7 @@
                         id="actif"
                         name="actif"
                         value="1"
-                        {% if formateur.actif %}checked{% endif %}
+                        {% if form_data %}{% if form_data.actif %}checked{% endif %}{% elif formateur.actif %}checked{% endif %}
                       />
                       <label class="visually-hidden" for="actif">
                         Compte actif
@@ -291,8 +291,9 @@
                     Accès au compte
                   </h2>
                   <p class="preview-note mb-3">
-                    Réinitialisation des accès. Le mot de passe et le partage ne
-                    sont pas encore reliés.
+                    Le mot de passe actuel n’est pas consultable. Laissez ce
+                    champ vide pour le conserver; un nouveau provisoire sera
+                    affiché après son enregistrement.
                   </p>
                   <label class="s-label" for="password_provisoire">
                     Nouveau mot de passe provisoire
@@ -304,6 +305,7 @@
                       name="password_provisoire"
                       type="text"
                       autocomplete="new-password"
+                      minlength="8"
                       placeholder="Saisir ou générer un mot de passe"
                     />
                     <button
@@ -328,9 +330,9 @@
                       Le message ci-dessous est un aperçu visuel.
                     </small>
                   </div>
-                  <button class="btn-s btn-soft-s mt-3" type="button">
+                  <button class="btn-s btn-soft-s mt-3" type="submit">
                     <i class="bi bi-whatsapp me-1"></i>
-                    Préparer le partage WhatsApp
+                    Enregistrer et préparer le partage WhatsApp
                   </button>
                 </section>
                 <div class="d-flex flex-wrap justify-content-end gap-2">
@@ -340,7 +342,7 @@
                   >
                     Annuler
                   </a>
-                  <button class="btn-s btn-primary-s" type="button">
+                  <button class="btn-s btn-primary-s" type="submit">
                     <i class="bi bi-save me-1"></i>
                     Enregistrer les modifications
                   </button>
@@ -373,7 +375,7 @@
                     Zone de suppression
                   </h2>
                   <p class="small text-secondary">
-                    Interface prête. La suppression sera reliée ultérieurement.
+                    La suppression retire le profil et son accès formateur.
                   </p>
                   <button
                     class="btn-s btn-outline-danger-s w-100"
@@ -412,8 +414,9 @@
                   ></button>
                 </div>
                 <div class="modal-body">
-                  Cette interface est une maquette. La suppression n’est pas
-                  encore reliée.
+                  Voulez-vous vraiment supprimer le profil de
+                  <strong>{{ formateur.prenom }} {{ formateur.nom }}</strong> ?
+                  Cette action est définitive.
                 </div>
                 <div class="modal-footer border-0">
                   <button
@@ -423,10 +426,14 @@
                   >
                     Fermer
                   </button>
-                  <button type="button" class="btn-s btn-danger-s" disabled>
-                    <i class="bi bi-trash3 me-1"></i>
-                    Supprimer le compte · aperçu
-                  </button>
+                  <form method="post" action="{% url 'admin_formateur_detail' formateur.pk %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="delete_formateur" />
+                    <button type="submit" class="btn-s btn-danger-s">
+                      <i class="bi bi-trash3 me-1"></i>
+                      Supprimer définitivement
+                    </button>
+                  </form>
                 </div>
               </div>
             </div>
@@ -441,7 +448,16 @@
         phoneField = document.getElementById("telephone"),
         emailField = document.getElementById("email"),
         firstName = document.getElementById("prenom"),
-        lastName = document.getElementById("nom");
+        lastName = document.getElementById("nom"),
+        profileForm = document.getElementById("formateurProfileForm");
+
+      const profilePatterns = {
+        personName: /^[\p{L}\p{M}][\p{L}\p{M} '-]{1,99}$/u,
+        email: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
+        phone: /^\+?[0-9][0-9\s().-]{6,18}$/,
+        password: /^(?=.*[A-Za-z])(?=.*\d).{8,}$/,
+      };
+
       function updateWhatsApp() {
         const pass = passField.value.trim(),
           name = (firstName.value + " " + lastName.value).trim();
@@ -450,6 +466,38 @@
           : "Saisissez ou générez un mot de passe provisoire pour préparer le message.";
         document.getElementById("whatsappMessage").textContent = message;
       }
+
+      profileForm.addEventListener("submit", function (event) {
+        const errors = [];
+        const prenom = firstName.value.trim();
+        const nom = lastName.value.trim();
+        const email = emailField.value.trim();
+        const telephone = phoneField.value.trim();
+        const password = passField.value.trim();
+        const phoneDigits = telephone.replace(/\D/g, "");
+
+        if (!profilePatterns.personName.test(prenom)) {
+          errors.push("Le prénom doit contenir au moins 2 lettres; accents, espaces, apostrophes et tirets sont acceptés.");
+        }
+        if (!profilePatterns.personName.test(nom)) {
+          errors.push("Le nom doit contenir au moins 2 lettres; accents, espaces, apostrophes et tirets sont acceptés.");
+        }
+        if (!profilePatterns.email.test(email)) {
+          errors.push("Saisissez une adresse email valide.");
+        }
+        if (!profilePatterns.phone.test(telephone) || phoneDigits.length < 8 || phoneDigits.length > 15) {
+          errors.push("Le téléphone doit contenir de 8 à 15 chiffres; +, espaces, parenthèses, points et tirets sont acceptés.");
+        }
+        if (password && !profilePatterns.password.test(password)) {
+          errors.push("Le mot de passe provisoire doit contenir au moins 8 caractères, une lettre et un chiffre.");
+        }
+
+        if (errors.length) {
+          event.preventDefault();
+          window.showFeedbackModal(errors.join(" "), false);
+        }
+      });
+
       [passField, phoneField, emailField, firstName, lastName].forEach(
         function (field) {
           field.addEventListener("input", updateWhatsApp);

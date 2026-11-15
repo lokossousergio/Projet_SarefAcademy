@@ -1,0 +1,54 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/modal_global.css' %}" />
+<div class="modal fade saref-feedback-modal" id="feedbackModal" data-show-on-load="{% if messages %}true{% else %}false{% endif %}" tabindex="-1" aria-labelledby="feedbackModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="feedback-brand">
+        <img src="{% static 'images/saref-mark.png' %}" alt="Logo Saref Academy" />
+        <span>Saref <b>Academy</b></span>
+      </div>
+      <div class="feedback-icon {% for message in messages %}{% if forloop.first and 'success' in message.tags %}is-success{% endif %}{% endfor %}" id="feedbackIcon">
+        <i class="bi {% for message in messages %}{% if forloop.first and 'success' in message.tags %}bi-check2{% else %}bi-exclamation-lg{% endif %}{% empty %}bi-exclamation-lg{% endfor %}" id="feedbackIconGlyph" aria-hidden="true"></i>
+      </div>
+      <h2 class="modal-title" id="feedbackModalTitle">{% for message in messages %}{% if forloop.first and 'success' in message.tags %}C’est réussi !{% elif forloop.first %}Vérifiez les informations{% endif %}{% empty %}Vérifiez les informations{% endfor %}</h2>
+      <div class="feedback-message" id="feedbackModalBody">
+        {% for message in messages %}<p>{{ message }}</p>{% endfor %}
+      </div>
+      <button type="button" class="btn feedback-button" data-bs-dismiss="modal">Compris</button>
+      <button type="button" class="btn-close feedback-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+    </div>
+  </div>
+</div>
+<style>
+  .saref-feedback-modal .modal-content { position: relative; align-items: center; padding: 2rem 2rem 1.75rem; border: 1px solid #e5eaf5; border-radius: 1.4rem; text-align: center; box-shadow: 0 24px 80px rgba(15, 23, 42, .2); }
+  .saref-feedback-modal .feedback-brand { display: flex; align-items: center; gap: .55rem; margin-bottom: 1.25rem; color: #14255e; font-size: .9rem; font-weight: 700; }
+  .saref-feedback-modal .feedback-brand img { width: 34px; height: 34px; object-fit: contain; }
+  .saref-feedback-modal .feedback-brand b { color: #335cec; }
+  .saref-feedback-modal .feedback-icon { display: grid; width: 76px; height: 76px; place-items: center; margin-bottom: 1rem; border-radius: 50%; background: #fff1f0; color: #d92d20; font-size: 2.5rem; }
+  .saref-feedback-modal .feedback-icon.is-success { background: #eaf8ef; color: #16803c; }
+  .saref-feedback-modal .modal-title { color: #0f172a; font-size: 1.35rem; font-weight: 800; }
+  .saref-feedback-modal .feedback-message { max-width: 34rem; margin: .55rem 0 1.4rem; color: #475569; line-height: 1.6; }
+  .saref-feedback-modal .feedback-message p { margin: 0; }
+  .saref-feedback-modal .feedback-message p + p { margin-top: .35rem; }
+  .saref-feedback-modal .feedback-button { min-width: 150px; padding: .7rem 1.25rem; border: 0; border-radius: .75rem; background: #335cec; color: white; font-weight: 700; }
+  .saref-feedback-modal .feedback-button:hover { background: #2b4ec9; color: white; }
+  .saref-feedback-modal .feedback-close { position: absolute; top: 1rem; right: 1rem; }
+  @media (max-width: 575px) { .saref-feedback-modal .modal-content { padding: 1.75rem 1.25rem 1.35rem; } }
+</style>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("feedbackModal");
+    if (modal && window.bootstrap && modal.dataset.showOnLoad === "true") {
+      bootstrap.Modal.getOrCreateInstance(modal).show();
+    }
+  });
+  window.showFeedbackModal = function (message, success) {
+    const modal = document.getElementById("feedbackModal");
+    if (!modal || !window.bootstrap) return;
+    document.getElementById("feedbackModalBody").textContent = message;
+    document.getElementById("feedbackModalTitle").textContent = success ? "C’est réussi !" : "Vérifiez les informations";
+    document.getElementById("feedbackIcon").classList.toggle("is-success", Boolean(success));
+    document.getElementById("feedbackIconGlyph").className = success ? "bi bi-check2" : "bi bi-exclamation-lg";
+    bootstrap.Modal.getOrCreateInstance(modal).show();
+  };
+</script>

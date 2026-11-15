@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
   </head>
   <body class="espace espace-admin">
+    {% include "partials/feedback_modal.html" %}
     <div class="app">
       {% include 'partials/sidebar_admin.html' %}
       <div class="app-col">
@@ -56,11 +57,16 @@
                   "
                 >
                   <div class="fs-5 fw-bold">
-                    {{ vague_courante.nom|default:"—" }}
+                    {% if vague_courante %}{{ vague_courante.nom }}{% else %}Aucune vague active{% endif %}
                   </div>
                   <small class="text-white-50">Vague courante</small>
                   <div class="small mt-2">
-                    {{ nb_candidatures|default:"—" }} candidatures · {{ nb_etudiants|default:"—" }} étudiants
+                    {% if vague_courante %}
+                      {{ vague_courante.annee_academique }}<br />
+                      {{ vague_courante.date_debut|date:"d/m/Y" }} – {{ vague_courante.date_fin|date:"d/m/Y" }}
+                    {% else %}
+                      <a class="text-white" href="{% url 'admin_configuration_vague' %}">Créer une vague active</a>
+                    {% endif %}
                   </div>
                 </div>
               </div>
@@ -75,9 +81,9 @@
                     <i class="bi bi-clipboard-check"></i>
                   </span>
                 </div>
-                <div class="stat-value">{{ nb_candidatures|default:"—" }}</div>
+                <div class="stat-value">{{ nb_candidatures }}</div>
                 <div class="stat-sub">
-                  En attente : {{ nb_candidatures_attente|default:"—" }}
+                  En attente : {{ nb_candidatures_attente }}
                 </div>
               </div>
             </div>
@@ -89,7 +95,7 @@
                     <i class="bi bi-people"></i>
                   </span>
                 </div>
-                <div class="stat-value">{{ nb_etudiants|default:"—" }}</div>
+                <div class="stat-value">{{ nb_etudiants }}</div>
                 <div class="stat-sub">Profils enregistrés</div>
               </div>
             </div>
@@ -102,10 +108,10 @@
                   </span>
                 </div>
                 <div class="stat-value">
-                  {{ nb_formations_actives|default:"—" }}
+                  {{ nb_formations_actives }}
                 </div>
                 <div class="stat-sub">
-                  Sur {{ nb_formations|default:"—" }} formation(s)
+                  Sur {{ nb_formations }} formation(s)
                 </div>
               </div>
             </div>
@@ -118,7 +124,7 @@
                   </span>
                 </div>
                 <div class="stat-value">
-                  {{ nb_formateurs_actifs|default:"—" }}
+                  {{ nb_formateurs_actifs }}
                 </div>
                 <div class="stat-sub">Comptes actifs</div>
               </div>
@@ -151,6 +157,13 @@
                     href="{% url 'admin_formateurs' %}"
                   >
                     Comptes formateurs
+                    <i class="bi bi-arrow-right"></i>
+                  </a>
+                  <a
+                    class="btn-s btn-soft-s justify-content-between"
+                    href="{% url 'admin_vagues' %}"
+                  >
+                    Vagues et années
                     <i class="bi bi-arrow-right"></i>
                   </a>
                   <a

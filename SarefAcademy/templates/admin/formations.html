@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
   </head>
   <body class="espace espace-admin">
+    {% include "partials/feedback_modal.html" %}
     <div class="app">
       {% include 'partials/sidebar_admin.html' %}
       <div class="app-col">
@@ -109,9 +110,13 @@
             <div class="col-md-6 col-xl-4" data-status="{{ formation.statut }}">
               <article class="s-card overflow-hidden h-100 hover-lift reveal">
                 <div class="cover {% cycle 'c1' 'c2' 'c3' 'c4' 'c5' %}">
+                  {% if formation.photo %}
+                  <img src="{{ formation.photo.url }}" alt="Couverture de {{ formation.nom }}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;" />
+                  {% else %}
                   <i
                     class="bi {% cycle 'bi-code-slash' 'bi-palette' 'bi-megaphone' 'bi-camera-video' 'bi-cpu' %}"
                   ></i>
+                  {% endif %}
                 </div>
                 <div class="course-body d-flex flex-column">
                   <div
@@ -148,7 +153,7 @@
                   </div>
                   <a
                     class="btn-s btn-primary-s w-100 mt-auto"
-                    href="{% url 'admin_formation_detail' formation.pk %}"
+                    href="{% url 'admin_formation_detail' pk=formation.pk %}"
                   >
                     Gérer le programme
                     <i class="bi bi-arrow-right ms-1"></i>
@@ -157,85 +162,10 @@
               </article>
             </div>
             {% empty %}
-            <div class="col-md-6 col-xl-4" data-status="active">
-              <article class="s-card overflow-hidden h-100 hover-lift reveal">
-                <div class="cover c1"><i class="bi bi-code-slash"></i></div>
-                <div class="course-body d-flex flex-column">
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <span class="s-badge b-actif">Active</span>
-                    <span class="small text-secondary">4 mois</span>
-                  </div>
-                  <h2 class="h5 mt-2">Développement Web</h2>
-                  <p class="small text-secondary">
-                    Parcours pour découvrir la création de sites web.
-                  </p>
-                  <div class="course-meta mb-3">
-                    <span>
-                      <i class="bi bi-cash"></i>
-                      120 000 FCFA
-                    </span>
-                    <span>
-                      <i class="bi bi-layers"></i>
-                      3 tranches
-                    </span>
-                  </div>
-                  <div
-                    class="d-flex justify-content-between small text-secondary mb-3"
-                  >
-                    <span>3 modules · 6 chapitres</span>
-                    <span>1 candidature</span>
-                  </div>
-                  <a
-                    class="btn-s btn-primary-s w-100 mt-auto"
-                    href="{% url 'admin_formation_detail' 1 %}"
-                  >
-                    Gérer le programme
-                    <i class="bi bi-arrow-right ms-1"></i>
-                  </a>
-                </div>
-              </article>
-            </div>
-            <div class="col-md-6 col-xl-4" data-status="active">
-              <article class="s-card overflow-hidden h-100 hover-lift reveal">
-                <div class="cover c3"><i class="bi bi-megaphone"></i></div>
-                <div class="course-body d-flex flex-column">
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <span class="s-badge b-actif">Active</span>
-                    <span class="small text-secondary">3 mois</span>
-                  </div>
-                  <h2 class="h5 mt-2">Marketing Digital</h2>
-                  <p class="small text-secondary">
-                    Parcours consacré au marketing numérique.
-                  </p>
-                  <div class="course-meta mb-3">
-                    <span>
-                      <i class="bi bi-cash"></i>
-                      90 000 FCFA
-                    </span>
-                    <span>
-                      <i class="bi bi-layers"></i>
-                      3 tranches
-                    </span>
-                  </div>
-                  <div
-                    class="d-flex justify-content-between small text-secondary mb-3"
-                  >
-                    <span>3 modules · 4 chapitres</span>
-                    <span>1 candidature</span>
-                  </div>
-                  <a
-                    class="btn-s btn-primary-s w-100 mt-auto"
-                    href="{% url 'admin_formation_detail' 2 %}"
-                  >
-                    Gérer le programme
-                    <i class="bi bi-arrow-right ms-1"></i>
-                  </a>
-                </div>
-              </article>
+            <div class="col-12">
+              <div class="empty-s">
+                Aucune formation n’a encore été créée.
+              </div>
             </div>
             {% endfor %}
           </div>
@@ -255,6 +185,8 @@
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <form
           method="post"
+          enctype="multipart/form-data"
+          id="newFormationForm"
           class="modal-content"
           style="border-radius: 20px; border: 0"
         >
@@ -293,6 +225,7 @@
                   name="duree"
                   type="number"
                   min="1"
+                  step="1"
                   required
                 />
               </div>
@@ -304,6 +237,7 @@
                   name="prix"
                   type="number"
                   min="0"
+                  step="0.01"
                   required
                 />
               </div>
@@ -317,9 +251,18 @@
                   name="nb_tranches"
                   type="number"
                   min="1"
+                  step="1"
                   value="3"
                   required
                 />
+              </div>
+              <div class="col-md-6">
+                <label class="s-label" for="statut">Statut de la formation</label>
+                <select class="s-input" id="statut" name="statut">
+                  <option value="active" selected>Active</option>
+                  <option value="brouillon">Brouillon</option>
+                  <option value="archivee">Archivée</option>
+                </select>
               </div>
               <div class="col-12">
                 <label class="s-label" for="description">Description</label>
@@ -329,6 +272,10 @@
                   name="description"
                   rows="3"
                 ></textarea>
+              </div>
+              <div class="col-12">
+                <label class="s-label" for="photo">Photo de couverture</label>
+                <input class="s-input" id="photo" name="photo" type="file" accept="image/*" />
               </div>
             </div>
           </div>
@@ -348,6 +295,24 @@
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Vérifie les nombres et la taille de la photo avant l'envoi.
+      document.getElementById("newFormationForm").addEventListener("submit", function (event) {
+        const nom = document.getElementById("nom").value.trim();
+        const duree = document.getElementById("duree").value;
+        const prix = document.getElementById("prix").value;
+        const tranches = document.getElementById("nb_tranches").value;
+        const photo = document.getElementById("photo").files[0];
+        const nomValide = /^[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ0-9 '\-]{1,99}$/.test(nom);
+        const nombresValides = /^\d+$/.test(duree) && Number(duree) > 0 && /^\d+(\.\d{1,2})?$/.test(prix) && Number(prix) >= 0 && /^\d+$/.test(tranches) && Number(tranches) > 0;
+        const photoTropLourde = photo && photo.size > 2 * 1024 * 1024;
+        if (!nomValide || !nombresValides || photoTropLourde) {
+          event.preventDefault();
+          const message = photoTropLourde ? "La photo de couverture ne doit pas dépasser 2 Mo." : "Vérifiez le nom, la durée, le prix et le nombre de tranches.";
+          showFeedbackModal(message);
+        }
+      });
+    </script>
     <script src="{% static 'js/espace.js' %}" defer></script>
   </body>
 </html>
