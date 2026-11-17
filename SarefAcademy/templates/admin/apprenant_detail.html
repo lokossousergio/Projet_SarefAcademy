@@ -31,6 +31,7 @@
     </script>
   </head>
   <body class="espace espace-admin">
+    {% include "partials/feedback_modal.html" %}
     <div class="app">
       {% include 'partials/sidebar_admin.html' %}
       <div class="app-col">
@@ -38,25 +39,36 @@
         <main class="app-main">
           <nav class="crumb" aria-label="Fil d’Ariane">
             <a href="{% url 'admin_apprenants' %}">Apprenants</a>
-            / Aïcha Kora
+            / {{ etudiant.prenom }} {{ etudiant.nom }}
           </nav>
           <div class="page-head">
             <div>
               <h1 class="page-title">Fiche apprenant</h1>
               <p class="page-sub">
-                Dossier complet : candidatures, progression et paiements
+                Dossier complet : candidatures et paiements
               </p>
             </div>
             <div class="d-flex flex-wrap gap-2">
               <a
                 class="btn-s btn-line-s"
-                href="https://wa.me/22997000000"
+                href="{{ whatsapp_url }}"
                 target="_blank"
                 rel="noopener"
               >
                 <i class="bi bi-whatsapp"></i>
                 Écrire sur WhatsApp
               </a>
+              {% if est_bloque %}
+              <button
+                class="btn-s btn-outline-success-s"
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#bloquer"
+              >
+                <i class="bi bi-check-circle"></i>
+                Débloquer l’accès
+              </button>
+              {% else %}
               <button
                 class="btn-s btn-outline-danger-s"
                 type="button"
@@ -66,32 +78,45 @@
                 <i class="bi bi-slash-circle"></i>
                 Bloquer l’accès
               </button>
+              {% endif %}
             </div>
           </div>
           <div class="row g-3">
             <div class="col-xl-4">
               <div class="s-card s-card-pad text-center reveal">
-                <span class="avatar avatar-xl mx-auto mb-3">AK</span>
-                <h2 class="h5 fw-bold mb-1">Aïcha Kora</h2>
+                <span class="avatar avatar-xl mx-auto mb-3">
+                  {% if etudiant.photo %}
+                    <img src="{{ etudiant.photo.url }}" alt="{{ etudiant }}" class="w-100 h-100 rounded-circle object-fit-cover" />
+                  {% elif etudiant.prenom and etudiant.nom %}
+                    {{ etudiant.prenom|slice:":1"|upper }}{{ etudiant.nom|slice:":1"|upper }}
+                  {% else %}
+                    {{ etudiant.nom|slice:":2"|upper }}
+                  {% endif %}
+                </span>
+                <h2 class="h5 fw-bold mb-1">{{ etudiant.prenom }} {{ etudiant.nom }}</h2>
                 <div class="mb-3">
-                  <span class="s-badge b-actif">Actif</span>
+                  {% if est_bloque %}
+                    <span class="s-badge b-bloque">Bloqué</span>
+                  {% else %}
+                    <span class="s-badge b-actif">Actif</span>
+                  {% endif %}
                 </div>
                 <div class="text-start">
                   <div class="info-row">
                     <span>E-mail</span>
-                    <b>aicha.kora@mail.com</b>
+                    <b>{{ etudiant.email }}</b>
                   </div>
                   <div class="info-row">
                     <span>Téléphone</span>
-                    <b>+229 97 00 00 00</b>
+                    <b>{{ etudiant.telephone }}</b>
                   </div>
                   <div class="info-row">
                     <span>Niveau d'études</span>
-                    <b>Licence 3</b>
+                    <b>{{ etudiant.niveau_etudes|default:"Non renseigné" }}</b>
                   </div>
                   <div class="info-row">
-                    <span>Inscrite le</span>
-                    <b>12 sept. 2026</b>
+                    <span>Inscrit(e) le</span>
+                    <b>{{ etudiant.date_inscription|date:"j M Y" }}</b>
                   </div>
                 </div>
               </div>
@@ -107,25 +132,23 @@
                       </span>
                     </div>
                     <div class="stat-value">
-                      <span data-count="4" data-suffix="" data-dec="0">4</span>
+                      <span data-count="{{ nb_candidatures }}" data-suffix="" data-dec="0">{{ nb_candidatures }}</span>
                     </div>
-                    <div class="stat-sub">candidatures</div>
+                    <div class="stat-sub">candidature{{ nb_candidatures|pluralize }}</div>
                   </div>
                 </div>
                 <div class="col-sm-4">
                   <div class="s-card stat hover-lift reveal" style="--d: 0.07s">
                     <div class="stat-top">
-                      <span class="stat-label">Progression</span>
+                      <span class="stat-label">Total payé</span>
                       <span class="stat-icon green">
-                        <i class="bi bi-bar-chart"></i>
+                        <i class="bi bi-wallet2"></i>
                       </span>
                     </div>
                     <div class="stat-value">
-                      <span data-count="31" data-suffix=" %" data-dec="0">
-                        31 %
-                      </span>
+                      {{ total_paye|floatformat:0 }}
                     </div>
-                    <div class="stat-sub">formation en cours</div>
+                    <div class="stat-sub">FCFA · montants réglés</div>
                   </div>
                 </div>
                 <div class="col-sm-4">
@@ -136,8 +159,8 @@
                         <i class="bi bi-cash-coin"></i>
                       </span>
                     </div>
-                    <div class="stat-value">150 000</div>
-                    <div class="stat-sub">FCFA · tranche 3</div>
+                    <div class="stat-value">{{ reste_a_payer|floatformat:0 }}</div>
+                    <div class="stat-sub">FCFA · solde restant</div>
                   </div>
                 </div>
               </div>
@@ -151,37 +174,31 @@
                       <tr>
                         <th>Formation</th>
                         <th>Vague</th>
+                        <th>Date de candidature</th>
                         <th>Statut</th>
-                        <th>Progression</th>
                       </tr>
                     </thead>
                     <tbody>
+                      {% for cand in candidatures %}
                       <tr>
-                        <td><b>Développement Web Full-Stack</b></td>
-                        <td>2026-A</td>
-                        <td><span class="s-badge b-accepte">Accepté</span></td>
-                        <td>31 %</td>
-                      </tr>
-                      <tr>
-                        <td><b>Marketing Digital</b></td>
-                        <td>2026-A</td>
+                        <td><b>{{ cand.formation.nom }}</b></td>
+                        <td>{{ cand.configVague.nom }}</td>
+                        <td>{{ cand.date_candidature|date:"j M Y" }}</td>
                         <td>
-                          <span class="s-badge b-attente">En attente</span>
+                          {% if cand.statut == 'en_attente' %}
+                            <span class="s-badge b-attente">En attente</span>
+                          {% elif cand.statut == 'accepte' %}
+                            <span class="s-badge b-accepte">Accepté</span>
+                          {% elif cand.statut == 'refuse' %}
+                            <span class="s-badge b-refuse">Refusé</span>
+                          {% endif %}
                         </td>
-                        <td>—</td>
                       </tr>
+                      {% empty %}
                       <tr>
-                        <td><b>UI/UX Design</b></td>
-                        <td>2025-B</td>
-                        <td><span class="s-badge b-accepte">Accepté</span></td>
-                        <td>100 %</td>
+                        <td colspan="4" class="text-center text-muted py-3">Aucune candidature pour cet apprenant.</td>
                       </tr>
-                      <tr>
-                        <td><b>Montage vidéo</b></td>
-                        <td>2025-A</td>
-                        <td><span class="s-badge b-refuse">Refusé</span></td>
-                        <td>—</td>
-                      </tr>
+                      {% endfor %}
                     </tbody>
                   </table>
                 </div>
@@ -206,30 +223,20 @@
                       </tr>
                     </thead>
                     <tbody>
+                      {% for paiement in paiements %}
                       <tr>
-                        <td>2 oct. 2026</td>
-                        <td>Développement Web</td>
-                        <td>Tranche 2</td>
-                        <td class="fw-semibold">150 000 FCFA</td>
-                        <td>Virement</td>
+                        <td>{{ paiement.date|date:"j M Y" }}</td>
+                        <td>{{ paiement.formation.nom }}</td>
+                        <td>Tranche {{ paiement.tranche }}</td>
+                        <td class="fw-semibold">{{ paiement.montant|floatformat:0 }} FCFA</td>
+                        <td>{{ paiement.get_mode_display }}</td>
                         <td><span class="s-badge b-paye">Validé</span></td>
                       </tr>
+                      {% empty %}
                       <tr>
-                        <td>14 sept. 2026</td>
-                        <td>Développement Web</td>
-                        <td>Tranche 1</td>
-                        <td class="fw-semibold">150 000 FCFA</td>
-                        <td>Mobile Money</td>
-                        <td><span class="s-badge b-paye">Validé</span></td>
+                        <td colspan="6" class="text-center text-muted py-3">Aucun paiement enregistré pour le moment.</td>
                       </tr>
-                      <tr>
-                        <td>28 mai 2025</td>
-                        <td>UI/UX Design</td>
-                        <td>Tranche 3</td>
-                        <td class="fw-semibold">100 000 FCFA</td>
-                        <td>Espèces</td>
-                        <td><span class="s-badge b-paye">Validé</span></td>
-                      </tr>
+                      {% endfor %}
                     </tbody>
                   </table>
                 </div>
@@ -246,19 +253,19 @@
             <div class="modal-dialog modal-dialog-centered">
               <form
                 method="post"
-                enctype="multipart/form-data"
                 class="modal-content"
                 style="border-radius: 20px; border: 0"
               >
+                {% csrf_token %}
                 <div class="modal-header border-0 pb-0">
                   <h2
                     class="modal-title fs-5 fw-bold d-flex align-items-center"
                     id="bloquer-t"
                   >
                     <span class="stat-icon me-2">
-                      <i class="bi bi-slash-circle"></i>
+                      <i class="bi {% if est_bloque %}bi-check-circle text-success{% else %}bi-slash-circle text-danger{% endif %}"></i>
                     </span>
-                    Bloquer l'accès de Aïcha Kora ?
+                    {% if est_bloque %}Débloquer l'accès de {{ etudiant.prenom }} {{ etudiant.nom }} ?{% else %}Bloquer l'accès de {{ etudiant.prenom }} {{ etudiant.nom }} ?{% endif %}
                   </h2>
                   <button
                     type="button"
@@ -269,9 +276,11 @@
                 </div>
                 <div class="modal-body">
                   <p class="mb-0 text-secondary">
-                    Elle ne pourra plus ouvrir les modules tant que le blocage
-                    n’est pas levé (paiement en retard). Ses données restent
-                    conservées.
+                    {% if est_bloque %}
+                      L'apprenant pourra de nouveau accéder à l'ensemble de ses formations et cours actifs.
+                    {% else %}
+                      Il ne pourra plus ouvrir les modules tant que le blocage n’est pas levé (paiement en retard). Ses données restent conservées.
+                    {% endif %}
                   </p>
                 </div>
                 <div class="modal-footer border-0 pt-0">
@@ -282,9 +291,15 @@
                   >
                     Annuler
                   </button>
+                  {% if est_bloque %}
+                  <button type="submit" class="btn-s btn-success-s">
+                    Débloquer l’accès
+                  </button>
+                  {% else %}
                   <button type="submit" class="btn-s btn-danger-s">
                     Bloquer l’accès
                   </button>
+                  {% endif %}
                 </div>
               </form>
             </div>

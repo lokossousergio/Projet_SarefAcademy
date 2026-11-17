@@ -39,7 +39,7 @@
             <a href="{% url 'apprenant_formations' %}">Mes formations</a>
             / {{ formation.nom }}
           </nav>
-          <section class="hero mb-4">
+          <section class="hero mb-4 position-relative overflow-hidden"{% if formation.photo %} style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.3) 100%), url('{{ formation.photo.url }}'); background-size: cover; background-position: center;"{% endif %}>
             <div class="row align-items-center g-4">
               <div class="col-lg-8">
                 <div class="d-flex flex-wrap gap-2 mb-3">

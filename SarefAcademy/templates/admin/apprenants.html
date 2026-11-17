@@ -31,6 +31,7 @@
     </script>
   </head>
   <body class="espace espace-admin">
+    {% include "partials/feedback_modal.html" %}
     <div class="app">
       {% include 'partials/sidebar_admin.html' %}
       <div class="app-col">
@@ -40,14 +41,14 @@
             <div>
               <h1 class="page-title">Apprenants</h1>
               <p class="page-sub">
-                187 apprenants inscrits · un apprenant peut suivre plusieurs
+                {{ total_apprenants }} apprenant{{ total_apprenants|pluralize }} inscrit{{ total_apprenants|pluralize }} · un apprenant peut suivre plusieurs
                 formations
               </p>
             </div>
             <div class="d-flex flex-wrap gap-2">
-              <a class="btn-s btn-line-s" href="#">
+              <a class="btn-s btn-line-s" href="?export=csv{% if filtre_type %}&type={{ filtre_type }}{% endif %}{% if filtre_q %}&q={{ filtre_q }}{% endif %}{% if filtre_formation %}&formation={{ filtre_formation }}{% endif %}{% if filtre_statut %}&statut={{ filtre_statut }}{% endif %}">
                 <i class="bi bi-download"></i>
-                Exporter
+                Exporter (CSV)
               </a>
             </div>
           </div>
@@ -59,54 +60,79 @@
                   <span class="stat-icon"><i class="bi bi-people"></i></span>
                 </div>
                 <div class="stat-value">
-                  <span data-count="187" data-suffix="" data-dec="0">187</span>
+                  <span data-count="{{ total_apprenants }}" data-suffix="" data-dec="0">{{ total_apprenants }}</span>
                 </div>
-                <div class="stat-sub">comptes validés</div>
+                <div class="stat-sub">comptes enregistrés</div>
               </div>
             </div>
             <div class="col-6 col-xl-3">
               <div class="s-card stat hover-lift reveal" style="--d: 0.07s">
                 <div class="stat-top">
-                  <span class="stat-label">Actifs cette semaine</span>
+                  <span class="stat-label">Avec candidature</span>
                   <span class="stat-icon green">
-                    <i class="bi bi-activity"></i>
+                    <i class="bi bi-mortarboard"></i>
                   </span>
                 </div>
                 <div class="stat-value">
-                  <span data-count="151" data-suffix="" data-dec="0">151</span>
+                  <span data-count="{{ avec_candidature_count }}" data-suffix="" data-dec="0">{{ avec_candidature_count }}</span>
                 </div>
-                <div class="stat-sub">connexions récentes</div>
+                <div class="stat-sub">ont déjà postulé</div>
               </div>
             </div>
             <div class="col-6 col-xl-3">
               <div class="s-card stat hover-lift reveal" style="--d: 0.14s">
                 <div class="stat-top">
-                  <span class="stat-label">Multi-formations</span>
-                  <span class="stat-icon"><i class="bi bi-layers"></i></span>
+                  <span class="stat-label">Sans candidature</span>
+                  <span class="stat-icon amber">
+                    <i class="bi bi-person-dash"></i>
+                  </span>
                 </div>
                 <div class="stat-value">
-                  <span data-count="34" data-suffix="" data-dec="0">34</span>
+                  <span data-count="{{ sans_candidature_count }}" data-suffix="" data-dec="0">{{ sans_candidature_count }}</span>
                 </div>
-                <div class="stat-sub">suivent 2 formations ou plus</div>
+                <div class="stat-sub">inscrits sans choix</div>
               </div>
             </div>
             <div class="col-6 col-xl-3">
               <div class="s-card stat hover-lift reveal" style="--d: 0.21s">
                 <div class="stat-top">
-                  <span class="stat-label">Bloqués (impayé)</span>
+                  <span class="stat-label">Bloqués (accès)</span>
                   <span class="stat-icon red">
                     <i class="bi bi-slash-circle"></i>
                   </span>
                 </div>
                 <div class="stat-value">
-                  <span data-count="2" data-suffix="" data-dec="0">2</span>
+                  <span data-count="{{ bloques_count }}" data-suffix="" data-dec="0">{{ bloques_count }}</span>
                 </div>
                 <div class="stat-sub">accès suspendu</div>
               </div>
             </div>
           </div>
           <form method="get" class="s-card toolbar reveal">
-            <div class="search-box">
+            <nav class="pill-tabs" aria-label="Filtrer">
+              <a
+                class="pill {% if not filtre_type %}active{% endif %}"
+                href="?type={% if filtre_q %}&q={{ filtre_q }}{% endif %}{% if filtre_formation %}&formation={{ filtre_formation }}{% endif %}{% if filtre_statut %}&statut={{ filtre_statut }}{% endif %}"
+              >
+                Tous
+                <span class="n">{{ total_apprenants }}</span>
+              </a>
+              <a
+                class="pill {% if filtre_type == 'avec' %}active{% endif %}"
+                href="?type=avec{% if filtre_q %}&q={{ filtre_q }}{% endif %}{% if filtre_formation %}&formation={{ filtre_formation }}{% endif %}{% if filtre_statut %}&statut={{ filtre_statut }}{% endif %}"
+              >
+                Avec candidature
+                <span class="n">{{ avec_candidature_count }}</span>
+              </a>
+              <a
+                class="pill {% if filtre_type == 'sans' %}active{% endif %}"
+                href="?type=sans{% if filtre_q %}&q={{ filtre_q }}{% endif %}{% if filtre_formation %}&formation={{ filtre_formation }}{% endif %}{% if filtre_statut %}&statut={{ filtre_statut }}{% endif %}"
+              >
+                Sans candidature
+                <span class="n">{{ sans_candidature_count }}</span>
+              </a>
+            </nav>
+            <div class="search-box ms-lg-auto">
               <i class="bi bi-search"></i>
               <label class="visually-hidden" for="q">Rechercher</label>
               <input
@@ -117,8 +143,12 @@
                 placeholder="Rechercher un apprenant…"
                 data-list="#t-app"
                 data-search
+                value="{{ filtre_q }}"
               />
             </div>
+            {% if filtre_type %}
+            <input type="hidden" name="type" value="{{ filtre_type }}" />
+            {% endif %}
             <label class="visually-hidden" for="f">Formation</label>
             <select
               id="f"
@@ -128,10 +158,9 @@
               data-match
             >
               <option value="">Toutes les formations</option>
-              <option>Développement Web Full-Stack</option>
-              <option>UI/UX Design</option>
-              <option>Marketing Digital</option>
-              <option>Data &amp; IA</option>
+              {% for f in formations %}
+              <option value="{{ f.nom }}" {% if filtre_formation == f.nom %}selected{% endif %}>{{ f.nom }}</option>
+              {% endfor %}
             </select>
             <label class="visually-hidden" for="s">Statut</label>
             <select
@@ -142,8 +171,8 @@
               data-match
             >
               <option value="">Tous les statuts</option>
-              <option>Actif</option>
-              <option>Bloqué</option>
+              <option value="actif" {% if filtre_statut == 'actif' %}selected{% endif %}>Actif</option>
+              <option value="bloque" {% if filtre_statut == 'bloque' or filtre_statut == 'bloqué' %}selected{% endif %}>Bloqué</option>
             </select>
           </form>
           <div class="s-card overflow-hidden reveal">
@@ -161,284 +190,90 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr data-status="actif">
+                  {% for etudiant in etudiants %}
+                  <tr data-status="{% if etudiant.nb_bloques > 0 %}bloque{% else %}actif{% endif %}">
                     <td>
                       <div class="user-cell">
-                        <span class="avatar">AK</span>
+                        <span class="avatar">
+                          {% if etudiant.photo %}
+                            <img src="{{ etudiant.photo.url }}" alt="{{ etudiant }}" class="w-100 h-100 rounded-circle object-fit-cover" />
+                          {% elif etudiant.prenom and etudiant.nom %}
+                            {{ etudiant.prenom|slice:":1"|upper }}{{ etudiant.nom|slice:":1"|upper }}
+                          {% else %}
+                            {{ etudiant.nom|slice:":2"|upper }}
+                          {% endif %}
+                        </span>
                         <div>
-                          <b>Aïcha Kora</b>
-                          <small>aicha.kora@mail.com</small>
+                          <b>{{ etudiant.prenom }} {{ etudiant.nom }}</b>
+                          <small>{{ etudiant.email }}</small>
                         </div>
                       </div>
                     </td>
-                    <td>+229 97 00 00 00</td>
-                    <td>Licence 2</td>
+                    <td>{{ etudiant.telephone }}</td>
+                    <td>{{ etudiant.niveau_etudes|default:"Non renseigné" }}</td>
                     <td>
-                      <span class="s-badge b-en_cours">3 candidatures</span>
+                      <span class="s-badge b-en_cours">{{ etudiant.nb_candidatures }} candidature{{ etudiant.nb_candidatures|pluralize }}</span>
                     </td>
-                    <td>12 sept. 2026</td>
-                    <td><span class="s-badge b-actif">Actif</span></td>
+                    <td>{{ etudiant.date_inscription|date:"j M Y" }}</td>
+                    <td>
+                      {% if etudiant.nb_bloques > 0 %}
+                        <span class="s-badge b-bloque">Bloqué</span>
+                      {% else %}
+                        <span class="s-badge b-actif">Actif</span>
+                      {% endif %}
+                    </td>
                     <td class="text-end">
                       <a
                         class="btn-s btn-soft-s btn-sm-s"
-                        href="/gestion/apprenants/1/"
+                        href="{% url 'admin_apprenant_detail' pk=etudiant.pk %}"
                       >
                         Voir la fiche
                       </a>
                     </td>
                   </tr>
-                  <tr data-status="actif">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">PT</span>
-                        <div>
-                          <b>Pauline Towa</b>
-                          <small>pauline.towa@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>+229 97 01 00 11</td>
-                    <td>Master 1</td>
-                    <td>
-                      <span class="s-badge b-en_cours">2 candidatures</span>
-                    </td>
-                    <td>13 sept. 2026</td>
-                    <td><span class="s-badge b-actif">Actif</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-soft-s btn-sm-s"
-                        href="/gestion/apprenants/2/"
-                      >
-                        Voir la fiche
-                      </a>
+                  {% empty %}
+                  <tr>
+                    <td colspan="7" class="text-center text-muted py-4">
+                      Aucun apprenant trouvé.
                     </td>
                   </tr>
-                  <tr data-status="bloque">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">NB</span>
-                        <div>
-                          <b>Nadège Biaou</b>
-                          <small>nadege.biaou@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>+229 97 02 00 22</td>
-                    <td>Baccalauréat</td>
-                    <td>
-                      <span class="s-badge b-en_cours">1 candidature</span>
-                    </td>
-                    <td>14 sept. 2026</td>
-                    <td><span class="s-badge b-bloque">Bloqué</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-soft-s btn-sm-s"
-                        href="/gestion/apprenants/3/"
-                      >
-                        Voir la fiche
-                      </a>
-                    </td>
-                  </tr>
-                  <tr data-status="actif">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">SD</span>
-                        <div>
-                          <b>Serge Dansou</b>
-                          <small>serge.dansou@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>+229 97 03 00 33</td>
-                    <td>Licence 3</td>
-                    <td>
-                      <span class="s-badge b-en_cours">1 candidature</span>
-                    </td>
-                    <td>15 sept. 2026</td>
-                    <td><span class="s-badge b-actif">Actif</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-soft-s btn-sm-s"
-                        href="/gestion/apprenants/4/"
-                      >
-                        Voir la fiche
-                      </a>
-                    </td>
-                  </tr>
-                  <tr data-status="actif">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">KA</span>
-                        <div>
-                          <b>Kevin Adjovi</b>
-                          <small>kevin.adjovi@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>+229 97 04 00 44</td>
-                    <td>BTS</td>
-                    <td>
-                      <span class="s-badge b-en_cours">2 candidatures</span>
-                    </td>
-                    <td>16 sept. 2026</td>
-                    <td><span class="s-badge b-actif">Actif</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-soft-s btn-sm-s"
-                        href="/gestion/apprenants/5/"
-                      >
-                        Voir la fiche
-                      </a>
-                    </td>
-                  </tr>
-                  <tr data-status="bloque">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">SH</span>
-                        <div>
-                          <b>Sandra Houngbo</b>
-                          <small>sandra.houngbo@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>+229 97 05 00 55</td>
-                    <td>Licence 1</td>
-                    <td>
-                      <span class="s-badge b-en_cours">1 candidature</span>
-                    </td>
-                    <td>17 sept. 2026</td>
-                    <td><span class="s-badge b-bloque">Bloqué</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-soft-s btn-sm-s"
-                        href="/gestion/apprenants/6/"
-                      >
-                        Voir la fiche
-                      </a>
-                    </td>
-                  </tr>
-                  <tr data-status="actif">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">YA</span>
-                        <div>
-                          <b>Yannick Agossou</b>
-                          <small>yannick.agossou@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>+229 97 06 00 66</td>
-                    <td>Master 2</td>
-                    <td>
-                      <span class="s-badge b-en_cours">1 candidature</span>
-                    </td>
-                    <td>18 sept. 2026</td>
-                    <td><span class="s-badge b-actif">Actif</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-soft-s btn-sm-s"
-                        href="/gestion/apprenants/7/"
-                      >
-                        Voir la fiche
-                      </a>
-                    </td>
-                  </tr>
-                  <tr data-status="actif">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">IS</span>
-                        <div>
-                          <b>Ibrahim Salami</b>
-                          <small>ibrahim.salami@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>+229 97 07 00 77</td>
-                    <td>Baccalauréat</td>
-                    <td>
-                      <span class="s-badge b-en_cours">1 candidature</span>
-                    </td>
-                    <td>19 sept. 2026</td>
-                    <td><span class="s-badge b-actif">Actif</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-soft-s btn-sm-s"
-                        href="/gestion/apprenants/8/"
-                      >
-                        Voir la fiche
-                      </a>
-                    </td>
-                  </tr>
-                  <tr data-status="actif">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">GT</span>
-                        <div>
-                          <b>Grâce Tokpanou</b>
-                          <small>grace.tokpanou@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>+229 97 08 00 88</td>
-                    <td>Licence 2</td>
-                    <td>
-                      <span class="s-badge b-en_cours">2 candidatures</span>
-                    </td>
-                    <td>20 sept. 2026</td>
-                    <td><span class="s-badge b-actif">Actif</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-soft-s btn-sm-s"
-                        href="/gestion/apprenants/9/"
-                      >
-                        Voir la fiche
-                      </a>
-                    </td>
-                  </tr>
-                  <tr data-status="actif">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">ED</span>
-                        <div>
-                          <b>Emmanuel Dossou</b>
-                          <small>emmanuel.dossou@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>+229 97 09 00 99</td>
-                    <td>BTS</td>
-                    <td>
-                      <span class="s-badge b-en_cours">1 candidature</span>
-                    </td>
-                    <td>21 sept. 2026</td>
-                    <td><span class="s-badge b-actif">Actif</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-soft-s btn-sm-s"
-                        href="/gestion/apprenants/10/"
-                      >
-                        Voir la fiche
-                      </a>
-                    </td>
-                  </tr>
+                  {% endfor %}
                 </tbody>
               </table>
             </div>
-            <div class="empty-s" id="vide-t-app" hidden>
+            <div class="empty-s" id="vide-t-app" {% if etudiants %}hidden{% endif %}>
               <i class="bi bi-search fs-3 d-block mb-2"></i>
               Aucun résultat pour ce filtre.
             </div>
             <div class="table-foot">
-              <span>Affichage 1–10 sur 187</span>
+              {% if paginator.count > 0 %}
+                <span>Affichage {{ page_obj.start_index }}–{{ page_obj.end_index }} sur {{ paginator.count }}</span>
+              {% else %}
+                <span>Affichage 0 sur 0</span>
+              {% endif %}
+              {% if paginator.num_pages > 1 %}
               <nav class="pager" aria-label="Pagination">
-                <span class="off">← Précédent</span>
-                <span class="on" aria-current="page">1</span>
-                <a href="?page=2">2</a>
-                <a href="?page=3">3</a>
-                <span>…</span>
-                <a href="?page=19">19</a>
-                <a href="?page=2">Suivant →</a>
+                {% if page_obj.has_previous %}
+                  <a href="?page={{ page_obj.previous_page_number }}{% if filtre_type %}&type={{ filtre_type }}{% endif %}{% if filtre_q %}&q={{ filtre_q }}{% endif %}{% if filtre_formation %}&formation={{ filtre_formation }}{% endif %}{% if filtre_statut %}&statut={{ filtre_statut }}{% endif %}">← Précédent</a>
+                {% else %}
+                  <span class="off">← Précédent</span>
+                {% endif %}
+
+                {% for p in paginator.page_range %}
+                  {% if p == page_obj.number %}
+                    <span class="on" aria-current="page">{{ p }}</span>
+                  {% elif p >= page_obj.number|add:"-2" and p <= page_obj.number|add:"2" %}
+                    <a href="?page={{ p }}{% if filtre_type %}&type={{ filtre_type }}{% endif %}{% if filtre_q %}&q={{ filtre_q }}{% endif %}{% if filtre_formation %}&formation={{ filtre_formation }}{% endif %}{% if filtre_statut %}&statut={{ filtre_statut }}{% endif %}">{{ p }}</a>
+                  {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                  <a href="?page={{ page_obj.next_page_number }}{% if filtre_type %}&type={{ filtre_type }}{% endif %}{% if filtre_q %}&q={{ filtre_q }}{% endif %}{% if filtre_formation %}&formation={{ filtre_formation }}{% endif %}{% if filtre_statut %}&statut={{ filtre_statut }}{% endif %}">Suivant →</a>
+                {% else %}
+                  <span class="off">Suivant →</span>
+                {% endif %}
               </nav>
+              {% endif %}
             </div>
           </div>
         </main>

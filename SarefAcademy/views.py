@@ -5,11 +5,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.hashers import check_password, make_password
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
 from django.core.validators import validate_email
 from django.db import IntegrityError
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Sum
 from django.db import transaction
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+import csv
 import secrets
 import re
 from functools import wraps
@@ -496,46 +499,192 @@ def formateur_chapitre_detail(request, formation_id=1, chapitre_id=1):
 
 @apprenant_requis
 def apprenant_dashboard(request):
-    candidatures_acceptees = request.etudiant.candidats.filter(statut="accepte").select_related("formation", "configVague")
+    etudiant = request.etudiant
+    candidatures = etudiant.candidats.select_related("formation", "configVague").order_by("-date_candidature")
+    candidatures_acceptees = [c for c in candidatures if c.statut == "accepte"]
     return render(request, "apprenant/dashboard.html", {
-        "etudiant": request.etudiant,
+        "etudiant": etudiant,
+        "candidatures": candidatures,
         "candidatures_acceptees": candidatures_acceptees,
     })
 
 
 @apprenant_requis
 def apprenant_formations(request):
-    return render(request, 'apprenant/formations.html', {"etudiant": request.etudiant})
+    etudiant = request.etudiant
+    # Toutes les candidatures de l'apprenant
+    candidatures = etudiant.candidats.select_related("formation", "configVague").order_by("-date_candidature")
+    # IDs des formations déjà postulées (pour ne pas les proposer en "disponibles")
+    formations_postulees_ids = candidatures.values_list("formation_id", flat=True)
+    # Formations actives auxquelles il n'a pas encore postulé
+    formations_disponibles = Formation.objects.filter(statut="active").exclude(pk__in=formations_postulees_ids)
+    return render(request, "apprenant/formations.html", {
+        "etudiant": etudiant,
+        "candidatures": candidatures,
+        "formations_disponibles": formations_disponibles,
+    })
 
 
 @apprenant_requis
-def apprenant_formation_detail(request, pk=1):
-    return render(request, 'apprenant/formation_detail.html', {"etudiant": request.etudiant})
+def apprenant_formation_detail(request, pk):
+    etudiant = request.etudiant
+    # pk ici est le pk de la Candidature (pas de la Formation)
+    candidat = get_object_or_404(Candidats, pk=pk, etudiant=etudiant)
+    formation = candidat.formation
+    modules = formation.modules.prefetch_related("chapitres").filter(est_active=True) if candidat.statut == "accepte" else formation.modules.prefetch_related("chapitres")
+    # Chapitres terminés par cet apprenant pour cette candidature
+    chapitres_termines_ids = set(
+        ChapitreTermine.objects.filter(candidats=candidat).values_list("chapitre_id", flat=True)
+    )
+    nb_chapitres = Chapitres.objects.filter(modules__formation=formation, est_active=True).count()
+    progression = round(len(chapitres_termines_ids) / nb_chapitres * 100) if nb_chapitres else 0
+    return render(request, "apprenant/formation_detail.html", {
+        "etudiant": etudiant,
+        "candidat": candidat,
+        "formation": formation,
+        "modules": modules,
+        "chapitres_termines": chapitres_termines_ids,
+        "nb_chapitres": nb_chapitres,
+        "progression": progression,
+    })
 
 
 @apprenant_requis
 def apprenant_modules(request):
-    return render(request, 'apprenant/modules.html', {"etudiant": request.etudiant})
+    etudiant = request.etudiant
+    # Formations acceptées de l'apprenant
+    formations_acceptees_ids = set(
+        etudiant.candidats.filter(statut="accepte").values_list("formation_id", flat=True)
+    )
+    # Tous les modules des formations de l'apprenant (acceptées ou non)
+    formations_ids = set(etudiant.candidats.values_list("formation_id", flat=True))
+    modules = Modules.objects.filter(
+        formation_id__in=formations_ids
+    ).select_related("formation").prefetch_related("chapitres").order_by("formation__nom", "ordre")
+    return render(request, "apprenant/modules.html", {
+        "etudiant": etudiant,
+        "modules": modules,
+        "formations_acceptees": formations_acceptees_ids,
+    })
 
 
 @apprenant_requis
-def apprenant_module_detail(request, pk=1):
-    return render(request, 'apprenant/chapitre_detail.html', {"etudiant": request.etudiant})
+def apprenant_module_detail(request, pk):
+    etudiant = request.etudiant
+    module = get_object_or_404(Modules, pk=pk)
+    # Vérifier que l'apprenant a bien une candidature acceptée pour cette formation
+    candidat = get_object_or_404(Candidats, etudiant=etudiant, formation=module.formation, statut="accepte")
+    # Chapitre à afficher (passé en paramètre GET)
+    chapitre_pk = request.GET.get("chapitre")
+    if chapitre_pk:
+        chapitre = get_object_or_404(Chapitres, pk=chapitre_pk, modules=module, est_active=True)
+    else:
+        chapitre = module.chapitres.filter(est_active=True).first()
+    # Marquer comme terminé si demandé
+    if chapitre and request.method == "POST" and request.POST.get("action") == "terminer":
+        ChapitreTermine.objects.get_or_create(candidats=candidat, chapitre=chapitre)
+        return redirect(f"{request.path}?chapitre={chapitre.pk}")
+    # Chapitres terminés pour la navigation
+    chapitres_termines_ids = set(
+        ChapitreTermine.objects.filter(candidats=candidat).values_list("chapitre_id", flat=True)
+    )
+    chapitres = module.chapitres.filter(est_active=True)
+    return render(request, "apprenant/chapitre_detail.html", {
+        "etudiant": etudiant,
+        "candidat": candidat,
+        "module": module,
+        "chapitre": chapitre,
+        "chapitres": chapitres,
+        "chapitres_termines": chapitres_termines_ids,
+    })
 
 
 @apprenant_requis
 def apprenant_paiements(request):
-    return render(request, 'apprenant/paiements.html', {"etudiant": request.etudiant})
+    etudiant = request.etudiant
+    candidatures_acceptees = etudiant.candidats.filter(
+        statut="accepte"
+    ).select_related("formation", "configVague").prefetch_related("paiements")
+    # Tous les paiements de l'apprenant
+    paiements = Paiement.objects.filter(
+        candidats__etudiant=etudiant
+    ).select_related("formation", "candidats__configVague").order_by("-date")
+    # Montant dû = somme des prix des formations acceptées
+    montant_du = sum(c.formation.prix for c in candidatures_acceptees)
+    total_paye = paiements.aggregate(total=Sum("montant"))["total"] or 0
+    reste_a_payer = max(montant_du - total_paye, 0)
+    return render(request, "apprenant/paiements.html", {
+        "etudiant": etudiant,
+        "candidatures_acceptees": candidatures_acceptees,
+        "paiements": paiements,
+        "montant_du": montant_du,
+        "total_paye": total_paye,
+        "reste_a_payer": reste_a_payer,
+    })
 
 
 @apprenant_requis
 def apprenant_profil(request):
-    return render(request, 'apprenant/profil.html', {"etudiant": request.etudiant})
+    etudiant = request.etudiant
+    if request.method == "POST":
+        action = request.POST.get("action")
+        if action == "modifier_profil":
+            nom = request.POST.get("nom", "").strip()
+            prenom = request.POST.get("prenom", "").strip()
+            telephone = request.POST.get("telephone", "").strip()
+            niveau_etudes = request.POST.get("niveau_etudes", "").strip()
+            erreurs = []
+            if not nom:
+                erreurs.append("Le nom est obligatoire.")
+            if not prenom:
+                erreurs.append("Le prénom est obligatoire.")
+            # Validation photo côté serveur
+            photo = request.FILES.get("photo")
+            if photo:
+                types_autorises = ["image/jpeg", "image/png", "image/webp"]
+                taille_max = 2 * 1024 * 1024  # 2 Mo
+                if photo.content_type not in types_autorises:
+                    erreurs.append("Type de fichier non autorisé. Utilisez JPG, PNG ou WEBP.")
+                elif photo.size > taille_max:
+                    erreurs.append("La photo est trop volumineuse. Taille maximale : 2 Mo.")
+            if erreurs:
+                for e in erreurs:
+                    messages.error(request, e)
+            else:
+                etudiant.nom = nom
+                etudiant.prenom = prenom
+                etudiant.telephone = telephone
+                etudiant.niveau_etudes = niveau_etudes
+                if photo:
+                    etudiant.photo = photo
+                etudiant.save()
+                messages.success(request, "Profil mis à jour avec succès.")
+                return redirect("apprenant_profil")
+        elif action == "changer_mot_de_passe":
+            ancien = request.POST.get("ancien_mot_de_passe", "")
+            nouveau = request.POST.get("nouveau_mot_de_passe", "")
+            confirmation = request.POST.get("confirmation_mot_de_passe", "")
+            if not check_password(ancien, etudiant.mot_de_passe):
+                messages.error(request, "L'ancien mot de passe est incorrect.")
+            elif not mot_de_passe_valide(nouveau):
+                messages.error(request, "Le nouveau mot de passe doit comporter au moins 8 caractères, une lettre et un chiffre.")
+            elif nouveau != confirmation:
+                messages.error(request, "Les deux nouveaux mots de passe ne correspondent pas.")
+            else:
+                etudiant.mot_de_passe = make_password(nouveau)
+                etudiant.save(update_fields=["mot_de_passe"])
+                messages.success(request, "Mot de passe modifié avec succès.")
+                return redirect("apprenant_profil")
+    candidatures = etudiant.candidats.select_related("formation", "configVague").order_by("-date_candidature")
+    return render(request, "apprenant/profil.html", {
+        "etudiant": etudiant,
+        "candidatures": candidatures,
+    })
 
 
 @apprenant_requis
 def apprenant_parametres(request):
-    return render(request, 'apprenant/parametres.html', {"etudiant": request.etudiant})
+    return render(request, "apprenant/parametres.html", {"etudiant": request.etudiant})
 
 
 # -----------------------------------------------------------------------------
@@ -676,19 +825,269 @@ def admin_dashboard(request):
 
 
 def admin_candidatures(request):
-    return render(request, 'admin/candidatures.html')
+    vague_courante = ConfigVague.objects.filter(est_courante=True).first()
+    formations = Formation.objects.all().order_by("nom")
+    vagues = ConfigVague.objects.all().order_by("-date_debut")
+
+    candidatures_qs = Candidats.objects.select_related("etudiant", "formation", "configVague")
+
+    # Statistiques globales en une seule requête SQL optimale
+    stats = candidatures_qs.aggregate(
+        nb_total=Count("id"),
+        nb_attente=Count("id", filter=Q(statut="en_attente")),
+        nb_accepte=Count("id", filter=Q(statut="accepte")),
+        nb_refuse=Count("id", filter=Q(statut="refuse")),
+    )
+
+    # Filtres GET
+    statut = request.GET.get("statut", "").strip()
+    if statut in ["attente", "en_attente"]:
+        candidatures_qs = candidatures_qs.filter(statut="en_attente")
+    elif statut in ["accepte", "refuse"]:
+        candidatures_qs = candidatures_qs.filter(statut=statut)
+
+    q = request.GET.get("q", "").strip()
+    if q:
+        candidatures_qs = candidatures_qs.filter(
+            Q(etudiant__nom__icontains=q)
+            | Q(etudiant__prenom__icontains=q)
+            | Q(etudiant__email__icontains=q)
+        )
+
+    formation_filtre = request.GET.get("formation", "").strip()
+    if formation_filtre:
+        candidatures_qs = candidatures_qs.filter(formation__nom__icontains=formation_filtre)
+
+    vague_filtre = request.GET.get("vague", "").strip()
+    if vague_filtre:
+        candidatures_qs = candidatures_qs.filter(configVague__nom__icontains=vague_filtre)
+
+    tri = request.GET.get("tri", "").strip()
+    if tri in ["nom", "Nom (A–Z)"]:
+        candidatures_qs = candidatures_qs.order_by("etudiant__nom", "etudiant__prenom")
+    else:
+        candidatures_qs = candidatures_qs.order_by("-date_candidature")
+
+    # Export CSV
+    if request.GET.get("export") == "csv":
+        response = HttpResponse(content_type="text/csv; charset=utf-8-sig")
+        response["Content-Disposition"] = 'attachment; filename="candidatures.csv"'
+        writer = csv.writer(response)
+        writer.writerow(["Nom", "Prénom", "Email", "Téléphone", "Formation", "Vague", "Statut", "Date de candidature"])
+        for c in candidatures_qs:
+            writer.writerow([
+                c.etudiant.nom,
+                c.etudiant.prenom,
+                c.etudiant.email,
+                c.etudiant.telephone,
+                c.formation.nom,
+                c.configVague.nom,
+                c.get_statut_display(),
+                c.date_candidature.strftime("%d/%m/%Y %H:%M") if c.date_candidature else "",
+            ])
+        return response
+
+    # Pagination optimale
+    paginator = Paginator(candidatures_qs, 15)
+    page_obj = paginator.get_page(request.GET.get("page"))
+
+    return render(request, "admin/candidatures.html", {
+        "candidatures": page_obj,
+        "page_obj": page_obj,
+        "paginator": paginator,
+        "vague_courante": vague_courante,
+        "formations": formations,
+        "vagues": vagues,
+        "nb_total": stats["nb_total"] or 0,
+        "nb_attente": stats["nb_attente"] or 0,
+        "nb_accepte": stats["nb_accepte"] or 0,
+        "nb_refuse": stats["nb_refuse"] or 0,
+        "filtre_statut": statut,
+        "filtre_q": q,
+        "filtre_formation": formation_filtre,
+        "filtre_vague": vague_filtre,
+        "filtre_tri": tri,
+    })
 
 
 def admin_candidature_detail(request, pk=1):
-    return render(request, 'admin/candidature_detail.html', {'pk': pk})
+    candidat = get_object_or_404(
+        Candidats.objects.select_related("etudiant", "formation", "configVague"),
+        pk=pk,
+    )
+
+    if request.method == "POST":
+        nouveau_statut = request.POST.get("statut", "").strip()
+        commentaire = request.POST.get("commentaire_admin", "").strip()
+
+        with transaction.atomic():
+            if nouveau_statut in ["accepte", "refuse", "en_attente"]:
+                candidat.statut = nouveau_statut
+                candidat.date_decision = timezone.now()
+
+            candidat.commentaire_admin = commentaire
+            candidat.save()
+
+            if nouveau_statut in ["accepte", "refuse"]:
+                statut_texte = "acceptée" if nouveau_statut == "accepte" else "refusée"
+                Notification.objects.create(
+                    etudiant=candidat.etudiant,
+                    message=f"Votre candidature pour la formation « {candidat.formation.nom} » a été {statut_texte}.",
+                    lien="/apprenant/formations/",
+                )
+
+        messages.success(request, f"La décision pour la candidature de {candidat.etudiant} a été enregistrée.")
+        return redirect("admin_candidature_detail", pk=candidat.pk)
+
+    autres_candidatures = Candidats.objects.filter(
+        etudiant=candidat.etudiant
+    ).exclude(pk=candidat.pk).select_related("formation", "configVague").order_by("-date_candidature")
+
+    return render(request, "admin/candidature_detail.html", {
+        "candidat": candidat,
+        "autres_candidatures": autres_candidatures,
+        "pk": pk,
+    })
 
 
 def admin_apprenants(request):
-    return render(request, 'admin/apprenants.html')
+    formations = Formation.objects.all().order_by("nom")
+
+    # Statistiques globales
+    total_apprenants = Etudiants.objects.count()
+    une_semaine = timezone.now() - timedelta(days=7)
+    actifs_semaine = Etudiants.objects.filter(
+        Q(candidats__chapitres_termines__date__gte=une_semaine)
+        | Q(date_inscription__gte=une_semaine)
+    ).distinct().count()
+
+    avec_candidature_count = Etudiants.objects.filter(candidats__isnull=False).distinct().count()
+    sans_candidature_count = total_apprenants - avec_candidature_count
+
+    bloques_count = Etudiants.objects.filter(
+        candidats__est_bloque=True
+    ).distinct().count()
+
+    etudiants_qs = Etudiants.objects.annotate(
+        nb_candidatures=Count("candidats", distinct=True),
+        nb_bloques=Count("candidats", filter=Q(candidats__est_bloque=True), distinct=True),
+    )
+
+    # Filtre Type (Avec candidature vs Sans candidature)
+    filtre_type = request.GET.get("type", "").strip()
+    if filtre_type == "avec":
+        etudiants_qs = etudiants_qs.filter(nb_candidatures__gt=0)
+    elif filtre_type == "sans":
+        etudiants_qs = etudiants_qs.filter(nb_candidatures=0)
+
+    # Filtres GET
+    q = request.GET.get("q", "").strip()
+    if q:
+        etudiants_qs = etudiants_qs.filter(
+            Q(nom__icontains=q)
+            | Q(prenom__icontains=q)
+            | Q(email__icontains=q)
+            | Q(telephone__icontains=q)
+        )
+
+    formation_filtre = request.GET.get("formation", "").strip()
+    if formation_filtre:
+        etudiants_qs = etudiants_qs.filter(candidats__formation__nom__icontains=formation_filtre)
+
+    statut_filtre = request.GET.get("statut", "").strip().lower()
+    if statut_filtre in ["bloqué", "bloque"]:
+        etudiants_qs = etudiants_qs.filter(candidats__est_bloque=True)
+    elif statut_filtre == "actif":
+        etudiants_qs = etudiants_qs.filter(nb_bloques=0)
+
+    etudiants_qs = etudiants_qs.distinct().order_by("-date_inscription")
+
+    # Export CSV si demandé
+    if request.GET.get("export") == "csv":
+        response = HttpResponse(content_type="text/csv; charset=utf-8-sig")
+        nom_fichier = f"apprenants_{filtre_type or 'tous'}.csv"
+        response["Content-Disposition"] = f'attachment; filename="{nom_fichier}"'
+        writer = csv.writer(response)
+        writer.writerow(["Nom", "Prénom", "Email", "Téléphone", "Niveau d'études", "Candidatures", "Inscrit le", "Statut"])
+        for e in etudiants_qs:
+            statut = "Bloqué" if e.nb_bloques > 0 else "Actif"
+            writer.writerow([
+                e.nom,
+                e.prenom,
+                e.email,
+                e.telephone,
+                e.niveau_etudes,
+                e.nb_candidatures,
+                e.date_inscription.strftime("%d/%m/%Y") if e.date_inscription else "",
+                statut,
+            ])
+        return response
+
+    paginator = Paginator(etudiants_qs, 15)
+    page_obj = paginator.get_page(request.GET.get("page"))
+
+    return render(request, "admin/apprenants.html", {
+        "etudiants": page_obj,
+        "page_obj": page_obj,
+        "paginator": paginator,
+        "formations": formations,
+        "total_apprenants": total_apprenants,
+        "avec_candidature_count": avec_candidature_count,
+        "sans_candidature_count": sans_candidature_count,
+        "actifs_semaine": actifs_semaine,
+        "bloques_count": bloques_count,
+        "filtre_type": filtre_type,
+        "filtre_q": q,
+        "filtre_formation": formation_filtre,
+        "filtre_statut": statut_filtre,
+    })
 
 
 def admin_apprenant_detail(request, pk=1):
-    return render(request, 'admin/apprenant_detail.html', {'pk': pk})
+    etudiant = get_object_or_404(Etudiants, pk=pk)
+
+    candidatures = etudiant.candidats.select_related("formation", "configVague").order_by("-date_candidature")
+    est_bloque = candidatures.filter(est_bloque=True).exists()
+
+    if request.method == "POST":
+        nouveau_blocage = not est_bloque
+        with transaction.atomic():
+            candidatures.update(est_bloque=nouveau_blocage)
+        if nouveau_blocage:
+            messages.warning(request, f"L’accès de {etudiant.prenom} {etudiant.nom} a été bloqué.")
+        else:
+            messages.success(request, f"L’accès de {etudiant.prenom} {etudiant.nom} a été rétabli.")
+        return redirect("admin_apprenant_detail", pk=etudiant.pk)
+
+    nb_candidatures = candidatures.count()
+    nb_acceptees = candidatures.filter(statut="accepte").count()
+
+    # Paiements et reste à payer
+    paiements = Paiement.objects.filter(candidats__in=candidatures).select_related("formation", "configVague").order_by("-date")
+    total_paye = paiements.aggregate(total=Sum("montant"))["total"] or Decimal(0)
+    total_du = sum((cand.formation.prix for cand in candidatures if cand.statut == "accepte"), Decimal(0))
+    reste_a_payer = max(Decimal(0), total_du - total_paye)
+
+    # Lien WhatsApp nettoyé
+    tel_digits = "".join(c for c in etudiant.telephone if c.isdigit())
+    if tel_digits.startswith("00"):
+        tel_digits = tel_digits[2:]
+    elif not tel_digits.startswith("229") and len(tel_digits) <= 10:
+        tel_digits = "229" + tel_digits
+    whatsapp_url = f"https://wa.me/{tel_digits}" if tel_digits else "#"
+
+    return render(request, "admin/apprenant_detail.html", {
+        "etudiant": etudiant,
+        "est_bloque": est_bloque,
+        "candidatures": candidatures,
+        "nb_candidatures": nb_candidatures,
+        "nb_acceptees": nb_acceptees,
+        "paiements": paiements,
+        "total_paye": total_paye,
+        "total_du": total_du,
+        "reste_a_payer": reste_a_payer,
+        "whatsapp_url": whatsapp_url,
+    })
 
 
 def admin_resultats(request):

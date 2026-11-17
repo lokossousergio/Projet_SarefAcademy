@@ -21,7 +21,13 @@
     <span>Parcours apprenant</span>
   </span>
   <div class="tb-user">
+    {% if etudiant.photo %}
+    <span class="avatar overflow-hidden p-0" style="border-radius:50%;">
+      <img src="{{ etudiant.photo.url }}" alt="Photo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+    </span>
+    {% else %}
     <span class="avatar">{{ etudiant.prenom|first|upper|default:"A" }}</span>
+    {% endif %}
     <span class="d-none d-md-block">
       <b>{{ etudiant.prenom|default:"Apprenant" }} {{ etudiant.nom }}</b>
       <small>Mon espace</small>

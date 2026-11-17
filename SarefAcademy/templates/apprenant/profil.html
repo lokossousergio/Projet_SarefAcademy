@@ -45,43 +45,68 @@
               Paramètres
             </a>
           </div>
+                    {% include "partials/feedback_modal.html" %}
           <div
             class="alert alert-info d-none"
             id="profileNotice"
             role="status"
           ></div>
           <div class="row g-4">
-            <aside class="col-lg-4">
-              <section class="s-card s-card-pad text-center h-100">
-                <span
-                  class="avatar avatar-xl mx-auto mb-3"
-                  id="profileInitials"
-                >
-                  {% if etudiant.prenom %}{{ etudiant.prenom|first|upper }}{%
-                  elif request.user.is_authenticated %}{{ request.user.etudiant.prenom|default:request.user.first_name|first|upper|default:'A' }}{% else %}A{% endif %}{% if etudiant.nom %}{{ etudiant.nom|first|upper }}{% elif
-                  request.user.is_authenticated %}{{ request.user.etudiant.nom|default:request.user.last_name|first|upper|default:'K' }}{% else %}K{% endif %}
-                </span>
-                <h2 class="h5 fw-bold" id="profileDisplayName">
-                  {% if etudiant.prenom %}{{ etudiant.prenom }}{% elif
-                  request.user.is_authenticated %}{{ request.user.etudiant.prenom|default:request.user.first_name|default:'Aïcha' }}{% else %}Aïcha{% endif %} {% if etudiant.nom %}{{ etudiant.nom }}{% elif request.user.is_authenticated %}{{ request.user.etudiant.nom|default:request.user.last_name|default:'Kora' }}{% else %}Kora{% endif %}
-                </h2>
-                <p class="small text-secondary mb-3">Apprenant SAREF Academy</p>
-                <span class="s-badge b-actif">Compte apprenant</span>
-                <hr class="divider-s" />
-                <div class="info-row">
-                  <span>Candidatures</span>
-                  <b>
-                    {% if candidatures %}{{ candidatures|length }}{% elif
-                    request.user.is_authenticated %}{{ request.user.etudiant.candidats.count|default:'0' }}{% else
-                    %}0{% endif %}
-                  </b>
+                        <aside class="col-lg-4">
+              <section class="s-card overflow-hidden text-center mb-4">
+                <!-- Bannière / Couverture façon Facebook -->
+                <div class="profile-cover" style="height: 110px; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%); position: relative;">
+                  <span style="position: absolute; top: 10px; right: 12px; background: rgba(0,0,0,0.25); color: #fff; font-size: 11px; padding: 3px 10px; border-radius: 20px; backdrop-filter: blur(4px);">
+                    <i class="bi bi-mortarboard me-1"></i> SAREF Academy
+                  </span>
                 </div>
-                <div class="info-row">
-                  <span>Membre depuis</span>
-                  <b>
-                    {% if etudiant.date_inscription %}{{ etudiant.date_inscription|date:'d/m/Y' }}{% elif
-                    request.user.is_authenticated %}{{ request.user.etudiant.date_inscription|date:'d/m/Y'|default:'—' }}{% else %}—{% endif %}
-                  </b>
+
+                <div class="px-4 pb-4" style="margin-top: -48px;">
+                  <!-- Cercle Avatar Facebook avec bouton upload discret -->
+                  <div class="position-relative d-inline-block mb-3">
+                    <div id="profileAvatarContainer" class="avatar avatar-xl border border-4 border-white shadow-sm overflow-hidden p-0 mx-auto"
+                         style="width: 96px; height: 96px; border-radius: 50%; background: var(--blue-100); display: grid; place-items: center;">
+                      {% if etudiant.photo %}
+                      <img src="{{ etudiant.photo.url }}" alt="Photo de profil" id="profilePreview"
+                        style="width:100%; height:100%; object-fit:cover;">
+                      {% else %}
+                      <span id="profileInitials" style="font-size: 30px; font-weight: 700; color: var(--blue-800);">
+                        {{ etudiant.prenom|first|upper }}{{ etudiant.nom|first|upper }}
+                      </span>
+                      {% endif %}
+                    </div>
+
+                    <!-- Bouton icône appareil photo (style Facebook) -->
+                    <label for="photoInput" id="photoTriggerBtn"
+                      class="position-absolute bottom-0 end-0 rounded-circle shadow-sm d-none align-items-center justify-content-center"
+                      style="width: 32px; height: 32px; background: #2563eb; color: #fff; cursor: pointer; border: 2px solid #fff; transition: transform 0.15s ease;"
+                      title="Changer la photo"
+                      onmouseover="this.style.transform='scale(1.1)'"
+                      onmouseout="this.style.transform='scale(1)'">
+                      <i class="bi bi-camera-fill" style="font-size: 14px;"></i>
+                    </label>
+                    <input type="file" id="photoInput" name="photo" form="profileForm"
+                      accept="image/jpeg,image/png,image/webp" class="d-none" />
+                  </div>
+
+                  <div id="photoError" class="small text-danger mb-2 d-none"></div>
+
+                  <h2 class="h5 fw-bold mb-1" id="profileDisplayName">
+                    {{ etudiant.prenom }} {{ etudiant.nom }}
+                  </h2>
+                  <p class="small text-secondary mb-2">Apprenant SAREF Academy</p>
+                  <span class="s-badge b-actif mb-3">Compte apprenant</span>
+
+                  <hr class="divider-s my-3" />
+
+                  <div class="info-row py-1">
+                    <span class="small text-secondary">Candidatures</span>
+                    <b class="small">{{ candidatures|length }}</b>
+                  </div>
+                  <div class="info-row py-1">
+                    <span class="small text-secondary">Membre depuis</span>
+                    <b class="small">{{ etudiant.date_inscription|date:"d/m/Y"|default:"—" }}</b>
+                  </div>
                 </div>
               </section>
             </aside>
@@ -105,14 +130,16 @@
                     Modifier mes informations
                   </button>
                 </div>
-                <form id="profileForm" class="row g-3">
+                <form id="profileForm" class="row g-3" method="post" action="{% url 'apprenant_profil' %}" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="modifier_profil">
                   <div class="col-md-6">
                     <label class="s-label" for="firstName">Prénom</label>
                     <input
                       class="s-input profile-field"
                       id="firstName"
                       name="prenom"
-                      value="{% if etudiant.prenom %}{{ etudiant.prenom }}{% elif request.user.is_authenticated %}{{ request.user.etudiant.prenom|default:request.user.first_name|default:'Aïcha' }}{% else %}Aïcha{% endif %}"
+                      value="{{ etudiant.prenom }}"
                       readonly
                     />
                   </div>
@@ -122,7 +149,7 @@
                       class="s-input profile-field"
                       id="lastName"
                       name="nom"
-                      value="{% if etudiant.nom %}{{ etudiant.nom }}{% elif request.user.is_authenticated %}{{ request.user.etudiant.nom|default:request.user.last_name|default:'Kora' }}{% else %}Kora{% endif %}"
+                      value="{{ etudiant.nom }}"
                       readonly
                     />
                   </div>
@@ -135,7 +162,7 @@
                       id="profileEmail"
                       name="email"
                       type="email"
-                      value="{% if etudiant.email %}{{ etudiant.email }}{% elif request.user.is_authenticated %}{{ request.user.etudiant.email|default:request.user.email }}{% else %}aicha.kora@gmail.com{% endif %}"
+                      value="{{ etudiant.email }}" disabled
                       readonly
                     />
                   </div>
@@ -148,7 +175,7 @@
                       id="profilePhone"
                       name="telephone"
                       type="tel"
-                      value="{% if etudiant.telephone %}{{ etudiant.telephone }}{% elif request.user.is_authenticated %}{{ request.user.etudiant.telephone|default:'+229 97 00 00 00' }}{% else %}+229 97 00 00 00{% endif %}"
+                      value="{{ etudiant.telephone }}"
                       readonly
                     />
                   </div>
@@ -160,7 +187,7 @@
                       class="s-input profile-field"
                       id="profileLevel"
                       name="niveau_etudes"
-                      value="{% if etudiant.niveau_etudes %}{{ etudiant.niveau_etudes }}{% elif request.user.is_authenticated %}{{ request.user.etudiant.niveau_etudes|default:'Études supérieures' }}{% else %}Études supérieures{% endif %}"
+                      value="{{ etudiant.niveau_etudes }}"
                       readonly
                     />
                   </div>
@@ -184,14 +211,16 @@
               <section class="s-card s-card-pad mb-4">
                 <span class="eyebrow-s">Sécurité</span>
                 <h2 class="s-card-title mt-1 mb-3">Mot de passe</h2>
-                <form id="passwordForm" class="row g-3">
+                <form id="passwordForm" class="row g-3" method="post" action="{% url 'apprenant_profil' %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="changer_mot_de_passe">
                   <div class="col-12">
                     <label class="s-label" for="currentPassword">
                       Mot de passe actuel
                     </label>
                     <input
                       class="s-input"
-                      id="currentPassword"
+                      id="currentPassword" name="ancien_mot_de_passe"
                       type="password"
                       autocomplete="current-password"
                       placeholder="Saisissez votre mot de passe actuel"
@@ -204,7 +233,7 @@
                     </label>
                     <input
                       class="s-input"
-                      id="newPassword"
+                      id="newPassword" name="nouveau_mot_de_passe"
                       type="password"
                       autocomplete="new-password"
                       placeholder="8 caractères minimum"
@@ -218,7 +247,7 @@
                     </label>
                     <input
                       class="s-input"
-                      id="confirmPassword"
+                      id="confirmPassword" name="confirmation_mot_de_passe"
                       type="password"
                       autocomplete="new-password"
                       placeholder="Répétez le nouveau mot de passe"
@@ -314,84 +343,117 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/espace.js' %}" defer></script>
-    <script>
+            <script>
       (function () {
         var form = document.getElementById("profileForm"),
           fields = form.querySelectorAll(".profile-field"),
           actions = document.getElementById("profileActions"),
-          notice = document.getElementById("profileNotice"),
-          edit = document.getElementById("editProfile");
-        function message(text) {
-          notice.textContent = text;
-          notice.classList.remove("d-none");
-          notice.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
+          edit = document.getElementById("editProfile"),
+          photoTrigger = document.getElementById("photoTriggerBtn"),
+          photoInput = document.getElementById("photoInput"),
+          photoError = document.getElementById("photoError");
+
+        var TYPES_AUTORISES = ["image/jpeg", "image/png", "image/webp"];
+        var TAILLE_MAX = 2 * 1024 * 1024; // 2 Mo
+
         function setEditing(value) {
           fields.forEach(function (field) {
-            field.readOnly = !value;
+            if (!field.disabled) field.readOnly = !value;
           });
           actions.classList.toggle("d-none", !value);
           edit.classList.toggle("d-none", value);
+          if (photoTrigger) {
+            photoTrigger.classList.toggle("d-none", !value);
+            photoTrigger.classList.toggle("d-flex", value);
+          }
           if (value) fields[0].focus();
         }
-        edit.addEventListener("click", function () {
-          setEditing(true);
-        });
-        document
-          .getElementById("cancelProfile")
-          .addEventListener("click", function () {
-            form.reset();
-            setEditing(false);
-          });
-        form.addEventListener("submit", function (event) {
-          event.preventDefault();
-          document.getElementById("profileDisplayName").textContent =
-            document.getElementById("firstName").value +
-            " " +
-            document.getElementById("lastName").value;
-          var first = document
-              .getElementById("firstName")
-              .value.trim()
-              .charAt(0),
-            last = document.getElementById("lastName").value.trim().charAt(0);
-          document.getElementById("profileInitials").textContent = (
-            first + last
-          ).toUpperCase();
+
+        edit.addEventListener("click", function () { setEditing(true); });
+
+        document.getElementById("cancelProfile").addEventListener("click", function () {
+          form.reset();
           setEditing(false);
-          message("Les champs ont été mis à jour dans cet aperçu.");
+          if (photoError) { photoError.textContent = ""; photoError.classList.add("d-none"); }
         });
-        document
-          .getElementById("passwordForm")
-          .addEventListener("submit", function (event) {
-            event.preventDefault();
+
+        // Validation photo : type + taille + prévisualisation temps réel
+        if (photoInput) {
+          photoInput.addEventListener("change", function () {
+            var file = photoInput.files[0];
+            if (photoError) {
+              photoError.textContent = "";
+              photoError.classList.add("d-none");
+            }
+            if (!file) return;
+
+            if (!TYPES_AUTORISES.includes(file.type)) {
+              if (window.showFeedbackModal) {
+                window.showFeedbackModal("Format invalide. Veuillez choisir un fichier JPG, PNG ou WEBP.", false);
+              }
+              photoInput.value = "";
+              return;
+            }
+            if (file.size > TAILLE_MAX) {
+              if (window.showFeedbackModal) {
+                window.showFeedbackModal("Ce fichier dépasse la taille maximale autorisée de 2 Mo.", false);
+              }
+              photoInput.value = "";
+              return;
+            }
+
+            // Aperçu dynamique
+            var reader = new FileReader();
+            reader.onload = function (e) {
+              var container = document.getElementById("profileAvatarContainer");
+              var preview = document.getElementById("profilePreview");
+              if (preview) {
+                preview.src = e.target.result;
+              } else if (container) {
+                container.innerHTML = '<img src="' + e.target.result + '" alt="Aperçu" id="profilePreview" style="width:100%; height:100%; object-fit:cover;">';
+              }
+            };
+            reader.readAsDataURL(file);
+          });
+        }
+
+        // Sécurité formulaire avant soumission
+        form.addEventListener("submit", function (event) {
+          if (photoInput && photoInput.files[0]) {
+            var file = photoInput.files[0];
+            if (!TYPES_AUTORISES.includes(file.type) || file.size > TAILLE_MAX) {
+              event.preventDefault();
+              return;
+            }
+          }
+        });
+
+        // Validation mot de passe
+        var pwdForm = document.getElementById("passwordForm");
+        if (pwdForm) {
+          pwdForm.addEventListener("submit", function (event) {
             var a = document.getElementById("newPassword"),
               b = document.getElementById("confirmPassword");
             if (a.value !== b.value) {
-              b.setCustomValidity("Les mots de passe ne correspondent pas.");
-              b.reportValidity();
-              return;
+              event.preventDefault();
+              if (window.showFeedbackModal) {
+                window.showFeedbackModal("Les deux nouveaux mots de passe ne correspondent pas.", false);
+              } else {
+                alert("Les deux nouveaux mots de passe ne correspondent pas.");
+              }
+            } else {
+              b.setCustomValidity("");
             }
-            b.setCustomValidity("");
-            message(
-              "Le changement de mot de passe nécessite le service de compte ; aucun mot de passe n’a été modifié.",
-            );
-            this.reset();
           });
+        }
+
         var deleteInput = document.getElementById("deleteConfirmation"),
           deleteButton = document.getElementById("confirmDelete");
-        deleteInput.addEventListener("input", function () {
-          deleteButton.disabled = deleteInput.value.trim() !== "SUPPRIMER";
-        });
-        deleteButton.addEventListener("click", function () {
-          message(
-            "La suppression nécessite un traitement serveur ; le compte n’a pas été supprimé.",
-          );
-          bootstrap.Modal.getInstance(
-            document.getElementById("deleteAccountModal"),
-          ).hide();
-          deleteInput.value = "";
-          deleteButton.disabled = true;
-        });
+        if (deleteInput && deleteButton) {
+          deleteInput.addEventListener("input", function () {
+            deleteButton.disabled = deleteInput.value.trim() !== "SUPPRIMER";
+          });
+        }
       })();
     </script>
     <script></script>

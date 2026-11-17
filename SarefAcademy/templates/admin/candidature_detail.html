@@ -31,6 +31,7 @@
     </script>
   </head>
   <body class="espace espace-admin">
+    {% include "partials/feedback_modal.html" %}
     <div class="app">
       {% include 'partials/sidebar_admin.html' %}
       <div class="app-col">
@@ -38,32 +39,53 @@
         <main class="app-main">
           <nav class="crumb" aria-label="Fil d'Ariane">
             <a href="{% url 'admin_candidatures' %}">Candidatures</a>
-            / Mariam Bello
+            / {{ candidat.etudiant.prenom }} {{ candidat.etudiant.nom }}
           </nav>
           <form method="post" class="row g-3">
+            {% csrf_token %}
             <div class="col-xl-8">
               <div class="s-card s-card-pad mb-3">
                 <div
                   class="d-flex flex-wrap justify-content-between align-items-start gap-3"
                 >
                   <div class="d-flex align-items-center gap-3">
-                    <span class="avatar avatar-xl">MB</span>
+                    <span class="avatar avatar-xl">
+                      {% if candidat.etudiant.photo %}
+                        <img src="{{ candidat.etudiant.photo.url }}" alt="{{ candidat.etudiant }}" class="w-100 h-100 rounded-circle object-fit-cover" />
+                      {% elif candidat.etudiant.prenom and candidat.etudiant.nom %}
+                        {{ candidat.etudiant.prenom|slice:":1"|upper }}{{ candidat.etudiant.nom|slice:":1"|upper }}
+                      {% else %}
+                        {{ candidat.etudiant.nom|slice:":2"|upper }}
+                      {% endif %}
+                    </span>
                     <div>
-                      <h1 class="h4 fw-bold m-0">Mariam Bello</h1>
+                      <h1 class="h4 fw-bold m-0">{{ candidat.etudiant.prenom }} {{ candidat.etudiant.nom }}</h1>
                       <div class="text-secondary">
-                        mariam.bello@mail.com · +229 97 00 00 00
+                        {{ candidat.etudiant.email }} · {{ candidat.etudiant.telephone }}
                       </div>
                       <div class="mt-2">
-                        <span class="s-badge b-attente">
-                          <i class="bi bi-hourglass-split"></i>
-                          En attente de validation
-                        </span>
+                        {% if candidat.statut == 'en_attente' %}
+                          <span class="s-badge b-attente">
+                            <i class="bi bi-hourglass-split"></i>
+                            En attente de validation
+                          </span>
+                        {% elif candidat.statut == 'accepte' %}
+                          <span class="s-badge b-accepte">
+                            <i class="bi bi-check-circle"></i>
+                            Candidature acceptée
+                          </span>
+                        {% elif candidat.statut == 'refuse' %}
+                          <span class="s-badge b-refuse">
+                            <i class="bi bi-x-circle"></i>
+                            Candidature refusée
+                          </span>
+                        {% endif %}
                       </div>
                     </div>
                   </div>
                   <a
                     class="btn-s btn-line-s btn-sm-s"
-                    href="/gestion/apprenants/2/"
+                    href="{% url 'admin_apprenant_detail' pk=candidat.etudiant.pk %}"
                   >
                     <i class="bi bi-person"></i>
                     Voir la fiche apprenant
@@ -73,44 +95,91 @@
                 <div class="meta-grid">
                   <div>
                     <span>Formation demandée</span>
-                    <b>UI/UX Design</b>
+                    <b>{{ candidat.formation.nom }}</b>
                   </div>
                   <div>
                     <span>Vague</span>
-                    <b>2026-A</b>
+                    <b>{{ candidat.configVague.nom }}</b>
                   </div>
                   <div>
                     <span>Date de candidature</span>
-                    <b>2 octobre 2026, 14h32</b>
+                    <b>{{ candidat.date_candidature|date:"j F Y, H\hi" }}</b>
                   </div>
                   <div>
                     <span>Niveau d'études</span>
-                    <b>Licence 2</b>
+                    <b>{{ candidat.etudiant.niveau_etudes|default:"Non renseigné" }}</b>
                   </div>
                   <div>
                     <span>Téléphone / WhatsApp</span>
-                    <b>+229 97 00 00 00</b>
+                    <b>{{ candidat.etudiant.telephone }}</b>
                   </div>
                   <div>
-                    <span>Inscrite le</span>
-                    <b>28 septembre 2026</b>
+                    <span>Inscrit(e) le</span>
+                    <b>{{ candidat.etudiant.date_inscription|date:"j F Y" }}</b>
+                  </div>
+                  <div>
+                    <span>Curriculum Vitae</span>
+                    {% if candidat.cv %}
+                    <b>
+                      <button
+                        type="button"
+                        class="btn-s btn-line-s btn-sm-s"
+                        data-bs-toggle="modal"
+                        data-bs-target="#cvDetailModal"
+                      >
+                        <i class="bi bi-file-earmark-pdf text-danger me-1"></i> Ouvrir le CV
+                      </button>
+                    </b>
+                    {% else %}
+                    <b>Non fourni</b>
+                    {% endif %}
                   </div>
                 </div>
                 <hr class="divider-s" />
                 <p class="eyebrow-s">Motif d'inscription</p>
                 <p class="quote">
-                  « Je souhaite me reconvertir dans le design d'interface après
-                  3 ans en communication visuelle. J'ai suivi des tutoriels
-                  Figma et je veux structurer mon apprentissage avec un
-                  accompagnement en direct. »
+                  « {{ candidat.motif_inscription }} »
                 </p>
                 <div
                   class="d-flex justify-content-between small text-secondary mt-2"
                 >
                   <span>Motif saisi par le candidat</span>
-                  <span>212 / 255 caractères</span>
+                  <span>{{ candidat.motif_inscription|length }} / 255 caractères</span>
                 </div>
               </div>
+              {% if candidat.cv %}
+              <div class="s-card s-card-pad mb-3">
+                <p class="eyebrow-s mb-2">Curriculum Vitae (CV)</p>
+                <div class="file-row">
+                  <span class="file-row-icon">
+                    <i class="bi bi-file-earmark-pdf text-danger"></i>
+                  </span>
+                  <div class="file-row-name">
+                    <b>{{ candidat.cv.name|cut:"candidatures/cv/" }}</b>
+                    <small class="d-block text-secondary">Document PDF transmis par le candidat</small>
+                  </div>
+                  <div class="d-flex gap-2">
+                    <button
+                      type="button"
+                      class="btn-s btn-primary-s btn-sm-s"
+                      data-bs-toggle="modal"
+                      data-bs-target="#cvDetailModal"
+                    >
+                      <i class="bi bi-eye me-1"></i>
+                      Ouvrir le CV
+                    </button>
+                    <a
+                      class="btn-s btn-line-s btn-sm-s"
+                      href="{{ candidat.cv.url }}"
+                      download
+                    >
+                      <i class="bi bi-download me-1"></i>
+                      Télécharger
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
               <div class="s-card overflow-hidden mb-3">
                 <div class="s-card-head px-4 pt-4">
                   <h2 class="s-card-title">
@@ -128,23 +197,28 @@
                       </tr>
                     </thead>
                     <tbody>
+                      {% for autre in autres_candidatures %}
                       <tr>
+                        <td><b><a href="{% url 'admin_candidature_detail' pk=autre.pk %}" class="text-reset text-decoration-none">{{ autre.formation.nom }}</a></b></td>
+                        <td>{{ autre.configVague.nom }}</td>
+                        <td>{{ autre.date_candidature|date:"j M Y" }}</td>
                         <td>
-                          <b>UI/UX Design</b>
-                          <small>Cette candidature</small>
-                        </td>
-                        <td>2026-A</td>
-                        <td>2 oct. 2026</td>
-                        <td>
-                          <span class="s-badge b-attente">En attente</span>
+                          {% if autre.statut == 'en_attente' %}
+                            <span class="s-badge b-attente">En attente</span>
+                          {% elif autre.statut == 'accepte' %}
+                            <span class="s-badge b-accepte">Accepté</span>
+                          {% elif autre.statut == 'refuse' %}
+                            <span class="s-badge b-refuse">Refusé</span>
+                          {% endif %}
                         </td>
                       </tr>
+                      {% empty %}
                       <tr>
-                        <td><b>Marketing Digital</b></td>
-                        <td>2025-B</td>
-                        <td>12 janv. 2025</td>
-                        <td><span class="s-badge b-accepte">Accepté</span></td>
+                        <td colspan="4" class="text-center text-muted py-3">
+                          Aucune autre candidature pour cette personne.
+                        </td>
                       </tr>
+                      {% endfor %}
                     </tbody>
                   </table>
                 </div>
@@ -162,7 +236,7 @@
                   class="s-input"
                   rows="3"
                   placeholder="Ajouter une note pour l'équipe…"
-                ></textarea>
+                >{{ candidat.commentaire_admin }}</textarea>
               </div>
             </div>
             <div class="col-xl-4">
@@ -207,13 +281,16 @@
                   <ul class="timeline">
                     <li class="on">
                       Candidature soumise
-                      <small>2 oct. 2026, 14h32</small>
+                      <small>{{ candidat.date_candidature|date:"j M Y, H\hi" }}</small>
                     </li>
-                    <li>
-                      Invitation au groupe WhatsApp envoyée
-                      <small>2 oct. 2026, 14h33</small>
+                    {% if candidat.date_decision %}
+                    <li class="on">
+                      Décision : {{ candidat.get_statut_display }}
+                      <small>{{ candidat.date_decision|date:"j M Y, H\hi" }}</small>
                     </li>
+                    {% else %}
                     <li>En attente de revue admin</li>
+                    {% endif %}
                   </ul>
                 </div>
               </div>
@@ -222,6 +299,32 @@
         </main>
       </div>
     </div>
+    {% if candidat.cv %}
+    <div class="modal fade" id="cvDetailModal" tabindex="-1" aria-labelledby="cvDetailModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 950px;">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header">
+            <h5 class="modal-title h6 fw-bold m-0" id="cvDetailModalLabel">
+              <i class="bi bi-file-earmark-pdf text-danger me-2"></i>
+              CV de {{ candidat.etudiant.prenom }} {{ candidat.etudiant.nom }}
+            </h5>
+            <div class="d-flex align-items-center gap-2 ms-auto me-3">
+              <a href="{{ candidat.cv.url }}" target="_blank" rel="noopener" class="btn-s btn-line-s btn-sm-s">
+                <i class="bi bi-box-arrow-up-right me-1"></i> Nouvel onglet
+              </a>
+              <a href="{{ candidat.cv.url }}" download class="btn-s btn-line-s btn-sm-s">
+                <i class="bi bi-download me-1"></i> Télécharger
+              </a>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body p-0" style="height: 80vh; background: #525659;">
+            <embed src="{{ candidat.cv.url }}" type="application/pdf" width="100%" height="100%" />
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/espace.js' %}" defer></script>
   </body>

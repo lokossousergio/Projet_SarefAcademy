@@ -31,6 +31,7 @@
     </script>
   </head>
   <body class="espace espace-admin">
+    {% include "partials/feedback_modal.html" %}
     <div class="app">
       {% include 'partials/sidebar_admin.html' %}
       <div class="app-col">
@@ -40,12 +41,12 @@
             <div>
               <h1 class="page-title">Candidatures</h1>
               <p class="page-sub">
-                224 candidatures · Vague 2026-A · un apprenant peut postuler à
+                {{ nb_total }} candidature{{ nb_total|pluralize }} · Vague {% if vague_courante %}{{ vague_courante.nom }}{% else %}aucune en cours{% endif %} · un apprenant peut postuler à
                 plusieurs formations
               </p>
             </div>
             <div class="d-flex flex-wrap gap-2">
-              <a class="btn-s btn-line-s" href="#">
+              <a class="btn-s btn-line-s" href="?export=csv{% if filtre_statut %}&statut={{ filtre_statut }}{% endif %}{% if filtre_q %}&q={{ filtre_q }}{% endif %}{% if filtre_formation %}&formation={{ filtre_formation }}{% endif %}{% if filtre_vague %}&vague={{ filtre_vague }}{% endif %}{% if filtre_tri %}&tri={{ filtre_tri }}{% endif %}">
                 <i class="bi bi-download"></i>
                 Exporter (CSV)
               </a>
@@ -54,40 +55,40 @@
           <form method="get" class="s-card toolbar reveal">
             <nav class="pill-tabs" aria-label="Filtrer">
               <a
-                class="pill active"
+                class="pill {% if not filtre_statut %}active{% endif %}"
                 href="?statut="
                 data-list="#t-cand"
                 data-filter=""
               >
                 Toutes
-                <span class="n">224</span>
+                <span class="n">{{ nb_total }}</span>
               </a>
               <a
-                class="pill"
+                class="pill {% if filtre_statut == 'attente' or filtre_statut == 'en_attente' %}active{% endif %}"
                 href="?statut=attente"
                 data-list="#t-cand"
                 data-filter="attente"
               >
                 En attente
-                <span class="n">23</span>
+                <span class="n">{{ nb_attente }}</span>
               </a>
               <a
-                class="pill"
+                class="pill {% if filtre_statut == 'accepte' %}active{% endif %}"
                 href="?statut=accepte"
                 data-list="#t-cand"
                 data-filter="accepte"
               >
                 Acceptées
-                <span class="n">187</span>
+                <span class="n">{{ nb_accepte }}</span>
               </a>
               <a
-                class="pill"
+                class="pill {% if filtre_statut == 'refuse' %}active{% endif %}"
                 href="?statut=refuse"
                 data-list="#t-cand"
                 data-filter="refuse"
               >
                 Refusées
-                <span class="n">14</span>
+                <span class="n">{{ nb_refuse }}</span>
               </a>
             </nav>
             <div class="search-box ms-lg-auto" style="max-width: 15rem">
@@ -101,6 +102,7 @@
                 placeholder="Nom, e-mail…"
                 data-list="#t-cand"
                 data-search
+                value="{{ filtre_q }}"
               />
             </div>
             <label class="visually-hidden" for="f">Formation</label>
@@ -112,21 +114,23 @@
               data-match
             >
               <option value="">Toutes les formations</option>
-              <option>Développement Web Full-Stack</option>
-              <option>UI/UX Design</option>
-              <option>Marketing Digital</option>
-              <option>Data &amp; IA</option>
+              {% for f in formations %}
+              <option value="{{ f.nom }}" {% if filtre_formation == f.nom %}selected{% endif %}>{{ f.nom }}</option>
+              {% endfor %}
             </select>
             <label class="visually-hidden" for="v">Vague</label>
-            <select id="v" name="vague" class="s-input form-select w-auto">
-              <option>Vague 2026-A (en cours)</option>
-              <option>Vague 2025-B (archivée)</option>
-              <option>Vague 2025-A (archivée)</option>
+            <select id="v" name="vague" class="s-input form-select w-auto" data-list="#t-cand" data-match>
+              <option value="">Toutes les vagues</option>
+              {% for v in vagues %}
+              <option value="{{ v.nom }}" {% if filtre_vague == v.nom %}selected{% endif %}>
+                {{ v.nom }}{% if v.est_courante %} (en cours){% elif v.archive.exists %} (archivée){% endif %}
+              </option>
+              {% endfor %}
             </select>
             <label class="visually-hidden" for="t">Tri</label>
             <select id="t" name="tri" class="s-input form-select w-auto">
-              <option>Plus récentes</option>
-              <option>Nom (A–Z)</option>
+              <option value="recent" {% if not filtre_tri or filtre_tri == 'recent' %}selected{% endif %}>Plus récentes</option>
+              <option value="nom" {% if filtre_tri == 'nom' or filtre_tri == 'Nom (A–Z)' %}selected{% endif %}>Nom (A–Z)</option>
             </select>
           </form>
           <div class="s-card overflow-hidden reveal">
@@ -143,300 +147,98 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr data-status="attente">
+                  {% for candidat in candidatures %}
+                  <tr data-status="{% if candidat.statut == 'en_attente' %}attente{% else %}{{ candidat.statut }}{% endif %}">
                     <td>
                       <div class="user-cell">
-                        <span class="avatar">MB</span>
+                        <span class="avatar">
+                          {% if candidat.etudiant.prenom and candidat.etudiant.nom %}
+                            {{ candidat.etudiant.prenom|slice:":1"|upper }}{{ candidat.etudiant.nom|slice:":1"|upper }}
+                          {% else %}
+                            {{ candidat.etudiant.nom|slice:":2"|upper }}
+                          {% endif %}
+                        </span>
                         <div>
-                          <b>Mariam Bello</b>
-                          <small>mariam.bello@mail.com</small>
+                          <b>{{ candidat.etudiant.prenom }} {{ candidat.etudiant.nom }}</b>
+                          <small>{{ candidat.etudiant.email }}</small>
                         </div>
                       </div>
                     </td>
-                    <td>UI/UX Design</td>
-                    <td>2026-A</td>
-                    <td>2 oct. 2026</td>
-                    <td><span class="s-badge b-attente">En attente</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-primary-s btn-sm-s"
-                        href="/gestion/candidatures/1/"
-                      >
-                        Examiner
-                      </a>
-                    </td>
-                  </tr>
-                  <tr data-status="accepte">
+                    <td>{{ candidat.formation.nom }}</td>
+                    <td>{{ candidat.configVague.nom }}</td>
+                    <td>{{ candidat.date_candidature|date:"j M Y" }}</td>
                     <td>
-                      <div class="user-cell">
-                        <span class="avatar">JK</span>
-                        <div>
-                          <b>Jonas Koffi</b>
-                          <small>jonas.koffi@mail.com</small>
-                        </div>
-                      </div>
+                      {% if candidat.statut == 'en_attente' %}
+                        <span class="s-badge b-attente">En attente</span>
+                      {% elif candidat.statut == 'accepte' %}
+                        <span class="s-badge b-accepte">Accepté</span>
+                      {% elif candidat.statut == 'refuse' %}
+                        <span class="s-badge b-refuse">Refusé</span>
+                      {% else %}
+                        <span class="s-badge">{{ candidat.get_statut_display }}</span>
+                      {% endif %}
                     </td>
-                    <td>Développement Web Full-Stack</td>
-                    <td>2026-A</td>
-                    <td>1 oct. 2026</td>
-                    <td><span class="s-badge b-accepte">Accepté</span></td>
                     <td class="text-end">
-                      <a
-                        class="btn-s btn-soft-s btn-sm-s"
-                        href="/gestion/candidatures/2/"
-                      >
-                        Voir
-                      </a>
+                      {% if candidat.statut == 'en_attente' %}
+                        <a
+                          class="btn-s btn-primary-s btn-sm-s"
+                          href="{% url 'admin_candidature_detail' pk=candidat.pk %}"
+                        >
+                          Examiner
+                        </a>
+                      {% else %}
+                        <a
+                          class="btn-s btn-soft-s btn-sm-s"
+                          href="{% url 'admin_candidature_detail' pk=candidat.pk %}"
+                        >
+                          Voir
+                        </a>
+                      {% endif %}
                     </td>
                   </tr>
-                  <tr data-status="attente">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">FS</span>
-                        <div>
-                          <b>Fatou Sow</b>
-                          <small>fatou.sow@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>Marketing Digital</td>
-                    <td>2026-A</td>
-                    <td>1 oct. 2026</td>
-                    <td><span class="s-badge b-attente">En attente</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-primary-s btn-sm-s"
-                        href="/gestion/candidatures/3/"
-                      >
-                        Examiner
-                      </a>
+                  {% empty %}
+                  <tr>
+                    <td colspan="6" class="text-center text-muted py-4">
+                      Aucune candidature trouvée.
                     </td>
                   </tr>
-                  <tr data-status="refuse">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">RL</span>
-                        <div>
-                          <b>Rayan Lawson</b>
-                          <small>rayan.lawson@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>Développement Web Full-Stack</td>
-                    <td>2026-A</td>
-                    <td>30 sept. 2026</td>
-                    <td><span class="s-badge b-refuse">Refusé</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-soft-s btn-sm-s"
-                        href="/gestion/candidatures/4/"
-                      >
-                        Voir
-                      </a>
-                    </td>
-                  </tr>
-                  <tr data-status="accepte">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">AK</span>
-                        <div>
-                          <b>Aïcha Kora</b>
-                          <small>aicha.kora@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>Développement Web Full-Stack</td>
-                    <td>2026-A</td>
-                    <td>12 sept. 2026</td>
-                    <td><span class="s-badge b-accepte">Accepté</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-soft-s btn-sm-s"
-                        href="/gestion/candidatures/5/"
-                      >
-                        Voir
-                      </a>
-                    </td>
-                  </tr>
-                  <tr data-status="accepte">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">PT</span>
-                        <div>
-                          <b>Pauline Towa</b>
-                          <small>pauline.towa@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>UI/UX Design</td>
-                    <td>2026-A</td>
-                    <td>10 sept. 2026</td>
-                    <td><span class="s-badge b-accepte">Accepté</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-soft-s btn-sm-s"
-                        href="/gestion/candidatures/6/"
-                      >
-                        Voir
-                      </a>
-                    </td>
-                  </tr>
-                  <tr data-status="accepte">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">NB</span>
-                        <div>
-                          <b>Nadège Biaou</b>
-                          <small>nadege.biaou@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>Marketing Digital</td>
-                    <td>2026-A</td>
-                    <td>3 sept. 2026</td>
-                    <td><span class="s-badge b-accepte">Accepté</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-soft-s btn-sm-s"
-                        href="/gestion/candidatures/7/"
-                      >
-                        Voir
-                      </a>
-                    </td>
-                  </tr>
-                  <tr data-status="accepte">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">SD</span>
-                        <div>
-                          <b>Serge Dansou</b>
-                          <small>serge.dansou@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>Développement Web Full-Stack</td>
-                    <td>2026-A</td>
-                    <td>2 sept. 2026</td>
-                    <td><span class="s-badge b-accepte">Accepté</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-soft-s btn-sm-s"
-                        href="/gestion/candidatures/8/"
-                      >
-                        Voir
-                      </a>
-                    </td>
-                  </tr>
-                  <tr data-status="attente">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">KA</span>
-                        <div>
-                          <b>Kevin Adjovi</b>
-                          <small>kevin.adjovi@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>UI/UX Design</td>
-                    <td>2026-A</td>
-                    <td>31 août 2026</td>
-                    <td><span class="s-badge b-attente">En attente</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-primary-s btn-sm-s"
-                        href="/gestion/candidatures/9/"
-                      >
-                        Examiner
-                      </a>
-                    </td>
-                  </tr>
-                  <tr data-status="attente">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">AK</span>
-                        <div>
-                          <b>Aïcha Kora</b>
-                          <small>aicha.kora@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>Marketing Digital</td>
-                    <td>2026-A</td>
-                    <td>28 août 2026</td>
-                    <td><span class="s-badge b-attente">En attente</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-primary-s btn-sm-s"
-                        href="/gestion/candidatures/10/"
-                      >
-                        Examiner
-                      </a>
-                    </td>
-                  </tr>
-                  <tr data-status="refuse">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">YA</span>
-                        <div>
-                          <b>Yannick Agossou</b>
-                          <small>yannick.agossou@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>Marketing Digital</td>
-                    <td>2026-A</td>
-                    <td>29 août 2026</td>
-                    <td><span class="s-badge b-refuse">Refusé</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-soft-s btn-sm-s"
-                        href="/gestion/candidatures/11/"
-                      >
-                        Voir
-                      </a>
-                    </td>
-                  </tr>
-                  <tr data-status="accepte">
-                    <td>
-                      <div class="user-cell">
-                        <span class="avatar">IS</span>
-                        <div>
-                          <b>Ibrahim Salami</b>
-                          <small>ibrahim.salami@mail.com</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>Développement Web Full-Stack</td>
-                    <td>2026-A</td>
-                    <td>28 août 2026</td>
-                    <td><span class="s-badge b-accepte">Accepté</span></td>
-                    <td class="text-end">
-                      <a
-                        class="btn-s btn-soft-s btn-sm-s"
-                        href="/gestion/candidatures/12/"
-                      >
-                        Voir
-                      </a>
-                    </td>
-                  </tr>
+                  {% endfor %}
                 </tbody>
               </table>
             </div>
-            <div class="empty-s" id="vide-t-cand" hidden>
+            <div class="empty-s" id="vide-t-cand" {% if candidatures %}hidden{% endif %}>
               <i class="bi bi-search fs-3 d-block mb-2"></i>
               Aucun résultat pour ce filtre.
             </div>
             <div class="table-foot">
-              <span>Affichage 1–12 sur 224</span>
+              {% if paginator.count > 0 %}
+                <span>Affichage {{ page_obj.start_index }}–{{ page_obj.end_index }} sur {{ paginator.count }}</span>
+              {% else %}
+                <span>Affichage 0 sur 0</span>
+              {% endif %}
+              {% if paginator.num_pages > 1 %}
               <nav class="pager" aria-label="Pagination">
-                <span class="off">← Précédent</span>
-                <span class="on" aria-current="page">1</span>
-                <a href="?page=2">2</a>
-                <a href="?page=3">3</a>
-                <span>…</span>
-                <a href="?page=19">19</a>
-                <a href="?page=2">Suivant →</a>
+                {% if page_obj.has_previous %}
+                  <a href="?page={{ page_obj.previous_page_number }}{% if filtre_statut %}&statut={{ filtre_statut }}{% endif %}{% if filtre_q %}&q={{ filtre_q }}{% endif %}{% if filtre_formation %}&formation={{ filtre_formation }}{% endif %}{% if filtre_vague %}&vague={{ filtre_vague }}{% endif %}{% if filtre_tri %}&tri={{ filtre_tri }}{% endif %}">← Précédent</a>
+                {% else %}
+                  <span class="off">← Précédent</span>
+                {% endif %}
+
+                {% for p in paginator.page_range %}
+                  {% if p == page_obj.number %}
+                    <span class="on" aria-current="page">{{ p }}</span>
+                  {% elif p >= page_obj.number|add:"-2" and p <= page_obj.number|add:"2" %}
+                    <a href="?page={{ p }}{% if filtre_statut %}&statut={{ filtre_statut }}{% endif %}{% if filtre_q %}&q={{ filtre_q }}{% endif %}{% if filtre_formation %}&formation={{ filtre_formation }}{% endif %}{% if filtre_vague %}&vague={{ filtre_vague }}{% endif %}{% if filtre_tri %}&tri={{ filtre_tri }}{% endif %}">{{ p }}</a>
+                  {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                  <a href="?page={{ page_obj.next_page_number }}{% if filtre_statut %}&statut={{ filtre_statut }}{% endif %}{% if filtre_q %}&q={{ filtre_q }}{% endif %}{% if filtre_formation %}&formation={{ filtre_formation }}{% endif %}{% if filtre_vague %}&vague={{ filtre_vague }}{% endif %}{% if filtre_tri %}&tri={{ filtre_tri }}{% endif %}">Suivant →</a>
+                {% else %}
+                  <span class="off">Suivant →</span>
+                {% endif %}
               </nav>
+              {% endif %}
             </div>
           </div>
         </main>

@@ -59,16 +59,16 @@
             <div class="col-md-6">
               <article class="s-card course-card h-100 overflow-hidden">
                 <div
-                  class="course-cover learner-course-cover {% cycle 'c1' 'c2' 'c3' 'c4' 'c5' %}"
-                  style="
-                    --course-cover-image: url('{% static 'img/apercu-cours.jpg' %}');
-                  "
+                  class="course-cover learner-course-cover {% if not candidat.formation.photo %}{% cycle 'c1' 'c2' 'c3' 'c4' 'c5' %}{% endif %}"
+                  style="{% if candidat.formation.photo %}--course-cover-image: url('{{ candidat.formation.photo.url }}');{% else %}--course-cover-image: url('{% static 'img/apercu-cours.jpg' %}');{% endif %}"
                 >
+                  {% if not candidat.formation.photo %}
                   <span class="course-cover-icon">
                     <i
                       class="bi {% cycle 'bi-code-slash' 'bi-palette' 'bi-megaphone' 'bi-camera-video' 'bi-archive' %}"
                     ></i>
                   </span>
+                  {% endif %}
                   <span class="course-cover-title">
                     {{ candidat.formation.nom }}
                   </span>
@@ -80,10 +80,7 @@
                   <small>{{ candidat.configVague.nom }}</small>
                 </div>
                 <div class="course-body d-flex flex-column">
-                  <div class="course-kicker">
-                    <i class="bi bi-calendar3"></i>
-                    Déposée le {{ candidat.date_candidature|date:"d/m/Y" }}
-                  </div>
+
                   <h3 class="h5 fw-bold mt-2 mb-2">
                     {{ candidat.formation.nom }}
                   </h3>
@@ -236,8 +233,12 @@
             {% for formation in formations_disponibles %}
             <div class="col-md-6 col-xl-4">
               <article class="s-card overflow-hidden h-100">
-                <div class="cover c{% cycle '1' '2' '3' '4' '5' %}">
+                <div class="cover position-relative overflow-hidden" style="background: #0f172a;">
+                  {% if formation.photo %}
+                  <img src="{{ formation.photo.url }}" alt="Couverture de {{ formation.nom }}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" />
+                  {% else %}
                   <i class="bi bi-mortarboard"></i>
+                  {% endif %}
                 </div>
                 <div class="course-body">
                   <span class="s-badge b-actif">
