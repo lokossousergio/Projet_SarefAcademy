@@ -44,11 +44,11 @@
         Candidatures
       </a>
       <a
-        class="navitem {% if request.resolver_match.url_name == 'admin_apprenants' or request.resolver_match.url_name == 'admin_apprenant_detail' %}active{% endif %}"
-        href="{% url 'admin_apprenants' %}"
+        class="navitem {% if request.resolver_match.url_name in 'admin_etudiants admin_etudiant_detail' %}active{% endif %}"
+        href="{% url 'admin_etudiants' %}"
       >
         <i class="bi bi-people"></i>
-        Apprenants
+        Étudiants
       </a>
       <a
         class="navitem {% if request.resolver_match.url_name == 'admin_resultats' %}active{% endif %}"
@@ -79,7 +79,7 @@
         <i class="bi bi-diagram-3"></i>
         Organisation
       </a>
-      <div class="nav-cap">GESTION</div>
+      <div class="nav-cap">ADMINISTRATION</div>
       <a
         class="navitem {% if request.resolver_match.url_name == 'admin_finance' %}active{% endif %}"
         href="{% url 'admin_finance' %}"
@@ -88,7 +88,7 @@
         Finance
       </a>
       <a
-        class="navitem {% if request.resolver_match.url_name == 'admin_vagues' or request.resolver_match.url_name == 'admin_vague_archive' %}active{% endif %}"
+        class="navitem {% if request.resolver_match.url_name == 'admin_vagues' or request.resolver_match.url_name == 'admin_vague_archive' or request.resolver_match.url_name == 'admin_vague_inscription' %}active{% endif %}"
         href="{% url 'admin_vagues' %}"
       >
         <i class="bi bi-folder2"></i>
@@ -102,11 +102,11 @@
         Configurer une vague
       </a>
       <a
-        class="navitem {% if request.resolver_match.url_name == 'admin_parametres' %}active{% endif %}"
-        href="{% url 'admin_parametres' %}"
+        class="navitem {% if request.resolver_match.url_name == 'admin_mon_compte' %}active{% endif %}"
+        href="{% url 'admin_mon_compte' %}"
       >
-        <i class="bi bi-gear"></i>
-        Paramètres
+        <i class="bi bi-person-gear"></i>
+        Mon compte
       </a>
     </nav>
     <div class="sidebar-user">
@@ -117,7 +117,7 @@
         <b>{{ request.user.get_full_name|default:"Administration" }}</b>
         <small>Administrateur</small>
       </div>
-      <form method="post" action="{% url 'deconnexion' %}">
+      <form method="post" action="{% url 'deconnexion-admin' %}">
         {% csrf_token %}
         <button
           class="logout"

@@ -10,7 +10,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#335cec" />
-    <title>Mes formations | SAREF Academy</title>
+    <title>Mes Formations | SAREF Academy — Formateur</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
@@ -25,8 +25,30 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
+    <style>
+      .empty-formation-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 24px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8faff 100%);
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.05);
+      }
+      .empty-hero-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #335cec 0%, #1e40af 100%);
+        color: #ffffff;
+        display: grid;
+        place-items: center;
+        font-size: 1.55rem;
+        box-shadow: 0 10px 22px -5px rgba(51, 92, 236, 0.45);
+      }
+    </style>
   </head>
   <body class="espace espace-formateur">
+    {% include "partials/feedback_modal.html" %}
     <div class="app">
       {% include 'partials/sidebar_formateur.html' %}
       <div class="app-col">
@@ -34,155 +56,80 @@
         <main class="app-main">
           <div class="page-head">
             <div>
-              <span class="eyebrow-s">Espace pédagogique</span>
-              <h1 class="page-title">Mes formations</h1>
+              <span class="eyebrow-s">Espace Pédagogique</span>
+              <h1 class="page-title">Mes Formations Assignées</h1>
               <p class="page-sub">
-                Choisissez une formation pour consulter ses modules et mettre à
-                jour ses chapitres.
+                Gérez vos modules et chapitres pédagogiques pour les formations qui vous sont confiées.
               </p>
             </div>
           </div>
-          <div
-            class="row g-3"
-            id="mes-formations"
-            data-empty="#aucune-formation"
-          >
+
+          <div class="row g-3" id="mes-formations">
             {% for formation in formations %}
             <div class="col-md-6 col-xl-4" data-status="{{ formation.statut }}">
               <article class="s-card overflow-hidden h-100 hover-lift reveal">
-                <div class="cover {% cycle 'c1' 'c2' 'c3' 'c4' 'c5' %}">
-                  <i
-                    class="bi {% cycle 'bi-code-slash' 'bi-palette' 'bi-megaphone' 'bi-camera-video' 'bi-cpu' %}"
-                  ></i>
+                <div
+                  class="cover position-relative overflow-hidden"
+                  style="min-height: 140px; background: #0f172a;"
+                >
+                  {% if formation.photo %}
+                  <img
+                    src="{{ formation.photo.url }}"
+                    alt="Couverture {{ formation.nom }}"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                  />
+                  {% else %}
+                  <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white-50">
+                    <i class="bi bi-mortarboard fs-1"></i>
+                  </div>
+                  {% endif %}
                 </div>
                 <div class="course-body d-flex flex-column">
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <span
-                      class="s-badge {% if formation.statut == 'active' %}b-actif{% else %}b-brouillon{% endif %}"
-                    >
-                      {{ formation.get_statut_display|default:"Formation assignée" }}
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="s-badge {% if formation.statut == 'active' %}b-actif{% elif formation.statut == 'brouillon' %}b-brouillon{% else %}b-archive{% endif %}">
+                      {{ formation.get_statut_display }}
                     </span>
                     <span class="small text-secondary">
-                      {{ formation.duree }} mois
+                      <i class="bi bi-clock me-1"></i>{{ formation.duree }} mois
                     </span>
                   </div>
                   <h2 class="h5 mt-2">{{ formation.nom }}</h2>
                   <p class="small text-secondary">
-                    {{ formation.description|default:"Consultez le programme et les ressources pédagogiques."|truncatewords:20 }}
+                    {{ formation.description|default:"Consultez et gérez le programme pédagogique de cette formation."|truncatewords:16 }}
                   </p>
                   <div class="course-meta mb-3">
+                    <span>
+                      <i class="bi bi-layers"></i>
+                      {{ formation.modules.count }} module{{ formation.modules.count|pluralize }}
+                    </span>
                     <span>
                       <i class="bi bi-cash"></i>
                       {{ formation.prix }} FCFA
                     </span>
-                    <span>
-                      <i class="bi bi-layers"></i>
-                      {{ formation.modules.count }} modules
-                    </span>
-                  </div>
-                  <div
-                    class="d-flex justify-content-between small text-secondary mb-3"
-                  >
-                    <span>{{ formation.candidats.count }} candidature(s)</span>
-                    <span>{{ formation.formateurs.count }} formateur(s)</span>
                   </div>
                   <a
                     class="btn-s btn-primary-s w-100 mt-auto"
                     href="{% url 'formateur_formation_detail' formation.pk %}"
                   >
-                    Ouvrir les modules
+                    Gérer le programme
                     <i class="bi bi-arrow-right ms-1"></i>
                   </a>
                 </div>
               </article>
             </div>
             {% empty %}
-            <div class="col-md-6 col-xl-4" data-status="active">
-              <article class="s-card overflow-hidden h-100 hover-lift reveal">
-                <div class="cover c1"><i class="bi bi-code-slash"></i></div>
-                <div class="course-body d-flex flex-column">
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <span class="s-badge b-actif">Active</span>
-                    <span class="small text-secondary">4 mois</span>
-                  </div>
-                  <h2 class="h5 mt-2">Développement Web</h2>
-                  <p class="small text-secondary">
-                    Formation consacrée à la création de sites web.
-                  </p>
-                  <div class="course-meta mb-3">
-                    <span>
-                      <i class="bi bi-cash"></i>
-                      120 000 FCFA
-                    </span>
-                    <span>
-                      <i class="bi bi-layers"></i>
-                      3 modules
-                    </span>
-                  </div>
-                  <div
-                    class="d-flex justify-content-between small text-secondary mb-3"
-                  >
-                    <span>6 chapitres</span>
-                    <span>Formation assignée</span>
-                  </div>
-                  <a
-                    class="btn-s btn-primary-s w-100 mt-auto"
-                    href="{% url 'formateur_formation_detail' 1 %}"
-                  >
-                    Ouvrir les modules
-                    <i class="bi bi-arrow-right ms-1"></i>
-                  </a>
+            <div class="col-12">
+              <section class="empty-formation-hero text-center p-5">
+                <div class="empty-hero-icon mx-auto mb-3">
+                  <i class="bi bi-mortarboard"></i>
                 </div>
-              </article>
-            </div>
-            <div class="col-md-6 col-xl-4" data-status="active">
-              <article class="s-card overflow-hidden h-100 hover-lift reveal">
-                <div class="cover c3"><i class="bi bi-megaphone"></i></div>
-                <div class="course-body d-flex flex-column">
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <span class="s-badge b-actif">Active</span>
-                    <span class="small text-secondary">3 mois</span>
-                  </div>
-                  <h2 class="h5 mt-2">Marketing Digital</h2>
-                  <p class="small text-secondary">
-                    Formation consacrée au marketing numérique.
-                  </p>
-                  <div class="course-meta mb-3">
-                    <span>
-                      <i class="bi bi-cash"></i>
-                      90 000 FCFA
-                    </span>
-                    <span>
-                      <i class="bi bi-layers"></i>
-                      3 modules
-                    </span>
-                  </div>
-                  <div
-                    class="d-flex justify-content-between small text-secondary mb-3"
-                  >
-                    <span>4 chapitres</span>
-                    <span>Formation assignée</span>
-                  </div>
-                  <a
-                    class="btn-s btn-primary-s w-100 mt-auto"
-                    href="{% url 'formateur_formation_detail' 2 %}"
-                  >
-                    Ouvrir les modules
-                    <i class="bi bi-arrow-right ms-1"></i>
-                  </a>
-                </div>
-              </article>
+                <h3 class="h4 fw-bold text-dark mb-2">Aucune formation assignée pour le moment</h3>
+                <p class="text-secondary small mb-0" style="max-width: 500px; margin: 0 auto;">
+                  L'administration ne vous a pas encore attribué de formation active. Dès qu'une formation vous sera affectée, ses modules apparaîtront ici.
+                </p>
+              </section>
             </div>
             {% endfor %}
-          </div>
-          <div class="empty-s" id="aucune-formation" hidden>
-            Aucune formation ne correspond à votre espace.
           </div>
         </main>
       </div>

@@ -37,18 +37,18 @@
         Tableau de bord
       </a>
       <a
-        class="navitem {% if request.resolver_match.url_name == 'formateur_formations' or request.resolver_match.url_name == 'formateur_formation_detail' or request.resolver_match.url_name == 'formateur_module' or request.resolver_match.url_name == 'formateur_module_ajouter' or request.resolver_match.url_name == 'formateur_module_modifier' or request.resolver_match.url_name == 'formateur_chapitre_ajouter' or request.resolver_match.url_name == 'formateur_chapitre_detail' %}active{% endif %}"
+        class="navitem {% if request.resolver_match.url_name in 'formateur_formations formateur_formation_detail formateur_chapitre_detail' %}active{% endif %}"
         href="{% url 'formateur_formations' %}"
       >
         <i class="bi bi-mortarboard"></i>
         Mes formations &amp; cours
       </a>
       <a
-        class="navitem {% if request.resolver_match.url_name == 'formateur_apprenants' %}active{% endif %}"
-        href="{% url 'formateur_apprenants' %}"
+        class="navitem {% if request.resolver_match.url_name == 'formateur_etudiants' %}active{% endif %}"
+        href="{% url 'formateur_etudiants' %}"
       >
         <i class="bi bi-people"></i>
-        Mes apprenants
+        Mes étudiants
       </a>
     </nav>
     <div class="sidebar-user">
@@ -61,7 +61,7 @@
         </b>
         <small>Formateur</small>
       </div>
-      <form method="post" action="{% url 'deconnexion' %}">
+      <form method="post" action="{% url 'deconnexion-formateur' %}">
         {% csrf_token %}
         <button
           class="logout"

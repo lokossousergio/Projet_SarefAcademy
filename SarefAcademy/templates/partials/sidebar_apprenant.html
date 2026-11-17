@@ -3,7 +3,7 @@
   class="sidebar sidebar-apprenant offcanvas-lg offcanvas-start"
   id="sidebar"
   tabindex="-1"
-  aria-label="Navigation apprenant"
+  aria-label="Navigation étudiant"
 >
   <div class="d-flex justify-content-end d-lg-none p-3 pb-0">
     <button
@@ -15,7 +15,7 @@
     ></button>
   </div>
   <div class="offcanvas-body sidebar-inner">
-    <a class="brand" href="{% url 'apprenant_dashboard' %}">
+    <a class="brand" href="{% url 'etudiant_dashboard' %}">
       <span class="brand-mark">
         <img
           src="{% static 'images/saref-mark.png' %}"
@@ -24,35 +24,35 @@
       </span>
       <div>
         <b>SAREF Academy</b>
-        <small>ESPACE APPRENANT</small>
+        <small>ESPACE ÉTUDIANT</small>
       </div>
     </a>
     <nav class="d-grid gap-1 mt-4" aria-label="Menu principal">
       <a
-        class="navitem {% if request.resolver_match.url_name == 'apprenant_dashboard' %}active{% endif %}"
-        href="{% url 'apprenant_dashboard' %}"
+        class="navitem {% if request.resolver_match.url_name == 'etudiant_dashboard' %}active{% endif %}"
+        href="{% url 'etudiant_dashboard' %}"
       >
         <i class="bi bi-grid-1x2"></i>
         Tableau de bord
       </a>
       <a
-        class="navitem {% if request.resolver_match.url_name == 'apprenant_formations' or request.resolver_match.url_name == 'apprenant_formation_detail' %}active{% endif %}"
-        href="{% url 'apprenant_formations' %}"
+        class="navitem {% if request.resolver_match.url_name in 'etudiant_formations etudiant_formation_detail' %}active{% endif %}"
+        href="{% url 'etudiant_formations' %}"
       >
         <i class="bi bi-mortarboard"></i>
         Mes formations
       </a>
       <a
-        class="navitem {% if request.resolver_match.url_name == 'apprenant_paiements' %}active{% endif %}"
-        href="{% url 'apprenant_paiements' %}"
+        class="navitem {% if request.resolver_match.url_name == 'etudiant_paiements' %}active{% endif %}"
+        href="{% url 'etudiant_paiements' %}"
       >
         <i class="bi bi-credit-card"></i>
         Paiements
       </a>
       <div class="nav-cap">MON COMPTE</div>
       <a
-        class="navitem {% if request.resolver_match.url_name == 'apprenant_profil' %}active{% endif %}"
-        href="{% url 'apprenant_profil' %}"
+        class="navitem {% if request.resolver_match.url_name == 'etudiant_profil' %}active{% endif %}"
+        href="{% url 'etudiant_profil' %}"
       >
         <i class="bi bi-person"></i>
         Mon profil
@@ -65,12 +65,12 @@
       </span>
       {% else %}
       <span class="avatar avatar-md">
-        {{ etudiant.prenom|first|upper|default:"A" }}
+        {{ etudiant.prenom|first|upper|default:"E" }}
       </span>
       {% endif %}
       <div class="who">
-        <b>{{ etudiant.prenom|default:"Apprenant" }} {{ etudiant.nom }}</b>
-        <small>Apprenant</small>
+        <b>{{ etudiant.prenom|default:"Étudiant" }} {{ etudiant.nom }}</b>
+        <small>Étudiant</small>
       </div>
     </div>
     <a class="navitem mt-2" href="{% url 'deconnexion-etudiant' %}">

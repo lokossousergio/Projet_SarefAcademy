@@ -14,9 +14,8 @@
       {% if request.resolver_match.url_name == 'formateur_dashboard' %}Tableau de bord
       {% elif request.resolver_match.url_name == 'formateur_formations' %}Mes formations
       {% elif request.resolver_match.url_name == 'formateur_formation_detail' %}Programme de formation
-      {% elif request.resolver_match.url_name == 'formateur_apprenants' %}Mes apprenants
-      {% elif request.resolver_match.url_name == 'formateur_module' or request.resolver_match.url_name == 'formateur_module_modifier' or request.resolver_match.url_name == 'formateur_module_ajouter' %}Gestion des modules
-      {% elif request.resolver_match.url_name == 'formateur_chapitre_detail' or request.resolver_match.url_name == 'formateur_chapitre_ajouter' %}Gestion des chapitres
+      {% elif request.resolver_match.url_name in 'formateur_etudiants' %}Mes étudiants
+      {% elif request.resolver_match.url_name == 'formateur_chapitre_detail' %}Gestion du chapitre
       {% elif request.resolver_match.url_name == 'changer_mot_de_passe' %}Sécurité du compte
       {% else %}Espace pédagogique{% endif %}
     </strong>

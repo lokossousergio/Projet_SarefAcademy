@@ -1,0 +1,248 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+  <head>
+    <link rel="icon" type="image/png" href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ etudiant.prenom }} {{ etudiant.nom }} · {{ vague.nom }} | SAREF Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
+    <style>
+      /* Tranches de paiement */
+      .tranche-list { display: grid; gap: 10px; }
+      .tranche { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid #e6ebf3; border-radius: 12px; background: #fff; }
+      .tranche-num { display: grid; flex: 0 0 34px; width: 34px; height: 34px; place-items: center; border-radius: 10px; background: #f1f5f9; color: #475569; font-weight: 700; font-size: 13px; }
+      .tranche.payee .tranche-num { background: var(--ok-bg); color: var(--ok); }
+      .tranche.partielle .tranche-num { background: var(--warn-bg); color: var(--warn); }
+      .tranche-info { flex: 1; min-width: 0; }
+      .tranche-info b { display: block; font-size: 13.5px; }
+      .tranche-info small { color: #64748b; }
+      /* Bloc résultat */
+      .result-box { display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 14px; background: #f8fafc; border: 1px solid #e6ebf3; }
+      .result-box .stat-icon { flex: 0 0 auto; }
+    </style>
+  </head>
+  <body class="espace espace-admin">
+    {% include "partials/feedback_modal.html" %}
+    <div class="app">
+      {% include 'partials/sidebar_admin.html' %}
+      <div class="app-col">
+        {% include 'partials/admin_topbar.html' %}
+        <main class="app-main">
+          <!-- Fil d'Ariane : Vagues > vague > apprenant -->
+          <nav class="crumb" aria-label="Fil d’Ariane">
+            <a href="{% url 'admin_vagues' %}">Vagues &amp; années</a> /
+            <a href="{% url 'admin_vague_archive' vague.pk %}">{{ vague.nom }}</a> /
+            {{ etudiant.prenom }} {{ etudiant.nom }}
+          </nav>
+
+          <!-- En-tête : identité de l'apprenant et formation suivie -->
+          <section class="hero mb-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+              <div class="d-flex align-items-center gap-3">
+                <span class="avatar avatar-xl">
+                  {% if etudiant.photo %}
+                    <img src="{{ etudiant.photo.url }}" alt="" class="w-100 h-100 object-fit-cover" />
+                  {% else %}
+                    {{ etudiant.prenom|slice:":1"|upper }}{{ etudiant.nom|slice:":1"|upper }}
+                  {% endif %}
+                </span>
+                <div>
+                  <span class="hero-chip"><i class="bi bi-mortarboard"></i> {{ formation.nom }}</span>
+                  <h1 class="h2 fw-bold text-white mt-2 mb-1">{{ etudiant.prenom }} {{ etudiant.nom }}</h1>
+                  <p class="mb-0">
+                    {{ vague.nom }}{% if vague.annee_academique %} · {{ vague.annee_academique }}{% endif %}
+                    {% if est_archivee %} · Vague archivée{% elif vague.est_courante %} · Vague en cours{% endif %}
+                  </p>
+                </div>
+              </div>
+              <div class="d-flex flex-wrap gap-2">
+                <a class="btn-s btn-light-s" href="{% url 'admin_vague_archive' vague.pk %}">
+                  <i class="bi bi-arrow-left"></i> Retour à la vague
+                </a>
+                <a class="btn-s btn-light-s" href="{% url 'admin_etudiant_detail' etudiant.pk %}">
+                  <i class="bi bi-person"></i> Fiche étudiant
+                </a>
+              </div>
+            </div>
+          </section>
+
+          <!-- Indicateurs clés -->
+          <div class="row g-3 mb-4">
+            <div class="col-6 col-xl-3">
+              <div class="s-card stat">
+                <div class="stat-top"><span class="stat-label">Total payé</span><span class="stat-icon green"><i class="bi bi-wallet2"></i></span></div>
+                <div class="stat-value">{{ finances.total_paye|floatformat:0 }}</div>
+                <div class="stat-sub">FCFA sur {{ finances.prix|floatformat:0 }}</div>
+              </div>
+            </div>
+            <div class="col-6 col-xl-3">
+              <div class="s-card stat">
+                <div class="stat-top"><span class="stat-label">Reste à payer</span><span class="stat-icon amber"><i class="bi bi-cash-coin"></i></span></div>
+                <div class="stat-value">{{ finances.reste|floatformat:0 }}</div>
+                <div class="stat-sub">{% if finances.solde %}Formation soldée{% else %}FCFA restants{% endif %}</div>
+              </div>
+            </div>
+            <div class="col-6 col-xl-3">
+              <div class="s-card stat">
+                <div class="stat-top"><span class="stat-label">Progression</span><span class="stat-icon"><i class="bi bi-graph-up"></i></span></div>
+                <div class="stat-value">{{ progression }} %</div>
+                <div class="stat-sub">{{ nb_termines }} / {{ nb_chapitres }} chapitre{{ nb_chapitres|pluralize }}</div>
+              </div>
+            </div>
+            <div class="col-6 col-xl-3">
+              <div class="s-card stat">
+                <div class="stat-top"><span class="stat-label">Résultat</span><span class="stat-icon"><i class="bi bi-award"></i></span></div>
+                <div class="stat-value fs-5 mt-1">
+                  {% if resultat %}
+                    <span class="s-badge b-{{ resultat.decision }}">{{ resultat.get_decision_display }}</span>
+                  {% else %}
+                    <span class="s-badge b-brouillon">En cours</span>
+                  {% endif %}
+                </div>
+                <div class="stat-sub">{% if resultat.attestation %}Attestation disponible{% else %}Pas d’attestation{% endif %}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-4">
+            <div class="col-xl-8">
+              <!-- Finances : tranches puis historique des paiements -->
+              <section class="s-card s-card-pad mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h2 class="s-card-title mb-0">Finances</h2>
+                  <span class="s-badge {% if finances.solde %}b-solde{% elif finances.total_paye %}b-partiel{% else %}b-attente{% endif %}">
+                    {% if finances.solde %}Soldé{% elif finances.total_paye %}Paiement partiel{% else %}Aucun paiement{% endif %}
+                  </span>
+                </div>
+                <div class="bar-row">
+                  <div class="top"><span>Montant réglé</span><span>{{ finances.pourcentage }} %</span></div>
+                  <div class="bar-track"><span class="bar-fill" style="--w: {{ finances.pourcentage }}%"></span></div>
+                </div>
+                <p class="eyebrow-s mt-3 mb-2">Tranches ({{ tranches|length }})</p>
+                <div class="tranche-list">
+                  {% for tranche in tranches %}
+                  <div class="tranche {{ tranche.etat }}">
+                    <span class="tranche-num">{{ tranche.numero }}</span>
+                    <div class="tranche-info">
+                      <b>Tranche {{ tranche.numero }} · {{ tranche.montant|floatformat:0 }} FCFA</b>
+                      <small>Versé : {{ tranche.verse|floatformat:0 }} FCFA</small>
+                    </div>
+                    {% if tranche.etat == "payee" %}
+                      <span class="s-badge b-paye">Payée</span>
+                    {% elif tranche.etat == "partielle" %}
+                      <span class="s-badge b-partiel">Partielle</span>
+                    {% else %}
+                      <span class="s-badge b-brouillon">À payer</span>
+                    {% endif %}
+                  </div>
+                  {% endfor %}
+                </div>
+              </section>
+
+              <section class="s-card overflow-hidden mb-4">
+                <div class="s-card-head px-4 pt-4">
+                  <h2 class="s-card-title">Historique des paiements</h2>
+                </div>
+                <div class="table-responsive">
+                  <table class="s-table">
+                    <thead><tr><th>Date</th><th>Tranche</th><th>Montant</th><th>Mode</th></tr></thead>
+                    <tbody>
+                      {% for paiement in paiements %}
+                      <tr>
+                        <td>{{ paiement.date|date:"d/m/Y" }}</td>
+                        <td>Tranche {{ paiement.tranche }}</td>
+                        <td class="fw-semibold">{{ paiement.montant|floatformat:0 }} FCFA</td>
+                        <td>{{ paiement.get_mode_display }}</td>
+                      </tr>
+                      {% empty %}
+                      <tr><td colspan="4" class="text-center text-muted py-3">Aucun paiement enregistré.</td></tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              <!-- Résultat et attestation -->
+              <section class="s-card s-card-pad mb-4">
+                <h2 class="s-card-title">Résultat &amp; attestation</h2>
+                <div class="result-box">
+                  <span class="stat-icon {% if resultat.decision == 'admis' %}green{% elif resultat %}amber{% endif %}">
+                    <i class="bi {% if resultat.decision == 'admis' %}bi-trophy{% else %}bi-hourglass-split{% endif %}"></i>
+                  </span>
+                  <div class="flex-grow-1">
+                    {% if resultat %}
+                      <b class="d-block">Décision : {{ resultat.get_decision_display }}</b>
+                      <small class="text-secondary">
+                        {% if resultat.attestation %}L’attestation a été déposée.{% else %}Aucune attestation déposée pour le moment.{% endif %}
+                      </small>
+                    {% else %}
+                      <b class="d-block">Résultat non encore saisi</b>
+                      <small class="text-secondary">La formation est en cours ou le résultat n’a pas été enregistré.</small>
+                    {% endif %}
+                  </div>
+                  {% if resultat.attestation %}
+                  <a class="btn-s btn-primary-s btn-sm-s" href="{{ resultat.attestation.url }}" target="_blank" rel="noopener">
+                    <i class="bi bi-download"></i> Attestation
+                  </a>
+                  {% endif %}
+                </div>
+              </section>
+            </div>
+
+            <aside class="col-xl-4">
+              <!-- Coordonnées -->
+              <section class="s-card s-card-pad mb-4">
+                <h2 class="s-card-title">Coordonnées</h2>
+                <div class="info-row"><span>E-mail</span><b>{{ etudiant.email }}</b></div>
+                <div class="info-row"><span>Téléphone</span><b>{{ etudiant.telephone|default:"—" }}</b></div>
+                <div class="info-row"><span>Niveau d’études</span><b>{{ etudiant.niveau_etudes|default:"—" }}</b></div>
+                <div class="info-row"><span>Compte</span><b>{% if etudiant.est_bloque %}<span class="s-badge b-bloque">Bloqué</span>{% else %}<span class="s-badge b-actif">Actif</span>{% endif %}</b></div>
+              </section>
+
+              <!-- Candidature -->
+              <section class="s-card s-card-pad mb-4">
+                <h2 class="s-card-title">Candidature</h2>
+                <div class="info-row"><span>Déposée le</span><b>{{ candidat.date_candidature|date:"d/m/Y" }}</b></div>
+                <div class="info-row"><span>Acceptée le</span><b>{{ candidat.date_decision|date:"d/m/Y"|default:"—" }}</b></div>
+                <div class="info-row"><span>CV</span><b>{% if candidat.cv %}<a href="{{ candidat.cv.url }}" target="_blank" rel="noopener">Ouvrir</a>{% else %}—{% endif %}</b></div>
+                <p class="small text-secondary mt-3 mb-1">Motivation</p>
+                <p class="small mb-0">{{ candidat.motif_inscription|default:"—" }}</p>
+                <a class="btn-s btn-line-s btn-sm-s w-100 mt-3" href="{% url 'admin_candidature_detail' candidat.pk %}">
+                  Voir la candidature
+                </a>
+              </section>
+
+              <!-- Formation et équipe pédagogique -->
+              <section class="s-card s-card-pad mb-4">
+                <h2 class="s-card-title">Formation</h2>
+                <div class="info-row"><span>Formation</span><b>{{ formation.nom }}</b></div>
+                <div class="info-row"><span>Durée</span><b>{{ formation.duree }} mois</b></div>
+                <div class="info-row"><span>Formateur(s)</span><b>{% for f in formateurs %}{{ f.prenom }} {{ f.nom }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</b></div>
+              </section>
+
+              {% if autres_inscriptions %}
+              <!-- Autres formations du même étudiant dans cette vague -->
+              <section class="s-card s-card-pad">
+                <h2 class="s-card-title">Autres formations (même vague)</h2>
+                {% for autre in autres_inscriptions %}
+                <a class="d-flex justify-content-between align-items-center py-2 text-decoration-none {% if not forloop.last %}border-bottom{% endif %}" href="{% url 'admin_vague_inscription' vague.pk autre.pk %}">
+                  <span>{{ autre.formation.nom }}</span>
+                  <i class="bi bi-arrow-right"></i>
+                </a>
+                {% endfor %}
+              </section>
+              {% endif %}
+            </aside>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/espace.js' %}" defer></script>
+  </body>
+</html>

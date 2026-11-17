@@ -1,0 +1,191 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+  <head>
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#335cec" />
+    <title>Mon compte | SAREF Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
+  </head>
+  <body class="espace espace-admin">
+    {% include "partials/feedback_modal.html" %}
+    <div class="app">
+      {% include 'partials/sidebar_admin.html' %}
+      <div class="app-col">
+        {% include 'partials/admin_topbar.html' %}
+        <main class="app-main">
+          <div class="page-head">
+            <div>
+              <h1 class="page-title">Mon compte</h1>
+              <p class="page-sub">
+                Modifiez vos informations de connexion administrateur.
+              </p>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <form method="post" class="s-card s-card-pad">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="infos" />
+                <h2 class="s-card-title">Informations du compte</h2>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="s-label" for="first_name">Prénom</label>
+                    <input id="first_name" name="first_name" type="text" class="s-input" maxlength="150" value="{{ infos.first_name }}" />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="s-label" for="last_name">Nom</label>
+                    <input id="last_name" name="last_name" type="text" class="s-input" maxlength="150" value="{{ infos.last_name }}" />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="s-label" for="username">
+                      Nom d’utilisateur <span class="t-red">*</span>
+                    </label>
+                    <input id="username" name="username" type="text" class="s-input" maxlength="150" value="{{ infos.username }}" required />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="s-label" for="email">Adresse e-mail</label>
+                    <input id="email" name="email" type="email" class="s-input" value="{{ infos.email }}" />
+                  </div>
+                </div>
+                <p class="small text-muted mt-3 mb-0">
+                  Vous pouvez vous connecter avec le nom d’utilisateur ou l’adresse e-mail.
+                  Dernière connexion :
+                  {{ request.user.last_login|date:"d/m/Y à H:i"|default:"—" }}
+                </p>
+                <button class="btn-s btn-primary-s mt-3" type="submit">
+                  Enregistrer
+                </button>
+              </form>
+            </div>
+
+            <div class="col-lg-5">
+              <form method="post" class="s-card s-card-pad">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="mot_de_passe" />
+                <h2 class="s-card-title">Mot de passe</h2>
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label class="s-label" for="old_password">
+                      Mot de passe actuel <span class="t-red">*</span>
+                    </label>
+                    <input id="old_password" name="old_password" type="password" class="s-input" autocomplete="current-password" required />
+                  </div>
+                  <div class="col-12">
+                    <label class="s-label" for="new_password1">
+                      Nouveau mot de passe <span class="t-red">*</span>
+                    </label>
+                    <input id="new_password1" name="new_password1" type="password" class="s-input" autocomplete="new-password" required />
+                  </div>
+                  <div class="col-12">
+                    <label class="s-label" for="new_password2">
+                      Confirmation <span class="t-red">*</span>
+                    </label>
+                    <input id="new_password2" name="new_password2" type="password" class="s-input" autocomplete="new-password" required />
+                  </div>
+                </div>
+                <button class="btn-s btn-primary-s mt-3" type="submit">
+                  Changer le mot de passe
+                </button>
+              </form>
+            </div>
+
+            <div class="col-lg-7">
+              <form method="post" class="s-card s-card-pad" autocomplete="off">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="ajouter_admin" />
+                <h2 class="s-card-title">Ajouter un administrateur</h2>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="s-label" for="nouveau_first_name">Prénom</label>
+                    <input id="nouveau_first_name" name="nouveau_first_name" type="text" class="s-input" maxlength="150" />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="s-label" for="nouveau_last_name">Nom</label>
+                    <input id="nouveau_last_name" name="nouveau_last_name" type="text" class="s-input" maxlength="150" />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="s-label" for="nouveau_username">
+                      Nom d’utilisateur <span class="t-red">*</span>
+                    </label>
+                    <input id="nouveau_username" name="nouveau_username" type="text" class="s-input" maxlength="150" required />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="s-label" for="nouveau_email">Adresse e-mail</label>
+                    <input id="nouveau_email" name="nouveau_email" type="email" class="s-input" />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="s-label" for="nouveau_password1">
+                      Mot de passe <span class="t-red">*</span>
+                    </label>
+                    <input id="nouveau_password1" name="nouveau_password1" type="password" class="s-input" autocomplete="new-password" required />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="s-label" for="nouveau_password2">
+                      Confirmation <span class="t-red">*</span>
+                    </label>
+                    <input id="nouveau_password2" name="nouveau_password2" type="password" class="s-input" autocomplete="new-password" required />
+                  </div>
+                  <div class="col-12">
+                    <hr class="my-1" />
+                    <label class="s-label" for="mot_de_passe_actuel">
+                      Votre mot de passe (confirmation) <span class="t-red">*</span>
+                    </label>
+                    <input id="mot_de_passe_actuel" name="mot_de_passe_actuel" type="password" class="s-input" autocomplete="current-password" required />
+                    <p class="small text-muted mt-1 mb-0">
+                      Pour des raisons de sécurité, saisissez votre propre mot de passe pour valider la création.
+                    </p>
+                  </div>
+                </div>
+                <button class="btn-s btn-primary-s mt-3" type="submit">
+                  <i class="bi bi-person-plus me-1"></i>
+                  Créer l’administrateur
+                </button>
+              </form>
+            </div>
+
+            <div class="col-lg-5">
+              <section class="s-card s-card-pad">
+                <h2 class="s-card-title">Administrateurs</h2>
+                <ul class="list-unstyled mb-0">
+                  {% for admin in administrateurs %}
+                  <li class="d-flex align-items-center gap-2 py-2 {% if not forloop.last %}border-bottom{% endif %}">
+                    <i class="bi bi-shield-lock text-primary"></i>
+                    <div>
+                      <b class="d-block small">{{ admin.get_full_name|default:admin.username }}{% if admin.pk == request.user.pk %} (vous){% endif %}</b>
+                      <small class="text-muted">{{ admin.username }}{% if admin.email %} · {{ admin.email }}{% endif %}</small>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </section>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/espace.js' %}" defer></script>
+  </body>
+</html>

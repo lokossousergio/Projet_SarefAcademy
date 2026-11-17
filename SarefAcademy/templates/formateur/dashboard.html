@@ -9,7 +9,7 @@
     />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tableau de bord formateur | SAREF Academy</title>
+    <title>Tableau de bord Formateur | SAREF Academy</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
   </head>
   <body class="espace espace-formateur">
+    {% include "partials/feedback_modal.html" %}
     <div class="app">
       {% include 'partials/sidebar_formateur.html' %}
       <div class="app-col">
@@ -36,105 +37,92 @@
               <div class="col-lg-8">
                 <span class="hero-chip">
                   <i class="bi bi-person-badge"></i>
-                  Bienvenue dans votre espace formateur
+                  Espace Pédagogique Formateur
                 </span>
                 <h2 class="fs-3 fw-bold text-white mt-3">
-                  {{ formateur.prenom|default:"Marie" }} {{ formateur.nom|default:"Hounkpe" }}
+                  Bienvenue, {{ formateur.prenom }} {{ formateur.nom }}
                 </h2>
                 <p class="text-white-50 mb-3">
-                  Gérez vos formations et accompagnez vos apprenants depuis un
-                  seul espace.
+                  Pilotez vos formations assignées, gérez les modules, publiez vos chapitres et suivez vos étudiants.
                 </p>
                 <div class="d-flex flex-wrap gap-3 small text-white-50">
                   <span>
                     <i class="bi bi-envelope me-1"></i>
-                    {{ formateur.email|default:"marie.hounkpe@gmail.com" }}
+                    {{ formateur.email }}
                   </span>
                   <span>
                     <i class="bi bi-telephone me-1"></i>
-                    {{ formateur.telephone|default:"+229 90 00 00 03" }}
+                    {{ formateur.telephone }}
                   </span>
                 </div>
               </div>
               <div class="col-lg-4 d-flex justify-content-lg-end">
                 <div
                   class="text-center text-white p-3 rounded-4"
-                  style="
-                    background: rgba(255, 255, 255, 0.12);
-                    min-width: 160px;
-                  "
+                  style="background: rgba(255, 255, 255, 0.12); min-width: 160px;"
                 >
                   <div class="fs-2 fw-bold">
-                    {{ formateur.formations.count|default:"2" }}
+                    {{ nb_formations }}
                   </div>
-                  <div class="small opacity-75">Formation(s) assignée(s)</div>
+                  <div class="small opacity-75">Formation{{ nb_formations|pluralize }} assignée{{ nb_formations|pluralize }}</div>
                 </div>
               </div>
             </div>
           </section>
+
           <div class="row g-4">
             <div class="col-xl-8">
               <section class="s-card overflow-hidden">
                 <div
                   class="s-card-head px-4 py-3 border-bottom d-flex justify-content-between align-items-center"
                 >
-                  <h2 class="s-card-title mb-0">Modules et chapitres</h2>
+                  <h2 class="s-card-title mb-0">Mes formations et modules</h2>
                   <a class="link-s" href="{% url 'formateur_formations' %}">
-                    Gérer les contenus →
+                    Toutes mes formations →
                   </a>
                 </div>
                 <div class="table-responsive">
                   <table class="s-table">
                     <thead>
                       <tr>
-                        <th>Module</th>
-                        <th>Chapitres</th>
-                        <th>État</th>
-                        <th></th>
+                        <th>Formation</th>
+                        <th>Modules</th>
+                        <th>Statut</th>
+                        <th class="text-end">Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {% for module in modules %}
+                      {% for f in formations %}
                       <tr>
                         <td>
-                          <b>{{ module.titre }}</b>
-                          <small>{{ module.description }}</small>
+                          <b>{{ f.nom }}</b>
+                          <small class="text-secondary d-block">{{ f.duree }} mois · {{ f.prix }} FCFA</small>
                         </td>
-                        <td>{{ module.chapitres.count }}</td>
                         <td>
-                          {% if module.est_active %}
-                          <span class="s-badge b-actif">Actif</span>
-                          {% else %}
-                          <span class="s-badge b-en_cours">Brouillon</span>
-                          {% endif %}
+                          <span class="badge bg-light text-dark border">
+                            {{ f.modules.count }} module{{ f.modules.count|pluralize }}
+                          </span>
+                        </td>
+                        <td>
+                          <span class="s-badge {% if f.statut == 'active' %}b-actif{% elif f.statut == 'brouillon' %}b-brouillon{% else %}b-archive{% endif %}">
+                            {{ f.get_statut_display }}
+                          </span>
                         </td>
                         <td class="text-end">
                           <a
-                            class="btn-s btn-soft-s btn-sm-s"
-                            href="{% url 'formateur_module' module.pk %}"
+                            class="btn-s btn-primary-s btn-sm-s"
+                            href="{% url 'formateur_formation_detail' f.pk %}"
                           >
-                            Ouvrir
+                            Gérer le cours
+                            <i class="bi bi-arrow-right ms-1"></i>
                           </a>
                         </td>
                       </tr>
                       {% empty %}
                       <tr>
-                        <td>
-                          <b>Les bases du Web</b>
-                          <small>
-                            Premiers pas avec les pages et les navigateurs ·
-                            formation active
-                          </small>
-                        </td>
-                        <td>2 chapitres</td>
-                        <td><span class="s-badge b-actif">Actif</span></td>
-                        <td class="text-end">
-                          <a
-                            class="btn-s btn-soft-s btn-sm-s"
-                            href="{% url 'formateur_module' 1 %}"
-                          >
-                            Ouvrir
-                          </a>
+                        <td colspan="4" class="text-center py-4 text-secondary">
+                          <i class="bi bi-mortarboard fs-2 d-block mb-2 text-muted"></i>
+                          Aucune formation ne vous est assignée pour le moment.
                         </td>
                       </tr>
                       {% endfor %}
@@ -143,10 +131,11 @@
                 </div>
               </section>
             </div>
+
             <aside class="col-xl-4">
               <section class="s-card s-card-pad">
-                <span class="eyebrow-s">Espace pédagogique</span>
-                <h2 class="s-card-title mt-1 mb-3">Accès rapide</h2>
+                <span class="eyebrow-s">Accès direct</span>
+                <h2 class="s-card-title mt-1 mb-3">Raccourcis</h2>
                 <div class="d-grid gap-2">
                   <a
                     class="btn-s btn-soft-s justify-content-between"
@@ -154,27 +143,17 @@
                   >
                     <span>
                       <i class="bi bi-mortarboard me-2"></i>
-                      Mes formations
+                      Gérer mes formations
                     </span>
                     <i class="bi bi-arrow-right"></i>
                   </a>
                   <a
                     class="btn-s btn-soft-s justify-content-between"
-                    href="{% url 'formateur_apprenants' %}"
+                    href="{% url 'formateur_etudiants' %}"
                   >
                     <span>
                       <i class="bi bi-people me-2"></i>
-                      Mes apprenants
-                    </span>
-                    <i class="bi bi-arrow-right"></i>
-                  </a>
-                  <a
-                    class="btn-s btn-soft-s justify-content-between"
-                    href="{% url 'formateur_module_ajouter' %}"
-                  >
-                    <span>
-                      <i class="bi bi-plus-circle me-2"></i>
-                      Ajouter un module
+                      Suivre mes étudiants
                     </span>
                     <i class="bi bi-arrow-right"></i>
                   </a>

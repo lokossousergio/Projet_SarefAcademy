@@ -85,7 +85,7 @@
     function build() {
       var name = (q('waName').value || '').trim() || '…', email = (q('waEmail').value || '').trim() || '(e-mail)',
           pass = q('waPass').value || '', phone = (q('waPhone').value || '').replace(/\D/g, '');
-      var msg = 'Bonjour ' + name + ',\n\nVoici vos accès à l’espace formateur SAREF Academy :\n• Lien : ' + location.origin + '/connexion/\n• Identifiant : ' + email +
+      var msg = 'Bonjour ' + name + ',\n\nVoici vos accès à l’espace formateur SAREF Academy :\n• Lien : ' + location.origin + '/connexion-formateur/\n• Identifiant : ' + email +
                 '\n• Mot de passe provisoire : ' + (pass || '(à générer)') + '\n\nVous choisirez votre propre mot de passe à la première connexion. Merci de ne pas partager ces informations.';
       q('waPreview').textContent = msg;
       var a = q('waLink'), ok = !!(pass && phone);

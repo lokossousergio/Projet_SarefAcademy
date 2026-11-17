@@ -1,0 +1,14 @@
+{# Sélecteur de vague commun aux pages Finance et Résultats. #}
+{# Paramètres : vagues (liste), vague (sélectionnée). Change la page au choix. #}
+<form method="get" class="d-flex align-items-center gap-2 selecteur-vague">
+  <label class="small fw-semibold text-nowrap" style="color: rgb(255 255 255 / 85%)" for="choixVague">
+    <i class="bi bi-calendar3 me-1"></i>Vague
+  </label>
+  <select id="choixVague" name="vague" class="s-input form-select w-auto" onchange="this.form.submit()">
+    {% for v in vagues %}
+    <option value="{{ v.pk }}" {% if vague and v.pk == vague.pk %}selected{% endif %}>
+      {{ v.nom }}{% if v.est_courante %} · en cours{% elif v.est_archivee %} · archivée{% endif %}
+    </option>
+    {% endfor %}
+  </select>
+</form>

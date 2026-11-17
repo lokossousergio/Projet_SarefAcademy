@@ -1,0 +1,322 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+  <head>
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#335cec" />
+    <title>Finance | SAREF Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/espace.css' %}" />
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
+  </head>
+  <body class="espace espace-admin">
+    {% include "partials/feedback_modal.html" %}
+    <div class="app">
+      {% include 'partials/sidebar_admin.html' %}
+      <div class="app-col">
+        {% include 'partials/admin_topbar.html' %}
+        <main class="app-main">
+          <div class="page-head">
+            <div>
+              <h1 class="page-title">Finance — Paiements par tranches</h1>
+              <p class="page-sub">
+                {% if vague %}
+                  {{ vague.nom }}{% if vague.annee_academique %} · {{ vague.annee_academique }}{% endif %}
+                  {% if est_archivee %} · <span class="t-amber fw-semibold">archivée (lecture seule)</span>{% endif %}
+                {% else %}
+                  Aucune vague n’a encore été créée.
+                {% endif %}
+              </p>
+            </div>
+            <div class="d-flex flex-wrap align-items-center gap-2">
+              {% if vagues %}{% include "partials/selecteur_vague.html" %}{% endif %}
+              {% if vague and not est_archivee %}
+              <button class="btn-s btn-primary-s" type="button" data-bs-toggle="modal" data-bs-target="#paiement" {% if not a_encaisser %}disabled title="Tous les étudiants sont soldés"{% endif %}>
+                <i class="bi bi-plus-lg"></i>
+                Enregistrer un paiement
+              </button>
+              {% endif %}
+            </div>
+          </div>
+
+          {% if vague %}
+          <!-- Indicateurs de la vague -->
+          <div class="row g-3 mb-3">
+            <div class="col-6 col-xl-3">
+              <div class="s-card stat">
+                <div class="stat-top">
+                  <span class="stat-label">Total encaissé</span>
+                  <span class="stat-icon green"><i class="bi bi-cash-stack"></i></span>
+                </div>
+                <div class="stat-value">{{ stats.encaisse|floatformat:"0g" }}</div>
+                <div class="stat-sub">FCFA · {{ vague.nom }}</div>
+              </div>
+            </div>
+            <div class="col-6 col-xl-3">
+              <div class="s-card stat">
+                <div class="stat-top">
+                  <span class="stat-label">Reste à payer</span>
+                  <span class="stat-icon amber"><i class="bi bi-hourglass-split"></i></span>
+                </div>
+                <div class="stat-value">{{ stats.reste|floatformat:"0g" }}</div>
+                <div class="stat-sub">FCFA attendus</div>
+              </div>
+            </div>
+            <div class="col-6 col-xl-3">
+              <div class="s-card stat">
+                <div class="stat-top">
+                  <span class="stat-label">Étudiants soldés</span>
+                  <span class="stat-icon"><i class="bi bi-patch-check"></i></span>
+                </div>
+                <div class="stat-value">{{ stats.solde }}</div>
+                <div class="stat-sub">sur {{ stats.total }} inscrit{{ stats.total|pluralize }}</div>
+              </div>
+            </div>
+            <div class="col-6 col-xl-3">
+              <div class="s-card stat">
+                <div class="stat-top">
+                  <span class="stat-label">Aucun paiement</span>
+                  <span class="stat-icon red"><i class="bi bi-exclamation-triangle"></i></span>
+                </div>
+                <div class="stat-value">{{ stats.aucun }}</div>
+                <div class="stat-sub">à relancer</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Plans de paiement des formations de la vague -->
+          {% if plans %}
+          <h2 class="s-card-title">Plans de paiement</h2>
+          <div class="row g-3 mb-4">
+            {% for plan in plans %}
+            <div class="col-md-6 col-xl-4">
+              <div class="s-card s-card-pad h-100">
+                <span class="eyebrow-s">{{ plan.formation.nom }}</span>
+                <div class="fs-4 fw-bold">
+                  {{ plan.formation.prix|floatformat:"0g" }}
+                  <small class="fs-6 text-secondary fw-normal">FCFA</small>
+                </div>
+                <div class="small text-secondary">
+                  {{ plan.nb_tranches }} tranche{{ plan.nb_tranches|pluralize }} de {{ plan.montant_tranche|floatformat:"0g" }} FCFA
+                  · {{ plan.nb_inscrits }} inscrit{{ plan.nb_inscrits|pluralize }}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <!-- Filtres -->
+          <form method="get" class="s-card toolbar">
+            <input type="hidden" name="vague" value="{{ vague.pk }}" />
+            <nav class="pill-tabs" aria-label="Filtrer">
+              <a class="pill {% if not filtre_statut %}active{% endif %}" href="?vague={{ vague.pk }}">
+                Tous <span class="n">{{ stats.total }}</span>
+              </a>
+              <a class="pill {% if filtre_statut == 'solde' %}active{% endif %}" href="?vague={{ vague.pk }}&statut=solde">
+                Soldés <span class="n">{{ stats.solde }}</span>
+              </a>
+              <a class="pill {% if filtre_statut == 'partiel' %}active{% endif %}" href="?vague={{ vague.pk }}&statut=partiel">
+                Partiels <span class="n">{{ stats.partiel }}</span>
+              </a>
+              <a class="pill {% if filtre_statut == 'aucun' %}active{% endif %}" href="?vague={{ vague.pk }}&statut=aucun">
+                Aucun paiement <span class="n">{{ stats.aucun }}</span>
+              </a>
+            </nav>
+            {% if filtre_statut %}<input type="hidden" name="statut" value="{{ filtre_statut }}" />{% endif %}
+            <div class="search-box ms-lg-auto" style="max-width: 18rem">
+              <i class="bi bi-search"></i>
+              <label class="visually-hidden" for="q">Rechercher</label>
+              <input id="q" name="q" type="search" class="s-input" placeholder="Étudiant, formation…" value="{{ filtre_q }}" />
+            </div>
+          </form>
+
+          <!-- Liste des inscriptions -->
+          <div class="s-card overflow-hidden">
+            <div class="table-responsive">
+              <table class="s-table">
+                <thead>
+                  <tr>
+                    <th>Étudiant</th>
+                    <th>Formation</th>
+                    <th>Montant total</th>
+                    <th>Payé</th>
+                    <th>Reste</th>
+                    <th>Taux payé</th>
+                    <th>Statut</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for inscription in inscriptions %}
+                  <tr>
+                    <td>
+                      <div class="user-cell">
+                        <span class="avatar">{{ inscription.etudiant.prenom|slice:":1"|upper }}{{ inscription.etudiant.nom|slice:":1"|upper }}</span>
+                        <b>{{ inscription.etudiant.prenom }} {{ inscription.etudiant.nom }}</b>
+                      </div>
+                    </td>
+                    <td>{{ inscription.formation.nom }}</td>
+                    <td>{{ inscription.finances.prix|floatformat:"0g" }}</td>
+                    <td class="t-green fw-semibold">{{ inscription.finances.total_paye|floatformat:"0g" }}</td>
+                    <td>{{ inscription.finances.reste|floatformat:"0g" }}</td>
+                    <td>
+                      <span class="fw-semibold {% if inscription.statut_finance == 'solde' %}text-success{% elif inscription.statut_finance == 'partiel' %}text-primary{% else %}text-secondary{% endif %}">
+                        {{ inscription.finances.pourcentage }} %
+                      </span>
+                    </td>
+                    <td>
+                      {% if inscription.statut_finance == "solde" %}
+                        <span class="s-badge b-solde">Soldé</span>
+                      {% elif inscription.statut_finance == "partiel" %}
+                        <span class="s-badge b-partiel">Partiel</span>
+                      {% else %}
+                        <span class="s-badge b-en_retard">Aucun paiement</span>
+                      {% endif %}
+                    </td>
+                    <td class="text-end">
+                      <a class="link-s" href="{% url 'admin_vague_inscription' vague.pk inscription.pk %}">Dossier</a>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="8" class="text-center text-muted py-4">
+                      {% if stats.total %}Aucun étudiant ne correspond à ce filtre.{% else %}Aucun étudiant accepté dans cette vague.{% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% if page_obj.paginator.num_pages > 1 %}
+            <div class="table-foot">
+              <span>Affichage {{ page_obj.start_index }}–{{ page_obj.end_index }} sur {{ page_obj.paginator.count }}</span>
+              <nav class="pager" aria-label="Pagination">
+                {% if page_obj.has_previous %}<a href="?vague={{ vague.pk }}&statut={{ filtre_statut }}&q={{ filtre_q|urlencode }}&page={{ page_obj.previous_page_number }}">← Précédent</a>{% else %}<span class="off">← Précédent</span>{% endif %}
+                <span class="on" aria-current="page">{{ page_obj.number }}</span>
+                {% if page_obj.has_next %}<a href="?vague={{ vague.pk }}&statut={{ filtre_statut }}&q={{ filtre_q|urlencode }}&page={{ page_obj.next_page_number }}">Suivant →</a>{% else %}<span class="off">Suivant →</span>{% endif %}
+              </nav>
+            </div>
+            {% endif %}
+          </div>
+          {% else %}
+          <section class="s-card p-5 text-center text-secondary">
+            <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
+            Aucune vague n’existe encore.
+            <a href="{% url 'admin_configuration_vague' %}">Configurer une vague</a>
+          </section>
+          {% endif %}
+
+          {% if vague and not est_archivee %}
+          <!-- Modale : enregistrer un paiement -->
+          <div class="modal fade" id="paiement" tabindex="-1" aria-labelledby="paiement-t" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+              <form method="post" class="modal-content" style="border-radius: 20px; border: 0">
+                {% csrf_token %}
+                <input type="hidden" name="vague" value="{{ vague.pk }}" />
+                <div class="modal-header border-0 pb-0">
+                  <h2 class="modal-title fs-5 fw-bold d-flex align-items-center" id="paiement-t">
+                    <span class="stat-icon me-2"><i class="bi bi-cash-coin"></i></span>
+                    Enregistrer un paiement
+                  </h2>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row g-3">
+                    <div class="col-12">
+                      <label class="s-label" for="candidat">Étudiant <span class="t-red">*</span></label>
+                      <select id="candidat" name="candidat" class="s-input form-select" required>
+                        <option value="" disabled selected>Choisir un étudiant…</option>
+                        {% for i in a_encaisser %}
+                        <option value="{{ i.pk }}" data-tranches="{{ i.formation.nb_tranches|default:1 }}" data-reste="{{ i.finances.reste|floatformat:0 }}">
+                          {{ i.etudiant.prenom }} {{ i.etudiant.nom }} — {{ i.formation.nom }}
+                        </option>
+                        {% endfor %}
+                      </select>
+                      <small class="text-secondary d-block mt-1" id="resteInfo"></small>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="s-label" for="tranche">Tranche n° <span class="t-red">*</span></label>
+                      <select id="tranche" name="tranche" class="s-input form-select" required>
+                        <option value="1">Tranche 1</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="s-label" for="montant">Montant (FCFA) <span class="t-red">*</span></label>
+                      <input id="montant" name="montant" type="number" min="1" step="1" class="s-input" placeholder="150000" required />
+                    </div>
+                    <div class="col-md-4">
+                      <label class="s-label" for="mode">Mode de paiement <span class="t-red">*</span></label>
+                      <select id="mode" name="mode" class="s-input form-select">
+                        {% for valeur, libelle in modes %}
+                        <option value="{{ valeur }}" {% if valeur == "mobile_money" %}selected{% endif %}>{{ libelle }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="s-label" for="date">Date du paiement <span class="t-red">*</span></label>
+                      <input id="date" name="date" type="date" class="s-input" value="{{ aujourdhui|date:'Y-m-d' }}" required />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="s-label">Vague</label>
+                      <input class="s-input" value="{{ vague.nom }}" disabled />
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                  <button type="button" class="btn-s btn-line-s" data-bs-dismiss="modal">Annuler</button>
+                  <button type="submit" class="btn-s btn-primary-s">Enregistrer le paiement</button>
+                </div>
+              </form>
+            </div>
+          </div>
+          {% endif %}
+        </main>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Adapte la liste des tranches et affiche le reste à payer de l’étudiant choisi.
+      (function () {
+        const choix = document.getElementById("candidat");
+        if (!choix) return;
+        const tranche = document.getElementById("tranche");
+        const info = document.getElementById("resteInfo");
+        const montant = document.getElementById("montant");
+        choix.addEventListener("change", function () {
+          const option = choix.selectedOptions[0];
+          const nb = parseInt(option.dataset.tranches || "1", 10);
+          tranche.innerHTML = "";
+          for (let n = 1; n <= nb; n++) {
+            tranche.add(new Option("Tranche " + n, n));
+          }
+          const reste = Number(option.dataset.reste || 0);
+          montant.max = reste;
+          info.textContent = "Reste à payer : " + reste.toLocaleString("fr-FR") + " FCFA";
+        });
+      })();
+    </script>
+    <script src="{% static 'js/espace.js' %}" defer></script>
+  </body>
+</html>

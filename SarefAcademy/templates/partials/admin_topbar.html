@@ -14,8 +14,8 @@
       {% if request.resolver_match.url_name == 'admin_dashboard' %}Tableau de bord
       {% elif request.resolver_match.url_name == 'admin_candidatures' %}Candidatures
       {% elif request.resolver_match.url_name == 'admin_candidature_detail' %}Détail de candidature
-      {% elif request.resolver_match.url_name == 'admin_apprenants' %}Apprenants
-      {% elif request.resolver_match.url_name == 'admin_apprenant_detail' %}Dossier apprenant
+      {% elif request.resolver_match.url_name in 'admin_etudiants' %}Étudiants
+      {% elif request.resolver_match.url_name in 'admin_etudiant_detail' %}Dossier étudiant
       {% elif request.resolver_match.url_name == 'admin_resultats' %}Résultats et attestations
       {% elif request.resolver_match.url_name == 'admin_finance' %}Finance
       {% elif request.resolver_match.url_name == 'admin_organisation' %}Organisation
@@ -25,9 +25,10 @@
       {% elif request.resolver_match.url_name == 'admin_formateur_detail' %}Fiche formateur
       {% elif request.resolver_match.url_name == 'admin_vagues' %}Vagues et années
       {% elif request.resolver_match.url_name == 'admin_vague_archive' %}Détail de vague
-      {% elif request.resolver_match.url_name == 'admin_parametres' %}Paramètres
+      {% elif request.resolver_match.url_name == 'admin_vague_inscription' %}Dossier de l’apprenant
+      {% elif request.resolver_match.url_name == 'admin_mon_compte' %}Mon compte
       {% elif request.resolver_match.url_name == 'admin_chapitre_detail' %}Ressource pédagogique
-      {% else %}Espace de gestion{% endif %}
+      {% else %}Espace d'administration{% endif %}
     </strong>
   </div>
   <span class="tb-spacer"></span>

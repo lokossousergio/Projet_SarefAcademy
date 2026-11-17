@@ -97,9 +97,10 @@
         </p>
         <h2>Candidater à une formation</h2>
         <p class="intro">
-          Préparez votre dossier en suivant les étapes ci-dessous.
+          {% if vague_courante %}Préparez votre dossier en suivant les étapes ci-dessous.{% else %}Les candidatures ouvriront avec la prochaine vague de formation.{% endif %}
         </p>
       </header>
+      {% if vague_courante %}
       <ol class="stepper" aria-label="Étapes de candidature">
         <li
           class="stepper-item is-current"
@@ -122,6 +123,7 @@
           <b>Récapitulatif</b>
         </li>
       </ol>
+      {% endif %}
       <div class="content-grid application-content-grid">
         {% if vague_courante %}
         <form class="application-form" method="post" action="{% url 'candidature-formation' %}" enctype="multipart/form-data" novalidate>
@@ -375,7 +377,7 @@
             </button>
             <span class="footer-spacer"></span>
             {% if toutes_postulees %}
-            <a href="{% url 'apprenant_dashboard' %}" class="button button-primary">
+            <a href="{% url 'etudiant_dashboard' %}" class="button button-primary">
               <i class="bi bi-speedometer2 me-1"></i>
               Accéder à mon tableau de bord
             </a>
@@ -397,9 +399,19 @@
           <p class="required-note">* Champs obligatoires</p>
         </form>
         {% else %}
-        <div class="alert alert-warning" role="status">
-          <h2 class="h5">Candidatures fermées</h2>
-          Aucune vague n’est actuellement en cours. Les candidatures sont fermées pour le moment.
+        <div class="candidatures-fermees" role="status">
+          <span class="candidatures-fermees-icon">
+            <i class="bi bi-calendar-x" aria-hidden="true"></i>
+          </span>
+          <h2>Candidatures fermées</h2>
+          <p>
+            Aucune vague n’est actuellement en cours. Revenez bientôt :
+            les candidatures rouvriront dès le lancement de la prochaine vague.
+          </p>
+          <a href="{% url 'etudiant_dashboard' %}" class="button button-primary">
+            <i class="bi bi-speedometer2 me-1" aria-hidden="true"></i>
+            Retour à mon tableau de bord
+          </a>
         </div>
         {% endif %}
       </div>
@@ -410,6 +422,40 @@
   </body>
 </html>
 <style>
+  /* ===== Aucune vague active ===== */
+  .formation-page .candidatures-fermees {
+    grid-column: 1 / -1;
+    max-width: 560px;
+    margin: 8px auto 0;
+    padding: 40px 32px;
+    border: 1px solid #e6ebf3;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 20px 50px -24px rgb(30 58 138 / 25%);
+    text-align: center;
+  }
+  .formation-page .candidatures-fermees-icon {
+    display: inline-grid;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+    place-items: center;
+    border-radius: 18px;
+    background: #fff7ed;
+    color: #c2410c;
+    font-size: 1.8rem;
+  }
+  .formation-page .candidatures-fermees h2 {
+    margin-bottom: 8px;
+    color: #0f172a;
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+  .formation-page .candidatures-fermees p {
+    margin: 0 auto 22px;
+    color: #64748b;
+    line-height: 1.6;
+  }
   /* ==========================================================
    Candidature à une formation — Saref Academy
    Polices : Inter (texte) + Lexend (titres)

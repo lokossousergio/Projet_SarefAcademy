@@ -4,11 +4,15 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
 from django.db import IntegrityError
+from decimal import ROUND_DOWN, Decimal
+
 from django.db.models import Count, Q, Sum
+from django.db.models.functions import Coalesce
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -46,8 +50,8 @@ def mot_de_passe_valide(valeur):
     return len(valeur) >= 8 and any(c.isalpha() for c in valeur) and any(c.isdigit() for c in valeur)
 
 
-def apprenant_requis(view):
-    """Protège une page apprenant avec l'identifiant conservé en session."""
+def etudiant_requis(view):
+    """Protège une page étudiant avec l'identifiant conservé en session."""
     @wraps(view)
     def wrapper(request, *args, **kwargs):
         etudiant_id = request.session.get("etudiant_id")
@@ -56,13 +60,14 @@ def apprenant_requis(view):
             if "candidature" in next_url:
                 messages.info(request, "Il faut avoir un compte étudiant avant de postuler.")
             else:
-                messages.error(request, "Connectez-vous pour accéder à votre espace apprenant.")
+                messages.error(request, "Connectez-vous pour accéder à votre espace étudiant.")
             login_url = reverse("connexion-etudiant")
             return redirect(f"{login_url}?next={quote(next_url)}")
         try:
             request.etudiant = Etudiants.objects.get(pk=etudiant_id)
         except Etudiants.DoesNotExist:
-            request.session.flush()
+            # On retire seulement la connexion étudiant (pas celle de l'admin/formateur).
+            request.session.pop("etudiant_id", None)
             messages.error(request, "Votre session a expiré. Veuillez vous reconnecter.")
             login_url = reverse("connexion-etudiant")
             return redirect(f"{login_url}?next={quote(request.get_full_path())}")
@@ -70,17 +75,82 @@ def apprenant_requis(view):
     return wrapper
 
 
+# -----------------------------------------------------------------------------
+# Sessions séparées par espace
+#
+# Un navigateur ne peut avoir qu'un seul utilisateur Django connecté (login()).
+# Pour qu'un admin, un formateur et un étudiant puissent être connectés en même
+# temps dans le même navigateur :
+#   - l'admin utilise la connexion Django classique (request.user) ;
+#   - le formateur est mémorisé dans ses propres clés de session ;
+#   - l'étudiant est mémorisé dans la clé « etudiant_id ».
+# Chaque déconnexion ne retire que les clés de son espace.
+# -----------------------------------------------------------------------------
+
+SESSION_FORMATEUR_ID = "formateur_user_id"
+SESSION_FORMATEUR_HASH = "formateur_auth_hash"
+# Clés à conserver quand l'admin se connecte ou se déconnecte (login/logout
+# de Django vident la session).
+CLES_AUTRES_ESPACES = ("etudiant_id", SESSION_FORMATEUR_ID, SESSION_FORMATEUR_HASH)
+
+
+def _conserver_autres_espaces(request, action):
+    """Exécute login()/logout() de Django sans déconnecter formateur ni étudiant."""
+    sauvegarde = {cle: request.session[cle] for cle in CLES_AUTRES_ESPACES if cle in request.session}
+    action()
+    for cle, valeur in sauvegarde.items():
+        request.session[cle] = valeur
+
+
+def _deconnecter_formateur(request):
+    """Retire uniquement la connexion formateur de la session."""
+    request.session.pop(SESSION_FORMATEUR_ID, None)
+    request.session.pop(SESSION_FORMATEUR_HASH, None)
+
+
+def _formateur_connecte(request):
+    """Retourne le profil du formateur connecté, ou None.
+
+    Vérifie que le compte existe toujours, est actif, et que son mot de passe
+    n'a pas changé depuis la connexion (sinon la session est invalidée).
+    """
+    user_id = request.session.get(SESSION_FORMATEUR_ID)
+    if not user_id:
+        return None
+    user = get_user_model().objects.filter(pk=user_id, is_active=True).first()
+    if user is None or request.session.get(SESSION_FORMATEUR_HASH) != user.get_session_auth_hash():
+        return None
+    formateur = getattr(user, "profil_formateur", None)
+    if formateur is None or not formateur.actif:
+        return None
+    return formateur
+
+
 def formateur_requis(view):
     """Laisse entrer uniquement un formateur connecté et actif."""
     @wraps(view)
-    @login_required(login_url="connexion")
     def wrapper(request, *args, **kwargs):
-        formateur = getattr(request.user, "profil_formateur", None)
-        if formateur is None or not formateur.actif:
-            logout(request)
+        formateur = _formateur_connecte(request)
+        if formateur is None:
+            _deconnecter_formateur(request)
             messages.error(request, "Connectez-vous avec un compte formateur actif.")
-            return redirect("connexion")
+            return redirect(f"{reverse('connexion-formateur')}?next={quote(request.get_full_path())}")
         request.formateur = formateur
+        return view(request, *args, **kwargs)
+    return wrapper
+
+
+def admin_requis(view):
+    """Réservé aux administrateurs créés avec « python manage.py createsuperuser »."""
+    @wraps(view)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, "Connectez-vous pour accéder à l’administration.")
+            return redirect(f"{reverse('connexion-admin')}?next={quote(request.get_full_path())}")
+        if not request.user.is_superuser:
+            _conserver_autres_espaces(request, lambda: logout(request))
+            messages.error(request, "Ce compte n’a pas accès à l’administration.")
+            return redirect("connexion-admin")
         return view(request, *args, **kwargs)
     return wrapper
 
@@ -133,69 +203,91 @@ def tunel(request):
 # Authentification et accès aux espaces
 # -----------------------------------------------------------------------------
 
-def connexion(request):
+def _authentifier(request):
+    """Authentifie avec un nom d'utilisateur ou une adresse e-mail."""
+    identifiant = request.POST.get('email', '').strip()
+    password = request.POST.get('password', '')
+    User = get_user_model()
+    user_cible = User.objects.filter(Q(username__iexact=identifiant) | Q(email__iexact=identifiant)).first()
+    username_auth = user_cible.username if user_cible else identifiant
+    return authenticate(request, username=username_auth, password=password)
+
+
+def connexion_formateur(request):
+    """Connexion des formateurs (comptes User créés par l'administrateur).
+
+    Le formateur est mémorisé dans ses propres clés de session (et non avec
+    login()), pour ne pas déconnecter un admin connecté dans le même navigateur.
+    """
+    next_url = request.POST.get("next") or request.GET.get("next")
+    if not (next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()})):
+        next_url = None
+
+    # Déjà connecté : on va directement dans l'espace formateur.
+    if _formateur_connecte(request):
+        return redirect(next_url or 'formateur_dashboard')
+
     if request.method == 'POST':
-        role = request.POST.get('role', 'formateur')
-        identifiant = request.POST.get('email', '').strip()
-        user = authenticate(request, username=identifiant, password=request.POST.get('password', ''))
-        if user is None:
-            messages.error(request, "Identifiant ou mot de passe incorrect.")
-        elif role == 'formateur':
-            profil = getattr(user, 'profil_formateur', None)
-            if profil is None or not profil.actif:
-                messages.error(request, "Ce compte n’a pas accès à l’espace formateur.")
-            else:
-                login(request, user)
-                if profil.doit_changer_mot_de_passe:
-                    return redirect('changer_mot_de_passe')
-                return redirect('formateur_dashboard')
-        elif user.is_staff or user.is_superuser:
-            login(request, user)
-            return redirect('admin_configuration_vague')
-        else:
-            messages.error(request, "Ce compte n’a pas accès à l’administration.")
-    return render(request, 'connexion.html')
+        user = _authentifier(request)
+        profil = getattr(user, 'profil_formateur', None) if user else None
+        if profil is not None and profil.actif:
+            request.session.cycle_key()  # nouvel identifiant de session (sécurité)
+            request.session[SESSION_FORMATEUR_ID] = user.pk
+            request.session[SESSION_FORMATEUR_HASH] = user.get_session_auth_hash()
+            return redirect(next_url or 'formateur_dashboard')
+        # Même message dans tous les cas : on ne révèle pas si le compte existe
+        # ni s'il s'agit d'un autre type de compte (admin, inactif...).
+        messages.error(request, "Identifiant ou mot de passe incorrect.")
+
+    return render(request, 'connexion_formateur.html', {"next": next_url or ""})
 
 
 def connexion_admin(request):
+    """Connexion des administrateurs (comptes créés avec createsuperuser)."""
     if request.method == 'POST':
-        user = authenticate(request, username=request.POST.get('email', '').strip(), password=request.POST.get('password', ''))
-        if user and (user.is_staff or user.is_superuser):
-            login(request, user)
-            return redirect('admin_configuration_vague')
-        messages.error(request, "Identifiant ou mot de passe administrateur incorrect.")
-    return render(request, 'connexion_admin.html')
+        user = _authentifier(request)
+        if user is not None and user.is_superuser:
+            # login() peut vider la session : on garde formateur et étudiant connectés.
+            _conserver_autres_espaces(request, lambda: login(request, user))
+            # Pas de vague en cours : simple alerte, l'accès au tableau de bord reste libre.
+            if not ConfigVague.objects.filter(est_courante=True).exists():
+                messages.warning(
+                    request,
+                    "Aucune vague n’est en cours : les candidatures sont fermées. "
+                    "Vous pouvez en configurer une depuis « Configurer une vague ».",
+                )
+            next_url = request.POST.get('next') or request.GET.get('next')
+            if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+                return redirect(next_url)
+            return redirect('admin_dashboard')
+
+        messages.error(request, "Identifiant ou mot de passe incorrect.")
+
+    return render(request, 'connexion_admin.html', {"next": request.GET.get('next', '')})
 
 
-def deconnexion(request):
-    logout(request)
-    return redirect('connexion')
+def deconnexion_formateur(request):
+    """Déconnecte uniquement le formateur (admin et étudiant restent connectés)."""
+    _deconnecter_formateur(request)
+    return redirect('connexion-formateur')
 
 
+def deconnexion_admin(request):
+    """Déconnecte uniquement l'admin (formateur et étudiant restent connectés)."""
+    _conserver_autres_espaces(request, lambda: logout(request))
+    return redirect('connexion-admin')
 
+
+@formateur_requis
 def changer_mot_de_passe(request):
-    formateur = request.formateur
-    form = PasswordChangeForm(request.user, request.POST or None)
-    for field_name, field in form.fields.items():
-        field.widget.attrs.update({
-            'class': 'form-control',
-            'autocomplete': 'current-password' if field_name == 'old_password' else 'new-password',
-        })
-    if request.method == 'POST' and form.is_valid():
-        user = form.save()
-        update_session_auth_hash(request, user)
-        formateur.doit_changer_mot_de_passe = False
-        formateur.save(update_fields=['doit_changer_mot_de_passe'])
-        messages.success(request, "Votre mot de passe a été modifié.")
-        return redirect('formateur_dashboard')
-    return render(request, 'changer_mot_de_passe.html', {'form': form, 'formateur': formateur})
+    return redirect('formateur_dashboard')
 
 
 # -----------------------------------------------------------------------------
 # Candidatures
 # -----------------------------------------------------------------------------
 
-@apprenant_requis
+@etudiant_requis
 def candidature_formation(request):
     """Gère l'enregistrement d'une candidature pour l'étudiant connecté."""
     etudiant = request.etudiant
@@ -290,7 +382,7 @@ def candidature_formation(request):
                 )
 
             messages.success(request, "Votre candidature a été envoyée à l’équipe pédagogique.")
-            return redirect("candidature-formation")
+            return redirect("etudiant_dashboard")
 
         except IntegrityError:
             messages.error(request, "Vous avez déjà postulé à cette formation.")
@@ -316,7 +408,7 @@ def candidature_formation(request):
     toutes_postulees = len(toutes_les_formations) > 0 and len(formations_disponibles) == 0
 
     if not vague_courante:
-        messages.error(request, "Aucune vague n’est en cours. Les candidatures sont fermées pour le moment.")
+        messages.info(request, "Aucune vague n’est en cours. Les candidatures sont fermées pour le moment.")
 
     return render(request, "bourse_postule/candidature.html", {
         "etudiant": etudiant,
@@ -338,7 +430,7 @@ def connexion_etudiant(request):
         next_target = next_url
 
     if request.session.get("etudiant_id"):
-        return redirect(next_target or "apprenant_dashboard")
+        return redirect(next_target or "etudiant_dashboard")
 
     if request.method == "POST":
         email = request.POST.get("email", "").strip().lower()
@@ -349,9 +441,10 @@ def connexion_etudiant(request):
         if etudiant and etudiant.mot_de_passe and check_password(password, etudiant.mot_de_passe):
             request.session.cycle_key()
             request.session["etudiant_id"] = etudiant.pk
+            messages.success(request, f"Connexion réussie. Bon retour{', ' + etudiant.prenom if etudiant.prenom else ''} !")
             if next_target:
                 return redirect(next_target)
-            return redirect("apprenant_dashboard")
+            return redirect("etudiant_dashboard")
 
         messages.error(request, "Adresse e-mail ou mot de passe incorrect.")
 
@@ -366,7 +459,7 @@ def inscription_etudiant(request):
         next_target = next_url
 
     if request.session.get("etudiant_id"):
-        return redirect(next_target or "apprenant_dashboard")
+        return redirect(next_target or "etudiant_dashboard")
 
     if request.method == "POST":
         nom = request.POST.get("nom", "").strip()
@@ -395,7 +488,7 @@ def inscription_etudiant(request):
             messages.success(request, "Votre compte a été créé. Bienvenue sur Saref Academy !")
             if next_target:
                 return redirect(next_target)
-            return redirect("apprenant_dashboard")
+            return redirect("etudiant_dashboard")
 
     return render(request, "Espace_etudiants/inscription.html", {"next": next_target})
 
@@ -471,112 +564,338 @@ def verifier_code_etudiant(request):
 
 
 def dashboard_etudiant(request):
-    return redirect("apprenant_dashboard")
+    return redirect("etudiant_dashboard")
 
 
 # -----------------------------------------------------------------------------
 # Espace formateur
 # -----------------------------------------------------------------------------
 
-
+@formateur_requis
 def formateur_dashboard(request):
-    return render(request, 'formateur/dashboard.html')
+    formateur = request.formateur
+    formations = formateur.formations.prefetch_related('modules').all()
+    return render(request, 'formateur/dashboard.html', {
+        'formateur': formateur,
+        'formations': formations,
+        'nb_formations': formations.count(),
+    })
 
 
+@formateur_requis
+def formateur_etudiants(request):
+    """Étudiants du formateur, regroupés par formation, vague par vague.
 
-def formateur_apprenants(request):
-    return render(request, 'formateur/apprenants.html')
+    Deux onglets (paramètre GET « onglet ») :
+      - « en_cours » : les étudiants de la vague en cours ;
+      - « archives » : les étudiants d'une ancienne vague, choisie avec ?vague=<id>
+        (par défaut la plus récente).
+    Seules les candidatures acceptées (= étudiants inscrits) sont affichées,
+    et uniquement pour les formations attribuées au formateur.
+    """
+    formateur = request.formateur
+    formations = formateur.formations.order_by("nom")
+    onglet = request.GET.get("onglet", "en_cours")
+    if onglet not in ("en_cours", "archives"):
+        onglet = "en_cours"
+
+    vague_courante = ConfigVague.objects.filter(est_courante=True).first()
+
+    # Anciennes vagues où le formateur a eu au moins un étudiant inscrit.
+    vagues_passees = ConfigVague.objects.filter(
+        candidats__formation__in=formations,
+        candidats__statut="accepte",
+    ).distinct().order_by("-date_debut")
+    if vague_courante:
+        vagues_passees = vagues_passees.exclude(pk=vague_courante.pk)
+    vagues_passees = list(vagues_passees)
+
+    # Vague affichée selon l'onglet.
+    if onglet == "en_cours":
+        vague = vague_courante
+    else:
+        vague_id = request.GET.get("vague", "")
+        vague = next((v for v in vagues_passees if str(v.pk) == vague_id), None)
+        vague = vague or (vagues_passees[0] if vagues_passees else None)
+
+    # Nombre de chapitres publiés par formation, pour la progression.
+    chapitres_par_formation = dict(
+        Chapitres.objects.filter(est_active=True, modules__est_active=True, modules__formation__in=formations)
+        .values("modules__formation")
+        .annotate(n=Count("id"))
+        .values_list("modules__formation", "n")
+    )
+
+    # Une carte par formation, avec ses étudiants inscrits dans la vague affichée.
+    q = request.GET.get("q", "").strip()
+    groupes = []
+    nb_etudiants = 0
+    if vague:
+        inscriptions = (
+            Candidats.objects.filter(configVague=vague, formation__in=formations, statut="accepte")
+            .select_related("etudiant", "formation", "configVague")
+            .annotate(nb_termines=Count(
+                "chapitres_termines",
+                filter=Q(chapitres_termines__chapitre__est_active=True),
+                distinct=True,
+            ))
+            .order_by("etudiant__nom", "etudiant__prenom")
+        )
+        if q:
+            inscriptions = inscriptions.filter(
+                Q(etudiant__nom__icontains=q) | Q(etudiant__prenom__icontains=q) | Q(etudiant__email__icontains=q)
+            )
+        par_formation = {}
+        for inscription in inscriptions:
+            total = chapitres_par_formation.get(inscription.formation_id, 0)
+            inscription.progression = min(round(inscription.nb_termines * 100 / total), 100) if total else 0
+            par_formation.setdefault(inscription.formation_id, []).append(inscription)
+        for formation in formations:
+            etudiants = par_formation.get(formation.pk, [])
+            nb_etudiants += len(etudiants)
+            groupes.append({
+                "formation": formation,
+                "etudiants": etudiants,
+                # Progression moyenne de la cohorte dans cette formation.
+                "progression_moyenne": round(sum(e.progression for e in etudiants) / len(etudiants)) if etudiants else 0,
+            })
+
+    return render(request, "formateur/etudiants.html", {
+        "formateur": formateur,
+        "formations": formations,
+        "onglet": onglet,
+        "vague": vague,
+        "vague_courante": vague_courante,
+        "vagues_passees": vagues_passees,
+        "groupes": groupes,
+        "nb_etudiants": nb_etudiants,
+        "filtre_q": q,
+    })
 
 
-
+@formateur_requis
 def formateur_formations(request):
-    return render(request, 'formateur/formations.html')
+    formateur = request.formateur
+    formations = formateur.formations.prefetch_related('modules', 'candidats').order_by('nom')
+    return render(request, 'formateur/formations.html', {
+        'formateur': formateur,
+        'formations': formations,
+    })
 
 
+@formateur_requis
+def formateur_formation_detail(request, formation_id):
+    formateur = request.formateur
+    formation = get_object_or_404(formateur.formations, pk=formation_id)
 
-def formateur_formation_detail(request, formation_id=1):
-    return render(request, 'formateur/formation_detail.html', {'formation_id': formation_id})
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        if action == "supprimer_module":
+            module = get_object_or_404(
+                Modules,
+                pk=request.POST.get("module_id"),
+                formation=formation,
+            )
+            titre_module = module.titre
+            module.delete()
+            messages.success(request, f"Le module « {titre_module} » et ses chapitres ont été supprimés.")
+
+        elif action == "supprimer_chapitre":
+            chapitre = get_object_or_404(
+                Chapitres,
+                pk=request.POST.get("chapitre_id"),
+                modules__formation=formation,
+            )
+            nom_chapitre = chapitre.nom
+            chapitre.delete()
+            messages.success(request, f"Le chapitre « {nom_chapitre} » a été supprimé.")
+
+        elif action == "ajouter_module":
+            titre = request.POST.get("titre", "").strip()
+            description = request.POST.get("description", "").strip()
+            try:
+                ordre = int(request.POST.get("ordre") or formation.modules.count() + 1)
+                Modules.objects.create(
+                    formation=formation,
+                    titre=titre,
+                    description=description,
+                    ordre=ordre,
+                )
+                messages.success(request, "Le module a été ajouté à cette formation.")
+            except (ValueError, IntegrityError):
+                messages.error(request, "Impossible d’ajouter ce module. Vérifiez son ordre.")
+
+        elif action == "modifier_module":
+            module = get_object_or_404(
+                Modules,
+                pk=request.POST.get("module_id"),
+                formation=formation,
+            )
+            try:
+                module.titre = request.POST.get("titre", "").strip()
+                module.description = request.POST.get("description", "").strip()
+                module.ordre = int(request.POST.get("ordre", "1"))
+                module.est_active = request.POST.get("est_active") == "1"
+                module.save()
+                messages.success(request, "Le module a été modifié.")
+            except (ValueError, IntegrityError):
+                messages.error(request, "Impossible de modifier ce module. Vérifiez son ordre.")
+
+        elif action == "ajouter_chapitre":
+            module = get_object_or_404(
+                Modules,
+                pk=request.POST.get("module"),
+                formation=formation,
+            )
+            pdf = request.FILES.get("support_pdf")
+            if pdf and pdf.size > 20 * 1024 * 1024:
+                messages.error(request, "Le support PDF ne doit pas dépasser 20 Mo.")
+            else:
+                try:
+                    ordre = module.chapitres.count() + 1
+                    Chapitres.objects.create(
+                        modules=module,
+                        nom=request.POST.get("nom", "").strip(),
+                        ordre=ordre,
+                        duree=int(request.POST.get("duree", "0")),
+                        support_video_url=request.POST.get("support_video_url", "").strip() or None,
+                        support_pdf=pdf,
+                    )
+                    messages.success(request, f"Le chapitre a été ajouté au module « {module.titre} ».")
+                except ValueError:
+                    messages.error(request, "La durée du chapitre doit être un nombre valide.")
+
+        return redirect("formateur_formation_detail", formation_id=formation.pk)
+
+    modules = formation.modules.prefetch_related("chapitres").all()
+    nb_modules = modules.count()
+    nb_modules_actifs = modules.filter(est_active=True).count()
+    dernier_module = modules.last()
+    return render(request, "formateur/formation_detail.html", {
+        "formateur": formateur,
+        "formation": formation,
+        "modules": modules,
+        "nb_modules": nb_modules,
+        "nb_modules_actifs": nb_modules_actifs,
+        "nb_inscrits": formation.candidats.filter(statut="accepte").count(),
+        "prochain_ordre_module": dernier_module.ordre + 1 if dernier_module else 1,
+        "pourcentage_modules_actifs": round(nb_modules_actifs * 100 / nb_modules) if nb_modules else 0,
+        "nb_chapitres": Chapitres.objects.filter(modules__formation=formation).count(),
+    })
 
 
+@formateur_requis
+def formateur_chapitre_detail(request, formation_id, chapitre_id):
+    formateur = request.formateur
+    formation = get_object_or_404(formateur.formations, pk=formation_id)
+    chapitre = get_object_or_404(
+        Chapitres,
+        pk=chapitre_id,
+        modules__formation=formation,
+    )
+    module = chapitre.modules
 
-def formateur_module(request, pk=1):
-    return render(request, 'formateur/module.html', {'pk': pk})
+    if request.method == "POST":
+        pdf = request.FILES.get("support_pdf")
+        retirer_pdf = request.POST.get("retirer_support_pdf") == "1"
+        if pdf and pdf.size > 20 * 1024 * 1024:
+            messages.error(request, "Le support PDF ne doit pas dépasser 20 Mo.")
+        elif pdf and not getattr(pdf, "content_type", "").startswith("application/pdf"):
+            messages.error(request, "Le support doit être un fichier PDF.")
+        else:
+            try:
+                duree = int(request.POST.get("duree", "0"))
+                if duree < 1:
+                    raise ValueError
 
+                ancien_pdf = chapitre.support_pdf
+                chapitre.nom = request.POST.get("nom", "").strip()
+                chapitre.duree = duree
+                chapitre.description = request.POST.get("description", "").strip()
+                chapitre.support_video_url = request.POST.get("support_video_url", "").strip() or None
+                chapitre.est_active = request.POST.get("est_active") == "1"
 
+                if pdf:
+                    chapitre.support_pdf = pdf
+                elif retirer_pdf:
+                    chapitre.support_pdf = None
+                chapitre.save()
 
-def formateur_module_ajouter(request):
-    return render(request, 'formateur/formations.html')
+                if ancien_pdf and (pdf or retirer_pdf):
+                    ancien_pdf.delete(save=False)
+                if retirer_pdf and not pdf:
+                    messages.success(request, "Le chapitre a été mis à jour et son PDF a été retiré.")
+                else:
+                    messages.success(request, "Le chapitre a été mis à jour.")
+            except ValueError:
+                messages.error(request, "La durée du chapitre doit être un nombre supérieur à zéro.")
 
+        return redirect("formateur_chapitre_detail", formation_id=formation.pk, chapitre_id=chapitre.pk)
 
-
-def formateur_module_modifier(request, pk=1):
-    return render(request, 'formateur/formations.html', {'pk': pk})
-
-
-
-def formateur_module_supprimer(request, pk=1):
-    return render(request, 'formateur/formations.html', {'pk': pk})
-
-
-
-def formateur_chapitre_ajouter(request):
-    return render(request, 'formateur/formations.html')
-
-
-
-def formateur_chapitre_detail(request, formation_id=1, chapitre_id=1):
-    return render(request, 'formateur/chapitre_detail.html', {
-        'formation_id': formation_id,
-        'chapitre_id': chapitre_id,
+    return render(request, "formateur/chapitre_detail.html", {
+        "formateur": formateur,
+        "formation": formation,
+        "formation_id": formation.pk,
+        "module": module,
+        "chapitre": chapitre,
+        "chapitres": module.chapitres.all(),
     })
 
 
 # -----------------------------------------------------------------------------
-# Espace apprenant
+# Espace étudiant
 # -----------------------------------------------------------------------------
 
-@apprenant_requis
-def apprenant_dashboard(request):
+@etudiant_requis
+def etudiant_dashboard(request):
     etudiant = request.etudiant
     candidatures = etudiant.candidats.select_related("formation", "configVague").order_by("-date_candidature")
-    candidatures_acceptees = [c for c in candidatures if c.statut == "accepte"]
-    return render(request, "apprenant/dashboard.html", {
+    # Formations ouvertes : candidature acceptée et accès non bloqué par l'administration.
+    candidatures_acceptees = [c for c in candidatures if c.a_acces]
+    return render(request, "etudiant/dashboard.html", {
         "etudiant": etudiant,
         "candidatures": candidatures,
         "candidatures_acceptees": candidatures_acceptees,
     })
 
 
-@apprenant_requis
-def apprenant_formations(request):
+@etudiant_requis
+def etudiant_formations(request):
     etudiant = request.etudiant
-    # Toutes les candidatures de l'apprenant
+    # Toutes les candidatures de l'étudiant
     candidatures = etudiant.candidats.select_related("formation", "configVague").order_by("-date_candidature")
     # IDs des formations déjà postulées (pour ne pas les proposer en "disponibles")
     formations_postulees_ids = candidatures.values_list("formation_id", flat=True)
     # Formations actives auxquelles il n'a pas encore postulé
     formations_disponibles = Formation.objects.filter(statut="active").exclude(pk__in=formations_postulees_ids)
-    return render(request, "apprenant/formations.html", {
+    return render(request, "etudiant/formations.html", {
         "etudiant": etudiant,
         "candidatures": candidatures,
         "formations_disponibles": formations_disponibles,
     })
 
 
-@apprenant_requis
-def apprenant_formation_detail(request, pk):
+@etudiant_requis
+def etudiant_formation_detail(request, pk):
     etudiant = request.etudiant
     # pk ici est le pk de la Candidature (pas de la Formation)
     candidat = get_object_or_404(Candidats, pk=pk, etudiant=etudiant)
     formation = candidat.formation
-    modules = formation.modules.prefetch_related("chapitres").filter(est_active=True) if candidat.statut == "accepte" else formation.modules.prefetch_related("chapitres")
-    # Chapitres terminés par cet apprenant pour cette candidature
+    if candidat.est_bloque:
+        # Accès bloqué par l'administration : aucun module n'est affiché.
+        modules = Modules.objects.none()
+    elif candidat.statut == "accepte":
+        modules = formation.modules.prefetch_related("chapitres").filter(est_active=True)
+    else:
+        modules = formation.modules.prefetch_related("chapitres")
+    # Chapitres terminés par cet étudiant pour cette candidature
     chapitres_termines_ids = set(
         ChapitreTermine.objects.filter(candidats=candidat).values_list("chapitre_id", flat=True)
     )
     nb_chapitres = Chapitres.objects.filter(modules__formation=formation, est_active=True).count()
     progression = round(len(chapitres_termines_ids) / nb_chapitres * 100) if nb_chapitres else 0
-    return render(request, "apprenant/formation_detail.html", {
+    return render(request, "etudiant/formation_detail.html", {
         "etudiant": etudiant,
         "candidat": candidat,
         "formation": formation,
@@ -587,31 +906,42 @@ def apprenant_formation_detail(request, pk):
     })
 
 
-@apprenant_requis
-def apprenant_modules(request):
+@etudiant_requis
+def etudiant_modules(request):
     etudiant = request.etudiant
-    # Formations acceptées de l'apprenant
-    formations_acceptees_ids = set(
-        etudiant.candidats.filter(statut="accepte").values_list("formation_id", flat=True)
-    )
-    # Tous les modules des formations de l'apprenant (acceptées ou non)
-    formations_ids = set(etudiant.candidats.values_list("formation_id", flat=True))
+    # Formations ouvertes : candidature acceptée et accès non bloqué
+    # Étudiant bloqué par l'administration : aucun module n'est affiché.
+    if etudiant.est_bloque:
+        formations_acceptees_ids = set()
+        formations_ids = set()
+    else:
+        formations_acceptees_ids = set(
+            etudiant.candidats.filter(statut="accepte").values_list("formation_id", flat=True)
+        )
+        formations_ids = set(etudiant.candidats.values_list("formation_id", flat=True))
     modules = Modules.objects.filter(
         formation_id__in=formations_ids
     ).select_related("formation").prefetch_related("chapitres").order_by("formation__nom", "ordre")
-    return render(request, "apprenant/modules.html", {
+    return render(request, "etudiant/modules.html", {
         "etudiant": etudiant,
         "modules": modules,
         "formations_acceptees": formations_acceptees_ids,
     })
 
 
-@apprenant_requis
-def apprenant_module_detail(request, pk):
+@etudiant_requis
+def etudiant_module_detail(request, pk):
     etudiant = request.etudiant
     module = get_object_or_404(Modules, pk=pk)
-    # Vérifier que l'apprenant a bien une candidature acceptée pour cette formation
-    candidat = get_object_or_404(Candidats, etudiant=etudiant, formation=module.formation, statut="accepte")
+    candidat = Candidats.objects.filter(etudiant=etudiant, formation=module.formation).first()
+    # Accès refusé si la candidature n'est pas acceptée, si l'accès est bloqué
+    # par l'administration ou si le module n'est pas publié.
+    if candidat is None or not candidat.a_acces or not module.est_active:
+        if candidat is not None and candidat.est_bloque:
+            messages.error(request, "Votre accès à cette formation a été bloqué par l’administration.")
+        else:
+            messages.error(request, "Ce module n’est pas accessible.")
+        return redirect("etudiant_modules")
     # Chapitre à afficher (passé en paramètre GET)
     chapitre_pk = request.GET.get("chapitre")
     if chapitre_pk:
@@ -627,7 +957,7 @@ def apprenant_module_detail(request, pk):
         ChapitreTermine.objects.filter(candidats=candidat).values_list("chapitre_id", flat=True)
     )
     chapitres = module.chapitres.filter(est_active=True)
-    return render(request, "apprenant/chapitre_detail.html", {
+    return render(request, "etudiant/chapitre_detail.html", {
         "etudiant": etudiant,
         "candidat": candidat,
         "module": module,
@@ -637,13 +967,13 @@ def apprenant_module_detail(request, pk):
     })
 
 
-@apprenant_requis
-def apprenant_paiements(request):
+@etudiant_requis
+def etudiant_paiements(request):
     etudiant = request.etudiant
     candidatures_acceptees = etudiant.candidats.filter(
         statut="accepte"
     ).select_related("formation", "configVague").prefetch_related("paiements")
-    # Tous les paiements de l'apprenant
+    # Tous les paiements de l'étudiant
     paiements = Paiement.objects.filter(
         candidats__etudiant=etudiant
     ).select_related("formation", "candidats__configVague").order_by("-date")
@@ -651,7 +981,7 @@ def apprenant_paiements(request):
     montant_du = sum(c.formation.prix for c in candidatures_acceptees)
     total_paye = paiements.aggregate(total=Sum("montant"))["total"] or 0
     reste_a_payer = max(montant_du - total_paye, 0)
-    return render(request, "apprenant/paiements.html", {
+    return render(request, "etudiant/paiements.html", {
         "etudiant": etudiant,
         "candidatures_acceptees": candidatures_acceptees,
         "paiements": paiements,
@@ -661,8 +991,8 @@ def apprenant_paiements(request):
     })
 
 
-@apprenant_requis
-def apprenant_profil(request):
+@etudiant_requis
+def etudiant_profil(request):
     etudiant = request.etudiant
     if request.method == "POST":
         action = request.POST.get("action")
@@ -697,7 +1027,7 @@ def apprenant_profil(request):
                     etudiant.photo = photo
                 etudiant.save()
                 messages.success(request, "Profil mis à jour avec succès.")
-                return redirect("apprenant_profil")
+                return redirect("etudiant_profil")
         elif action == "changer_mot_de_passe":
             ancien = request.POST.get("ancien_mot_de_passe", "")
             nouveau = request.POST.get("nouveau_mot_de_passe", "")
@@ -712,27 +1042,29 @@ def apprenant_profil(request):
                 etudiant.mot_de_passe = make_password(nouveau)
                 etudiant.save(update_fields=["mot_de_passe"])
                 messages.success(request, "Mot de passe modifié avec succès.")
-                return redirect("apprenant_profil")
+                return redirect("etudiant_profil")
     candidatures = etudiant.candidats.select_related("formation", "configVague").order_by("-date_candidature")
-    return render(request, "apprenant/profil.html", {
+    return render(request, "etudiant/profil.html", {
         "etudiant": etudiant,
         "candidatures": candidatures,
     })
 
 
-@apprenant_requis
-def apprenant_parametres(request):
-    return render(request, "apprenant/parametres.html", {"etudiant": request.etudiant})
+@etudiant_requis
+def etudiant_parametres(request):
+    return render(request, "etudiant/parametres.html", {"etudiant": request.etudiant})
 
 
 # -----------------------------------------------------------------------------
-# Espace gestion
+# Espace administration
 # -----------------------------------------------------------------------------
 
+@admin_requis
 def admin_configuration_initiale(request):
-    return render(request, 'admin/configuration_initiale.html')
+    return render(request, 'administration/configuration_initiale.html')
 
 
+@admin_requis
 def admin_configuration_vague(request):
     if request.method == "POST":
         # Récupère les valeurs du formulaire.
@@ -826,7 +1158,7 @@ def admin_configuration_vague(request):
     donnees = request.session.pop("configuration_vague_data", None)
     confirmation_remplacement = request.session.pop("confirmation_remplacement_vague", False)
     vague_courante = ConfigVague.objects.filter(est_courante=True).first()
-    return render(request, "admin/configuration_vague.html", {
+    return render(request, "administration/configuration_vague.html", {
         "donnees": donnees,
         "vague_courante": vague_courante,
         "confirmation_remplacement": confirmation_remplacement,
@@ -834,6 +1166,7 @@ def admin_configuration_vague(request):
     })
 
 
+@admin_requis
 def admin_dashboard(request):
     vague_courante = ConfigVague.objects.filter(est_courante=True).first()
     if vague_courante:
@@ -850,7 +1183,7 @@ def admin_dashboard(request):
         nb_etudiants = 0
         candidatures_recentes = Candidats.objects.none()
 
-    return render(request, 'admin/dashboard.html', {
+    return render(request, 'administration/dashboard.html', {
         "vague_courante": vague_courante,
         "nb_candidatures": nb_candidatures,
         "nb_candidatures_attente": nb_candidatures_attente,
@@ -862,12 +1195,18 @@ def admin_dashboard(request):
     })
 
 
+@admin_requis
 def admin_candidatures(request):
     vague_courante = ConfigVague.objects.filter(est_courante=True).first()
     formations = Formation.objects.all().order_by("nom")
-    vagues = ConfigVague.objects.all().order_by("-date_debut")
 
-    candidatures_qs = Candidats.objects.select_related("etudiant", "formation", "configVague")
+    # Seules les candidatures de la vague en cours sont gérées ici. Celles des
+    # vagues passées se consultent depuis « Vagues & années ».
+    if vague_courante:
+        candidatures_qs = Candidats.objects.filter(configVague=vague_courante)
+    else:
+        candidatures_qs = Candidats.objects.none()
+    candidatures_qs = candidatures_qs.select_related("etudiant", "formation", "configVague")
 
     # Statistiques globales en une seule requête SQL optimale
     stats = candidatures_qs.aggregate(
@@ -895,10 +1234,6 @@ def admin_candidatures(request):
     formation_filtre = request.GET.get("formation", "").strip()
     if formation_filtre:
         candidatures_qs = candidatures_qs.filter(formation__nom__icontains=formation_filtre)
-
-    vague_filtre = request.GET.get("vague", "").strip()
-    if vague_filtre:
-        candidatures_qs = candidatures_qs.filter(configVague__nom__icontains=vague_filtre)
 
     tri = request.GET.get("tri", "").strip()
     if tri in ["nom", "Nom (A–Z)"]:
@@ -929,13 +1264,12 @@ def admin_candidatures(request):
     paginator = Paginator(candidatures_qs, 15)
     page_obj = paginator.get_page(request.GET.get("page"))
 
-    return render(request, "admin/candidatures.html", {
+    return render(request, "administration/candidatures.html", {
         "candidatures": page_obj,
         "page_obj": page_obj,
         "paginator": paginator,
         "vague_courante": vague_courante,
         "formations": formations,
-        "vagues": vagues,
         "nb_total": stats["nb_total"] or 0,
         "nb_attente": stats["nb_attente"] or 0,
         "nb_accepte": stats["nb_accepte"] or 0,
@@ -943,18 +1277,29 @@ def admin_candidatures(request):
         "filtre_statut": statut,
         "filtre_q": q,
         "filtre_formation": formation_filtre,
-        "filtre_vague": vague_filtre,
         "filtre_tri": tri,
     })
 
 
-def admin_candidature_detail(request, pk=1):
+@admin_requis
+def admin_candidature_detail(request, pk):
     candidat = get_object_or_404(
         Candidats.objects.select_related("etudiant", "formation", "configVague"),
         pk=pk,
     )
 
+    # Les décisions ne sont possibles que pour la vague en cours.
+    decision_possible = candidat.configVague.est_courante
+
     if request.method == "POST":
+        if not decision_possible:
+            messages.warning(
+                request,
+                "Cette candidature appartient à une vague qui n’est plus en cours : "
+                "elle est consultable mais ne peut plus être modifiée.",
+            )
+            return redirect("admin_candidature_detail", pk=candidat.pk)
+
         nouveau_statut = request.POST.get("statut", "").strip()
         commentaire = request.POST.get("commentaire_admin", "").strip()
 
@@ -971,7 +1316,7 @@ def admin_candidature_detail(request, pk=1):
                 Notification.objects.create(
                     etudiant=candidat.etudiant,
                     message=f"Votre candidature pour la formation « {candidat.formation.nom} » a été {statut_texte}.",
-                    lien="/apprenant/formations/",
+                    lien="/etudiant/formations/",
                 )
 
         messages.success(request, f"La décision pour la candidature de {candidat.etudiant} a été enregistrée.")
@@ -981,18 +1326,20 @@ def admin_candidature_detail(request, pk=1):
         etudiant=candidat.etudiant
     ).exclude(pk=candidat.pk).select_related("formation", "configVague").order_by("-date_candidature")
 
-    return render(request, "admin/candidature_detail.html", {
+    return render(request, "administration/candidature_detail.html", {
         "candidat": candidat,
         "autres_candidatures": autres_candidatures,
+        "decision_possible": decision_possible,
         "pk": pk,
     })
 
 
-def admin_apprenants(request):
+@admin_requis
+def admin_etudiants(request):
     formations = Formation.objects.all().order_by("nom")
 
     # Statistiques globales
-    total_apprenants = Etudiants.objects.count()
+    total_etudiants = Etudiants.objects.count()
     une_semaine = timezone.now() - timedelta(days=7)
     actifs_semaine = Etudiants.objects.filter(
         Q(candidats__chapitres_termines__date__gte=une_semaine)
@@ -1000,15 +1347,12 @@ def admin_apprenants(request):
     ).distinct().count()
 
     avec_candidature_count = Etudiants.objects.filter(candidats__isnull=False).distinct().count()
-    sans_candidature_count = total_apprenants - avec_candidature_count
+    sans_candidature_count = total_etudiants - avec_candidature_count
 
-    bloques_count = Etudiants.objects.filter(
-        candidats__est_bloque=True
-    ).distinct().count()
+    bloques_count = Etudiants.objects.filter(est_bloque=True).count()
 
     etudiants_qs = Etudiants.objects.annotate(
         nb_candidatures=Count("candidats", distinct=True),
-        nb_bloques=Count("candidats", filter=Q(candidats__est_bloque=True), distinct=True),
     )
 
     # Filtre Type (Avec candidature vs Sans candidature)
@@ -1034,21 +1378,21 @@ def admin_apprenants(request):
 
     statut_filtre = request.GET.get("statut", "").strip().lower()
     if statut_filtre in ["bloqué", "bloque"]:
-        etudiants_qs = etudiants_qs.filter(candidats__est_bloque=True)
+        etudiants_qs = etudiants_qs.filter(est_bloque=True)
     elif statut_filtre == "actif":
-        etudiants_qs = etudiants_qs.filter(nb_bloques=0)
+        etudiants_qs = etudiants_qs.filter(est_bloque=False)
 
     etudiants_qs = etudiants_qs.distinct().order_by("-date_inscription")
 
     # Export CSV si demandé
     if request.GET.get("export") == "csv":
         response = HttpResponse(content_type="text/csv; charset=utf-8-sig")
-        nom_fichier = f"apprenants_{filtre_type or 'tous'}.csv"
+        nom_fichier = f"etudiants_{filtre_type or 'tous'}.csv"
         response["Content-Disposition"] = f'attachment; filename="{nom_fichier}"'
         writer = csv.writer(response)
         writer.writerow(["Nom", "Prénom", "Email", "Téléphone", "Niveau d'études", "Candidatures", "Inscrit le", "Statut"])
         for e in etudiants_qs:
-            statut = "Bloqué" if e.nb_bloques > 0 else "Actif"
+            statut = "Bloqué" if e.est_bloque else "Actif"
             writer.writerow([
                 e.nom,
                 e.prenom,
@@ -1064,12 +1408,12 @@ def admin_apprenants(request):
     paginator = Paginator(etudiants_qs, 15)
     page_obj = paginator.get_page(request.GET.get("page"))
 
-    return render(request, "admin/apprenants.html", {
+    return render(request, "administration/etudiants.html", {
         "etudiants": page_obj,
         "page_obj": page_obj,
         "paginator": paginator,
         "formations": formations,
-        "total_apprenants": total_apprenants,
+        "total_etudiants": total_etudiants,
         "avec_candidature_count": avec_candidature_count,
         "sans_candidature_count": sans_candidature_count,
         "actifs_semaine": actifs_semaine,
@@ -1081,21 +1425,24 @@ def admin_apprenants(request):
     })
 
 
-def admin_apprenant_detail(request, pk=1):
+@admin_requis
+def admin_etudiant_detail(request, pk):
     etudiant = get_object_or_404(Etudiants, pk=pk)
 
     candidatures = etudiant.candidats.select_related("formation", "configVague").order_by("-date_candidature")
-    est_bloque = candidatures.filter(est_bloque=True).exists()
+    est_bloque = etudiant.est_bloque
 
     if request.method == "POST":
+        # Le blocage porte sur l'étudiant : il s'applique à toutes ses
+        # formations, y compris celles acceptées plus tard.
         nouveau_blocage = not est_bloque
-        with transaction.atomic():
-            candidatures.update(est_bloque=nouveau_blocage)
+        etudiant.est_bloque = nouveau_blocage
+        etudiant.save(update_fields=["est_bloque"])
         if nouveau_blocage:
             messages.warning(request, f"L’accès de {etudiant.prenom} {etudiant.nom} a été bloqué.")
         else:
             messages.success(request, f"L’accès de {etudiant.prenom} {etudiant.nom} a été rétabli.")
-        return redirect("admin_apprenant_detail", pk=etudiant.pk)
+        return redirect("admin_etudiant_detail", pk=etudiant.pk)
 
     nb_candidatures = candidatures.count()
     nb_acceptees = candidatures.filter(statut="accepte").count()
@@ -1114,7 +1461,7 @@ def admin_apprenant_detail(request, pk=1):
         tel_digits = "229" + tel_digits
     whatsapp_url = f"https://wa.me/{tel_digits}" if tel_digits else "#"
 
-    return render(request, "admin/apprenant_detail.html", {
+    return render(request, "administration/etudiant_detail.html", {
         "etudiant": etudiant,
         "est_bloque": est_bloque,
         "candidatures": candidatures,
@@ -1128,49 +1475,399 @@ def admin_apprenant_detail(request, pk=1):
     })
 
 
-def admin_resultats(request):
-    return render(request, 'admin/resultats.html')
+# -----------------------------------------------------------------------------
+# Finance et résultats (toujours par vague)
+# -----------------------------------------------------------------------------
+
+def _vague_selectionnee(request):
+    """Retourne la vague à afficher sur les pages Finance et Résultats.
+
+    Ordre de priorité : la vague demandée dans l'URL (?vague=<id>), sinon la
+    vague en cours, sinon la vague la plus récente. Retourne None s'il
+    n'existe encore aucune vague.
+    """
+    vague_id = request.GET.get("vague") or request.POST.get("vague")
+    if vague_id and str(vague_id).isdigit():
+        vague = ConfigVague.objects.filter(pk=vague_id).first()
+        if vague:
+            return vague
+    return (
+        ConfigVague.objects.filter(est_courante=True).first()
+        or ConfigVague.objects.order_by("-date_debut").first()
+    )
 
 
+def _liste_vagues():
+    """Toutes les vagues (plus récentes d'abord) avec un indicateur « archivée »."""
+    vagues = list(ConfigVague.objects.order_by("-date_debut"))
+    archivees = set(Archive.objects.values_list("configVague_id", flat=True))
+    for v in vagues:
+        v.est_archivee = v.pk in archivees
+    return vagues
+
+
+def _redirection_vague(nom_url, vague):
+    """Redirige vers une page admin en conservant la vague sélectionnée."""
+    return redirect(f"{reverse(nom_url)}?vague={vague.pk}")
+
+
+@admin_requis
 def admin_finance(request):
-    return render(request, 'admin/finance.html')
+    """Suivi des paiements des apprenants d'une vague.
+
+    GET  : indicateurs, plans de paiement par formation et liste des
+           inscriptions (candidatures acceptées) avec payé / reste.
+    POST : enregistrement d'un paiement (refusé si la vague est archivée).
+    """
+    vague = _vague_selectionnee(request)
+    vagues = _liste_vagues()
+    est_archivee = bool(vague) and Archive.objects.filter(configVague=vague).exists()
+
+    # --- Enregistrement d'un paiement -----------------------------------------
+    if request.method == "POST" and vague:
+        if est_archivee:
+            messages.warning(request, "Cette vague est archivée : aucun paiement ne peut plus être enregistré.")
+            return _redirection_vague("admin_finance", vague)
+
+        candidat = Candidats.objects.filter(
+            pk=request.POST.get("candidat"), configVague=vague, statut="accepte"
+        ).select_related("formation", "etudiant").first()
+        erreurs = []
+        if candidat is None:
+            erreurs.append("Choisissez un étudiant inscrit à cette vague.")
+
+        # Contrôle de la tranche : entre 1 et le nombre de tranches de la formation.
+        try:
+            tranche = int(request.POST.get("tranche", ""))
+        except ValueError:
+            tranche = 0
+        if candidat and not 1 <= tranche <= (candidat.formation.nb_tranches or 1):
+            erreurs.append("Le numéro de tranche n’est pas valide pour cette formation.")
+
+        # Contrôle du montant : positif et pas plus que le reste à payer.
+        try:
+            montant = Decimal(request.POST.get("montant", "").replace(" ", "").replace(",", "."))
+        except Exception:
+            montant = Decimal("0")
+        if montant <= 0:
+            erreurs.append("Le montant doit être supérieur à 0.")
+        elif candidat:
+            deja_paye = candidat.paiements.aggregate(total=Sum("montant"))["total"]
+            reste = _situation_financiere(candidat, deja_paye)["reste"]
+            if montant > reste:
+                erreurs.append(f"Le montant dépasse le reste à payer ({reste:,.0f} FCFA).".replace(",", " "))
+
+        mode = request.POST.get("mode", "")
+        if mode not in dict(Paiement.MODE_CHOICES):
+            erreurs.append("Choisissez un mode de paiement.")
+
+        # Date du paiement (aujourd'hui si non renseignée).
+        date_texte = request.POST.get("date", "")
+        try:
+            date_paiement = timezone.make_aware(datetime.strptime(date_texte, "%Y-%m-%d")) if date_texte else timezone.now()
+        except ValueError:
+            erreurs.append("La date du paiement n’est pas valide.")
+            date_paiement = None
+
+        if erreurs:
+            for erreur in erreurs:
+                messages.error(request, erreur)
+        else:
+            Paiement.objects.create(
+                candidats=candidat,
+                configVague=vague,
+                formation=candidat.formation,
+                tranche=tranche,
+                montant=montant,
+                date=date_paiement,
+                mode=mode,
+            )
+            messages.success(
+                request,
+                f"Paiement de {montant:,.0f} FCFA enregistré pour {candidat.etudiant} (tranche {tranche}).".replace(",", " "),
+            )
+        return _redirection_vague("admin_finance", vague)
+
+    # --- Lecture : inscriptions de la vague avec leur situation financière ----
+    inscriptions = []
+    if vague:
+        inscriptions = list(
+            Candidats.objects.filter(configVague=vague, statut="accepte")
+            .select_related("etudiant", "formation")
+            .annotate(total_paye=Coalesce(Sum("paiements__montant"), Decimal("0")))
+            .order_by("etudiant__nom", "etudiant__prenom")
+        )
+    for inscription in inscriptions:
+        inscription.finances = _situation_financiere(inscription, inscription.total_paye)
+        # Statut financier : soldé, partiel (au moins un versement) ou aucun paiement.
+        if inscription.finances["solde"]:
+            inscription.statut_finance = "solde"
+        elif inscription.finances["total_paye"] > 0:
+            inscription.statut_finance = "partiel"
+        else:
+            inscription.statut_finance = "aucun"
+
+    # Indicateurs calculés sur toute la vague (avant les filtres).
+    stats = {
+        "total": len(inscriptions),
+        "encaisse": sum((i.finances["total_paye"] for i in inscriptions), Decimal("0")),
+        "reste": sum((i.finances["reste"] for i in inscriptions), Decimal("0")),
+        "solde": sum(1 for i in inscriptions if i.statut_finance == "solde"),
+        "partiel": sum(1 for i in inscriptions if i.statut_finance == "partiel"),
+        "aucun": sum(1 for i in inscriptions if i.statut_finance == "aucun"),
+    }
+
+    # Plans de paiement des formations présentes dans la vague.
+    plans = []
+    for formation in sorted({i.formation for i in inscriptions}, key=lambda f: f.nom):
+        nb = formation.nb_tranches or 1
+        plans.append({
+            "formation": formation,
+            "nb_tranches": nb,
+            "montant_tranche": (formation.prix / nb) if formation.prix else Decimal("0"),
+            "nb_inscrits": sum(1 for i in inscriptions if i.formation_id == formation.pk),
+        })
+
+    # Inscriptions qui peuvent encore recevoir un paiement (pour le formulaire).
+    a_encaisser = [i for i in inscriptions if not i.finances["solde"]]
+
+    # Filtres (statut + recherche) puis pagination.
+    filtre_statut = request.GET.get("statut", "")
+    q = request.GET.get("q", "").strip()
+    liste = inscriptions
+    if filtre_statut in ("solde", "partiel", "aucun"):
+        liste = [i for i in liste if i.statut_finance == filtre_statut]
+    if q:
+        q_min = q.lower()
+        liste = [
+            i for i in liste
+            if q_min in f"{i.etudiant.prenom} {i.etudiant.nom} {i.etudiant.email} {i.formation.nom}".lower()
+        ]
+    page_obj = Paginator(liste, 20).get_page(request.GET.get("page"))
+
+    return render(request, "administration/finance.html", {
+        "vague": vague,
+        "vagues": vagues,
+        "est_archivee": est_archivee,
+        "inscriptions": page_obj,
+        "page_obj": page_obj,
+        "stats": stats,
+        "plans": plans,
+        "a_encaisser": a_encaisser,
+        "modes": Paiement.MODE_CHOICES,
+        "filtre_statut": filtre_statut,
+        "filtre_q": q,
+        "aujourdhui": timezone.localdate(),
+    })
 
 
+@admin_requis
+def admin_resultats(request):
+    """Résultats finaux et attestations des apprenants d'une vague.
+
+    GET  : progression de chaque inscription, décision et attestation.
+    POST : saisie ou modification d'un résultat (+ dépôt de l'attestation PDF).
+           Refusé si la vague est archivée.
+    """
+    vague = _vague_selectionnee(request)
+    vagues = _liste_vagues()
+    est_archivee = bool(vague) and Archive.objects.filter(configVague=vague).exists()
+
+    # --- Saisie / modification d'un résultat ----------------------------------
+    if request.method == "POST" and vague:
+        if est_archivee:
+            messages.warning(request, "Cette vague est archivée : les résultats ne peuvent plus être modifiés.")
+            return _redirection_vague("admin_resultats", vague)
+
+        candidat = Candidats.objects.filter(
+            pk=request.POST.get("candidat"), configVague=vague, statut="accepte"
+        ).select_related("etudiant", "formation").first()
+        decision = request.POST.get("decision", "")
+        attestation = request.FILES.get("attestation")
+
+        erreurs = []
+        if candidat is None:
+            erreurs.append("Choisissez un étudiant inscrit à cette vague.")
+        if decision not in dict(Resultat.DECISION_CHOICES):
+            erreurs.append("Choisissez une décision.")
+        # L'attestation est facultative mais doit être un PDF de 5 Mo maximum.
+        if attestation:
+            if not attestation.name.lower().endswith(".pdf"):
+                erreurs.append("L’attestation doit être un fichier PDF.")
+            elif attestation.size > 5 * 1024 * 1024:
+                erreurs.append("L’attestation ne doit pas dépasser 5 Mo.")
+        if attestation and decision != "admis":
+            erreurs.append("Une attestation ne peut être déposée que pour un étudiant admis.")
+
+        if erreurs:
+            for erreur in erreurs:
+                messages.error(request, erreur)
+            return _redirection_vague("admin_resultats", vague)
+
+        # Un seul résultat par inscription : on met à jour s'il existe déjà.
+        resultat = candidat.resultat.order_by("-pk").first()
+        if resultat is None:
+            resultat = Resultat(candidats=candidat, configVague=vague)
+        resultat.decision = decision
+        ancienne_attestation = resultat.attestation if resultat.pk else None
+        if attestation:
+            resultat.attestation = attestation
+        elif decision != "admis":
+            # Plus d'attestation si l'étudiant n'est plus admis.
+            resultat.attestation = None
+        resultat.save()
+        # Supprime du disque l'ancien PDF s'il a été remplacé ou retiré.
+        if ancienne_attestation and ancienne_attestation.name != (resultat.attestation.name if resultat.attestation else None):
+            ancienne_attestation.storage.delete(ancienne_attestation.name)
+
+        # Prévient l'étudiant dans son espace.
+        Notification.objects.create(
+            etudiant=candidat.etudiant,
+            message=f"Votre résultat pour « {candidat.formation.nom} » est disponible : {resultat.get_decision_display()}.",
+            lien="/etudiant/formations/",
+        )
+        messages.success(request, f"Résultat enregistré pour {candidat.etudiant} : {resultat.get_decision_display()}.")
+        return _redirection_vague("admin_resultats", vague)
+
+    # --- Lecture : progression et résultat de chaque inscription --------------
+    inscriptions = []
+    if vague:
+        inscriptions = list(
+            Candidats.objects.filter(configVague=vague, statut="accepte")
+            .select_related("etudiant", "formation")
+            .prefetch_related("resultat")
+            .annotate(nb_termines=Count(
+                "chapitres_termines",
+                filter=Q(chapitres_termines__chapitre__est_active=True),
+                distinct=True,
+            ))
+            .order_by("formation__nom", "etudiant__nom", "etudiant__prenom")
+        )
+
+    # Nombre de chapitres publiés par formation (pour calculer la progression).
+    chapitres_par_formation = dict(
+        Chapitres.objects.filter(est_active=True, modules__est_active=True)
+        .values("modules__formation")
+        .annotate(n=Count("id"))
+        .values_list("modules__formation", "n")
+    )
+    for inscription in inscriptions:
+        total = chapitres_par_formation.get(inscription.formation_id, 0)
+        inscription.progression = min(round(inscription.nb_termines * 100 / total), 100) if total else 0
+        resultats = list(inscription.resultat.all())
+        inscription.dernier_resultat = resultats[-1] if resultats else None
+        inscription.statut_resultat = inscription.dernier_resultat.decision if inscription.dernier_resultat else "attente"
+
+    stats = {
+        "total": len(inscriptions),
+        "admis": sum(1 for i in inscriptions if i.statut_resultat == "admis"),
+        "non_admis": sum(1 for i in inscriptions if i.statut_resultat == "non_admis"),
+        "abandon": sum(1 for i in inscriptions if i.statut_resultat == "abandon"),
+        "attente": sum(1 for i in inscriptions if i.statut_resultat == "attente"),
+        # Admis sans attestation déposée.
+        "attestations_manquantes": sum(
+            1 for i in inscriptions
+            if i.statut_resultat == "admis" and not i.dernier_resultat.attestation
+        ),
+    }
+
+    filtre_statut = request.GET.get("statut", "")
+    q = request.GET.get("q", "").strip()
+    liste = inscriptions
+    if filtre_statut in ("attente", "admis", "non_admis", "abandon"):
+        liste = [i for i in liste if i.statut_resultat == filtre_statut]
+    if q:
+        q_min = q.lower()
+        liste = [
+            i for i in liste
+            if q_min in f"{i.etudiant.prenom} {i.etudiant.nom} {i.etudiant.email} {i.formation.nom}".lower()
+        ]
+    page_obj = Paginator(liste, 20).get_page(request.GET.get("page"))
+
+    return render(request, "administration/resultats.html", {
+        "vague": vague,
+        "vagues": vagues,
+        "est_archivee": est_archivee,
+        "inscriptions": page_obj,
+        "page_obj": page_obj,
+        "toutes_inscriptions": inscriptions,
+        "stats": stats,
+        "decisions": Resultat.DECISION_CHOICES,
+        "filtre_statut": filtre_statut,
+        "filtre_q": q,
+    })
+
+
+@admin_requis
 def admin_organisation(request):
-    return render(request, 'admin/organisation.html')
+    return render(request, 'administration/organisation.html')
 
 
+@admin_requis
 def admin_formations(request):
     if request.method == "POST":
         nom = request.POST.get("nom", "").strip()
         description = request.POST.get("description", "").strip()
+        duree_raw = request.POST.get("duree", "").strip()
+        prix_raw = request.POST.get("prix", "0").strip().replace(" ", "").replace(",", ".")
+        tranches_raw = request.POST.get("nb_tranches", "3").strip()
+        statut = request.POST.get("statut", "active").strip()
         photo = request.FILES.get("photo")
 
-        # La couverture est facultative, mais limitée à 2 Mo et doit être une image.
+        erreurs = []
+        if not nom or len(nom) < 2:
+            erreurs.append("Le nom de la formation doit comporter au moins 2 caractères.")
+
+        try:
+            duree = int(duree_raw)
+            if duree < 1:
+                erreurs.append("La durée doit être d’au moins 1 mois.")
+        except (ValueError, TypeError):
+            erreurs.append("La durée doit être un nombre entier valide.")
+            duree = 1
+
+        try:
+            prix = Decimal(prix_raw)
+            if prix < 0:
+                erreurs.append("Le prix ne peut pas être négatif.")
+        except (InvalidOperation, TypeError):
+            erreurs.append("Le prix doit être un montant numérique valide.")
+            prix = Decimal("0")
+
+        try:
+            nb_tranches = int(tranches_raw)
+            if nb_tranches < 1:
+                erreurs.append("Le nombre de tranches doit être d’au moins 1.")
+        except (ValueError, TypeError):
+            erreurs.append("Le nombre de tranches doit être un nombre entier valide.")
+            nb_tranches = 1
+
         if photo and photo.size > 2 * 1024 * 1024:
-            messages.error(request, "L’image de couverture ne doit pas dépasser 2 Mo.")
+            erreurs.append("L’image de couverture ne doit pas dépasser 2 Mo.")
         elif photo and not photo.content_type.startswith("image/"):
-            messages.error(request, "Le fichier de couverture doit être une image.")
+            erreurs.append("Le fichier de couverture doit être une image valide.")
+
+        if erreurs:
+            for err in erreurs:
+                messages.error(request, err)
         else:
-            try:
-                formation = Formation.objects.create(
-                    nom=nom,
-                    duree=int(request.POST.get("duree", "0")),
-                    prix=Decimal(request.POST.get("prix", "0")),
-                    nb_tranches=int(request.POST.get("nb_tranches", "3")),
-                    description=description,
-                    photo=photo,
-                    statut=request.POST.get("statut", "active"),
-                )
-                messages.success(request, f"La formation « {formation.nom} » a été créée.")
-                return redirect("admin_formations")
-            except (ValueError, InvalidOperation):
-                messages.error(request, "La durée, le prix et les tranches doivent être des nombres valides.")
+            formation = Formation.objects.create(
+                nom=nom,
+                duree=duree,
+                prix=prix,
+                nb_tranches=nb_tranches,
+                description=description,
+                photo=photo,
+                statut=statut,
+            )
+            messages.success(request, f"La formation « {formation.nom} » a été créée avec succès.")
+            return redirect("admin_formations")
 
     formations = Formation.objects.all().order_by("nom")
-    return render(request, "admin/formations.html", {"formations": formations})
+    return render(request, "administration/formations.html", {"formations": formations})
 
 
+@admin_requis
 def admin_formation_detail(request, pk):
     formation = get_object_or_404(Formation, pk=pk)
 
@@ -1320,7 +2017,7 @@ def admin_formation_detail(request, pk):
     nb_modules = modules.count()
     nb_modules_actifs = modules.filter(est_active=True).count()
     dernier_module = modules.last()
-    return render(request, "admin/formation_detail.html", {
+    return render(request, "administration/formation_detail.html", {
         "formation": formation,
         "modules": modules,
         "nb_modules": nb_modules,
@@ -1334,6 +2031,7 @@ def admin_formation_detail(request, pk):
     })
 
 
+@admin_requis
 def admin_chapitre_detail(request, formation_id, chapitre_id):
     formation = get_object_or_404(Formation, pk=formation_id)
     chapitre = get_object_or_404(
@@ -1382,7 +2080,7 @@ def admin_chapitre_detail(request, formation_id, chapitre_id):
 
         return redirect("admin_chapitre_detail", formation_id=formation.pk, chapitre_id=chapitre.pk)
 
-    return render(request, "admin/chapitre_detail.html", {
+    return render(request, "administration/chapitre_detail.html", {
         "formation": formation,
         "formation_id": formation.pk,
         "module": module,
@@ -1391,6 +2089,7 @@ def admin_chapitre_detail(request, formation_id, chapitre_id):
     })
 
 
+@admin_requis
 def admin_formateurs(request):
     if request.method == "POST":
         if request.POST.get("action") == "create_formateur":
@@ -1454,7 +2153,7 @@ def admin_formateurs(request):
 
                     message_whatsapp = (
                         f"Bonjour {formateur.prenom} {formateur.nom}, voici vos accès à l’espace formateur SAREF Academy. "
-                        f"Lien : {request.build_absolute_uri('/connexion/')} Identifiant : {formateur.email}. "
+                        f"Lien : {request.build_absolute_uri(reverse('connexion-formateur'))} Identifiant : {formateur.email}. "
                         f"Mot de passe provisoire : {password}. Connectez-vous puis changez-le à votre première connexion."
                     )
                     telephone_whatsapp = telephone_digits[2:] if telephone.startswith("00") else telephone_digits
@@ -1476,7 +2175,7 @@ def admin_formateurs(request):
 
     formateurs = Formateurs.objects.prefetch_related("formations").order_by("prenom", "nom")
     formations = Formation.objects.all().order_by("nom")
-    return render(request, "admin/formateurs.html", {
+    return render(request, "administration/formateurs.html", {
         "formateurs": formateurs,
         "formateurs_actifs": formateurs.filter(actif=True).count(),
         "formateurs_inactifs": formateurs.filter(actif=False).count(),
@@ -1486,7 +2185,8 @@ def admin_formateurs(request):
     })
 
 
-def admin_formateur_detail(request, pk=1):
+@admin_requis
+def admin_formateur_detail(request, pk):
     if request.method == "POST":
         formateur = get_object_or_404(Formateurs, pk=pk)
         if request.POST.get("action") == "delete_formateur":
@@ -1590,7 +2290,7 @@ def admin_formateur_detail(request, pk=1):
                                 telephone_whatsapp = telephone_whatsapp[2:]
                             message = (
                                 f"Bonjour {prenom} {nom}, voici votre nouvel accès SAREF Academy. "
-                                f"Lien : {request.build_absolute_uri('/connexion/')} "
+                                f"Lien : {request.build_absolute_uri(reverse('connexion-formateur'))} "
                                 f"Identifiant : {email}. Mot de passe provisoire : {password}. "
                                 "Connectez-vous puis changez-le immédiatement."
                             )
@@ -1610,7 +2310,7 @@ def admin_formateur_detail(request, pk=1):
     formations = Formation.objects.all().order_by("nom")
     form_data = request.session.pop(f"formateur_profile_data_{pk}", None)
     access_to_share = request.session.pop(f"formateur_profile_access_{pk}", None)
-    return render(request, "admin/formateur_detail.html", {
+    return render(request, "administration/formateur_detail.html", {
         "formateur": formateur,
         "formations": formations,
         "form_data": form_data,
@@ -1618,15 +2318,17 @@ def admin_formateur_detail(request, pk=1):
     })
 
 
+@admin_requis
 def admin_vagues(request):
     vagues = ConfigVague.objects.annotate(
-        nb_apprenants=Count("candidats", filter=Q(candidats__statut="accepte"), distinct=True),
+        nb_etudiants=Count("candidats", filter=Q(candidats__statut="accepte"), distinct=True),
         nb_archives=Count("archive", distinct=True),
     ).order_by("-date_debut")
-    return render(request, 'admin/vagues.html', {"vagues": vagues})
+    return render(request, 'administration/vagues.html', {"vagues": vagues})
 
 
-def admin_vague_archive(request, pk=1):
+@admin_requis
+def admin_vague_archive(request, pk):
     vague = get_object_or_404(ConfigVague, pk=pk)
 
     action = request.POST.get("action") if request.method == "POST" else ""
@@ -1685,17 +2387,37 @@ def admin_vague_archive(request, pk=1):
                 messages.info(request, "Cette vague est déjà archivée.")
         return redirect("admin_vague_archive", pk=vague.pk)
 
-    apprenants = Candidats.objects.filter(
-        configVague=vague,
-        statut="accepte",
-    ).select_related(
-        "etudiant", "formation"
-    ).order_by("formation__nom", "etudiant__nom", "etudiant__prenom")
+    # Étudiants de la vague = candidatures acceptées, regroupées par formation.
+    # On calcule en une requête le total payé par chaque inscription.
+    apprenants = list(
+        Candidats.objects.filter(configVague=vague, statut="accepte")
+        .select_related("etudiant", "formation")
+        .prefetch_related("resultat")
+        .annotate(total_paye=Coalesce(Sum("paiements__montant"), Decimal("0")))
+        .order_by("formation__nom", "etudiant__nom", "etudiant__prenom")
+    )
+    # Ajoute à chaque inscription son résumé financier et son résultat,
+    # pour l'affichage direct dans le tableau.
+    for inscription in apprenants:
+        inscription.finances = _situation_financiere(inscription, inscription.total_paye)
+        resultats = list(inscription.resultat.all())
+        inscription.dernier_resultat = resultats[-1] if resultats else None
+
+    # Indicateurs globaux de la vague.
+    total_encaisse = sum((i.finances["total_paye"] for i in apprenants), Decimal("0"))
+    total_attendu = sum((i.finances["prix"] for i in apprenants), Decimal("0"))
+    nb_admis = sum(1 for i in apprenants if i.dernier_resultat and i.dernier_resultat.decision == "admis")
+    nb_attestations = sum(1 for i in apprenants if i.dernier_resultat and i.dernier_resultat.attestation)
+
     archive = Archive.objects.filter(configVague=vague).order_by("-date").first()
-    return render(request, "admin/vague_archive.html", {
+    return render(request, "administration/vague_archive.html", {
         "vague": vague,
-        "apprenants": apprenants,
-        "nb_apprenants": apprenants.count(),
+        "etudiants": apprenants,
+        "nb_etudiants": len(apprenants),
+        "total_encaisse": total_encaisse,
+        "total_reste": max(total_attendu - total_encaisse, Decimal("0")),
+        "nb_admis": nb_admis,
+        "nb_attestations": nb_attestations,
         "nb_formations": Formation.objects.filter(
             candidats__configVague=vague,
             candidats__statut="accepte",
@@ -1708,8 +2430,208 @@ def admin_vague_archive(request, pk=1):
     })
 
 
-def admin_parametres(request):
-    return render(request, 'admin/parametres.html')
+def _situation_financiere(candidat, total_paye):
+    """Calcule le résumé financier d'une inscription.
+
+    Retourne un dictionnaire avec le prix de la formation, le montant payé,
+    le reste à payer et le pourcentage réglé (plafonné à 100 %).
+    """
+    prix = candidat.formation.prix or Decimal("0")
+    total_paye = total_paye or Decimal("0")
+    reste = max(prix - total_paye, Decimal("0"))
+    pourcentage = min(round(total_paye * 100 / prix), 100) if prix else 100
+    return {
+        "prix": prix,
+        "total_paye": total_paye,
+        "reste": reste,
+        "pourcentage": pourcentage,
+        "solde": reste == 0,
+    }
+
+
+@admin_requis
+def admin_vague_inscription(request, pk, candidat_pk):
+    """Dossier complet d'un apprenant pour une vague donnée.
+
+    Regroupe sur une seule page : l'identité de l'étudiant, sa candidature,
+    sa situation financière (tranches et paiements), sa progression dans
+    les cours, son résultat et son attestation.
+    Seules les candidatures acceptées de la vague sont consultables ici.
+    """
+    vague = get_object_or_404(ConfigVague, pk=pk)
+    candidat = get_object_or_404(
+        Candidats.objects.select_related("etudiant", "formation"),
+        pk=candidat_pk,
+        configVague=vague,
+        statut="accepte",
+    )
+    etudiant = candidat.etudiant
+    formation = candidat.formation
+
+    # --- Finances ------------------------------------------------------------
+    paiements = candidat.paiements.order_by("date")
+    total_paye = paiements.aggregate(total=Sum("montant"))["total"]
+    finances = _situation_financiere(candidat, total_paye)
+
+    # Découpage du prix en tranches arrondies au centime ; la dernière tranche
+    # reprend le reste pour que la somme des tranches égale exactement le prix.
+    # Chaque tranche indique ce qui a déjà été versé pour elle (d'après le
+    # numéro de tranche enregistré sur les paiements).
+    nb_tranches = formation.nb_tranches or 1
+    montant_base = (finances["prix"] / nb_tranches).quantize(Decimal("0.01"), rounding=ROUND_DOWN)
+    montant_derniere = finances["prix"] - montant_base * (nb_tranches - 1)
+    payes_par_tranche = {
+        ligne["tranche"]: ligne["total"]
+        for ligne in paiements.values("tranche").annotate(total=Sum("montant"))
+    }
+    tranches = []
+    for numero in range(1, nb_tranches + 1):
+        montant_tranche = montant_derniere if numero == nb_tranches else montant_base
+        verse = payes_par_tranche.get(numero, Decimal("0"))
+        if verse >= montant_tranche and montant_tranche > 0:
+            etat = "payee"
+        elif verse > 0:
+            etat = "partielle"
+        else:
+            etat = "a_payer"
+        tranches.append({"numero": numero, "montant": montant_tranche, "verse": verse, "etat": etat})
+
+    # --- Progression pédagogique ---------------------------------------------
+    nb_chapitres = Chapitres.objects.filter(
+        modules__formation=formation, modules__est_active=True, est_active=True
+    ).count()
+    nb_termines = ChapitreTermine.objects.filter(
+        candidats=candidat, chapitre__est_active=True
+    ).count()
+    progression = min(round(nb_termines * 100 / nb_chapitres), 100) if nb_chapitres else 0
+
+    # --- Résultat et attestation ---------------------------------------------
+    resultat = candidat.resultat.order_by("-pk").first()
+
+    # Autres formations suivies par le même étudiant dans cette vague.
+    autres_inscriptions = Candidats.objects.filter(
+        etudiant=etudiant, configVague=vague, statut="accepte"
+    ).exclude(pk=candidat.pk).select_related("formation")
+
+    return render(request, "administration/vague_inscription.html", {
+        "vague": vague,
+        "candidat": candidat,
+        "etudiant": etudiant,
+        "formation": formation,
+        "paiements": paiements,
+        "finances": finances,
+        "tranches": tranches,
+        "nb_chapitres": nb_chapitres,
+        "nb_termines": nb_termines,
+        "progression": progression,
+        "resultat": resultat,
+        "formateurs": formation.formateurs.filter(actif=True),
+        "autres_inscriptions": autres_inscriptions,
+        "est_archivee": Archive.objects.filter(configVague=vague).exists(),
+    })
+
+
+@admin_requis
+def admin_mon_compte(request):
+    """Modifie les informations du compte administrateur (table auth_user)."""
+    user = request.user
+    User = get_user_model()
+    infos = {
+        "username": user.username,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "email": user.email,
+    }
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        if action == "infos":
+            infos = {cle: request.POST.get(cle, "").strip() for cle in infos}
+            infos["email"] = infos["email"].lower()
+            erreurs = []
+            autres = User.objects.exclude(pk=user.pk)
+            if not infos["username"]:
+                erreurs.append("Le nom d’utilisateur est obligatoire.")
+            elif autres.filter(username__iexact=infos["username"]).exists():
+                erreurs.append("Ce nom d’utilisateur est déjà utilisé.")
+            if infos["email"]:
+                try:
+                    validate_email(infos["email"])
+                except ValidationError:
+                    erreurs.append("L’adresse e-mail n’est pas valide.")
+                else:
+                    if autres.filter(email__iexact=infos["email"]).exists():
+                        erreurs.append("Cette adresse e-mail est déjà utilisée par un autre compte.")
+            if erreurs:
+                for erreur in erreurs:
+                    messages.error(request, erreur)
+            else:
+                for cle, valeur in infos.items():
+                    setattr(user, cle, valeur)
+                user.save(update_fields=list(infos))
+                messages.success(request, "Vos informations ont été mises à jour.")
+                return redirect("admin_mon_compte")
+
+        elif action == "mot_de_passe":
+            form = PasswordChangeForm(user, request.POST)
+            if form.is_valid():
+                form.save()
+                update_session_auth_hash(request, form.user)
+                messages.success(request, "Votre mot de passe a été modifié.")
+                return redirect("admin_mon_compte")
+            for liste in form.errors.values():
+                for erreur in liste:
+                    messages.error(request, erreur)
+
+        elif action == "ajouter_admin":
+            nouvel_admin = {cle: request.POST.get(f"nouveau_{cle}", "").strip() for cle in infos}
+            nouvel_admin["email"] = nouvel_admin["email"].lower()
+            password1 = request.POST.get("nouveau_password1", "")
+            password2 = request.POST.get("nouveau_password2", "")
+            erreurs = []
+            # L'administrateur connecté doit confirmer avec son propre mot de passe.
+            if not user.check_password(request.POST.get("mot_de_passe_actuel", "")):
+                erreurs.append("Votre mot de passe actuel est incorrect. L’administrateur n’a pas été créé.")
+            if not nouvel_admin["username"]:
+                erreurs.append("Le nom d’utilisateur du nouvel administrateur est obligatoire.")
+            elif User.objects.filter(username__iexact=nouvel_admin["username"]).exists():
+                erreurs.append("Ce nom d’utilisateur est déjà utilisé.")
+            if nouvel_admin["email"]:
+                try:
+                    validate_email(nouvel_admin["email"])
+                except ValidationError:
+                    erreurs.append("L’adresse e-mail du nouvel administrateur n’est pas valide.")
+                else:
+                    if User.objects.filter(email__iexact=nouvel_admin["email"]).exists():
+                        erreurs.append("Cette adresse e-mail est déjà utilisée par un autre compte.")
+            if password1 != password2:
+                erreurs.append("Les deux mots de passe du nouvel administrateur ne correspondent pas.")
+            else:
+                try:
+                    validate_password(password1, User(username=nouvel_admin["username"], email=nouvel_admin["email"]))
+                except ValidationError as exc:
+                    erreurs.extend(exc.messages)
+
+            if erreurs:
+                for erreur in erreurs:
+                    messages.error(request, erreur)
+            else:
+                User.objects.create_superuser(
+                    username=nouvel_admin["username"],
+                    email=nouvel_admin["email"],
+                    password=password1,
+                    first_name=nouvel_admin["first_name"],
+                    last_name=nouvel_admin["last_name"],
+                )
+                messages.success(request, f"L’administrateur « {nouvel_admin['username']} » a été créé.")
+                return redirect("admin_mon_compte")
+
+    administrateurs = User.objects.filter(is_superuser=True).order_by("username")
+    return render(request, "administration/mon_compte.html", {
+        "infos": infos,
+        "administrateurs": administrateurs,
+    })
 
 
 # -----------------------------------------------------------------------------
