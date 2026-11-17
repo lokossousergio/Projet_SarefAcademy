@@ -119,107 +119,21 @@
               </article>
             </div>
             {% empty %}
-            <div class="col-md-6">
-              <article class="s-card course-card h-100 overflow-hidden">
-                <div
-                  class="course-cover learner-course-cover c1"
-                  style="
-                    --course-cover-image: url('{% static 'img/apercu-cours.jpg' %}');
-                  "
-                >
-                  <span class="course-cover-icon">
-                    <i class="bi bi-code-slash"></i>
-                  </span>
-                  <span class="course-cover-title">Développement Web</span>
-                  <span class="s-badge b-actif">Accès ouvert</span>
-                  <small>Parcours numérique</small>
-                </div>
-                <div class="course-body d-flex flex-column">
-                  <div class="course-kicker">
-                    <i class="bi bi-stars"></i>
-                    Formation active
-                  </div>
-                  <h3 class="h5 fw-bold mt-2">Développement Web</h3>
-                  <p class="small text-secondary flex-grow-1">
-                    Découvrez les bases du Web, HTML, CSS et JavaScript à
-                    travers un programme en modules.
-                  </p>
-                  <div class="course-meta mb-3">
-                    <span>
-                      <i class="bi bi-clock"></i>
-                      4 mois
-                    </span>
-                    <span>
-                      <i class="bi bi-journals"></i>
-                      3 modules
-                    </span>
-                    <span>
-                      <i class="bi bi-cash"></i>
-                      120 000 FCFA
-                    </span>
-                  </div>
-                  <a
-                    class="btn-s btn-primary-s w-100"
-                    href="{% url 'apprenant_formation_detail' 1 %}"
-                  >
-                    Voir les modules
-                    <i class="bi bi-arrow-right ms-1"></i>
-                  </a>
-                </div>
-              </article>
-            </div>
-            <div class="col-md-6">
-              <article class="s-card course-card h-100 overflow-hidden">
-                <div
-                  class="course-cover learner-course-cover c3"
-                  style="
-                    --course-cover-image: url('{% static 'img/apercu-cours.jpg' %}');
-                  "
-                >
-                  <span class="course-cover-icon">
-                    <i class="bi bi-megaphone"></i>
-                  </span>
-                  <span class="course-cover-title">Marketing digital</span>
-                  <span class="s-badge b-actif">Accès ouvert</span>
-                  <small>Parcours numérique</small>
-                </div>
-                <div class="course-body d-flex flex-column">
-                  <div class="course-kicker">
-                    <i class="bi bi-stars"></i>
-                    Formation active
-                  </div>
-                  <h3 class="h5 fw-bold mt-2">Marketing digital</h3>
-                  <p class="small text-secondary flex-grow-1">
-                    Explorez la stratégie de contenu, les réseaux sociaux et la
-                    mesure des résultats.
-                  </p>
-                  <div class="course-meta mb-3">
-                    <span>
-                      <i class="bi bi-clock"></i>
-                      3 mois
-                    </span>
-                    <span>
-                      <i class="bi bi-journals"></i>
-                      3 modules
-                    </span>
-                    <span>
-                      <i class="bi bi-cash"></i>
-                      90 000 FCFA
-                    </span>
-                  </div>
-                  <a
-                    class="btn-s btn-primary-s w-100"
-                    href="{% url 'apprenant_formation_detail' 2 %}"
-                  >
-                    Voir les modules
-                    <i class="bi bi-arrow-right ms-1"></i>
-                  </a>
-                </div>
-              </article>
+            <div class="col-12">
+              <div class="s-card s-card-pad text-center py-4">
+                <i class="bi bi-mortarboard fs-2 text-muted d-block mb-2"></i>
+                <p class="mb-1 fw-semibold text-dark">Vous n'avez aucune formation inscrite</p>
+                <p class="small text-secondary mb-3">Vous n'avez pas encore postulé à une formation chez SAREF Academy.</p>
+                <a href="#formations-disponibles" class="btn-s btn-primary-s btn-sm-s">
+                  <i class="bi bi-arrow-down-short me-1"></i>
+                  Voir les formations disponibles
+                </a>
+              </div>
             </div>
             {% endfor %}
           </div>
           <div
+            id="formations-disponibles"
             class="d-flex justify-content-between align-items-end gap-3 mb-3"
           >
             <div>

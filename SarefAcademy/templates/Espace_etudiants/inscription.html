@@ -208,6 +208,11 @@
               </p>
               <form class="row g-3" method="post" novalidate>
                 {% csrf_token %}
+                {% if next %}
+                <input type="hidden" name="next" value="{{ next }}" />
+                {% elif request.GET.next %}
+                <input type="hidden" name="next" value="{{ request.GET.next }}" />
+                {% endif %}
                 <div class="col-sm-6">
                   <label for="nom" class="form-label fw-semibold">
                     Nom de famille
@@ -313,7 +318,7 @@
               <p class="text-center text-secondary mt-4 mb-0">
                 Vous avez déjà un compte ?
                 <a
-                  href="{% url 'connexion-etudiant' %}"
+                  href="{% url 'connexion-etudiant' %}{% if next %}?next={{ next|urlencode }}{% elif request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}"
                   class="fw-semibold text-decoration-none"
                 >
                   Se connecter

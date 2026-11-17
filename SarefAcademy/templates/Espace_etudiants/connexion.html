@@ -208,6 +208,11 @@
               </p>
               <form class="needs-validation" method="post" novalidate>
                 {% csrf_token %}
+                {% if next %}
+                <input type="hidden" name="next" value="{{ next }}" />
+                {% elif request.GET.next %}
+                <input type="hidden" name="next" value="{{ request.GET.next }}" />
+                {% endif %}
                 <div class="mb-3">
                   <label for="email" class="form-label fw-semibold">
                     Adresse e-mail
@@ -276,7 +281,7 @@
               <p class="text-center text-secondary mt-4 mb-0">
                 Vous n’avez pas encore de compte ?
                 <a
-                  href="{% url 'inscription-etudiant' %}"
+                  href="{% url 'inscription-etudiant' %}{% if next %}?next={{ next|urlencode }}{% elif request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}"
                   class="fw-semibold text-decoration-none"
                 >
                   Créer un compte

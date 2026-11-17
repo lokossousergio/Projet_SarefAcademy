@@ -75,6 +75,14 @@ document.addEventListener("DOMContentLoaded", () => {
       form.elements.email.value || "—";
     document.querySelector("#review-phone").textContent =
       form.elements.telephone.value || "—";
+    const niveauSelect = document.getElementById("candidate-niveau") || form.elements.niveau_etudes;
+    const reviewNiveau = document.querySelector("#review-niveau");
+    if (reviewNiveau && niveauSelect) {
+      if (niveauSelect.value) {
+        const selectedOption = niveauSelect.options[niveauSelect.selectedIndex];
+        reviewNiveau.textContent = selectedOption ? selectedOption.text.trim() : niveauSelect.value;
+      }
+    }
     document.querySelector("#review-cv").textContent =
       form.elements.cv.files[0]?.name || "À joindre";
   };
@@ -88,6 +96,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     updateSummary();
   });
+  const niveauEl = document.getElementById("candidate-niveau");
+  if (niveauEl) {
+    niveauEl.addEventListener("change", updateSummary);
+  }
   next.addEventListener("click", () => {
     if (validateStep(currentStep)) {
       updateSummary();

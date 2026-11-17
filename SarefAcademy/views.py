@@ -12,6 +12,8 @@ from django.db.models import Count, Q, Sum
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
 import csv
 import secrets
 import re
@@ -50,14 +52,20 @@ def apprenant_requis(view):
     def wrapper(request, *args, **kwargs):
         etudiant_id = request.session.get("etudiant_id")
         if not etudiant_id:
-            messages.error(request, "Connectez-vous pour accéder à votre espace apprenant.")
-            return redirect("connexion-etudiant")
+            next_url = request.get_full_path()
+            if "candidature" in next_url:
+                messages.info(request, "Il faut avoir un compte étudiant avant de postuler.")
+            else:
+                messages.error(request, "Connectez-vous pour accéder à votre espace apprenant.")
+            login_url = reverse("connexion-etudiant")
+            return redirect(f"{login_url}?next={quote(next_url)}")
         try:
             request.etudiant = Etudiants.objects.get(pk=etudiant_id)
         except Etudiants.DoesNotExist:
             request.session.flush()
             messages.error(request, "Votre session a expiré. Veuillez vous reconnecter.")
-            return redirect("connexion-etudiant")
+            login_url = reverse("connexion-etudiant")
+            return redirect(f"{login_url}?next={quote(request.get_full_path())}")
         return view(request, *args, **kwargs)
     return wrapper
 
@@ -196,6 +204,7 @@ def candidature_formation(request):
         donnees = {
             "formation": request.POST.get("formation", "").strip(),
             "motivation": request.POST.get("motivation", "").strip(),
+            "niveau_etudes": request.POST.get("niveau_etudes", "").strip(),
         }
         cv = request.FILES.get("cv")
         erreurs = []
@@ -217,13 +226,17 @@ def candidature_formation(request):
             if not formation:
                 erreurs.append("Cette formation n’est pas disponible.")
 
-        # 3. Vérification de la motivation
+        # 3. Vérification du niveau d'études
+        if not donnees["niveau_etudes"]:
+            erreurs.append("Veuillez sélectionner votre niveau d’études.")
+
+        # 4. Vérification de la motivation
         if len(donnees["motivation"]) < 40:
             erreurs.append("Présentez votre motivation en 40 caractères minimum.")
         elif len(donnees["motivation"]) > 255:
             erreurs.append("Votre motivation ne doit pas dépasser 255 caractères.")
 
-        # 4. Vérification du CV (PDF, max 5 Mo)
+        # 5. Vérification du CV (PDF, max 5 Mo)
         if not cv:
             erreurs.append("Ajoutez votre CV au format PDF.")
         elif cv.size > 5 * 1024 * 1024:
@@ -234,7 +247,7 @@ def candidature_formation(request):
         ):
             erreurs.append("Le CV doit être un fichier PDF.")
 
-        # 5. Vérification si déjà postulé à cette formation
+        # 6. Vérification si déjà postulé à cette formation
         if formation and Candidats.objects.filter(
             etudiant=etudiant,
             formation=formation,
@@ -247,7 +260,7 @@ def candidature_formation(request):
             request.session["candidature_form_data"] = donnees
             return redirect("candidature-formation")
 
-        # 6. Enregistrement dans la table Candidats
+        # 7. Enregistrement dans la table Candidats et mise à jour niveau_etudes
         try:
             with transaction.atomic():
                 vague_active = ConfigVague.objects.select_for_update().filter(
@@ -262,6 +275,11 @@ def candidature_formation(request):
                     messages.error(request, "Vous avez déjà postulé à cette formation.")
                     request.session["candidature_form_data"] = donnees
                     return redirect("candidature-formation")
+
+                # Mise à jour du niveau d'études de l'étudiant
+                if donnees["niveau_etudes"]:
+                    etudiant.niveau_etudes = donnees["niveau_etudes"]
+                    etudiant.save(update_fields=["niveau_etudes"])
 
                 Candidats.objects.create(
                     configVague=vague_active,
@@ -284,35 +302,43 @@ def candidature_formation(request):
     candidatures_existantes = Candidats.objects.filter(
         etudiant=etudiant
     ).select_related("formation", "configVague")
+    formations_postulees_ids = list(candidatures_existantes.values_list("formation_id", flat=True))
     formations_deja_choisies = Formation.objects.filter(
-        candidats__in=candidatures_existantes
-    ).distinct().order_by("nom")
+        pk__in=formations_postulees_ids
+    ).order_by("nom")
     formations_disponibles = Formation.objects.filter(
         statut="active"
     ).exclude(
-        pk__in=formations_deja_choisies.values("pk")
+        pk__in=formations_postulees_ids
     ).order_by("nom")
 
     toutes_les_formations = Formation.objects.filter(statut="active").order_by("nom")
+    toutes_postulees = len(toutes_les_formations) > 0 and len(formations_disponibles) == 0
 
     if not vague_courante:
         messages.error(request, "Aucune vague n’est en cours. Les candidatures sont fermées pour le moment.")
-    elif not formations_disponibles:
-        messages.info(request, "Vous avez déjà postulé à toutes les formations actuellement ouvertes.")
 
     return render(request, "bourse_postule/candidature.html", {
         "etudiant": etudiant,
         "vague_courante": vague_courante,
         "toutes_les_formations": toutes_les_formations,
+        "formations_postulees_ids": formations_postulees_ids,
         "formations_disponibles": formations_disponibles,
         "formations_deja_choisies": formations_deja_choisies,
+        "toutes_postulees": toutes_postulees,
         "donnees": donnees,
     })
 
 
 def connexion_etudiant(request):
+    next_url = request.POST.get("next") or request.GET.get("next")
+    if not next_url or not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+        next_target = None
+    else:
+        next_target = next_url
+
     if request.session.get("etudiant_id"):
-        return redirect("apprenant_dashboard")
+        return redirect(next_target or "apprenant_dashboard")
 
     if request.method == "POST":
         email = request.POST.get("email", "").strip().lower()
@@ -323,16 +349,24 @@ def connexion_etudiant(request):
         if etudiant and etudiant.mot_de_passe and check_password(password, etudiant.mot_de_passe):
             request.session.cycle_key()
             request.session["etudiant_id"] = etudiant.pk
+            if next_target:
+                return redirect(next_target)
             return redirect("apprenant_dashboard")
 
         messages.error(request, "Adresse e-mail ou mot de passe incorrect.")
 
-    return render(request, "Espace_etudiants/connexion.html")
+    return render(request, "Espace_etudiants/connexion.html", {"next": next_target})
 
 
 def inscription_etudiant(request):
+    next_url = request.POST.get("next") or request.GET.get("next")
+    if not next_url or not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+        next_target = None
+    else:
+        next_target = next_url
+
     if request.session.get("etudiant_id"):
-        return redirect("apprenant_dashboard")
+        return redirect(next_target or "apprenant_dashboard")
 
     if request.method == "POST":
         nom = request.POST.get("nom", "").strip()
@@ -340,6 +374,8 @@ def inscription_etudiant(request):
         email = request.POST.get("email", "").strip().lower()
         telephone = request.POST.get("telephone", "").strip()
         password = request.POST.get("password", "")
+        niveau_etudes = request.POST.get("niveau_etudes", "").strip() or "Non renseigné"
+
         # Vérifie l'e-mail déjà utilisé et la règle minimale du mot de passe.
         if Etudiants.objects.filter(email__iexact=email).exists():
             messages.error(request, "Cette adresse e-mail est déjà utilisée.")
@@ -351,15 +387,17 @@ def inscription_etudiant(request):
                 prenom=prenom,
                 email=email,
                 telephone=telephone,
-                niveau_etudes="Non renseigné",
+                niveau_etudes=niveau_etudes,
                 mot_de_passe=make_password(password),
             )
             request.session.cycle_key()
             request.session["etudiant_id"] = etudiant.pk
             messages.success(request, "Votre compte a été créé. Bienvenue sur Saref Academy !")
+            if next_target:
+                return redirect(next_target)
             return redirect("apprenant_dashboard")
 
-    return render(request, "Espace_etudiants/inscription.html")
+    return render(request, "Espace_etudiants/inscription.html", {"next": next_target})
 
 
 def deconnexion_etudiant(request):

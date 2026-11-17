@@ -183,13 +183,23 @@
                     <label class="s-label" for="profileLevel">
                       Niveau d’études
                     </label>
-                    <input
-                      class="s-input profile-field"
+                    <select
+                      class="s-input form-select profile-field"
                       id="profileLevel"
                       name="niveau_etudes"
-                      value="{{ etudiant.niveau_etudes }}"
-                      readonly
-                    />
+                      disabled
+                    >
+                      <option value="" disabled {% if not etudiant.niveau_etudes or etudiant.niveau_etudes == "Non renseigné" %}selected{% endif %}>
+                        Non renseigné
+                      </option>
+                      <option value="Baccalauréat" {% if etudiant.niveau_etudes == "Baccalauréat" or etudiant.niveau_etudes == "Bac" %}selected{% endif %}>Baccalauréat (Bac)</option>
+                      <option value="Bac +1" {% if etudiant.niveau_etudes == "Bac +1" %}selected{% endif %}>Bac +1</option>
+                      <option value="Bac +2" {% if etudiant.niveau_etudes == "Bac +2" or etudiant.niveau_etudes == "Bac +2 (BTS, DUT...)" %}selected{% endif %}>Bac +2 (BTS, DUT, DEUG...)</option>
+                      <option value="Licence (Bac +3)" {% if etudiant.niveau_etudes == "Licence (Bac +3)" or etudiant.niveau_etudes == "Licence" or etudiant.niveau_etudes == "Bac +3" %}selected{% endif %}>Licence / Bachelor (Bac +3)</option>
+                      <option value="Master (Bac +5)" {% if etudiant.niveau_etudes == "Master (Bac +5)" or etudiant.niveau_etudes == "Master" or etudiant.niveau_etudes == "Bac +5" %}selected{% endif %}>Master / Diplôme d'ingénieur (Bac +5)</option>
+                      <option value="Doctorat (Bac +8)" {% if etudiant.niveau_etudes == "Doctorat (Bac +8)" or etudiant.niveau_etudes == "Doctorat" %}selected{% endif %}>Doctorat (Bac +8)</option>
+                      <option value="Autre" {% if etudiant.niveau_etudes == "Autre" %}selected{% endif %}>Autre</option>
+                    </select>
                   </div>
                   <div class="col-12 d-none" id="profileActions">
                     <div class="d-flex justify-content-end gap-2">
@@ -358,7 +368,11 @@
 
         function setEditing(value) {
           fields.forEach(function (field) {
-            if (!field.disabled) field.readOnly = !value;
+            if (field.tagName === "SELECT") {
+              field.disabled = !value;
+            } else {
+              field.readOnly = !value;
+            }
           });
           actions.classList.toggle("d-none", !value);
           edit.classList.toggle("d-none", value);
@@ -419,6 +433,9 @@
 
         // Sécurité formulaire avant soumission
         form.addEventListener("submit", function (event) {
+          fields.forEach(function (field) {
+            field.disabled = false;
+          });
           if (photoInput && photoInput.files[0]) {
             var file = photoInput.files[0];
             if (!TYPES_AUTORISES.includes(file.type) || file.size > TAILLE_MAX) {

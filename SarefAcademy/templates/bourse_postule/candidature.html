@@ -42,7 +42,7 @@
       rel="stylesheet"
       href="{% static 'css/candidature_formation.css' %}"
     />
-    <script src="{% static 'js/candidature_formation.js' %}" defer></script>
+    <script src="{% static 'js/candidature_formation.js' %}?v=2" defer></script>
   </head>
   <body id="top" class="formation-page application-page">
     {% include "partials/feedback_modal.html" %}
@@ -123,7 +123,7 @@
         </li>
       </ol>
       <div class="content-grid application-content-grid">
-        {% if vague_courante and formations_disponibles %}
+        {% if vague_courante %}
         <form class="application-form" method="post" action="{% url 'candidature-formation' %}" enctype="multipart/form-data" novalidate>
           {% csrf_token %}
           <!-- Étape 1 -->
@@ -139,26 +139,57 @@
                 <p>Une seule formation peut être suivie à la fois.</p>
               </div>
             </div>
+
+            {% if toutes_postulees %}
+            <div class="alert alert-info py-3 px-3 mb-4 d-flex align-items-center gap-3" role="alert" style="border-radius: 0.75rem;">
+              <i class="bi bi-info-circle-fill fs-4 text-primary"></i>
+              <div>
+                <strong>Vous avez déjà candidaté à toutes les formations actuellement ouvertes.</strong>
+                <div class="small text-secondary">Vos candidatures sont en cours d’examen. Vous pouvez suivre leur statut depuis votre tableau de bord.</div>
+              </div>
+            </div>
+            {% endif %}
+
             <fieldset class="course-grid">
               <legend class="visually-hidden">Formation souhaitée</legend>
-              {% for formation in formations_disponibles %}
-              <label class="course-option">
-                <input
-                  type="radio"
-                  name="formation"
-                  value="{{ formation.pk }}"
-                  required
-                  {% if donnees.formation == formation.pk|stringformat:"s" %}checked{% endif %}
-                />
-                <span class="course-icon" aria-hidden="true">
-                  <i class="bi bi-mortarboard"></i>
-                </span>
-                <span class="course-label">{{ formation.nom }}</span>
-                <span class="course-hint">{{ formation.duree }} mois · {{ formation.nb_tranches }} tranche(s)</span>
-                <span class="course-check" aria-hidden="true">
-                  <i class="bi bi-check-lg"></i>
-                </span>
-              </label>
+              {% for formation in toutes_les_formations %}
+                {% if formation.pk in formations_postulees_ids %}
+                <label class="course-option is-already-applied" title="Vous avez déjà candidaté à cette formation">
+                  <input
+                    type="radio"
+                    name="formation"
+                    value="{{ formation.pk }}"
+                    disabled
+                  />
+                  <span class="course-icon" aria-hidden="true">
+                    <i class="bi bi-mortarboard"></i>
+                  </span>
+                  <span class="course-label">{{ formation.nom }}</span>
+                  <span class="course-check" aria-hidden="true">
+                    <i class="bi bi-check2"></i>
+                  </span>
+                  <span class="course-badge-applied">
+                    <i class="bi bi-check-circle-fill me-1"></i>Déjà candidaté
+                  </span>
+                </label>
+                {% else %}
+                <label class="course-option">
+                  <input
+                    type="radio"
+                    name="formation"
+                    value="{{ formation.pk }}"
+                    required
+                    {% if donnees.formation == formation.pk|stringformat:"s" %}checked{% endif %}
+                  />
+                  <span class="course-icon" aria-hidden="true">
+                    <i class="bi bi-mortarboard"></i>
+                  </span>
+                  <span class="course-label">{{ formation.nom }}</span>
+                  <span class="course-check" aria-hidden="true">
+                    <i class="bi bi-check-lg"></i>
+                  </span>
+                </label>
+                {% endif %}
               {% endfor %}
             </fieldset>
           </section>
@@ -197,6 +228,34 @@
               value="{{ etudiant.telephone }}"
             />
             <div class="fields-grid">
+              <div class="field field-wide">
+                <label for="candidate-niveau">
+                  Niveau d’études
+                  <span>*</span>
+                </label>
+                <select
+                  id="candidate-niveau"
+                  name="niveau_etudes"
+                  class="form-select"
+                  required
+                >
+                  <option value="" disabled {% if not etudiant.niveau_etudes or etudiant.niveau_etudes == "Non renseigné" and not donnees.niveau_etudes %}selected{% endif %}>
+                    Sélectionnez votre niveau d’études…
+                  </option>
+                  {% with current_level=donnees.niveau_etudes|default:etudiant.niveau_etudes %}
+                  <option value="Baccalauréat" {% if current_level == "Baccalauréat" or current_level == "Bac" %}selected{% endif %}>Baccalauréat (Bac)</option>
+                  <option value="Bac +1" {% if current_level == "Bac +1" %}selected{% endif %}>Bac +1</option>
+                  <option value="Bac +2 (BTS, DUT...)" {% if current_level == "Bac +2 (BTS, DUT...)" or current_level == "Bac +2" %}selected{% endif %}>Bac +2 (BTS, DUT, DEUG...)</option>
+                  <option value="Licence (Bac +3)" {% if current_level == "Licence (Bac +3)" or current_level == "Licence" or current_level == "Bac +3" %}selected{% endif %}>Licence / Bachelor (Bac +3)</option>
+                  <option value="Master (Bac +5)" {% if current_level == "Master (Bac +5)" or current_level == "Master" or current_level == "Bac +5" %}selected{% endif %}>Master / Diplôme d'ingénieur (Bac +5)</option>
+                  <option value="Doctorat (Bac +8)" {% if current_level == "Doctorat (Bac +8)" or current_level == "Doctorat" %}selected{% endif %}>Doctorat (Bac +8)</option>
+                  <option value="Autre" {% if current_level == "Autre" %}selected{% endif %}>Autre</option>
+                  {% endwith %}
+                </select>
+                <small class="field-note">
+                  Indiquez votre dernier niveau d’études ou diplôme obtenu.
+                </small>
+              </div>
               <div class="field field-wide">
                 <label for="candidate-motivation">
                   Votre motivation
@@ -291,6 +350,10 @@
                 <dd id="review-phone">—</dd>
               </div>
               <div>
+                <dt>Niveau d’études</dt>
+                <dd id="review-niveau">{% if donnees.niveau_etudes %}{{ donnees.niveau_etudes }}{% elif etudiant.niveau_etudes and etudiant.niveau_etudes != "Non renseigné" %}{{ etudiant.niveau_etudes }}{% else %}—{% endif %}</dd>
+              </div>
+              <div>
                 <dt>CV</dt>
                 <dd id="review-cv">À joindre</dd>
               </div>
@@ -311,6 +374,12 @@
               Précédent
             </button>
             <span class="footer-spacer"></span>
+            {% if toutes_postulees %}
+            <a href="{% url 'apprenant_dashboard' %}" class="button button-primary">
+              <i class="bi bi-speedometer2 me-1"></i>
+              Accéder à mon tableau de bord
+            </a>
+            {% else %}
             <button class="button button-primary" type="button" data-next>
               Continuer
               <i class="bi bi-arrow-right" aria-hidden="true"></i>
@@ -323,17 +392,14 @@
             >
               Envoyer ma candidature
             </button>
+            {% endif %}
           </div>
           <p class="required-note">* Champs obligatoires</p>
         </form>
         {% else %}
         <div class="alert alert-warning" role="status">
-          <h2 class="h5">Candidature indisponible</h2>
-          {% if not vague_courante %}
-            Aucune vague n’est actuellement en cours. Les candidatures sont fermées.
-          {% else %}
-            Vous avez déjà postulé à toutes les formations actuellement ouvertes.
-          {% endif %}
+          <h2 class="h5">Candidatures fermées</h2>
+          Aucune vague n’est actuellement en cours. Les candidatures sont fermées pour le moment.
         </div>
         {% endif %}
       </div>
@@ -572,8 +638,7 @@
     display: grid;
     grid-template-columns: auto 1fr auto;
     grid-template-areas:
-      "icon label check"
-      "icon hint  check";
+      "icon label check";
     column-gap: 0.875rem;
     align-items: center;
     padding: 1rem;
@@ -655,6 +720,41 @@
     outline: 3px solid rgb(51 92 236 / 0.4);
     outline-offset: 2px;
   }
+  .formation-page .course-option.is-already-applied {
+    background: #f1f5f9 !important;
+    border-color: #cbd5e1 !important;
+    opacity: 0.68;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+    pointer-events: none;
+  }
+  .formation-page .course-option.is-already-applied .course-icon {
+    background: #e2e8f0;
+    color: #64748b;
+  }
+  .formation-page .course-option.is-already-applied .course-label {
+    color: #475569;
+  }
+  .formation-page .course-option.is-already-applied .course-hint {
+    color: #64748b;
+  }
+  .formation-page .course-option.is-already-applied .course-check {
+    background: #e2e8f0;
+    border-color: #94a3b8;
+    color: #475569;
+  }
+  .formation-page .course-badge-applied {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #334155;
+    background: #e2e8f0;
+    padding: 0.2rem 0.55rem;
+    border-radius: 9999px;
+    width: fit-content;
+    margin-top: 0.35rem;
+  }
 
   /* ===== CHAMPS ===== */
   .formation-page .fields-grid {
@@ -677,6 +777,7 @@
     color: var(--danger);
   }
   .formation-page .field input,
+  .formation-page .field select,
   .formation-page .field textarea {
     display: block;
     width: 100%;

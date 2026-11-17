@@ -93,42 +93,20 @@
                   </a>
                 </article>
                 {% empty %}
-                <article
-                  class="course-row border-top py-3 d-flex flex-wrap align-items-center gap-3"
-                >
-                  <span class="stat-icon">
-                    <i class="bi bi-code-slash"></i>
-                  </span>
-                  <div class="flex-grow-1">
-                    <b class="d-block">Développement Web</b>
-                    <small class="text-secondary">
-                      4 mois · 3 modules · 3 modules · ressources disponibles
-                    </small>
-                  </div>
-                  <a
-                    class="btn-s btn-primary-s btn-sm-s"
-                    href="{% url 'apprenant_formation_detail' 1 %}"
-                  >
-                    Ouvrir le programme
-                  </a>
-                </article>
-                <article
-                  class="course-row border-top py-3 d-flex flex-wrap align-items-center gap-3"
-                >
-                  <span class="stat-icon"><i class="bi bi-megaphone"></i></span>
-                  <div class="flex-grow-1">
-                    <b class="d-block">Marketing digital</b>
-                    <small class="text-secondary">
-                      3 mois · 3 modules · 3 modules · ressources disponibles
-                    </small>
-                  </div>
-                  <a
-                    class="btn-s btn-primary-s btn-sm-s"
-                    href="{% url 'apprenant_formation_detail' 2 %}"
-                  >
-                    Ouvrir le programme
-                  </a>
-                </article>
+                <div class="text-center py-4 text-secondary border-top">
+                  <i class="bi bi-mortarboard fs-2 text-muted d-block mb-2"></i>
+                  {% if candidatures %}
+                    <p class="mb-1 fw-semibold text-dark">Aucune formation active pour le moment</p>
+                    <p class="small text-secondary mb-0">Vos formations seront accessibles dès que votre candidature sera validée.</p>
+                  {% else %}
+                    <p class="mb-1 fw-semibold text-dark">Aucune candidature enregistrée</p>
+                    <p class="small text-secondary mb-3">Vous n'avez pas encore postulé à une formation.</p>
+                    <a href="{% url 'candidature-formation' %}" class="btn-s btn-primary-s btn-sm-s">
+                      <i class="bi bi-plus-circle me-1"></i>
+                      Découvrir les formations
+                    </a>
+                  {% endif %}
+                </div>
                 {% endfor %}
               </section>
               <section class="s-card overflow-hidden">
@@ -223,10 +201,10 @@
               <section class="s-card s-card-pad">
                 <span class="eyebrow-s">Mon profil</span>
                 <h2 class="s-card-title mt-1">
-                  {{ etudiant.prenom|default:'Aïcha' }} {{ etudiant.nom|default:'Kora' }}
+                  {{ etudiant.prenom }} {{ etudiant.nom }}
                 </h2>
                 <p class="small text-secondary mb-3">
-                  {{ etudiant.email|default:"aicha.kora@gmail.com" }}
+                  {{ etudiant.email }}
                   {% if etudiant.telephone %}<br />{{ etudiant.telephone }}{% endif %}
                   {% if etudiant.niveau_etudes %}<br />{{ etudiant.niveau_etudes }}{% endif %}
                 </p>
