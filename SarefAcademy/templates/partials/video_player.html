@@ -1,0 +1,25 @@
+{% comment %}
+  Lecteur vidéo commun (admin, formateur, étudiant) : la vidéo se lit sur le site.
+  Usage : {% include "partials/video_player.html" with video=chapitre.video titre=chapitre.nom %}
+  - video : résultat de Chapitres.video ({"type": "iframe"|"video", "src": ...})
+  - referrerpolicy : YouTube exige l'origine du site (sinon « Erreur 153 »),
+    alors que le site envoie par défaut « same-origin » qui la masque.
+{% endcomment %}
+{% if video %}
+<div class="ratio ratio-16x9 video-player">
+  {% if video.type == "video" %}
+  <video src="{{ video.src }}" controls preload="metadata" playsinline controlslist="nodownload" title="Vidéo : {{ titre }}">
+    Votre navigateur ne peut pas lire cette vidéo.
+  </video>
+  {% else %}
+  <iframe
+    src="{{ video.src }}"
+    title="Vidéo : {{ titre }}"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
+    loading="lazy"
+  ></iframe>
+  {% endif %}
+</div>
+{% endif %}

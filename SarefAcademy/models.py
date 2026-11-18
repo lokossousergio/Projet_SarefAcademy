@@ -88,6 +88,73 @@ class Modules(models.Model):
         return self.titre
 
 
+# -----------------------------------------------------------------------------
+# Vidéos des chapitres : transforme n'importe quel lien collé (YouTube, Vimeo,
+# Google Drive, Dailymotion ou fichier vidéo) en lecteur intégrable au site.
+# -----------------------------------------------------------------------------
+import re as _re
+from urllib.parse import parse_qs as _parse_qs, urlparse as _urlparse
+
+_EXTENSIONS_VIDEO = (".mp4", ".webm", ".ogg", ".ogv", ".mov", ".m4v")
+
+
+def lecteur_video(url):
+    """Retourne {"type": "iframe" | "video", "src": ...} pour lire la vidéo
+    directement sur le site, ou None si le lien est vide.
+
+    Exemples acceptés :
+      https://www.youtube.com/watch?v=ID  ·  https://youtu.be/ID  ·  /shorts/ID
+      https://vimeo.com/123456            ·  https://drive.google.com/file/d/ID/view
+      https://www.dailymotion.com/video/ID ·  https://exemple.com/cours.mp4
+    """
+    if not url:
+        return None
+    url = url.strip()
+    lien = _urlparse(url)
+    hote = (lien.netloc or "").lower().removeprefix("www.").removeprefix("m.")
+    chemin = lien.path or ""
+
+    # Fichier vidéo direct : lecteur HTML5 natif.
+    if chemin.lower().endswith(_EXTENSIONS_VIDEO):
+        return {"type": "video", "src": url}
+
+    # YouTube : on récupère l'identifiant de la vidéo quel que soit le format du lien.
+    if hote in ("youtube.com", "youtube-nocookie.com", "youtu.be", "music.youtube.com"):
+        video_id = None
+        if hote == "youtu.be":
+            video_id = chemin.strip("/").split("/")[0]
+        elif chemin == "/watch":
+            video_id = (_parse_qs(lien.query).get("v") or [None])[0]
+        else:
+            m = _re.match(r"^/(?:embed|shorts|live|v)/([^/?#]+)", chemin)
+            video_id = m.group(1) if m else None
+        if video_id and _re.fullmatch(r"[A-Za-z0-9_-]{6,20}", video_id):
+            # Domaine « nocookie » + rel=0 : pas de suggestions d'autres chaînes à la fin.
+            return {"type": "iframe", "src": f"https://www.youtube-nocookie.com/embed/{video_id}?rel=0&modestbranding=1&playsinline=1"}
+
+    # Vimeo : vimeo.com/123456 ou player.vimeo.com/video/123456
+    if hote in ("vimeo.com", "player.vimeo.com"):
+        m = _re.search(r"/(?:video/)?(\d+)", chemin)
+        if m:
+            return {"type": "iframe", "src": f"https://player.vimeo.com/video/{m.group(1)}"}
+
+    # Google Drive : /file/d/ID/view (ou ?id=ID) -> /file/d/ID/preview
+    if hote == "drive.google.com":
+        m = _re.search(r"/file/d/([^/]+)", chemin)
+        file_id = m.group(1) if m else (_parse_qs(lien.query).get("id") or [None])[0]
+        if file_id:
+            return {"type": "iframe", "src": f"https://drive.google.com/file/d/{file_id}/preview"}
+
+    # Dailymotion : /video/ID ou dai.ly/ID
+    if hote in ("dailymotion.com", "dai.ly"):
+        m = _re.search(r"(?:/video/|^/)([A-Za-z0-9]+)", chemin)
+        if m:
+            return {"type": "iframe", "src": f"https://www.dailymotion.com/embed/video/{m.group(1)}"}
+
+    # Autre lien : on tente de l'intégrer tel quel.
+    return {"type": "iframe", "src": url}
+
+
 class Chapitres(models.Model):
     """Un chapitre (leçon) d'un module : vidéo et/ou support PDF."""
 
@@ -106,6 +173,11 @@ class Chapitres(models.Model):
 
     def __str__(self):
         return self.nom
+
+    @property
+    def video(self):
+        """Lecteur prêt à afficher pour la vidéo du chapitre (voir lecteur_video)."""
+        return lecteur_video(self.support_video_url)
 
 
 class Etudiants(models.Model):

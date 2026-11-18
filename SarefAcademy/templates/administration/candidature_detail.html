@@ -318,14 +318,14 @@
     </div>
     {% if candidat.cv %}
     <div class="modal fade" id="cvDetailModal" tabindex="-1" aria-labelledby="cvDetailModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 950px;">
+      <div class="modal-dialog modal-xl modal-dialog-centered modal-fullscreen-md-down cv-modal-dialog">
         <div class="modal-content border-0 shadow">
-          <div class="modal-header">
+          <div class="modal-header cv-modal-head">
             <h5 class="modal-title h6 fw-bold m-0" id="cvDetailModalLabel">
               <i class="bi bi-file-earmark-pdf text-danger me-2"></i>
               CV de {{ candidat.etudiant.prenom }} {{ candidat.etudiant.nom }}
             </h5>
-            <div class="d-flex align-items-center gap-2 ms-auto me-3">
+            <div class="d-flex align-items-center gap-2 ms-auto me-3 cv-modal-actions">
               <a href="{{ candidat.cv.url }}" target="_blank" rel="noopener" class="btn-s btn-line-s btn-sm-s">
                 <i class="bi bi-box-arrow-up-right me-1"></i> Nouvel onglet
               </a>
@@ -335,7 +335,7 @@
             </div>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
           </div>
-          <div class="modal-body p-0" style="height: 80vh; background: #525659;">
+          <div class="modal-body p-0 cv-modal-body">
             <embed src="{{ candidat.cv.url }}" type="application/pdf" width="100%" height="100%" />
           </div>
         </div>

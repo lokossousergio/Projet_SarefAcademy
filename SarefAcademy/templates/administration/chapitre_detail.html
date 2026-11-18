@@ -104,23 +104,9 @@
                   </span>
                 </div>
                 {% if chapitre.support_video_url %}
-                <div class="ratio ratio-16x9 mb-3">
-                  <iframe
-                    class="content-frame"
-                    src="{{ chapitre.support_video_url }}"
-                    title="Vidéo : {{ chapitre.nom }}"
-                    allowfullscreen
-                    loading="lazy"
-                  ></iframe>
+                <div class="mb-3">
+                  {% include "partials/video_player.html" with video=chapitre.video titre=chapitre.nom %}
                 </div>
-                <a
-                  class="small"
-                  href="{{ chapitre.support_video_url }}"
-                  target="_blank"
-                  rel="noopener"
-                >
-                  Ouvrir la vidéo dans un nouvel onglet
-                </a>
                 {% else %}
                 <div class="chapter-state p-4 text-center mb-3">
                   <i class="bi bi-camera-video fs-3 text-primary"></i>
@@ -211,7 +197,7 @@
                     </div>
                     <div class="col-12">
                       <label class="form-label" for="support_video_url">
-                        Lien intégrable de la vidéo
+                        Lien de la vidéo
                       </label>
                       <input
                         class="form-control"
@@ -220,11 +206,10 @@
                         type="url"
                         maxlength="500"
                         value="{{ chapitre.support_video_url|default:'' }}"
-                        placeholder="https://…"
+                        placeholder="https://www.youtube.com/watch?v=…"
                       />
                       <div class="form-text">
-                        Utilisez un lien de type intégration (YouTube /embed ou
-                        Google Drive /preview) pour l’aperçu sur cette page.
+                        Collez simplement le lien de la vidéo (YouTube, Vimeo, Google Drive, Dailymotion ou fichier .mp4) : il est converti automatiquement et la vidéo se lit directement sur le site.
                       </div>
                     </div>
                     <div class="col-12">

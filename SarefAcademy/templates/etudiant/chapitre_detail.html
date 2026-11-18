@@ -109,24 +109,7 @@
                   </h2>
                   <span class="s-badge b-actif">Disponible</span>
                 </div>
-                <div class="ratio ratio-16x9">
-                  <iframe
-                    class="chapter-player"
-                    src="{{ chapitre.support_video_url }}"
-                    title="Vidéo : {{ chapitre.nom }}"
-                    allow="
-                      accelerometer;
-                      autoplay;
-                      clipboard-write;
-                      encrypted-media;
-                      gyroscope;
-                      picture-in-picture;
-                      web-share;
-                    "
-                    allowfullscreen
-                    loading="lazy"
-                  ></iframe>
-                </div>
+                {% include "partials/video_player.html" with video=chapitre.video titre=chapitre.nom %}
               </section>
               {% endif %} {% if chapitre.support_pdf %}
               <section class="s-card s-card-pad mb-4">
@@ -267,6 +250,7 @@
                   <iframe
                     class="chapter-player"
                     src="https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ"
+                    referrerpolicy="strict-origin-when-cross-origin"
                     title="Vidéo du chapitre"
                     allow="
                       accelerometer;

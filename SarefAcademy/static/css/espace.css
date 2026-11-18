@@ -704,7 +704,9 @@ a.chap:hover { background: var(--blue-25); color: var(--ink); padding-left: 26px
   .espace-admin .page-head,
   .espace-formateur .page-head { min-height: 174px; }
   .espace-admin [style*="position:sticky"],
-  .espace-formateur [style*="position:sticky"] { position: static !important; max-height: none; overflow: visible; }
+  .espace-admin [style*="position: sticky"],
+  .espace-formateur [style*="position:sticky"],
+  .espace-formateur [style*="position: sticky"] { position: static !important; max-height: none; overflow: visible; }
 }
 @media (max-width: 575.98px) {
   .espace-admin .page-head,
@@ -739,3 +741,80 @@ a.chap:hover { background: var(--blue-25); color: var(--ink); padding-left: 26px
 .ratio > iframe, .ratio > video { min-height: 0 !important; }
 /* Les boutons et badges des tableaux ne se coupent pas sur deux lignes. */
 .s-table .btn-s, .s-table .s-badge { white-space: nowrap; }
+
+/* -------------------------------------------------------------------------
+   Administration — responsive mobile
+   ------------------------------------------------------------------------- */
+/* Textes longs (motif, e-mails, noms de fichiers) : passent à la ligne au lieu de déborder. */
+.espace-admin .quote,
+.espace-admin .meta-grid b,
+.espace-admin .s-card h1,
+.espace-admin .text-secondary { overflow-wrap: anywhere; }
+
+/* Fenêtre du CV : 950 px max sur grand écran, plein écran sur mobile (voir modal-fullscreen-md-down). */
+@media (min-width: 768px) { .cv-modal-dialog { max-width: 950px; } }
+.cv-modal-body { height: 80vh; background: #525659; }
+@media (max-width: 767.98px) {
+  .cv-modal-body { height: auto; flex: 1 1 auto; }
+  .cv-modal-head { flex-wrap: wrap; gap: .5rem; }
+  .cv-modal-head .modal-title { flex: 1 1 calc(100% - 3rem); }
+  .cv-modal-actions { order: 3; width: 100%; margin: 0 !important; }
+  .cv-modal-actions .btn-s { flex: 1; justify-content: center; }
+}
+
+@media (max-width: 767.98px) {
+  /* Barre de filtres : recherche et listes sur toute la largeur. */
+  .espace-admin .toolbar .search-box { max-width: none !important; flex: 1 1 100%; margin-left: 0 !important; }
+  .espace-admin .toolbar .form-select { flex: 1 1 10rem; }
+  .espace-admin .pill-tabs { flex-wrap: wrap; }
+
+  /* Fiche candidat : bloc CV empilé, boutons pleine largeur. */
+  .espace-admin .file-row { align-items: flex-start; }
+  .espace-admin .file-row-name { flex: 1 1 calc(100% - 56px); }
+  .espace-admin .file-row > .d-flex { width: 100%; }
+  .espace-admin .file-row > .d-flex .btn-s { flex: 1; justify-content: center; }
+  .espace-admin .meta-grid { grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: 1rem 1.25rem; }
+
+}
+/* Écrans moyens (portables avec la barre latérale) : colonnes resserrées pour éviter
+   que les tableaux débordent à droite. */
+@media (min-width: 1200px) and (max-width: 1439.98px) {
+  .espace-admin .s-table th,
+  .espace-admin .s-table td { padding-left: 9px; padding-right: 9px; }
+  .espace-admin .s-table th { letter-spacing: .03em; white-space: normal; }
+  .espace-admin .s-table .user-cell small { overflow-wrap: anywhere; }
+}
+
+/* Tableaux admin en cartes jusqu'à 1200 px (mobile, tablette, petit portable) :
+   au-delà, il y a assez de place pour le tableau classique. */
+@media (max-width: 1199.98px) {
+  /* Tableaux : chaque ligne devient une carte « titre de colonne : valeur ». */
+  .espace-admin .table-responsive { overflow: visible; }
+  .espace-admin .s-table-stack thead { display: none; }
+  .espace-admin .s-table-stack,
+  .espace-admin .s-table-stack tbody,
+  .espace-admin .s-table-stack tr,
+  .espace-admin .s-table-stack td { display: block; width: 100%; }
+  .espace-admin .s-table-stack tbody tr { padding: .85rem 1rem; border-bottom: 1px solid var(--line); }
+  .espace-admin .s-table-stack tbody tr:last-child { border-bottom: 0; }
+  .espace-admin .s-table-stack td {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: .4rem 0; border: 0; text-align: right; overflow-wrap: anywhere;
+  }
+  .espace-admin .s-table-stack td > * { min-width: 0; }
+  .espace-admin .s-table-stack td::before {
+    content: attr(data-label); flex: 0 0 auto; max-width: 45%;
+    color: var(--ink-mute); font-size: 10.5px; font-weight: 600; letter-spacing: .05em;
+    text-align: left; text-transform: uppercase;
+  }
+  /* 1re colonne (nom, intitulé) : titre de la carte, sans étiquette. */
+  .espace-admin .s-table-stack td:first-child { justify-content: flex-start; padding-top: 0; text-align: left; }
+  .espace-admin .s-table-stack td:first-child::before { display: none; }
+  /* Colonne d'actions sans titre : boutons alignés à droite, pleine largeur. */
+  .espace-admin .s-table-stack td[data-label=""]::before { display: none; }
+  .espace-admin .s-table-stack td[data-label=""] { justify-content: flex-end; padding-top: .6rem; }
+  .espace-admin .s-table-stack td[data-label=""] .btn-s { flex: 1; justify-content: center; }
+  /* Lignes « aucun résultat » (colspan) : texte centré. */
+  .espace-admin .s-table-stack td[colspan] { display: block; text-align: center; }
+  .espace-admin .s-table-stack td[colspan]::before { display: none; }
+}

@@ -64,6 +64,19 @@
       c.addEventListener('change', function () { state[list.id]['m' + idx] = c.value.trim().toLowerCase(); refresh(list); });
     }
   });
+  // 6 bis) Tableaux responsive : chaque cellule reçoit le titre de sa colonne (data-label).
+  //        Sur mobile, le CSS affiche alors chaque ligne comme une carte « titre : valeur ».
+  document.querySelectorAll('.s-table').forEach(function (table) {
+    var heads = Array.prototype.map.call(table.querySelectorAll('thead th'), function (th) { return th.textContent.trim(); });
+    if (!heads.length) return;
+    table.classList.add('s-table-stack');
+    table.querySelectorAll('tbody tr').forEach(function (tr) {
+      Array.prototype.forEach.call(tr.children, function (td, i) {
+        if (!td.hasAttribute('colspan') && !td.hasAttribute('data-label')) td.setAttribute('data-label', heads[i] || '');
+      });
+    });
+  });
+
   // 6) Mots de passe : afficher / masquer, générer un mot de passe aléatoire
   document.querySelectorAll('[data-toggle-pass]').forEach(function (btn) {
     btn.addEventListener('click', function () {
