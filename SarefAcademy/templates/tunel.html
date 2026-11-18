@@ -18,77 +18,14 @@
       href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <!-- Barre de navigation + pied de page communs du site -->
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/site_navbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/site_footer.css' %}" />
   </head>
   <body>
-    <header>
-      <div class="nav wrap">
-        <a href="#" class="brand">
-          <img
-            src="{% static 'images/logo-saref.jpeg' %}"
-            alt="Logo Saref Academy"
-          />
-        </a>
-        <nav class="nav-links">
-          <a href="#formations">Formations</a>
-          <a href="#bourse">Bourse</a>
-          <a href="#parcours">Parcours</a>
-          <a href="#temoignages">Témoignages</a>
-          <a href="#contact">Contact</a>
-        </nav>
-        <div class="nav-cta">
-          <a href="#inscription" class="btn btn-primary">S'inscrire</a>
-          <button
-            class="burger"
-            id="burgerBtn"
-            aria-label="Ouvrir le menu"
-            aria-expanded="false"
-            aria-controls="mobileMenu"
-          >
-            <svg
-              width="26"
-              height="26"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.2"
-              stroke-linecap="round"
-            >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </header>
-    <div class="menu-backdrop" id="menuBackdrop"></div>
-    <aside class="mobile-menu" id="mobileMenu">
-      <div class="top-row">
-        <img src="{% static 'images/logo-saref.png' %}" alt="Saref Academy" />
-        <button class="close-btn" id="closeMenuBtn" aria-label="Fermer le menu">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.2"
-            stroke-linecap="round"
-          >
-            <line x1="5" y1="5" x2="19" y2="19" />
-            <line x1="19" y1="5" x2="5" y2="19" />
-          </svg>
-        </button>
-      </div>
-      <nav>
-        <a href="#formations">Formations</a>
-        <a href="#bourse">Bourse</a>
-        <a href="#parcours">Parcours</a>
-        <a href="#temoignages">Témoignages</a>
-        <a href="#contact">Contact</a>
-      </nav>
-      <a href="#inscription" class="btn btn-primary">S'inscrire</a>
-    </aside>
+    {% include "partials/site_navbar.html" %}
     <section class="hero">
       <div class="wrap hero-content">
         <div class="hero-copy">
@@ -546,37 +483,8 @@
       </p>
       <a href="#inscription" class="btn btn-light">Je postule maintenant</a>
     </div>
-    {% include "partials/formations_footer.html" %}
+    {% include "partials/site_footer.html" %}
     <script>
-      // ---- Menu hamburger ----
-      const burgerBtn = document.getElementById("burgerBtn");
-      const closeMenuBtn = document.getElementById("closeMenuBtn");
-      const mobileMenu = document.getElementById("mobileMenu");
-      const menuBackdrop = document.getElementById("menuBackdrop");
-
-      function openMenu() {
-        mobileMenu.classList.add("open");
-        menuBackdrop.classList.add("open");
-        burgerBtn.setAttribute("aria-expanded", "true");
-        document.body.style.overflow = "hidden";
-      }
-      function closeMenu() {
-        mobileMenu.classList.remove("open");
-        menuBackdrop.classList.remove("open");
-        burgerBtn.setAttribute("aria-expanded", "false");
-        document.body.style.overflow = "";
-      }
-
-      burgerBtn.addEventListener("click", openMenu);
-      closeMenuBtn.addEventListener("click", closeMenu);
-      menuBackdrop.addEventListener("click", closeMenu);
-      mobileMenu
-        .querySelectorAll("a")
-        .forEach((link) => link.addEventListener("click", closeMenu));
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeMenu();
-      });
-
       // ---- Compte à rebours jusqu'à la date limite ----
       const countdownEl = document.getElementById("countdown");
       if (countdownEl) {

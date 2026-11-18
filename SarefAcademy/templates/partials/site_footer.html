@@ -1,0 +1,69 @@
+{% load static %}
+{% comment %}
+  Pied de page unique du site public (même rendu que la page d'accueil).
+  Autonome : nécessite seulement css/site_footer.css et bootstrap-icons dans le <head>.
+{% endcomment %}
+<footer class="sfoot">
+  <!-- Haut : présentation + newsletter -->
+  <div class="sfoot-wrap sfoot-main">
+    <div class="sfoot-about">
+      <a class="sfoot-brand" href="{% url 'index' %}" aria-label="Saref Academy, accueil">
+        <img src="{% static 'images/saref-mark.png' %}" alt="" width="36" height="36" />
+        <span class="sfoot-wordmark">Saref <span>Academy</span></span>
+      </a>
+      <p>
+        Saref Academy forme aux métiers du digital, en présentiel et en ligne,
+        avec des parcours pratiques et certifiants pour propulser votre
+        carrière professionnelle.
+      </p>
+    </div>
+
+    <div class="sfoot-news">
+      <h2>Abonnez-vous à notre newsletter</h2>
+      <p>Recevez les actualités de Saref Academy et nos nouvelles formations directement par email.</p>
+      <form class="sfoot-news-form" onsubmit="return false;">
+        <label class="sfoot-sr" for="sfootEmail">Votre adresse email</label>
+        <input id="sfootEmail" type="email" name="email" placeholder="Email" autocomplete="email" required />
+        <button type="submit">S’abonner</button>
+      </form>
+      <label class="sfoot-consent">
+        <input type="checkbox" required />
+        <span>J’accepte de recevoir des emails d’information et d’actualité.</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Milieu : liens, réseaux sociaux, retour en haut -->
+  <div class="sfoot-utility">
+    <div class="sfoot-wrap sfoot-bar">
+      <nav class="sfoot-links" aria-label="Navigation de pied de page">
+        <a href="{% url 'index' %}#pourquoi">Pourquoi Saref Academy ?</a>
+        <a href="{% url 'index' %}#modules">Formations</a>
+        <a href="{% url 'index' %}#approche-pedagogique">Notre pédagogie</a>
+        <a href="{% url 'index' %}#temoignages">Avis étudiants</a>
+        <a href="{% url 'index' %}#faq">FAQ</a>
+        <a href="{% url 'index' %}#contacts">Contact</a>
+      </nav>
+      <div class="sfoot-social-wrap">
+        <span>Suivez Saref Academy</span>
+        <div class="sfoot-social" aria-label="Réseaux sociaux">
+          <a href="#" aria-label="Facebook"><i class="bi bi-facebook" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Instagram"><i class="bi bi-instagram" aria-hidden="true"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin" aria-hidden="true"></i></a>
+          <a href="#" aria-label="YouTube"><i class="bi bi-youtube" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <a class="sfoot-top" href="#" aria-label="Retour en haut de page"
+         onclick="window.scrollTo({ top: 0, behavior: 'smooth' }); return false;">
+        <i class="bi bi-arrow-up" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- Bas : mentions -->
+  <div class="sfoot-legal">
+    <div class="sfoot-wrap">
+      <p>© {% now "Y" %} Saref Academy. Tous droits réservés.</p>
+    </div>
+  </div>
+</footer>

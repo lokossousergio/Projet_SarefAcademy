@@ -72,8 +72,14 @@
         width: 100%;
       }
     </style>
+    <!-- Barre de navigation + pied de page communs du site -->
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/site_navbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/site_footer.css' %}" />
   </head>
   <body>
+    {% include "partials/site_navbar.html" %}
     <!-- HERO SECTION -->
     <section class="hero-section text-center">
       <div class="container">
@@ -1368,6 +1374,7 @@
     }
   }
 </style>
+    {% include "partials/site_footer.html" %}
 <!-- A placer juste avant </body>, une seule fois -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {

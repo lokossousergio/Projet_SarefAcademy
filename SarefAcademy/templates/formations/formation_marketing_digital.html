@@ -29,6 +29,11 @@
     />
     <!-- CSS personnalisé -->
     <link href="{% static 'css/formation.css' %}" rel="stylesheet" />
+    <!-- Barre de navigation + pied de page communs du site -->
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/site_navbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/site_footer.css' %}" />
   </head>
   <style>
     .hero {
@@ -44,7 +49,7 @@
     }
   </style>
   <body id="top" class="formation-page">
-    {% include "partials/formations_navbar.html" %}
+    {% include "partials/site_navbar.html" with nav_active="formations" %}
     <!-- ================= HERO ================= -->
     <header class="hero">
       <div class="container-page">
@@ -256,7 +261,7 @@
         </div>
       </section>
     </main>
-    {% include "partials/formations_footer.html" %}
+    {% include "partials/site_footer.html" %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

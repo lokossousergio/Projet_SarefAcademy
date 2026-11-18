@@ -1,0 +1,282 @@
+/* =====================================================================
+   PIED DE PAGE DU SITE PUBLIC (partials/site_footer.html)
+   Autonome : ne dépend ni de Bootstrap ni des autres feuilles du site.
+   Bleu nuit + couleurs du logo (bleu #335CEC, vert #22C55E).
+   ===================================================================== */
+.sfoot {
+  --sfoot-navy: #0d173b;
+  --sfoot-navy-2: #0a1230;
+  --sfoot-navy-3: #070d26;
+  --sfoot-blue: #335cec;
+  --sfoot-blue-dark: #2440a5;
+  --sfoot-green: #22c55e;
+  --sfoot-line: rgba(255, 255, 255, 0.1);
+
+  margin: 0;
+  background: var(--sfoot-navy);
+  color: #e2e8f0;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  text-align: left;
+}
+.sfoot *,
+.sfoot *::before,
+.sfoot *::after {
+  box-sizing: border-box;
+}
+.sfoot a {
+  text-decoration: none;
+}
+.sfoot-wrap {
+  width: min(100% - 2rem, 1296px);
+  margin: 0 auto;
+}
+.sfoot-sr {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* --- Haut : présentation + newsletter --- */
+.sfoot-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 3rem 0;
+}
+.sfoot-about {
+  padding-right: 3rem;
+  border-right: 1px solid var(--sfoot-line);
+}
+.sfoot-about p {
+  max-width: 400px;
+  margin: 1.25rem 0 0;
+  color: #cbd5e1;
+}
+.sfoot-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+.sfoot-brand img {
+  display: block;
+  width: 36px;
+  height: 36px;
+}
+.sfoot-wordmark {
+  font-family: "Baloo 2", "Plus Jakarta Sans", sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #f5f7fb;
+}
+.sfoot-wordmark span {
+  font-weight: 600;
+  color: #8da8ff;
+}
+.sfoot-news {
+  padding-left: 4.5rem;
+}
+.sfoot-news h2 {
+  margin: 0 0 0.6rem;
+  font-family: inherit;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: #fff;
+}
+.sfoot-news > p {
+  margin: 0 0 1.25rem;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+}
+.sfoot-news-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 154px;
+  gap: 0.75rem;
+  margin: 0 0 0.9rem;
+}
+.sfoot-news-form input {
+  min-height: 56px;
+  padding: 0 1.25rem;
+  border: 1px solid #c8d2e3;
+  border-radius: 999px;
+  background: #fff;
+  color: #0f172a;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+}
+.sfoot-news-form input:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(51, 92, 236, 0.35);
+}
+.sfoot-news-form button {
+  min-height: 56px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--sfoot-blue);
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.sfoot-news-form button:hover {
+  background: var(--sfoot-blue-dark);
+}
+.sfoot-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.sfoot-consent input {
+  width: 18px;
+  height: 18px;
+  margin: 0.1rem 0 0;
+  accent-color: var(--sfoot-green);
+}
+
+/* --- Milieu : liens, réseaux, retour en haut --- */
+.sfoot-utility {
+  border-top: 1px solid var(--sfoot-line);
+  background: var(--sfoot-navy-2);
+}
+.sfoot-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  min-height: 92px;
+  padding: 1rem 0;
+}
+.sfoot-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+}
+.sfoot-links a {
+  color: #e2e8f0;
+  font-size: 0.86rem;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+.sfoot-links a:hover {
+  color: #86efac;
+}
+.sfoot-social-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: auto;
+}
+.sfoot-social-wrap > span {
+  color: #cbd5e1;
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.sfoot-social {
+  display: flex;
+  gap: 0.5rem;
+}
+.sfoot-social a {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: #f5f7fb;
+  font-size: 1.25rem;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.sfoot-social a:hover {
+  border-color: var(--sfoot-blue);
+  background: var(--sfoot-blue);
+  color: #fff;
+}
+.sfoot-top {
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--sfoot-green);
+  color: var(--sfoot-navy);
+  font-size: 1.1rem;
+  transition: transform 0.3s;
+}
+.sfoot-top:hover {
+  color: var(--sfoot-navy);
+  transform: translateY(-3px);
+}
+
+/* --- Bas : mentions --- */
+.sfoot-legal {
+  border-top: 1px solid var(--sfoot-line);
+  background: var(--sfoot-navy-3);
+}
+.sfoot-legal .sfoot-wrap {
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+}
+.sfoot-legal p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.86rem;
+}
+
+.sfoot a:focus-visible,
+.sfoot button:focus-visible {
+  outline: 3px solid rgba(134, 239, 172, 0.6);
+  outline-offset: 3px;
+}
+
+/* --- Responsive --- */
+@media (max-width: 991.98px) {
+  .sfoot-main {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .sfoot-about {
+    padding: 0 0 2rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--sfoot-line);
+  }
+  .sfoot-news {
+    padding: 0;
+  }
+  .sfoot-bar {
+    flex-wrap: wrap;
+  }
+  .sfoot-social-wrap {
+    margin-left: 0;
+  }
+}
+@media (max-width: 575.98px) {
+  .sfoot-news-form {
+    grid-template-columns: 1fr;
+  }
+  .sfoot-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.5rem 0;
+  }
+  .sfoot-social-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

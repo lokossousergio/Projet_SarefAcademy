@@ -1,0 +1,290 @@
+/* =====================================================================
+   BARRE DE NAVIGATION DU SITE PUBLIC (partials/site_navbar.html)
+   Autonome : ne dépend ni de Bootstrap ni des autres feuilles du site.
+   Couleurs du logo : bleu #335CEC, vert #22C55E.
+   ===================================================================== */
+.snav {
+  --snav-blue: #335cec;
+  --snav-blue-dark: #2440a5;
+  --snav-ink: #0f172a;
+  --snav-line: #e5e9f2;
+  --snav-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: sticky;
+  top: 0;
+  z-index: 1040;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid var(--snav-line);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  transition: box-shadow 0.3s, background-color 0.3s;
+}
+.snav *,
+.snav *::before,
+.snav *::after {
+  box-sizing: border-box;
+}
+.snav.is-scrolled {
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 10px 30px -18px rgba(15, 23, 42, 0.35);
+}
+.snav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  width: min(100% - 2rem, 1296px);
+  min-height: 80px;
+  margin: 0 auto;
+}
+
+/* --- Logo --- */
+.snav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+.snav-brand img {
+  display: block;
+  width: 36px;
+  height: 36px;
+}
+.snav-wordmark {
+  font-family: "Baloo 2", "Plus Jakarta Sans", sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--snav-ink);
+}
+.snav-wordmark span {
+  font-weight: 600;
+  color: var(--snav-blue);
+}
+
+/* --- Liens --- */
+.snav-menu {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.snav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+.snav-links a {
+  position: relative;
+  display: block;
+  padding: 0.7rem 0.95rem;
+  color: var(--snav-ink);
+  font-size: 0.96rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+/* Trait bleu sous le lien survolé ou actif */
+.snav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0.95rem;
+  right: 0.95rem;
+  bottom: 0.35rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--snav-blue);
+  transform: scaleX(0);
+  transition: transform 0.3s var(--snav-ease);
+}
+.snav-links a:hover,
+.snav-links a.is-current {
+  color: var(--snav-blue);
+}
+.snav-links a:hover::after,
+.snav-links a.is-current::after {
+  transform: scaleX(1);
+}
+
+/* --- Bouton Espace Étudiant --- */
+.snav-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0.75rem 1.4rem;
+  border-radius: 999px;
+  background: var(--snav-blue);
+  box-shadow: 0 14px 28px -12px rgba(51, 92, 236, 0.65);
+  color: #fff;
+  font-size: 0.96rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 0.2s, transform 0.3s var(--snav-ease);
+}
+.snav-cta:hover,
+.snav-cta.is-current {
+  background: var(--snav-blue-dark);
+  color: #fff;
+  transform: translateY(-1px);
+}
+.snav a:focus-visible,
+.snav-toggle:focus-visible {
+  outline: 3px solid rgba(51, 92, 236, 0.35);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+/* --- Éléments propres au panneau mobile (cachés sur ordinateur) --- */
+.snav-panel-head,
+.snav-backdrop,
+.snav-toggle {
+  display: none;
+}
+
+/* --- Bouton du menu mobile (3 traits) --- */
+.snav-toggle {
+  position: relative;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid rgba(51, 92, 236, 0.2);
+  border-radius: 999px;
+  background: rgba(51, 92, 236, 0.08);
+  cursor: pointer;
+}
+.snav-toggle span {
+  position: absolute;
+  left: 13px;
+  right: 13px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--snav-blue);
+}
+.snav-toggle span:nth-child(1) { top: 16px; }
+.snav-toggle span:nth-child(2) { top: 23px; }
+.snav-toggle span:nth-child(3) { top: 30px; }
+
+/* --- Bouton fermer (×) dans le panneau --- */
+.snav-close {
+  position: relative;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(51, 92, 236, 0.2);
+  border-radius: 999px;
+  background: rgba(51, 92, 236, 0.08);
+  cursor: pointer;
+}
+.snav-close span {
+  position: absolute;
+  top: 21px;
+  left: 12px;
+  right: 12px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--snav-blue);
+}
+.snav-close span:nth-child(1) { transform: rotate(45deg); }
+.snav-close span:nth-child(2) { transform: rotate(-45deg); }
+
+/* Empêche la page de défiler quand le panneau est ouvert */
+html.snav-lock,
+html.snav-lock body {
+  overflow: hidden;
+}
+
+/* --- Mobile : panneau latéral qui glisse de la gauche vers la droite --- */
+@media (max-width: 991.98px) {
+  .snav,
+  .snav.is-scrolled {
+    background: #fff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .snav-inner {
+    min-height: 72px;
+  }
+  .snav-toggle {
+    display: block;
+  }
+  .snav-menu {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 1.25rem;
+    width: min(340px, 86vw);
+    padding: 1rem 1.25rem 1.5rem;
+    overflow-y: auto;
+    background: #fff;
+    box-shadow: 24px 0 50px -20px rgba(15, 23, 42, 0.45);
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 0.4s var(--snav-ease), visibility 0.4s;
+  }
+  .snav.is-open .snav-menu {
+    transform: translateX(0);
+    visibility: visible;
+  }
+  .snav-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--snav-line);
+  }
+  .snav-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    background: rgba(15, 23, 42, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+  }
+  .snav.is-open .snav-backdrop {
+    opacity: 1;
+    visibility: visible;
+  }
+  .snav-links {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin: 0;
+  }
+  .snav-links a {
+    padding: 0.95rem 0.25rem;
+    border-bottom: 1px solid var(--snav-line);
+    font-size: 1.02rem;
+  }
+  .snav-links a::after {
+    display: none;
+  }
+  .snav-cta {
+    width: 100%;
+    margin-top: 0.25rem;
+    padding: 0.9rem 1.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .snav,
+  .snav * {
+    transition: none !important;
+  }
+}

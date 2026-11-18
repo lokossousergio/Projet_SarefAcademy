@@ -1,0 +1,88 @@
+{% load static %}
+{% comment %}
+  Barre de navigation unique du site public (même rendu que la page d'accueil).
+  - Indépendante de Bootstrap : fonctionne sur toutes les pages.
+  - Nécessite dans le <head> : css/site_navbar.css (+ bootstrap-icons pour l'icône).
+  - Option : {% include "partials/site_navbar.html" with nav_active="formations" %}
+    valeurs possibles : formations, pedagogie, certifications, contacts, faq, etudiant
+{% endcomment %}
+<header class="snav" data-snav>
+  <div class="snav-inner">
+    <!-- Logo -->
+    <a class="snav-brand" href="{% url 'index' %}" aria-label="Saref Academy, accueil">
+      <img src="{% static 'images/saref-mark.png' %}" alt="" width="36" height="36" />
+      <span class="snav-wordmark">Saref <span>Academy</span></span>
+    </a>
+
+    <!-- Liens (panneau qui glisse depuis la gauche sur mobile) -->
+    <nav class="snav-menu" id="snavMenu" aria-label="Navigation principale">
+      <div class="snav-panel-head">
+        <a class="snav-brand" href="{% url 'index' %}" aria-label="Saref Academy, accueil">
+          <img src="{% static 'images/saref-mark.png' %}" alt="" width="36" height="36" />
+          <span class="snav-wordmark">Saref <span>Academy</span></span>
+        </a>
+        <button class="snav-close" type="button" aria-label="Fermer le menu">
+          <span></span><span></span>
+        </button>
+      </div>
+      <ul class="snav-links">
+        <li><a href="{% url 'index' %}#modules" {% if nav_active == "formations" %}class="is-current" aria-current="page"{% endif %}>Formations</a></li>
+        <li><a href="{% url 'index' %}#approche-pedagogique" {% if nav_active == "pedagogie" %}class="is-current" aria-current="page"{% endif %}>Pédagogie</a></li>
+        <li><a href="{% url 'index' %}#certifications" {% if nav_active == "certifications" %}class="is-current" aria-current="page"{% endif %}>Certifications</a></li>
+        <li><a href="{% url 'index' %}#contacts" {% if nav_active == "contacts" %}class="is-current" aria-current="page"{% endif %}>Contacts</a></li>
+        <li><a href="{% url 'index' %}#faq" {% if nav_active == "faq" %}class="is-current" aria-current="page"{% endif %}>FAQ</a></li>
+      </ul>
+      <a class="snav-cta{% if nav_active == 'etudiant' %} is-current{% endif %}" href="{% url 'connexion-etudiant' %}">Espace Étudiant</a>
+    </nav>
+
+    <!-- Fond assombri derrière le panneau mobile -->
+    <div class="snav-backdrop" aria-hidden="true"></div>
+
+    <!-- Bouton du menu mobile -->
+    <button class="snav-toggle" type="button" aria-controls="snavMenu" aria-expanded="false" aria-label="Ouvrir le menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+<script>
+  // Barre de navigation : ombre au défilement, menu mobile, lien de la section visible
+  (() => {
+    const bar = document.querySelector("[data-snav]");
+    if (!bar || bar.dataset.ready) return;
+    bar.dataset.ready = "1";
+    const toggle = bar.querySelector(".snav-toggle");
+    const menu = bar.querySelector(".snav-menu");
+
+    // Ombre légère dès qu'on défile
+    const onScroll = () => bar.classList.toggle("is-scrolled", window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    // Ouverture / fermeture du menu mobile
+    const setOpen = (open) => {
+      bar.classList.toggle("is-open", open);
+      document.documentElement.classList.toggle("snav-lock", open); // bloque le défilement derrière
+      toggle.setAttribute("aria-expanded", String(open));
+      if (open) bar.querySelector(".snav-close").focus();
+    };
+    toggle.addEventListener("click", () => setOpen(true));
+    bar.querySelector(".snav-close").addEventListener("click", () => { setOpen(false); toggle.focus(); });
+    bar.querySelector(".snav-backdrop").addEventListener("click", () => setOpen(false));
+    menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setOpen(false)));
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") setOpen(false); });
+    window.matchMedia("(min-width: 992px)").addEventListener("change", (e) => e.matches && setOpen(false));
+
+    // Sur la page d'accueil : souligne le lien de la section à l'écran
+    const links = [...bar.querySelectorAll(".snav-links a")].filter((a) => a.pathname === location.pathname);
+    const sections = [...document.querySelectorAll("section[id]")];
+    if (links.length && sections.length && "IntersectionObserver" in window) {
+      const spy = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          links.forEach((a) => a.classList.toggle("is-current", a.hash === "#" + entry.target.id));
+        });
+      }, { rootMargin: "-45% 0px -50% 0px" });
+      sections.forEach((s) => spy.observe(s));
+    }
+  })();
+</script>
