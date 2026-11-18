@@ -15,20 +15,47 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
 from django.urls import path, include
 from django.conf.urls import handler404, handler500
 from django.views.generic import TemplateView
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib.sitemaps.views import sitemap
+from django.http import HttpResponse
+from SarefAcademy.sitemaps import StaticSitemap
 
 handler404 = 'SarefAcademy.views.handel404'
 handler500 = 'SarefAcademy.views.handel500'
-from django.conf import settings
-from django.conf.urls.static import static
+
+sitemaps = {
+    'static': StaticSitemap,
+}
+
+
+def robots_txt(request):
+    sitemap_url = request.build_absolute_uri('/sitemap.xml')
+    if not sitemap_url.startswith('https://'):
+        sitemap_url = 'https://sarefacademy.pythonanywhere.com/sitemap.xml'
+    content = (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Disallow: /admin/\n"
+        "Disallow: /administration/\n"
+        "Disallow: /formateur/\n"
+        "Disallow: /espace-etudiant/\n"
+        "Disallow: /etudiant/\n"
+        "Disallow: /configuration-initiale/\n"
+        "Disallow: /mot-de-passe/\n\n"
+        f"Sitemap: {sitemap_url}\n"
+    )
+    return HttpResponse(content, content_type="text/plain")
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    path('robots.txt', robots_txt, name='robots_txt'),
     path('', include('SarefAcademy.urls')),
-
-    
 ]
 
 if settings.DEBUG:

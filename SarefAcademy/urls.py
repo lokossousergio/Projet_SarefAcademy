@@ -11,9 +11,9 @@ urlpatterns = [
     path('Montage-video', views.Montage_video, name='Montage-video'),
     path('Journalisme-web', views.Journalisme_web, name='Journalisme-web'),
     path('candidature-formation/', views.candidature_formation, name='candidature-formation'),
-    path('bourse-de-formation', views.bourse_de_formation, name='bourse-de-formation'),
-    path('inscription_valide', views.inscription_valide, name='inscription_valide'),
-    path('tunel', views.tunel, name='tunel'),
+    path('bourse-de-formation/', views.bourse_de_formation, name='bourse-de-formation'),
+    path('inscription_valide/', views.inscription_valide, name='inscription_valide'),
+    path('tunel/', views.tunel, name='tunel'),
 
     # ===== Authentification & Compte =====
     path('espace-etudiant/connexion/', views.connexion_etudiant, name='connexion-etudiant'),

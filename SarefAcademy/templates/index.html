@@ -2,11 +2,56 @@
 <!DOCTYPE html>
 <html lang="fr">
     <head>
-  <link rel="icon" type="image/png" href="{% static 'images/d7484e1e-3a8d-4afe-801c-4f31f36b7ae1.png' %}">
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <script>document.documentElement.classList.add("page-loading");</script>
         <title>Saref Academy — Formations en ligne et avenir professionnel</title>
+
+        <!-- Favicon et icônes pour Google Search et navigateurs -->
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/saref-mark.png' %}">
+        <link rel="icon" type="image/png" sizes="192x192" href="{% static 'images/saref-mark.png' %}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/saref-mark.png' %}">
+        <link rel="shortcut icon" href="{% static 'images/saref-mark.png' %}">
+
+        <!-- SEO et Indexation Google -->
+        <meta name="description" content="Saref Academy — Formations pratiques et certifiantes aux métiers du digital, principalement en ligne avec sessions en présentiel : Développement Web, Marketing Digital, Design Graphique, Montage Vidéo et Archivage Numérique." />
+        <meta name="keywords" content="Saref Academy, formation en ligne, formation présentiel, formation digitale, cours en ligne, développement web, marketing digital, design graphique, montage vidéo, archivage numérique, Bénin, Afrique" />
+        <meta name="author" content="Saref Academy" />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <link rel="canonical" href="{{ request.build_absolute_uri }}" />
+
+        <!-- Open Graph / WhatsApp / Facebook / LinkedIn (affichage du logo de la navbar et aperçu) -->
+        <meta property="og:locale" content="fr_FR" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Saref Academy" />
+        <meta property="og:title" content="Saref Academy — Formations en ligne et avenir professionnel" />
+        <meta property="og:description" content="Formez-vous aux métiers d'avenir du digital avec un apprentissage flexible principalement en ligne et des sessions en présentiel : projets réels et certifications reconnues." />
+        <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'images/saref-mark.png' %}" />
+        <meta property="og:image:secure_url" content="{{ request.scheme }}://{{ request.get_host }}{% static 'images/saref-mark.png' %}" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:alt" content="Logo Saref Academy" />
+
+        <!-- Twitter / X Cards -->
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Saref Academy — Formations en ligne et avenir professionnel" />
+        <meta name="twitter:description" content="Formez-vous aux métiers d'avenir du digital avec un apprentissage flexible principalement en ligne et des sessions en présentiel : projets réels et certifications reconnues." />
+        <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'images/saref-mark.png' %}" />
+
+        <!-- Données structurées Schema.org pour Google (Logo entreprise & Rich Snippets) -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "EducationalOrganization",
+          "name": "Saref Academy",
+          "url": "{{ request.scheme }}://{{ request.get_host }}/",
+          "logo": "{{ request.scheme }}://{{ request.get_host }}{% static 'images/saref-mark.png' %}",
+          "image": "{{ request.scheme }}://{{ request.get_host }}{% static 'images/saref-mark.png' %}",
+          "description": "Formations pratiques et certifiantes aux métiers du digital, principalement en ligne avec des sessions et un accompagnement en présentiel.",
+          "email": "contact@sarefacademy.com",
+          "sameAs": []
+        }
+        </script>
 
         <!-- Bootstrap + Icons -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
