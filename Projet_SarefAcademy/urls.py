@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import path, include
 from django.conf.urls import handler404, handler500
+from django.views.generic import TemplateView
 
 handler404 = 'SarefAcademy.views.handel404'
 handler500 = 'SarefAcademy.views.handel500'
@@ -26,6 +27,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('SarefAcademy.urls')),
+
+        path('google6c9a8cb320752418.html', TemplateView.as_view(template_name='google6c9a8cb320752418.html', content_type='text/html'), name='google_verification'),
 ]
 
 if settings.DEBUG:

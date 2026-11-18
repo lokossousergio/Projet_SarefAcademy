@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-
+from django.views.generic import TemplateView
 urlpatterns = [
     # ===== Site Public & Formations =====
     path('', views.index, name='index'),
@@ -66,5 +66,9 @@ urlpatterns = [
     path('administration/mon-compte/', views.admin_mon_compte, name='admin_mon_compte'),
     path('administration/configuration-vague/', views.admin_configuration_vague, name='admin_configuration_vague'),
     path('administration/chapitre/<int:formation_id>/<int:chapitre_id>/', views.admin_chapitre_detail, name='admin_chapitre_detail'),
+
+
+
+
 ]
 
