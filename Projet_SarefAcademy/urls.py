@@ -28,7 +28,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('SarefAcademy.urls')),
 
-        path('google6c9a8cb320752418.html', TemplateView.as_view(template_name='google6c9a8cb320752418.html', content_type='text/html'), name='google_verification'),
+    
 ]
 
 if settings.DEBUG:

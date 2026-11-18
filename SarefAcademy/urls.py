@@ -68,7 +68,7 @@ urlpatterns = [
     path('administration/chapitre/<int:formation_id>/<int:chapitre_id>/', views.admin_chapitre_detail, name='admin_chapitre_detail'),
 
 
-
+    path('google6c9a8cb320752418.html', TemplateView.as_view(template_name='google6c9a8cb320752418.html', content_type='text/html'), name='google_verification'),
 
 ]
 
