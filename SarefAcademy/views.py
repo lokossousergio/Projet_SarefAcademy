@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth import get_user_model
@@ -42,7 +43,6 @@ from .models import (
     Parametre,
     Resultat,
 )
-from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.crypto import constant_time_compare, salted_hmac
 
@@ -537,23 +537,18 @@ def _envoyer_code_reset(request, etudiant):
     code éventuel reste valable. Retourne True si l'e-mail est parti.
     """
     code = f"{secrets.randbelow(1_000_000):06d}"
-    logo_url = request.build_absolute_uri(static("images/logo-saref-512x512.png"))
-    # Un logo servi en local (localhost) ne s'affiche pas dans une messagerie.
-    if "localhost" in logo_url or "127.0.0.1" in logo_url:
-        logo_url = ""
 
     try:
         envoyer_email(
             destinataire=etudiant.email,
             nom_destinataire=f"{etudiant.prenom} {etudiant.nom}".strip(),
-            sujet=f"{code} est votre code de vérification — Saref Academy",
+            sujet="Code de vérification — Saref Academy",
             template="emails/code_verification",
             contexte={
                 "code": code,
                 "prenom": etudiant.prenom,
                 "duree": RESET_DUREE_MINUTES,
-                "lien": request.build_absolute_uri(reverse("verifier_code_etudiant")),
-                "logo_url": logo_url,
+                "support_email": getattr(settings, "BREVO_SENDER_EMAIL", "sarefacademy@gmail.com"),
             },
         )
     except EnvoiEmailErreur as exc:

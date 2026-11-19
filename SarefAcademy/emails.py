@@ -39,10 +39,10 @@ def envoyer_email(destinataire, sujet, template, contexte, nom_destinataire=""):
             print(f"\n[E-MAIL DEV] À : {destinataire} | {sujet}\n{texte}\n")
             return
         logger.error("BREVO_API_KEY n'est pas configurée.")
-        raise EnvoiEmailErreur("Le service d'envoi d'e-mails n'est pas configuré. Contactez l'administration.")
+        raise EnvoiEmailErreur("Une erreur est survenue lors de l'envoi de l'e-mail. Veuillez réessayer plus tard.")
     if not expediteur:
         logger.error("BREVO_SENDER_EMAIL n'est pas configurée.")
-        raise EnvoiEmailErreur("Le service d'envoi d'e-mails n'est pas configuré. Contactez l'administration.")
+        raise EnvoiEmailErreur("Une erreur est survenue lors de l'envoi de l'e-mail. Veuillez réessayer plus tard.")
 
     payload = {
         "sender": {"email": expediteur, "name": getattr(settings, "BREVO_SENDER_NAME", "Saref Academy")},
@@ -76,10 +76,9 @@ def envoyer_email(destinataire, sujet, template, contexte, nom_destinataire=""):
         detail = reponse.text[:300]
     logger.error("Brevo HTTP %s pour %s : %s", reponse.status_code, destinataire, detail)
 
-    if reponse.status_code == 401:
-        raise EnvoiEmailErreur("Le service d'e-mails est mal configuré (clé API invalide). Contactez l'administration.")
     if reponse.status_code == 429:
         raise EnvoiEmailErreur("Trop d'envois en peu de temps. Patientez une minute puis réessayez.")
     if reponse.status_code == 400:
         raise EnvoiEmailErreur("L'e-mail n'a pas pu être envoyé à cette adresse. Vérifiez-la et réessayez.")
-    raise EnvoiEmailErreur("L'envoi de l'e-mail a échoué. Réessayez dans quelques instants.")
+    # Pour 401 ou toute autre erreur serveur, message neutre pour l'utilisateur
+    raise EnvoiEmailErreur("Une erreur est survenue lors de l'envoi de l'e-mail. Veuillez réessayer dans quelques instants.")
