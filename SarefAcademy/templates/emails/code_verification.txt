@@ -1,0 +1,14 @@
+{% autoescape off %}Bonjour{% if prenom %} {{ prenom }}{% endif %},
+
+Vous avez demandé à réinitialiser le mot de passe de votre espace étudiant Saref Academy.
+
+Votre code de vérification : {{ code }}
+Il est valable {{ duree }} minutes.
+{% if lien %}
+Saisissez-le ici : {{ lien }}
+{% endif %}
+Vous n'êtes pas à l'origine de cette demande ? Ignorez cet e-mail, votre mot de passe reste inchangé.
+Ne communiquez jamais ce code.
+
+— L'équipe Saref Academy
+{% endautoescape %}

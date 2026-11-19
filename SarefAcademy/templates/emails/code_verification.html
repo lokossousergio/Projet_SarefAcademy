@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Votre code de vérification</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f1f4fb;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1f2937;">
+  <!-- Texte d'aperçu affiché dans la boîte de réception -->
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">Votre code Saref Academy : {{ code }} (valable {{ duree }} minutes)</div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4fb;">
+    <tr>
+      <td align="center" style="padding:32px 16px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;">
+
+          <!-- En-tête -->
+          <tr>
+            <td align="center" style="background-color:#335cec;border-radius:16px 16px 0 0;padding:28px 24px;">
+              {% if logo_url %}
+                <img src="{{ logo_url }}" width="56" height="56" alt="Saref Academy" style="display:block;margin:0 auto 10px;border-radius:12px;background:#ffffff;">
+              {% endif %}
+              <div style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:.3px;">
+                Saref <span style="color:#22c55e;">Academy</span>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Corps -->
+          <tr>
+            <td style="background-color:#ffffff;padding:36px 32px 28px;">
+              <h1 style="margin:0 0 12px;font-size:20px;line-height:1.3;color:#111827;">Réinitialisation de votre mot de passe</h1>
+              <p style="margin:0 0 20px;font-size:15px;line-height:1.6;color:#4b5563;">
+                Bonjour{% if prenom %} {{ prenom }}{% endif %},<br>
+                Vous avez demandé à réinitialiser le mot de passe de votre espace étudiant.
+                Saisissez le code ci-dessous sur la page de vérification :
+              </p>
+
+              <!-- Code -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center" style="background-color:#eef2fe;border:2px dashed #335cec;border-radius:12px;padding:20px 12px;">
+                    <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:#335cec;margin-bottom:6px;">Code de vérification</div>
+                    <div style="font-family:'Courier New',Courier,monospace;font-size:36px;font-weight:700;letter-spacing:10px;color:#111827;">{{ code }}</div>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:20px 0 0;font-size:14px;line-height:1.6;color:#4b5563;text-align:center;">
+                <span style="display:inline-block;background-color:#dcfce7;color:#15803d;border-radius:999px;padding:4px 12px;font-weight:600;">
+                  ⏱ Valable {{ duree }} minutes
+                </span>
+              </p>
+
+              {% if lien %}
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:24px auto 0;">
+                <tr>
+                  <td align="center" style="background-color:#335cec;border-radius:10px;">
+                    <a href="{{ lien }}" style="display:inline-block;padding:13px 28px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;">Saisir mon code</a>
+                  </td>
+                </tr>
+              </table>
+              {% endif %}
+
+              <!-- Sécurité -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:28px;">
+                <tr>
+                  <td style="background-color:#f9fafb;border-left:4px solid #22c55e;border-radius:8px;padding:14px 16px;font-size:13px;line-height:1.6;color:#6b7280;">
+                    <strong style="color:#374151;">Vous n'êtes pas à l'origine de cette demande ?</strong><br>
+                    Ignorez simplement cet e-mail : votre mot de passe reste inchangé.
+                    Ne communiquez jamais ce code, l'équipe Saref Academy ne vous le demandera jamais.
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Pied -->
+          <tr>
+            <td align="center" style="background-color:#ffffff;border-top:1px solid #e5e7eb;border-radius:0 0 16px 16px;padding:18px 24px;font-size:12px;line-height:1.6;color:#9ca3af;">
+              © {% now "Y" %} Saref Academy — E-mail automatique, merci de ne pas y répondre.
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

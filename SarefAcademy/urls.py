@@ -22,6 +22,7 @@ urlpatterns = [
     path('espace-etudiant/deconnexion/', views.deconnexion_etudiant, name='deconnexion-etudiant'),
     path('espace-etudiant/mot-de-passe-oublie/', views.mot_de_passe_oublie, name='mot-de-passe-oublie'),
     path('espace-etudiant/verifier-code/', views.verifier_code_etudiant, name='verifier_code_etudiant'),
+    path('espace-etudiant/renvoyer-code/', views.renvoyer_code_etudiant, name='renvoyer_code_etudiant'),
     path('connexion-formateur/', views.connexion_formateur, name='connexion-formateur'),
     path('deconnexion-formateur/', views.deconnexion_formateur, name='deconnexion-formateur'),
     path('connexion-admin/', views.connexion_admin, name='connexion-admin'),

@@ -42,8 +42,11 @@ from .models import (
     Parametre,
     Resultat,
 )
-from django.core.mail import send_mail
+from django.templatetags.static import static
 from django.utils import timezone
+from django.utils.crypto import constant_time_compare, salted_hmac
+
+from .emails import EnvoiEmailErreur, envoyer_email
 
 
 def mot_de_passe_valide(valeur):
@@ -499,68 +502,179 @@ def deconnexion_etudiant(request):
     return redirect("connexion-etudiant")
 
 
+# -----------------------------------------------------------------------------
+# Mot de passe oublié : code à 6 chiffres envoyé par e-mail (Brevo)
+# -----------------------------------------------------------------------------
+RESET_DUREE_MINUTES = 10      # durée de validité du code
+RESET_MAX_TENTATIVES = 5      # essais autorisés avant de devoir redemander un code
+RESET_DELAI_RENVOI = 60       # secondes minimum entre deux envois
+RESET_CLES_SESSION = ("reset_email", "reset_code_hash", "reset_expiration", "reset_attempts", "reset_envoye_le")
+
+
+def _hash_code(code):
+    """Empreinte HMAC du code : le code en clair n'est jamais stocké en session."""
+    return salted_hmac("saref.reset_code", code).hexdigest()
+
+
+def _vider_session_reset(request):
+    for key in RESET_CLES_SESSION:
+        request.session.pop(key, None)
+
+
+def _secondes_avant_renvoi(request, email):
+    """Secondes restantes avant de pouvoir renvoyer un code à cette adresse (0 si possible)."""
+    envoye_le = request.session.get("reset_envoye_le")
+    if not envoye_le or request.session.get("reset_email", "").lower() != email.lower():
+        return 0
+    ecoule = (timezone.now() - datetime.fromisoformat(envoye_le)).total_seconds()
+    return max(0, int(RESET_DELAI_RENVOI - ecoule))
+
+
+def _envoyer_code_reset(request, etudiant):
+    """Génère un code, l'envoie par e-mail puis l'enregistre en session.
+
+    Le code n'est mémorisé qu'après un envoi réussi : en cas d'échec, l'ancien
+    code éventuel reste valable. Retourne True si l'e-mail est parti.
+    """
+    code = f"{secrets.randbelow(1_000_000):06d}"
+    logo_url = request.build_absolute_uri(static("images/logo-saref-512x512.png"))
+    # Un logo servi en local (localhost) ne s'affiche pas dans une messagerie.
+    if "localhost" in logo_url or "127.0.0.1" in logo_url:
+        logo_url = ""
+
+    try:
+        envoyer_email(
+            destinataire=etudiant.email,
+            nom_destinataire=f"{etudiant.prenom} {etudiant.nom}".strip(),
+            sujet=f"{code} est votre code de vérification — Saref Academy",
+            template="emails/code_verification",
+            contexte={
+                "code": code,
+                "prenom": etudiant.prenom,
+                "duree": RESET_DUREE_MINUTES,
+                "lien": request.build_absolute_uri(reverse("verifier_code_etudiant")),
+                "logo_url": logo_url,
+            },
+        )
+    except EnvoiEmailErreur as exc:
+        messages.error(request, str(exc))
+        return False
+
+    maintenant = timezone.now()
+    request.session["reset_email"] = etudiant.email
+    request.session["reset_code_hash"] = _hash_code(code)
+    request.session["reset_expiration"] = (maintenant + timedelta(minutes=RESET_DUREE_MINUTES)).isoformat()
+    request.session["reset_envoye_le"] = maintenant.isoformat()
+    request.session["reset_attempts"] = 0
+    return True
+
+
 def mot_de_passe_oublie(request):
+    """Étape 1 : l'étudiant saisit son e-mail, on vérifie le compte et on envoie le code."""
     if request.method == "POST":
         email = request.POST.get("email", "").strip().lower()
+        page = "Espace_etudiants/mot_de_passe_oublie.html"
+
+        # 1. Format de l'adresse
         try:
             validate_email(email)
         except ValidationError:
             messages.error(request, "Saisissez une adresse e-mail valide.")
-            return render(request, "Espace_etudiants/mot_de_passe_oublie.html")
+            return render(request, page)
 
-        # Réponse identique pour éviter de révéler si une adresse est enregistrée.
+        # 2. L'adresse doit correspondre à un compte étudiant existant
         etudiant = Etudiants.objects.filter(email__iexact=email).first()
-        if etudiant:
-            code = f"{secrets.randbelow(1_000_000):06d}"
-            request.session["reset_email"] = etudiant.email
-            request.session["reset_code"] = code
-            request.session["reset_expiration"] = (timezone.now() + timedelta(minutes=10)).isoformat()
-            send_mail(
-                "Code de réinitialisation — Saref Academy",
-                f"Votre code de réinitialisation est : {code}. Il expire dans 10 minutes.",
-                None,
-                [etudiant.email],
-                fail_silently=False,
-            )
-        request.session["reset_attempts"] = 0
-        messages.success(request, "Si un compte correspond à cette adresse, un code vient d’être envoyé.")
+        if not etudiant:
+            messages.error(request, "Aucun compte étudiant n’est associé à cette adresse e-mail.")
+            return render(request, page)
+
+        # 3. Anti-spam : un seul envoi par minute pour la même adresse
+        attente = _secondes_avant_renvoi(request, etudiant.email)
+        if attente:
+            messages.warning(request, f"Un code vient déjà d’être envoyé. Patientez {attente} s avant d’en demander un nouveau.")
+            return redirect("verifier_code_etudiant")
+
+        # 4. Envoi via Brevo (les erreurs sont affichées dans la modale)
+        if not _envoyer_code_reset(request, etudiant):
+            return render(request, page)
+
+        messages.success(request, f"Un code de vérification a été envoyé à {etudiant.email}.")
         return redirect("verifier_code_etudiant")
 
     return render(request, "Espace_etudiants/mot_de_passe_oublie.html")
 
 
+def renvoyer_code_etudiant(request):
+    """Renvoie un nouveau code à l'adresse déjà saisie (POST uniquement)."""
+    email = request.session.get("reset_email")
+    if request.method != "POST" or not email:
+        return redirect("mot-de-passe-oublie")
+
+    attente = _secondes_avant_renvoi(request, email)
+    if attente:
+        messages.warning(request, f"Patientez encore {attente} s avant de demander un nouveau code.")
+        return redirect("verifier_code_etudiant")
+
+    etudiant = Etudiants.objects.filter(email__iexact=email).first()
+    if not etudiant:
+        _vider_session_reset(request)
+        messages.error(request, "Ce compte n’existe plus. Recommencez la procédure.")
+        return redirect("mot-de-passe-oublie")
+
+    if _envoyer_code_reset(request, etudiant):
+        messages.success(request, f"Un nouveau code a été envoyé à {etudiant.email}.")
+    return redirect("verifier_code_etudiant")
+
+
 def verifier_code_etudiant(request):
+    """Étape 2 : vérification du code puis enregistrement du nouveau mot de passe."""
+    # Accès direct sans demande de code en cours : retour à l'étape 1.
+    if not request.session.get("reset_code_hash"):
+        messages.info(request, "Saisissez d’abord votre adresse e-mail pour recevoir un code.")
+        return redirect("mot-de-passe-oublie")
+
     if request.method == "POST":
         code = request.POST.get("code", "").strip()
         password = request.POST.get("password", "")
         password2 = request.POST.get("password2", "")
-        expiration = request.session.get("reset_expiration")
-        expired = not expiration or timezone.now() > datetime.fromisoformat(expiration)
+        tentatives = request.session.get("reset_attempts", 0)
+        expiration = datetime.fromisoformat(request.session["reset_expiration"])
 
-        if expired:
-            request.session.pop("reset_code", None)
-            messages.error(request, "Le code a expiré. Recommencez la procédure.")
-        elif request.session.get("reset_attempts", 0) >= 5:
-            messages.error(request, "Trop de tentatives. Demandez un nouveau code.")
-        elif code != request.session.get("reset_code"):
-            request.session["reset_attempts"] = request.session.get("reset_attempts", 0) + 1
-            messages.error(request, "Le code saisi est incorrect.")
+        if timezone.now() > expiration:
+            _vider_session_reset(request)
+            messages.error(request, "Le code a expiré. Demandez-en un nouveau.")
+            return redirect("mot-de-passe-oublie")
+
+        if tentatives >= RESET_MAX_TENTATIVES:
+            messages.error(request, "Trop de tentatives incorrectes. Demandez un nouveau code.")
+        elif not re.fullmatch(r"\d{6}", code):
+            messages.error(request, "Le code doit contenir exactement 6 chiffres.")
+        elif not constant_time_compare(_hash_code(code), request.session["reset_code_hash"]):
+            tentatives += 1
+            request.session["reset_attempts"] = tentatives
+            restantes = RESET_MAX_TENTATIVES - tentatives
+            if restantes:
+                messages.error(request, f"Le code saisi est incorrect. Il vous reste {restantes} tentative(s).")
+            else:
+                messages.error(request, "Trop de tentatives incorrectes. Demandez un nouveau code.")
         elif not mot_de_passe_valide(password):
             messages.error(request, "Le nouveau mot de passe doit contenir 8 caractères au minimum, avec une lettre et un chiffre.")
         elif password != password2:
             messages.error(request, "Les deux mots de passe ne correspondent pas.")
         else:
-            etudiant = Etudiants.objects.filter(email__iexact=request.session.get("reset_email")).first()
-            if etudiant:
-                etudiant.mot_de_passe = make_password(password)
-                etudiant.save(update_fields=["mot_de_passe"])
-                for key in ("reset_email", "reset_code", "reset_expiration", "reset_attempts"):
-                    request.session.pop(key, None)
-                messages.success(request, "Votre mot de passe a été modifié. Vous pouvez vous connecter.")
-                return redirect("connexion-etudiant")
-            messages.error(request, "Aucun compte étudiant associé à cette demande.")
+            etudiant = Etudiants.objects.filter(email__iexact=request.session["reset_email"]).first()
+            _vider_session_reset(request)  # code à usage unique
+            if not etudiant:
+                messages.error(request, "Aucun compte étudiant associé à cette demande.")
+                return redirect("mot-de-passe-oublie")
+            etudiant.mot_de_passe = make_password(password)
+            etudiant.save(update_fields=["mot_de_passe"])
+            messages.success(request, "Votre mot de passe a été modifié. Vous pouvez vous connecter.")
+            return redirect("connexion-etudiant")
 
-    return render(request, "Espace_etudiants/verifier_code.html")
+    return render(request, "Espace_etudiants/verifier_code.html", {
+        "delai_renvoi": _secondes_avant_renvoi(request, request.session.get("reset_email", "")),
+    })
 
 
 def dashboard_etudiant(request):
