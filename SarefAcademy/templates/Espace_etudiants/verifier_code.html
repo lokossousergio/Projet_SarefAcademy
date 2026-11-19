@@ -2,67 +2,707 @@
 <!doctype html>
 <html lang="fr">
   <head>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}" />
+    <link rel="icon" type="image/png" sizes="48x48" href="{% static 'images/favicon-48x48.png' %}" />
+    <link rel="icon" type="image/png" sizes="192x192" href="{% static 'images/favicon-192x192.png' %}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Vérifier le code | Saref Academy</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <title>Vérification du code | Saref Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Baloo+2:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
     <link href="{% static 'css/formation.css' %}" rel="stylesheet" />
-    <style>
-      body { min-height: 100vh; display: flex; flex-direction: column; background: #f5f7fe; }
-      body > main { margin: auto; }
-      .reset-card { width: min(100% - 2rem, 480px); border: 1px solid #d6defb; border-radius: 1.25rem; }
-      .reset-icon { width: 3.5rem; height: 3.5rem; display: grid; place-items: center; border-radius: 1rem; background: #ebeffd; color: #335cec; font-size: 1.5rem; }
-      .form-control { min-height: 3.2rem; background: #f8fafc; }
-      .form-control:focus { border-color: #335cec; box-shadow: 0 0 0 .2rem #335cec26; }
-      .code-input { letter-spacing: .35em; text-align: center; font-size: 1.25rem; font-weight: 700; }
-    </style>
-    <!-- Barre de navigation + pied de page communs du site -->
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'css/site_navbar.css' %}" />
     <link rel="stylesheet" href="{% static 'css/site_footer.css' %}" />
+
+    <style>
+      /* ===== VARIABLES SAREF ACADEMY ===== */
+      :root {
+        --brand-blue: #335cec;
+        --brand-blue-dark: #2b4ec9;
+        --blue-25: #f5f7fe;
+        --blue-50: #ebeffd;
+        --blue-100: #d6defb;
+        --blue-200: #adbef7;
+        --blue-800: #1c3382;
+        --blue-900: #14255e;
+        --logo-green: #22c55e;
+        --dark-900: #0f172a;
+        --slate-600: #475569;
+        --slate-500: #64748b;
+        --bg-soft: #f8fafc;
+
+        --bs-primary: var(--brand-blue);
+        --bs-primary-rgb: 51, 92, 236;
+        --bs-link-color: var(--brand-blue-dark);
+        --bs-link-hover-color: var(--blue-800);
+        --bs-body-font-family: "Outfit", "Plus Jakarta Sans", system-ui, sans-serif;
+        --bs-body-color: var(--dark-900);
+        --bs-body-bg: var(--bg-soft);
+        --bs-border-color: var(--blue-100);
+        --bs-border-radius: 0.75rem;
+      }
+
+      body {
+        font-family: "Outfit", "Plus Jakarta Sans", system-ui, sans-serif;
+        background-color: var(--bg-soft);
+        color: var(--dark-900);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Hero d'authentification */
+      .auth-hero {
+        position: relative;
+        min-height: 0;
+        display: flex;
+        align-items: flex-start;
+        padding: 2.75rem 0 6rem;
+        background:
+          linear-gradient(rgba(15, 23, 42, 0.72), rgba(20, 37, 94, 0.85)),
+          url("https://i.postimg.cc/sg2tQ540/man-ordering-groceries-online-high-angle.jpg")
+            center / cover no-repeat;
+        color: #fff;
+      }
+
+      .auth-hero h1 {
+        font-family: "Plus Jakarta Sans", "Outfit", sans-serif;
+        font-size: clamp(1.85rem, 3.5vw, 2.5rem);
+        line-height: 1.2;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+
+      .auth-hero .lead {
+        color: #e2e8f0;
+        max-width: 34rem;
+        font-size: 1.05rem;
+      }
+
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.4rem 0.9rem;
+        border-radius: 9999px;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #f8fafc;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+
+      /* Carte principale */
+      .auth-main {
+        flex: 1 0 auto;
+        padding-bottom: 5rem !important;
+      }
+
+      .auth-card {
+        margin-top: -3.75rem;
+        border-radius: 1.5rem;
+        border: 1px solid var(--blue-100);
+        background: #ffffff;
+        box-shadow: 0 20px 40px -15px rgba(20, 37, 94, 0.08), 0 0 1px rgba(20, 37, 94, 0.1);
+        overflow: hidden;
+      }
+
+      /* Stepper visuel */
+      .stepper-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        background: var(--blue-25);
+        border-radius: 0.875rem;
+        border: 1px solid var(--blue-100);
+      }
+
+      .step-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--slate-500);
+      }
+
+      .step-item.active {
+        color: var(--brand-blue);
+      }
+
+      .step-item.completed {
+        color: #16a34a;
+      }
+
+      .step-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.6rem;
+        height: 1.6rem;
+        border-radius: 50%;
+        background: #e2e8f0;
+        color: var(--slate-600);
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+
+      .step-item.active .step-number {
+        background: var(--brand-blue);
+        color: #ffffff;
+      }
+
+      .step-item.completed .step-number {
+        background: #dcfce7;
+        color: #16a34a;
+      }
+
+      .step-divider {
+        flex: 1;
+        height: 2px;
+        background: #bbf7d0;
+        border-radius: 2px;
+      }
+
+      /* Icône d'en-tête */
+      .auth-icon-wrap {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 1.15rem;
+        background: linear-gradient(135deg, var(--blue-50) 0%, #e0e7ff 100%);
+        color: var(--brand-blue);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        border: 1px solid var(--blue-100);
+        box-shadow: 0 8px 16px -6px rgba(51, 92, 236, 0.25);
+      }
+
+      /* Boîte récapitulative e-mail */
+      .email-notice-box {
+        background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%);
+        border: 1px solid #bbf7d0;
+        border-radius: 1rem;
+        padding: 1rem 1.15rem;
+      }
+
+      /* Code de vérification input stylisé */
+      .code-input-container {
+        position: relative;
+      }
+
+      .code-input {
+        letter-spacing: 0.45em;
+        text-align: center;
+        font-family: "Outfit", monospace, sans-serif;
+        font-size: 1.65rem;
+        font-weight: 700;
+        min-height: 3.75rem;
+        background-color: var(--blue-25);
+        border: 2px solid var(--blue-100);
+        color: var(--blue-900);
+        border-radius: 0.875rem;
+        padding-left: 0.45em; /* Compense le letter-spacing pour centrer parfaitement */
+        transition: all 0.2s ease;
+      }
+
+      .code-input:focus {
+        background-color: #ffffff;
+        border-color: var(--brand-blue);
+        box-shadow: 0 0 0 0.25rem rgba(51, 92, 236, 0.2);
+        color: var(--brand-blue-dark);
+      }
+
+      /* Champs standards */
+      .form-control,
+      .input-group-text {
+        min-height: 3.25rem;
+        border-color: var(--blue-100);
+      }
+
+      .form-control {
+        background-color: var(--blue-25);
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+      }
+
+      .form-control:focus {
+        background-color: #ffffff;
+        border-color: var(--brand-blue);
+        box-shadow: 0 0 0 0.25rem rgba(51, 92, 236, 0.18);
+      }
+
+      .input-group-text {
+        background-color: var(--blue-25);
+        color: var(--slate-500);
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      .input-group .btn-outline-primary {
+        border-color: var(--blue-100);
+        background-color: var(--blue-25);
+        color: var(--slate-600);
+      }
+
+      .input-group .btn-outline-primary:hover,
+      .input-group .btn-outline-primary:focus {
+        border-color: var(--brand-blue);
+        color: var(--brand-blue);
+        background-color: var(--blue-50);
+      }
+
+      /* Indicateurs de critères du mot de passe */
+      .password-rules {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem;
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+      }
+
+      .rule-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--slate-500);
+        margin-bottom: 0.25rem;
+        transition: color 0.2s ease;
+      }
+
+      .rule-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .rule-item i {
+        font-size: 0.85rem;
+      }
+
+      .rule-item.valid {
+        color: #16a34a;
+        font-weight: 600;
+      }
+
+      .rule-item.valid i {
+        color: #16a34a;
+      }
+
+      /* Match feedback */
+      .match-feedback {
+        font-size: 0.8rem;
+        font-weight: 500;
+        margin-top: 0.35rem;
+        display: none;
+      }
+
+      .match-feedback.matched {
+        display: block;
+        color: #16a34a;
+      }
+
+      .match-feedback.mismatched {
+        display: block;
+        color: #dc2626;
+      }
+
+      /* Bouton d'action principal */
+      .btn-primary {
+        background-color: var(--brand-blue);
+        border-color: var(--brand-blue);
+        font-weight: 600;
+        border-radius: 0.75rem;
+        padding: 0.85rem 1.5rem;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 12px rgba(51, 92, 236, 0.25);
+      }
+
+      .btn-primary:hover,
+      .btn-primary:focus-visible {
+        background-color: var(--brand-blue-dark);
+        border-color: var(--brand-blue-dark);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(51, 92, 236, 0.35);
+      }
+
+      .btn-primary:active {
+        transform: translateY(0);
+      }
+
+      @media (max-width: 767.98px) {
+        .auth-hero {
+          padding: 1.75rem 0 4.75rem;
+        }
+        .auth-card {
+          margin-top: -2rem;
+          border-radius: 1.25rem;
+        }
+        .auth-card .card-body {
+          padding: 1.75rem !important;
+        }
+        .code-input {
+          font-size: 1.4rem;
+          letter-spacing: 0.35em;
+          padding-left: 0.35em;
+        }
+      }
+    </style>
   </head>
   <body>
-    {% include "partials/site_navbar.html" with nav_active="etudiant" %}
     {% include "partials/feedback_modal.html" %}
-    <main class="card reset-card shadow-sm">
-      <div class="card-body p-4 p-md-5">
-        <div class="reset-icon mb-4"><i class="bi bi-shield-lock"></i></div>
-        <p class="text-primary fw-semibold mb-2">SAREF ACADEMY</p>
-        <h1 class="h3 fw-bold">Vérifiez votre code</h1>
-        <p class="text-secondary mb-4">Saisissez le code à 6 chiffres reçu par e-mail, puis choisissez un nouveau mot de passe.</p>
-        <form method="post" class="needs-validation" id="resetForm" novalidate>
-          {% csrf_token %}
-          <label for="code" class="form-label fw-semibold">Code de vérification</label>
-          <input id="code" name="code" class="form-control code-input mb-3" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" minlength="6" maxlength="6" required placeholder="000000" />
-          <label for="password" class="form-label fw-semibold">Nouveau mot de passe</label>
-          <input id="password" name="password" type="password" class="form-control mb-3" autocomplete="new-password" required minlength="8" placeholder="8 caractères minimum" />
-          <label for="password2" class="form-label fw-semibold">Confirmer le mot de passe</label>
-          <input id="password2" name="password2" type="password" class="form-control mb-4" autocomplete="new-password" required minlength="8" placeholder="Répétez le mot de passe" />
-          <button class="btn btn-primary w-100 py-2" type="submit">Changer mon mot de passe</button>
-        </form>
-        <a class="d-block text-center mt-4 text-decoration-none" href="{% url 'mot-de-passe-oublie' %}"><i class="bi bi-arrow-repeat me-1"></i>Demander un nouveau code</a>
+    {% include "partials/site_navbar.html" with nav_active="etudiant" %}
+
+    <!-- Bannière Hero -->
+    <header class="auth-hero">
+      <div class="container">
+        <div class="row align-items-center gy-3">
+          <div class="col-lg-8">
+            <div class="hero-badge mb-3">
+              <i class="bi bi-shield-check-fill text-success"></i>
+              <span>Vérification sécurisée &bull; Saref Academy</span>
+            </div>
+            <h1>Validez votre code &amp; nouveau mot de passe</h1>
+            <p class="lead mt-2 mb-0">
+              Vérifiez votre messagerie, saisissez le code de validation reçu et choisissez un mot de passe sécurisé pour réactiver votre accès.
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Contenu principal -->
+    <main class="container auth-main">
+      <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-6 col-xl-5">
+          <div class="card auth-card shadow-sm">
+            <div class="card-body p-4 p-md-5">
+
+              <!-- Stepper visuel -->
+              <div class="stepper-container mb-4" aria-label="Progression de la réinitialisation">
+                <div class="step-item completed">
+                  <span class="step-number"><i class="bi bi-check-lg"></i></span>
+                  <span>1. Demande envoyée</span>
+                </div>
+                <div class="step-divider"></div>
+                <div class="step-item active">
+                  <span class="step-number">2</span>
+                  <span>Validation &amp; Nouveau MDP</span>
+                </div>
+              </div>
+
+              <!-- En-tête de la carte -->
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="auth-icon-wrap flex-shrink-0">
+                  <i class="bi bi-shield-lock"></i>
+                </div>
+                <div>
+                  <h2 class="h4 fw-bold mb-1">Confirmation</h2>
+                  <p class="text-secondary small mb-0">Étape 2 sur 2</p>
+                </div>
+              </div>
+
+              <!-- Récapitulatif e-mail -->
+              <div class="email-notice-box d-flex align-items-start gap-3 mb-4">
+                <i class="bi bi-envelope-open-fill text-primary fs-4 flex-shrink-0 mt-1"></i>
+                <div class="small">
+                  <div class="text-dark fw-semibold mb-1">
+                    Code envoyé par e-mail
+                  </div>
+                  <div class="text-secondary">
+                    {% if request.session.reset_email %}
+                      À l'adresse : <strong class="text-dark">{{ request.session.reset_email }}</strong>
+                    {% else %}
+                      Veuillez consulter votre boîte de messagerie.
+                    {% endif %}
+                  </div>
+                  <div class="text-muted mt-1 d-flex align-items-center gap-1">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Expire dans 10 minutes &bull; Vérifiez aussi vos spams</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Formulaire de réinitialisation -->
+              <form method="post" class="needs-validation" id="resetForm" novalidate>
+                {% csrf_token %}
+
+                <!-- Champ Code -->
+                <div class="mb-4">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label for="code" class="form-label fw-semibold small text-dark mb-0">
+                      Code de vérification (6 chiffres) <span class="text-danger">*</span>
+                    </label>
+                    <span class="badge bg-light text-secondary border small">Reçu par mail</span>
+                  </div>
+                  <div class="code-input-container">
+                    <input
+                      id="code"
+                      name="code"
+                      type="text"
+                      class="form-control code-input"
+                      inputmode="numeric"
+                      autocomplete="one-time-code"
+                      pattern="[0-9]{6}"
+                      minlength="6"
+                      maxlength="6"
+                      required
+                      placeholder="000000"
+                      autofocus
+                    />
+                    <div class="invalid-feedback text-center mt-2">
+                      Veuillez saisir le code à 6 chiffres reçu par e-mail.
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Champ Nouveau mot de passe -->
+                <div class="mb-3">
+                  <label for="password" class="form-label fw-semibold small text-dark">
+                    Nouveau mot de passe <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group has-validation">
+                    <span class="input-group-text"><i class="bi bi-key"></i></span>
+                    <input
+                      id="password"
+                      name="password"
+                      type="password"
+                      class="form-control"
+                      autocomplete="new-password"
+                      required
+                      minlength="8"
+                      placeholder="Votre nouveau mot de passe"
+                    />
+                    <button
+                      class="btn btn-outline-primary"
+                      type="button"
+                      data-toggle-password="#password"
+                      aria-label="Afficher ou masquer le mot de passe"
+                      tabindex="-1"
+                    >
+                      <i class="bi bi-eye"></i>
+                    </button>
+                    <div class="invalid-feedback">
+                      Le mot de passe doit comporter au moins 8 caractères, une lettre et un chiffre.
+                    </div>
+                  </div>
+
+                  <!-- Indicateurs en temps réel -->
+                  <div class="password-rules mt-2" id="passwordRules">
+                    <div class="rule-item" id="rule-length">
+                      <i class="bi bi-circle"></i>
+                      <span>Au moins 8 caractères</span>
+                    </div>
+                    <div class="rule-item" id="rule-letter">
+                      <i class="bi bi-circle"></i>
+                      <span>Au moins une lettre (a-z, A-Z)</span>
+                    </div>
+                    <div class="rule-item" id="rule-number">
+                      <i class="bi bi-circle"></i>
+                      <span>Au moins un chiffre (0-9)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Champ Confirmation du mot de passe -->
+                <div class="mb-4">
+                  <label for="password2" class="form-label fw-semibold small text-dark">
+                    Confirmer le nouveau mot de passe <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group has-validation">
+                    <span class="input-group-text"><i class="bi bi-shield-check"></i></span>
+                    <input
+                      id="password2"
+                      name="password2"
+                      type="password"
+                      class="form-control"
+                      autocomplete="new-password"
+                      required
+                      minlength="8"
+                      placeholder="Confirmez le mot de passe"
+                    />
+                    <button
+                      class="btn btn-outline-primary"
+                      type="button"
+                      data-toggle-password="#password2"
+                      aria-label="Afficher ou masquer la confirmation"
+                      tabindex="-1"
+                    >
+                      <i class="bi bi-eye"></i>
+                    </button>
+                    <div class="invalid-feedback">
+                      Les deux mots de passe doivent être identiques.
+                    </div>
+                  </div>
+                  <div class="match-feedback" id="matchFeedback"></div>
+                </div>
+
+                <!-- Bouton de soumission -->
+                <button class="btn btn-primary w-100 py-3 mb-3" type="submit" id="submitResetBtn">
+                  <span class="d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Changer mon mot de passe</span>
+                  </span>
+                </button>
+              </form>
+
+              <!-- Actions secondaires -->
+              <div class="text-center pt-2 border-top">
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 small">
+                  <a
+                    class="text-decoration-none fw-semibold text-primary d-inline-flex align-items-center gap-1"
+                    href="{% url 'mot-de-passe-oublie' %}"
+                  >
+                    <i class="bi bi-arrow-repeat"></i>
+                    <span>Renvoyer un nouveau code</span>
+                  </a>
+                  <a
+                    class="text-decoration-none text-secondary d-inline-flex align-items-center gap-1"
+                    href="{% url 'connexion-etudiant' %}"
+                  >
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    <span>Connexion</span>
+                  </a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
       </div>
     </main>
+
+    {% include "partials/site_footer.html" %}
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      // Vérifie le code et la confirmation avant l'envoi.
       const form = document.getElementById("resetForm");
+      const codeInput = document.getElementById("code");
+      const passInput = document.getElementById("password");
+      const pass2Input = document.getElementById("password2");
+      const submitBtn = document.getElementById("submitResetBtn");
+
+      const ruleLength = document.getElementById("rule-length");
+      const ruleLetter = document.getElementById("rule-letter");
+      const ruleNumber = document.getElementById("rule-number");
+      const matchFeedback = document.getElementById("matchFeedback");
+
+      // Nettoie l'entrée du code pour ne conserver que les chiffres (gère aussi le collage de texte)
+      codeInput.addEventListener("input", function () {
+        this.value = this.value.replace(/\D/g, "").slice(0, 6);
+      });
+
+      // Toggle affichage mot de passe
+      document.querySelectorAll("[data-toggle-password]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const input = document.querySelector(btn.dataset.togglePassword);
+          if (!input) return;
+          const show = input.type === "password";
+          input.type = show ? "text" : "password";
+          const icon = btn.querySelector("i");
+          if (icon) {
+            icon.className = show ? "bi bi-eye-slash" : "bi bi-eye";
+          }
+        });
+      });
+
+      // Validation dynamique en temps réel du mot de passe
+      function updateRules() {
+        const val = passInput.value;
+        const hasLength = val.length >= 8;
+        const hasLetter = /[A-Za-z]/.test(val);
+        const hasNumber = /\d/.test(val);
+
+        toggleRule(ruleLength, hasLength);
+        toggleRule(ruleLetter, hasLetter);
+        toggleRule(ruleNumber, hasNumber);
+
+        checkMatch();
+      }
+
+      function toggleRule(el, valid) {
+        if (!el) return;
+        const icon = el.querySelector("i");
+        if (valid) {
+          el.classList.add("valid");
+          if (icon) icon.className = "bi bi-check-circle-fill";
+        } else {
+          el.classList.remove("valid");
+          if (icon) icon.className = "bi bi-circle";
+        }
+      }
+
+      function checkMatch() {
+        if (!pass2Input.value) {
+          matchFeedback.className = "match-feedback";
+          matchFeedback.textContent = "";
+          return;
+        }
+
+        if (passInput.value === pass2Input.value) {
+          matchFeedback.className = "match-feedback matched";
+          matchFeedback.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Les deux mots de passe correspondent.';
+        } else {
+          matchFeedback.className = "match-feedback mismatched";
+          matchFeedback.innerHTML = '<i class="bi bi-x-circle-fill me-1"></i> Les mots de passe ne correspondent pas.';
+        }
+      }
+
+      passInput.addEventListener("input", updateRules);
+      pass2Input.addEventListener("input", checkMatch);
+
+      // Validation finale à la soumission
       form.addEventListener("submit", function (event) {
-        const first = document.getElementById("password");
-        const second = document.getElementById("password2");
-        document.getElementById("code").setCustomValidity(/^[0-9]{6}$/.test(document.getElementById("code").value.trim()) ? "" : "Le code doit contenir 6 chiffres.");
-        first.setCustomValidity(/^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(first.value) ? "" : "Ajoutez au moins 8 caractères, une lettre et un chiffre.");
-        second.setCustomValidity(first.value === second.value ? "" : "Les mots de passe ne correspondent pas.");
-        if (!form.checkValidity()) {
+        const codeValid = /^[0-9]{6}$/.test(codeInput.value.trim());
+        const passValid = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(passInput.value);
+        const matchValid = passInput.value === pass2Input.value && passInput.value !== "";
+
+        codeInput.setCustomValidity(codeValid ? "" : "Le code doit comporter 6 chiffres.");
+        passInput.setCustomValidity(passValid ? "" : "Le mot de passe doit comporter au moins 8 caractères, une lettre et un chiffre.");
+        pass2Input.setCustomValidity(matchValid ? "" : "Les mots de passe ne correspondent pas.");
+
+        if (!form.checkValidity() || !codeValid || !passValid || !matchValid) {
           event.preventDefault();
           event.stopPropagation();
-          showFeedbackModal("Vérifiez le code à 6 chiffres et les deux mots de passe.");
+          form.classList.add("was-validated");
+
+          let errorMessage = "Vérifiez les informations saisies.";
+          if (!codeValid) {
+            errorMessage = "Veuillez saisir le code à 6 chiffres reçu par e-mail.";
+          } else if (!passValid) {
+            errorMessage = "Le mot de passe doit comporter au moins 8 caractères, une lettre et un chiffre.";
+          } else if (!matchValid) {
+            errorMessage = "Les deux mots de passe ne correspondent pas.";
+          }
+
+          if (typeof showFeedbackModal === "function") {
+            showFeedbackModal(errorMessage, "warning");
+          }
+        } else {
+          // État de chargement
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Modification en cours...
+          `;
         }
-        form.classList.add("was-validated");
       });
     </script>
-    {% include "partials/site_footer.html" %}
   </body>
 </html>
